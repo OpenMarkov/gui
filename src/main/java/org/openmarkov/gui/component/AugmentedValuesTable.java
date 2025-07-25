@@ -8,7 +8,6 @@
 package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.AugmentedTable;
@@ -105,10 +104,11 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
         if (oldValueString.equals(newValueString))
             return;
         
-        AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, newValueString, row, col);
+        AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, newValueString, row, col,
+                                                                                        priorityList, getTableModel().getNotEditablePositions());
         try {
-            probNet.doEdit(nodePotentialEdit);
-        } catch (ConstraintViolationException | DoEditException e) {
+            nodePotentialEdit.doEdit(probNet);
+        } catch (DoEditException.CannotRemovePotential | DoEditException.ConstraintViolated e) {
             e.printStackTrace();
         }
     }
@@ -120,11 +120,12 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
      * @author carmenyago
      */
     @Override protected boolean castValue(Object newValue) {
-        if (newValue instanceof String newValueString)
+        
+        if (newValue instanceof String newValueAsString)
             try {
-                Double.parseDouble(newValueString);
+                Double.parseDouble(newValueAsString);
                 return true;
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ex) {
                 return false;
             }
         if (newValue instanceof Double)

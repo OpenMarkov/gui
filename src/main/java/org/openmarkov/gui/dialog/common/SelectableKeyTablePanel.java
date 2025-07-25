@@ -8,10 +8,10 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.RevelationStateEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 
 import javax.swing.*;
@@ -95,9 +95,9 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
 			State selectedState = states[states.length - row - 1];
 			RevelationStateEdit arcEdit = new RevelationStateEdit(link, selectedState, Boolean.valueOf((Boolean) data));
 			try {
-				node.getProbNet().doEdit(arcEdit);
-			} catch (ConstraintViolationException e1) {
-			} catch (DoEditException e6) {
+                ProbNet probNet = node.getProbNet();
+                arcEdit.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated e6) {
 				e6.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e6.getMessage()),
 						stringDatabase.getString(e6.getMessage()), JOptionPane.ERROR_MESSAGE);

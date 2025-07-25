@@ -10,7 +10,6 @@ package org.openmarkov.gui.window;
 import org.openmarkov.core.action.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;

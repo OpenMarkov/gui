@@ -17,7 +17,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import org.openmarkov.gui.action.OtherPropertyEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -266,13 +265,14 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 				
 				if (node != null) {
 					OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "ADD", selectedRowIndex, noIDrowData);
-					node.getProbNet().doEdit(otherPropertyEdit);
-				} else if (probNet != null) {
+                    ProbNet probNet1 = node.getProbNet();
+                    otherPropertyEdit.doEdit(probNet1);
+                } else if (probNet != null) {
 					OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "ADD", selectedRowIndex, noIDrowData);
-					probNet.doEdit(otherPropertyEdit);
-				}
+                    otherPropertyEdit.doEdit(probNet);
+                }
 				
-			} catch (ConstraintViolationException | DoEditException e){
+			} catch (DoEditException.ConstraintViolated e){
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 			}
@@ -290,16 +290,17 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 			//ProbNet probNet = null;
 			if (node != null) {
 				OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "REMOVE", selectedRowIndex, null);
-				node.getProbNet().doEdit(otherPropertyEdit);
-				//probNet = node.getProbNet();
+                ProbNet probNet1 = node.getProbNet();
+                otherPropertyEdit.doEdit(probNet1);
+                //probNet = node.getProbNet();
 				//probNet.doEdit(otherPropertyEdit);
 			} else if (this.probNet != null) {
 				OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "REMOVE", selectedRowIndex, null);
 				//probNet = this.probNet;
-				probNet.doEdit(otherPropertyEdit);
-			}
+                otherPropertyEdit.doEdit(probNet);
+            }
 			
-		} catch (ConstraintViolationException | DoEditException e){
+		} catch (DoEditException.ConstraintViolated e){
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		}
@@ -316,13 +317,14 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 						
 			if (node != null) {
 				OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "UP", selectedRowIndex, null);
-				node.getProbNet().doEdit(otherPropertyEdit);
-			} else if (probNet != null) {
+                ProbNet probNet1 = node.getProbNet();
+                otherPropertyEdit.doEdit(probNet1);
+            } else if (probNet != null) {
 				OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "UP", selectedRowIndex, null);
-				probNet.doEdit(otherPropertyEdit);
-			}
+                otherPropertyEdit.doEdit(probNet);
+            }
 			
-		} catch (ConstraintViolationException | DoEditException e){
+		} catch (DoEditException.ConstraintViolated e){
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		}
@@ -339,13 +341,14 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 			
 			if (node != null) {
 				OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "DOWN", selectedRowIndex, null);
-				node.getProbNet().doEdit(otherPropertyEdit);
-			} else if (probNet != null) {
+                ProbNet probNet1 = node.getProbNet();
+                otherPropertyEdit.doEdit(probNet1);
+            } else if (probNet != null) {
 				OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "DOWN", selectedRowIndex, null);
-				probNet.doEdit(otherPropertyEdit);
-			}
+                otherPropertyEdit.doEdit(probNet);
+            }
 			
-		} catch (ConstraintViolationException | DoEditException e){
+		} catch (DoEditException.ConstraintViolated e){
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		}
@@ -378,13 +381,14 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 			try {
 				if (node != null) {
 					OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "RENAME", row, rowData);
-					node.getProbNet().doEdit(otherPropertyEdit);
-				} else if (probNet != null) {
+                    ProbNet probNet1 = node.getProbNet();
+                    otherPropertyEdit.doEdit(probNet1);
+                } else if (probNet != null) {
 					OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "RENAME", row, rowData);
-					probNet.doEdit(otherPropertyEdit);
-				}
+                    otherPropertyEdit.doEdit(probNet);
+                }
 				
-			} catch (ConstraintViolationException | DoEditException e1) {
+			} catch (DoEditException.ConstraintViolated e1) {
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
 				String oldName = new ArrayList<>(node.getOtherProperties().keySet()).get(row);

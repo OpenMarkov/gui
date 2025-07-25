@@ -9,11 +9,10 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.TemporalNetOperations;
-import org.openmarkov.core.model.network.Util;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -153,8 +152,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 			NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.ADD, newIndex, option);
 
 			try {
-				node.getProbNet().doEdit(nodeStateEdit);
-				// @ 2014/11/18. Issue 145.
+                ProbNet probNet = node.getProbNet();
+                nodeStateEdit.doEdit(probNet);
+                // @ 2014/11/18. Issue 145.
 				// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
 				// Propagation of the domain in related variables in temporal models
 				propagateNodeStateEditRelatedVariables(StateAction.ADD, newIndex, option);
@@ -164,7 +164,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 				valuesTable.getSelectionModel().setSelectionInterval(0, 0);
 				renameAction = false;
 
-			} catch (ConstraintViolationException | DoEditException e) {
+			} catch (DoEditException.ConstraintViolated e) {
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 
@@ -187,8 +187,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 		NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.REMOVE, selectedRow, "");
 
 		try {
-			node.getProbNet().doEdit(nodeStateEdit);
-			// @ 2014/11/18. Issue 145.
+            ProbNet probNet = node.getProbNet();
+            nodeStateEdit.doEdit(probNet);
+            // @ 2014/11/18. Issue 145.
 			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
 			// Propagation of the domain in related variables in temporal models
 			propagateNodeStateEditRelatedVariables(StateAction.REMOVE, selectedRow, "");
@@ -211,7 +212,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 			}
 
 			renameAction = false;
-		} catch (ConstraintViolationException | DoEditException e) {
+		} catch (DoEditException.ConstraintViolated e) {
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 
@@ -232,8 +233,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 		NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
 
 		try {
-			node.getProbNet().doEdit(nodeStateEdit);
-			// @ 2014/11/18. Issue 145.
+            ProbNet probNet = node.getProbNet();
+            nodeStateEdit.doEdit(probNet);
+            // @ 2014/11/18. Issue 145.
 			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
 			// Propagation of the domain in related variables in temporal models
 			propagateNodeStateEditRelatedVariables(StateAction.UP, selectedRow, "");
@@ -247,7 +249,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
 			renameAction = false;
 
-		} catch (ConstraintViolationException | DoEditException e) {
+		} catch (DoEditException.ConstraintViolated e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -265,8 +267,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 		NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
 
 		try {
-			node.getProbNet().doEdit(nodeStateEdit);
-			// @ 2014/11/18. Issue 145.
+            ProbNet probNet = node.getProbNet();
+            nodeStateEdit.doEdit(probNet);
+            // @ 2014/11/18. Issue 145.
 			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
 			// Propagation of the domain in related variables in temporal models
 			propagateNodeStateEditRelatedVariables(StateAction.DOWN, selectedRow, "");
@@ -280,7 +283,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
 			renameAction = false;
 
-		} catch (ConstraintViolationException | DoEditException e) {
+		} catch (DoEditException.ConstraintViolated e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -342,22 +345,16 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 
 			NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.RENAME, row, newName);
 			try {
-				node.getProbNet().doEdit(nodeStateEdit);
-				// @ 2014/11/18. Issue 145.
+                ProbNet probNet = node.getProbNet();
+                nodeStateEdit.doEdit(probNet);
+                // @ 2014/11/18. Issue 145.
 				// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
 				// Propagation of the domain in related variables in temporal models
 				propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
 				//
-			} catch (ConstraintViolationException e1) {
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-				// valuesTable.getSelectionModel().setSelectionInterval(row,
-				// e.getColumn());
-				int i = Util.toPositionOnPotentialReordered(row, e.getColumn(), node.getVariable().getNumStates(),
-						node.getNumParents());
-				valuesTable.setValueAt(node.getVariable().getStates()[i].getName(), row, e.getColumn());
-
-			} catch (DoEditException e1) {
+			} // valuesTable.getSelectionModel().setSelectionInterval(row,
+            // e.getColumn());
+            catch (DoEditException.ConstraintViolated e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -382,11 +379,12 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 						// we create the edit for the realted node
 						nodeStateEdit = new NodeStateEdit(relatedNode, stateAction, selectedRow, option);
 						// and we perform the edit
-						relatedNode.getProbNet().doEdit(nodeStateEdit);
-					}
+                        ProbNet probNet = relatedNode.getProbNet();
+                        nodeStateEdit.doEdit(probNet);
+                    }
 				}
 			}
-		} catch (ConstraintViolationException | DoEditException e) {
+		} catch (DoEditException.ConstraintViolated e) {
 			e.printStackTrace();
 		}
 	}

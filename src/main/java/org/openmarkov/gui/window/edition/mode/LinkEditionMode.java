@@ -7,6 +7,7 @@
 package org.openmarkov.gui.window.edition.mode;
 
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.edition.EditorPanel;
@@ -37,13 +38,9 @@ import java.awt.geom.Point2D;
 			PNEdit linkEdit = visualNetwork.finishLinkCreation(position, g);
 			if (linkEdit != null) {
 				try {
-					probNet.doEdit(linkEdit);
-				} catch (Exception ex) {
-					String message = ex.getMessage();
-					if (ex.getMessage() == null || ex.getMessage() == "") {
-						message = "This link can't be created.";
-					}
-					JOptionPane.showMessageDialog(Utilities.getOwner(editorPanel), message,
+					linkEdit.doEdit(probNet);
+				} catch (DoEditException ex) {
+					JOptionPane.showMessageDialog(Utilities.getOwner(editorPanel), ex.getMessage(),
 							"Error while creating link", JOptionPane.ERROR_MESSAGE);
 				}
 			}

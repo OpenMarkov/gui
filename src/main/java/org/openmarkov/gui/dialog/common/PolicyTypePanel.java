@@ -9,9 +9,10 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.RemovePolicyEdit;
 import org.openmarkov.core.action.SetPotentialEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PolicyType;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
@@ -169,13 +170,10 @@ import java.awt.event.ItemListener;
 				RemovePolicyEdit removePolicyEdit = null;
 				removePolicyEdit = new RemovePolicyEdit(node);
 				try {
-					node.getProbNet().doEdit(removePolicyEdit);
-				} catch (ConstraintViolationException e1) {
-					JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-							stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
-					// getJComboBoxRelationType().requestFocus();
-					parent.revertPotentialTypeChange();
-				} catch (Exception e1) {
+					ProbNet probNet = node.getProbNet();
+					removePolicyEdit.doEdit(probNet);
+				} // getJComboBoxRelationType().requestFocus();
+                catch (DoEditException.ConstraintViolated e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -193,12 +191,10 @@ import java.awt.event.ItemListener;
 				setPotentialEdit = new SetPotentialEdit(node,
 						TablePotential.class.getAnnotation(PotentialType.class).name());
 				try {
-					node.getProbNet().doEdit(setPotentialEdit);
-				} catch (ConstraintViolationException e1) {
-					JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-							stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
-					// getJComboBoxRelationType().requestFocus();
-				} catch (Exception e1) {
+					ProbNet probNet = node.getProbNet();
+					setPotentialEdit.doEdit(probNet);
+				} // getJComboBoxRelationType().requestFocus();
+                catch (DoEditException.ConstraintViolated e1) {
 					e1.printStackTrace();
 				}
 			}

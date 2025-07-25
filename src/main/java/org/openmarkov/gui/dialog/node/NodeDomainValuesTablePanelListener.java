@@ -9,12 +9,8 @@ package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.action.PrecisionEdit;
 import org.openmarkov.core.action.UnitEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.gui.component.DiscretizeTablePanel;
 import org.openmarkov.core.localize.StringDatabase;
@@ -176,8 +172,9 @@ public class NodeDomainValuesTablePanelListener
 			PrecisionEdit precisionEdit = new PrecisionEdit(getPanel().getNode(),
 					((Double) getPanel().getJFormattedTextFieldPrecision().getValue()).doubleValue());
 			try {
-				getPanel().getNode().getProbNet().doEdit(precisionEdit);
-			} catch (ConstraintViolationException | DoEditException e) {
+                ProbNet probNet = getPanel().getNode().getProbNet();
+                precisionEdit.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -187,9 +184,10 @@ public class NodeDomainValuesTablePanelListener
 		} else if (evt.getSource().equals(getPanel().getJTextFieldUnit())) {
 			UnitEdit unitEdit = new UnitEdit(getPanel().getNode(), getPanel().getJTextFieldUnit().getText());
 			try {
-				getPanel().getNode().getProbNet().doEdit(unitEdit);
-				getPanel().getJTextFieldUnit().setText(getPanel().getJTextFieldUnit().getText());
-			} catch (DoEditException | ConstraintViolationException e) {
+                ProbNet probNet = getPanel().getNode().getProbNet();
+                unitEdit.doEdit(probNet);
+                getPanel().getJTextFieldUnit().setText(getPanel().getJTextFieldUnit().getText());
+			} catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 			}
 		}
@@ -200,8 +198,9 @@ public class NodeDomainValuesTablePanelListener
 			PrecisionEdit precisionEdit = new PrecisionEdit(panel.getNode(),
 					(Double) getPanel().getJFormattedTextFieldPrecision().getValue());
 			try {
-				getPanel().getNode().getProbNet().doEdit(precisionEdit);
-			} catch (ConstraintViolationException | DoEditException e) {
+                ProbNet probNet = getPanel().getNode().getProbNet();
+                precisionEdit.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -259,8 +258,9 @@ public class NodeDomainValuesTablePanelListener
 				PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(getPanel().getNode(),
 						newPartitionedInterval);
 				try {
-					getPanel().getNode().getProbNet().doEdit(partitionedIntervalEdit);
-				} catch (DoEditException | ConstraintViolationException e) {
+                    ProbNet probNet = getPanel().getNode().getProbNet();
+                    partitionedIntervalEdit.doEdit(probNet);
+                } catch (DoEditException.ConstraintViolated e) {
 					e.printStackTrace();
 				}
 				PartitionedInterval newPartitionInterval = getPanel().getNode().getVariable().getPartitionedInterval();
@@ -270,8 +270,9 @@ public class NodeDomainValuesTablePanelListener
 		} else if (evt.getSource().equals(getPanel().getJTextFieldUnit())) {
 			UnitEdit unitEdit = new UnitEdit(getPanel().getNode(), getPanel().getJTextFieldUnit().getText());
 			try {
-				getPanel().getNode().getProbNet().doEdit(unitEdit);
-			} catch (DoEditException | ConstraintViolationException e) {
+                ProbNet probNet = getPanel().getNode().getProbNet();
+                unitEdit.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

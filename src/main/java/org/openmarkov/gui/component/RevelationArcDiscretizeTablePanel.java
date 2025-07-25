@@ -8,11 +8,11 @@
 package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.action.RevelationIntervalEdit;
 
 import javax.swing.*;
@@ -92,9 +92,10 @@ import java.awt.event.MouseEvent;
 		RevelationIntervalEdit revelationArcStateEdit = new RevelationIntervalEdit(link, StateAction.ADD, newIndex, 0,
 				false);
 		try {
-			node.getProbNet().doEdit(revelationArcStateEdit);
-			setPartitionedInterval();
-		} catch (ConstraintViolationException | DoEditException e) {
+            ProbNet probNet = node.getProbNet();
+            revelationArcStateEdit.doEdit(probNet);
+            setPartitionedInterval();
+		} catch (DoEditException.ConstraintViolated e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -114,10 +115,11 @@ import java.awt.event.MouseEvent;
 		RevelationIntervalEdit revelationArcStateEdit = new RevelationIntervalEdit(link, StateAction.REMOVE,
 				selectedRow, 0, false);
 		try {
-			node.getProbNet().doEdit(revelationArcStateEdit);
-			cancelCellEditing();
+            ProbNet probNet = node.getProbNet();
+            revelationArcStateEdit.doEdit(probNet);
+            cancelCellEditing();
 			setPartitionedInterval();
-		} catch (ConstraintViolationException | DoEditException e) {
+		} catch (DoEditException.ConstraintViolated e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -177,9 +179,10 @@ import java.awt.event.MouseEvent;
 			RevelationIntervalEdit nodePartitionedIntervalEdit = new RevelationIntervalEdit(link,
 					StateAction.MODIFY_VALUE_INTERVAL, row, newValue, lower);
 			try {
-				node.getProbNet().doEdit(nodePartitionedIntervalEdit);
-				setPartitionedInterval();
-			} catch (ConstraintViolationException | DoEditException e) {
+                ProbNet probNet = node.getProbNet();
+                nodePartitionedIntervalEdit.doEdit(probNet);
+                setPartitionedInterval();
+			} catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -264,12 +267,14 @@ import java.awt.event.MouseEvent;
 			RevelationIntervalEdit intervalEdit = new RevelationIntervalEdit(link,
 					StateAction.MODIFY_DELIMITER_INTERVAL, fila, 0, lower);
 			try {
-				node.getProbNet().doEdit(intervalEdit);
-				if (relatedIntervalEdit != null) {
-					node.getProbNet().doEdit(relatedIntervalEdit);
-				}
+                ProbNet probNet1 = node.getProbNet();
+                intervalEdit.doEdit(probNet1);
+                if (relatedIntervalEdit != null) {
+                    ProbNet probNet = node.getProbNet();
+                    relatedIntervalEdit.doEdit(probNet);
+                }
 
-			} catch (ConstraintViolationException | DoEditException e) {
+			} catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

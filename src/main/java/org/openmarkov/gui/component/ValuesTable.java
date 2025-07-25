@@ -12,7 +12,6 @@ package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UncertainValuesEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -179,7 +178,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
         this.node = node;
         this.probNet = node.getProbNet();
         this.potential = node.getPotentials().get(0);
-        
         //Adding the initialisation of getExactDistrPotential
         
         this.isExactDistrPotential = (node.getPotentials().get(0) instanceof ExactDistrPotential);
@@ -406,8 +404,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
         TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(node, (Double) newValue, row, col,
                                                                                 priorityList, getTableModel().getNotEditablePositions());
         try {
-            probNet.doEdit(nodePotentialEdit);
-        } catch (ConstraintViolationException | DoEditException e) {
+            nodePotentialEdit.doEdit(probNet);
+        } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
                                           stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -424,6 +422,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * @param newValue - new value to validate
      */
     protected boolean castValue(Object newValue) {
+        
         if (newValue instanceof String)
             try {
                 Double.parseDouble((String) newValue);

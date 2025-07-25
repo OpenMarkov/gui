@@ -14,18 +14,12 @@ import org.openmarkov.core.action.PurposeEdit;
 import org.openmarkov.core.action.RelevanceEdit;
 import org.openmarkov.core.action.TimeSliceEdit;
 import org.openmarkov.core.exception.*;
-import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.StringWithProperties;
-import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.NodeAgentEdit;
 import org.openmarkov.gui.action.NodeDecisionCriteriaEdit;
 import org.openmarkov.gui.constraint.AlwaysObservedPropertyValidator;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.core.localize.LocalizedException;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.Purpose;
 
@@ -765,13 +759,9 @@ public class NodeDefinitionPanel extends JPanel
 					}
 				}
 				try {
-					node.getProbNet().doEdit(purposeEdit);
-				} catch (ConstraintViolationException e1) {
-					JOptionPane.showMessageDialog(this, e1.getMessage(),
-							stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
-					comboBox.setSelectedIndex(optionDeselected);
-					comboBox.requestFocus();
-				} catch (DoEditException e1) {
+                    ProbNet probNet = node.getProbNet();
+                    purposeEdit.doEdit(probNet);
+                } catch (DoEditException.ConstraintViolated e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(this, e1.getMessage(), e1.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -782,13 +772,9 @@ public class NodeDefinitionPanel extends JPanel
 				RelevanceEdit relevanceEdit = null;
 				relevanceEdit = new RelevanceEdit(node, Double.valueOf(itemSelected));
 				try {
-					node.getProbNet().doEdit(relevanceEdit);
-				} catch (ConstraintViolationException e1) {
-					JOptionPane.showMessageDialog(this, e1.getMessage(),
-							stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
-					comboBox.setSelectedIndex(optionDeselected);
-					comboBox.requestFocus();
-				} catch (DoEditException e1) {
+                    ProbNet probNet = node.getProbNet();
+                    relevanceEdit.doEdit(probNet);
+                } catch (DoEditException.ConstraintViolated e1) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(this, e1.getMessage(), e1.getMessage(), JOptionPane.ERROR_MESSAGE);
 				}
@@ -802,9 +788,10 @@ public class NodeDefinitionPanel extends JPanel
 					timeSliceEdit = new TimeSliceEdit(node, Integer.valueOf(itemSelected));
 				}
 				try {
-					node.getProbNet().doEdit(timeSliceEdit);
-					// comboBox.setSelectedIndex(optionSelected);
-				} catch (DoEditException | ConstraintViolationException e1) {
+                    ProbNet probNet = node.getProbNet();
+                    timeSliceEdit.doEdit(probNet);
+                    // comboBox.setSelectedIndex(optionSelected);
+				} catch (DoEditException.ConstraintViolated e1) {
                     /*
                     Fixing issue 203
                     https://bitbucket.org/cisiad/org.openmarkov.issues/issue/203/two-time-related-variables-with-identical
@@ -823,9 +810,10 @@ public class NodeDefinitionPanel extends JPanel
 				StringWithProperties agent = new StringWithProperties(itemSelected);
 				NodeAgentEdit nodeAgentEdit = new NodeAgentEdit(node, agent);
 				try {
-					node.getProbNet().doEdit(nodeAgentEdit);
-					// comboBox.setSelectedIndex(optionSelected);
-				} catch (DoEditException | ConstraintViolationException e1) {
+                    ProbNet probNet = node.getProbNet();
+                    nodeAgentEdit.doEdit(probNet);
+                    // comboBox.setSelectedIndex(optionSelected);
+				} catch (DoEditException.ConstraintViolated e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -838,8 +826,9 @@ public class NodeDefinitionPanel extends JPanel
 				NodeDecisionCriteriaEdit nodeDecisionCriteriaEdit = new NodeDecisionCriteriaEdit(node,
 						decisionCriteria);
 				try {
-					node.getProbNet().doEdit(nodeDecisionCriteriaEdit);
-				} catch (DoEditException | ConstraintViolationException e1) {
+                    ProbNet probNet = node.getProbNet();
+                    nodeDecisionCriteriaEdit.doEdit(probNet);
+                } catch (DoEditException.ConstraintViolated e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -858,16 +847,11 @@ public class NodeDefinitionPanel extends JPanel
 			if (!node.getName().equals(this.jTextFieldNodeName.getText())) {
 				NodeNameEdit nodeNameEdit = new NodeNameEdit(node, this.jTextFieldNodeName.getText());
 				try {
-					node.getProbNet().doEdit(nodeNameEdit);
-				} catch (ConstraintViolationException e1) {
-					// TODO Auto-generated catch block
-					// e1.printStackTrace();
-					LocalizedException localizedException = new LocalizedException(e1);
-					localizedException.showException();
-
-					jTextFieldNodeName.setText(node.getName());
-					jTextFieldNodeName.requestFocus();
-				} catch (DoEditException e1) {
+                    ProbNet probNet = node.getProbNet();
+                    nodeNameEdit.doEdit(probNet);
+                } // TODO Auto-generated catch block
+                // e1.printStackTrace();
+                catch (DoEditException.ConstraintViolated e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(this, e1.getMessage(), e1.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -960,8 +944,9 @@ public class NodeDefinitionPanel extends JPanel
 
 		NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(node, comment, "DefinitionComment");
 		try {
-			node.getProbNet().doEdit(nodeCommentEdit);
-		} catch (ConstraintViolationException | DoEditException e) {
+            ProbNet probNet = node.getProbNet();
+            nodeCommentEdit.doEdit(probNet);
+        } catch (DoEditException.ConstraintViolated e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, e.getMessage(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -974,8 +959,9 @@ public class NodeDefinitionPanel extends JPanel
 	public void alwaysObservedPropertyHasChanged() {
 		NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.node, this.jCheckboxAlwaysObserved.isSelected());
 		try {
-			node.getProbNet().doEdit(edit);
-		} catch (DoEditException | ConstraintViolationException e) {
+            ProbNet probNet = node.getProbNet();
+            edit.doEdit(probNet);
+        } catch (DoEditException.ConstraintViolated e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, e.getMessage(), e.getMessage(), JOptionPane.ERROR_MESSAGE);

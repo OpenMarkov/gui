@@ -7,12 +7,14 @@
 
 package org.openmarkov.gui.action;
 
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
+import org.openmarkov.core.model.network.ProbNet;
 
 /*****
  * A simple edit which allows to add and modify intervals and modify them.
@@ -109,7 +111,13 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 		}
 
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
 		switch (stateAction) {

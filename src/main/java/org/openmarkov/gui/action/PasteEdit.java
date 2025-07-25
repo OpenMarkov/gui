@@ -10,7 +10,6 @@ package org.openmarkov.gui.action;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -18,7 +17,6 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.window.edition.SelectedContent;
 
 import javax.swing.undo.CompoundEdit;
@@ -32,11 +30,11 @@ import java.util.List;
 @SuppressWarnings("serial") public class PasteEdit extends CompoundEdit implements PNEdit {
     private SelectedContent clipboardContent;
     private SelectedContent pastedContent;
-    private VisualNetwork visualNetwork;
+    private ProbNet probNet;
     
-    public PasteEdit(VisualNetwork visualNetwork, SelectedContent clipboardContent) {
+    public PasteEdit(ProbNet probNet, SelectedContent clipboardContent) {
         this.clipboardContent = clipboardContent;
-        this.visualNetwork = visualNetwork;
+        this.probNet = probNet;
         this.pastedContent = null;
     }
     
@@ -49,7 +47,6 @@ import java.util.List;
      */
     @Override public void doEdit() throws DoEditException {
         HashMap<String, String> newVariables = new HashMap<String, String>();
-        ProbNet probNet = visualNetwork.getNetwork();
         // Gather new node creation edits
         for (Node node : clipboardContent.getNodes()) {
             String oldName = node.getName();
@@ -69,12 +66,8 @@ import java.util.List;
         // Apply node generation edits
         ArrayList<Node> pastedNodes = new ArrayList<Node>();
         for (UndoableEdit edit : edits) {
-            try {
-                probNet.doEdit(((PNEdit) edit));
-                pastedNodes.add(((AddNodeEdit) edit).getNode());
-            } catch (ConstraintViolationException e) {
-                e.printStackTrace();
-            }
+            ((PNEdit) edit).doEdit(probNet);
+            pastedNodes.add(((AddNodeEdit) edit).getNode());
         }
         
         //Gather link creation edits
@@ -91,12 +84,8 @@ import java.util.List;
         for (UndoableEdit edit : edits) {
             if (edit instanceof AddLinkEdit) {
                 AddLinkEdit linkEdit = ((AddLinkEdit) edit);
-                try {
-                    probNet.doEdit(linkEdit);
-                    pastedLinks.add(linkEdit.getLink());
-                } catch (ConstraintViolationException e) {
-                    e.printStackTrace();
-                }
+                linkEdit.doEdit(probNet);
+                pastedLinks.add(linkEdit.getLink());
             }
         }
         super.end();
@@ -105,6 +94,7 @@ import java.util.List;
         //Replace potentials to already created nodes with copies of copied nodes
         for (Node originalNode : clipboardContent.getNodes()) {
             ArrayList<Potential> newPotentials = new ArrayList<Potential>();
+            
             Node newNode = probNet.getNode(newVariables.get(originalNode.getName()));
             for (Potential originalPotential : originalNode.getPotentials()) {
                 Potential potential = originalPotential.copy();
@@ -146,12 +136,28 @@ import java.util.List;
             newNode.setRelevance(originalNode.getRelevance());
             newNode.setPurpose(originalNode.getPurpose());
             newNode.additionalProperties = new LinkedHashMap<String, String>(originalNode.additionalProperties);
+            
+            
         }
+    }
+    
+    @Override public void doEdit(ProbNet probNet) throws DoEditException {
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
     }
     
     //@Override
     @Override public void setSignificant(boolean significant) {
         // Do nothing
+    }
+    
+    @Override public ProbNet getProbNet() {
+        return probNet;
+    }
+    
+    @Override public void setProbNet(ProbNet probNet) {
+        this.probNet = probNet;
     }
     
     /**
@@ -161,11 +167,6 @@ import java.util.List;
      */
     public SelectedContent getPastedContent() {
         return pastedContent;
-    }
-    
-    // @Override
-    @Override public ProbNet getProbNet() {
-        return visualNetwork.getNetwork();
     }
     
 }

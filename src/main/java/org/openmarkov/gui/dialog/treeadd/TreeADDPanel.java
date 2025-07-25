@@ -8,13 +8,12 @@
 package org.openmarkov.gui.dialog.treeadd;
 
 import org.openmarkov.core.action.SetPotentialEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.dialog.common.PotentialPanel;
 import org.openmarkov.gui.dialog.common.PotentialPanelPlugin;
-import org.openmarkov.core.localize.StringDatabase;
 
-import javax.swing.*;
 import java.awt.*;
 
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Tree/ADD") public class TreeADDPanel
@@ -36,12 +35,9 @@ import java.awt.*;
 	@Override public boolean saveChanges() {
 		SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, treeADDController.getTreePotential());
 		try {
-			node.getProbNet().doEdit(setPotentialEdit);
-		} catch (ConstraintViolationException e1) {
-			JOptionPane.showMessageDialog(this, e1.getMessage(),
-					StringDatabase.getUniqueInstance().getString("ConstraintViolationException"),
-					JOptionPane.ERROR_MESSAGE);
-		} catch (Exception e) {
+			ProbNet probNet = node.getProbNet();
+			setPotentialEdit.doEdit(probNet);
+		} catch (DoEditException.ConstraintViolated e) {
 			e.printStackTrace();
 		}
 		return true;

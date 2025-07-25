@@ -9,10 +9,10 @@
 package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.gui.action.ICITablePotentialValueEdit;
 import org.openmarkov.core.localize.StringDatabase;
@@ -81,8 +81,9 @@ import java.util.ListIterator;
 				ICITablePotentialValueEdit nodePotentialEdit = new ICITablePotentialValueEdit(node, (Double) newValue,
 						row, col, priorityList);
 				try {
-					node.getProbNet().doEdit(nodePotentialEdit);
-				} catch (ConstraintViolationException | DoEditException e) {
+                    ProbNet probNet1 = node.getProbNet();
+                    nodePotentialEdit.doEdit(probNet1);
+                } catch (DoEditException.ConstraintViolated e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),

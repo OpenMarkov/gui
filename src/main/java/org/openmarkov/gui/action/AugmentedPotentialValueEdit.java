@@ -9,11 +9,12 @@ package org.openmarkov.gui.action;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.AugmentedTable;
@@ -102,13 +103,16 @@ import java.util.List;
      * @param newValue             the new value
      * @param col                  the column in the edited table
      * @param row                  the row in the edited table
+     * @param priorityList         the priority lists for potentials update.
      * @param notEditablePositions two dimensional array with the information about editable
      *                             positions.
      */
-    public AugmentedPotentialValueEdit(Node node, String newValue, int row, int col) {
+    public AugmentedPotentialValueEdit(Node node, String newValue, int row, int col, List<Integer> priorityList,
+                                       Object[][] notEditablePositions) {
         super(node.getProbNet());
         logger = LogManager.getLogger(AugmentedPotentialValueEdit.class.getName());
         boolean isAugmentedTablePotential = false;
+        
         oldPotential = node.getPotentials().get(0);
         if (oldPotential instanceof AugmentedTablePotential) {
             oldAugmentedTablePotential = (AugmentedTablePotential) oldPotential;
@@ -117,6 +121,7 @@ import java.util.List;
             newAugmentedTable = newAugmentedTablePotential.getAugmentedTable();
             newAugmentedValues = newAugmentedTable.getFunctionValues();
             isAugmentedTablePotential = true;
+            
         } else {
             oldUnivariateDistrPotential = (UnivariateDistrPotential) oldPotential;
             newUnivariateDistrPotential = new UnivariateDistrPotential(oldUnivariateDistrPotential);
@@ -170,18 +175,16 @@ import java.util.List;
     /*
      *
      */
-    @Override public void doEdit() throws DoEditException {
-        PotentialChangeEdit changePotentialEdit = null;
-        changePotentialEdit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
-        try {
-            probNet.doEdit(changePotentialEdit);
-        } catch (ConstraintViolationException e) {
-            e.printStackTrace();
-            logger.warn(e.getMessage());
-            LocalizedException exception = new LocalizedException(e);
-            exception.showException();
-            throw new DoEditException(e.getToken());
-        }
+    @Override public void doEdit() throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
+        PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
+        changePotentialEdit.doEdit(this.probNet);
+    }
+    
+    @Override
+    public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
     }
     
     /**

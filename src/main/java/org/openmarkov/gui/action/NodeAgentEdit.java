@@ -6,9 +6,11 @@
  */
 package org.openmarkov.gui.action;
 
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 
 /**
@@ -30,7 +32,13 @@ import org.openmarkov.core.model.network.StringWithProperties;
 	@Override public void doEdit() {
 		node.getVariable().setAgent(newAgent);
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
 		node.getVariable().setAgent(currentAgent);

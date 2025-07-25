@@ -8,9 +8,9 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PotentialChangeEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GLMPotential.MatrixType;
 import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
@@ -208,8 +208,9 @@ import java.util.Map;
 		PNEdit edit = new PotentialChangeEdit(node.getProbNet(), oldPotential, newPotential);
 
 		try {
-			node.getProbNet().doEdit(edit);
-		} catch (ConstraintViolationException | DoEditException e) {
+            ProbNet probNet = node.getProbNet();
+            edit.doEdit(probNet);
+        } catch (DoEditException e) {
 			e.printStackTrace();
 		}
 		return true;

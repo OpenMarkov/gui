@@ -11,7 +11,6 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -675,7 +674,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 				try {
 					probNet.getPNESupport().announceEdit(moveNodeEdit);
 					probNet.getPNESupport().doEdit(moveNodeEdit);
-				} catch (ConstraintViolationException e1) {
+				} catch (ConstraintViolated e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (CanNotDoEditException e1) {
@@ -1234,8 +1233,8 @@ public class VisualNetwork implements PNUndoableEditListener {
 			MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualNode.getNode().isInput(),
 					visualNode.getNode());
 			try {
-				probNet.doEdit(markAsInputEdit);
-			} catch (ConstraintViolationException | DoEditException e) {
+                markAsInputEdit.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 			}
 		}

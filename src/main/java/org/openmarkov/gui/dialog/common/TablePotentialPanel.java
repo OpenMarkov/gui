@@ -10,17 +10,9 @@ package org.openmarkov.gui.dialog.common;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.action.UncertainValuesRemoveEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -700,13 +692,13 @@ import java.util.List;
         }
         int button = uncertDialog.requestUncertainValues();
         if (button == UncertainValuesDialog.OK_BUTTON) {
-            UncertainValuesEdit uncertEdit =
-                    new UncertainValuesEdit(node, uncertDialog.getUncertainColumn(),
-                                            uncertDialog.getValuesColumn(), uncertDialog.getPosBase(), selectedColumn,
-                                            uncertDialog.isChanceVariable());
-            
+            UncertainValuesEdit uncertEdit = null;
+            uncertEdit = new UncertainValuesEdit(node, uncertDialog.getUncertainColumn(),
+                                                 uncertDialog.getValuesColumn(), uncertDialog.getPosBase(), selectedColumn,
+                                                 uncertDialog.isChanceVariable());
             try {
-                node.getProbNet().doEdit(uncertEdit);
+                ProbNet probNet = node.getProbNet();
+                uncertEdit.doEdit(probNet);
                 if (selectedColumn > 0) {
                     (
                             (ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)
@@ -714,7 +706,7 @@ import java.util.List;
                     getValuesTable().repaint();
                     this.getTableModel().setNotEditablePositions(getNotEditablePositions());
                 }
-            } catch (ConstraintViolationException | DoEditException e) {
+            } catch (DoEditException.ConstraintViolated e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
                                               stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -807,7 +799,8 @@ import java.util.List;
         evidenceCase = getEvidenceCaseFromSelectedColumn();
         UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(node, evidenceCase);
         try {
-            node.getProbNet().doEdit(uncertEdit);
+            ProbNet probNet = node.getProbNet();
+            uncertEdit.doEdit(probNet);
             if (selectedColumn > 0) {
                 (
                         (ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)
@@ -815,7 +808,7 @@ import java.util.List;
                 getValuesTable().repaint();
                 this.getTableModel().setNotEditablePositions(getNotEditablePositions());
             }
-        } catch (ConstraintViolationException | DoEditException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
                                           stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

@@ -50,7 +50,7 @@ public class ValidName extends PNConstraint {
 			message = "NodeNameEmpty.Text.Label";
 			return false;
 		} else if (!currentName.equals(newName) && existNode(newName.toUpperCase(), probNet)) {
-			message = "ConstraintViolationException.ValidName.Exists";
+			message = "ConstraintViolated.ValidName.Exists";
 			return false;
 		}
 		/*

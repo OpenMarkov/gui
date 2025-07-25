@@ -9,7 +9,6 @@
 package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -87,8 +86,8 @@ import java.util.ArrayList;
 			LinkRestrictionPotentialValueEdit linkPotentialEdit = new LinkRestrictionPotentialValueEdit(link,
 					(Integer) newValue, row, col);
 			try {
-				net.doEdit(linkPotentialEdit);
-				super.getModel().setValueAt(newValue, row, col);
+                linkPotentialEdit.doEdit(net);
+                super.getModel().setValueAt(newValue, row, col);
 				int variable1Index = col - 1;
 				int variable2Index = node2.getVariable().getNumStates() - row;
 				if ((Integer) newValue == 0) {
@@ -102,7 +101,7 @@ import java.util.ArrayList;
 						node2.setPotentials(potentials);
 					}
 				}
-			} catch (ConstraintViolationException | DoEditException e) {
+			} catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

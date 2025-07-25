@@ -54,7 +54,7 @@ public class NodePartitionedIntervalEditTest {
 	 *
 	 * @throws Exception if an error occurs.
 	 */
-	@BeforeEach public void setUp() throws org.openmarkov.core.exception.ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
+	@BeforeEach public void setUp() throws org.openmarkov.core.exception.DoEditException.ConstraintViolated {
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");
@@ -74,14 +74,14 @@ public class NodePartitionedIntervalEditTest {
 		probNet.getPNESupport().setWithUndo(true);
 
 		VariableTypeEdit variableTypeEdit = new VariableTypeEdit(node1, VariableType.DISCRETIZED);
-
-		probNet.doEdit(variableTypeEdit);
-
-		NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node1,
+        
+        variableTypeEdit.doEdit(probNet);
+        
+        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node1,
 				StateAction.MODIFY_DELIMITER_INTERVAL, 0, true);
-
-		probNet.doEdit(nodePartitionedIntervalEdit);
-	}
+        
+        nodePartitionedIntervalEdit.doEdit(probNet);
+    }
 
 	/**
 	 * This method undoes and redoes several times the node's name.

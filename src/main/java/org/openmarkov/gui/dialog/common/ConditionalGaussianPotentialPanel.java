@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.PotentialChangeEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -109,8 +108,8 @@ import java.awt.event.ActionListener;
 		newPotential.setComment(oldPotential.getComment());
 		PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
 		try {
-			probNet.doEdit(edit);
-		} catch (ConstraintViolationException | DoEditException e) {
+            edit.doEdit(probNet);
+        } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e) {
 			e.printStackTrace();
 		}
 

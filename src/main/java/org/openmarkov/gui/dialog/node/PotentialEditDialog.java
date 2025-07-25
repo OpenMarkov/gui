@@ -9,14 +9,8 @@ package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.action.SetPotentialEdit;
 import org.openmarkov.core.action.SetPotentialVariablesEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -495,13 +489,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 
 			AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, distributionName);
 			try {
-				node.getProbNet().doEdit(nodePotentialEdit);
-			} catch (ConstraintViolationException e1) {
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-						stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
-				revertPotentialTypeChange();
-				potentialTypeComboBox.requestFocus();
-			} catch (Exception e1) {
+				ProbNet probNet = node.getProbNet();
+				nodePotentialEdit.doEdit(probNet);
+			} catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e1) {
 				e1.printStackTrace();
 			}
 			updatePotentialPanel();
@@ -641,13 +631,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		String potentialType = (String) potentialTypeComboBox.getSelectedItem();
 		SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, potentialType,lastPotential,hasPolicy,(VisualDecisionNode)visualNode);
 		try {
-			node.getProbNet().doEdit(setPotentialEdit);
-		}catch (ConstraintViolationException e1) {
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-					stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
-			revertPotentialTypeChange();
-			potentialTypeComboBox.requestFocus();
-		}catch (Exception e){
+			ProbNet probNet = node.getProbNet();
+			setPotentialEdit.doEdit(probNet);
+		} catch (DoEditException.ConstraintViolated e){
 			e.printStackTrace();
 		}
 
@@ -758,8 +744,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 				Potential potential = nodePotential.reorder(newVariables);
 				SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
 				try {
-					node.getProbNet().doEdit(potentialEdit);
-				} catch (DoEditException | ConstraintViolationException e) {
+					ProbNet probNet = node.getProbNet();
+					potentialEdit.doEdit(probNet);
+				} catch (DoEditException.ConstraintViolated e) {
 					e.printStackTrace();
 				}
 				updatePotentialPanel();
@@ -767,8 +754,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			} else if (potentialPanelForAction instanceof ICIPotentialsTablePanel) {
 				SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(node, newVariables);
 				try {
-					node.getProbNet().doEdit(setPotentialVariables);
-				} catch (DoEditException | ConstraintViolationException e) {
+					ProbNet probNet = node.getProbNet();
+					setPotentialVariables.doEdit(probNet);
+				} catch (DoEditException.ConstraintViolated e) {
 					e.printStackTrace();
 				}
 				updatePotentialPanel();

@@ -8,7 +8,6 @@
 package org.openmarkov.gui.oopn;
 
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -660,8 +659,8 @@ public class VisualOONetwork extends VisualNetwork {
 			MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualInstance.getInstance().isInput(),
 					visualInstance.getInstance());
 			try {
-				probNet.doEdit(markAsInputEdit);
-			} catch (ConstraintViolationException | DoEditException e) {
+                markAsInputEdit.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 			}
 		}
@@ -685,8 +684,8 @@ public class VisualOONetwork extends VisualNetwork {
 		if (newInstanceName != null) {
 			InstanceNameEdit instanceNameEdit = new InstanceNameEdit(probNet, selectedInstance, newInstanceName);
 			try {
-				probNet.doEdit(instanceNameEdit);
-			} catch (ConstraintViolationException | DoEditException | RuntimeException e1) {
+                instanceNameEdit.doEdit(probNet);
+            } catch (DoEditException | RuntimeException e1) {
 				// TODO Localize
 				JOptionPane.showMessageDialog(null,
 						"Error while generating instance node.\n" + "Look in the message window for more details",
@@ -712,8 +711,8 @@ public class VisualOONetwork extends VisualNetwork {
 			ChangeParameterArityEdit changeParameterArityEdit = new ChangeParameterArityEdit(probNet,
 					visualInstance.getInstance(), arity);
 			try {
-				probNet.doEdit(changeParameterArityEdit);
-			} catch (ConstraintViolationException | DoEditException e) {
+                changeParameterArityEdit.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 			}
 		}

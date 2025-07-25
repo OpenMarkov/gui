@@ -10,7 +10,6 @@ package org.openmarkov.gui.dialog.common;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -194,7 +193,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 					node.getProbNet().getPNESupport().announceEdit(linkEdit);
 					edits.add(linkEdit);
 					nodes.add(otherNode);
-				} catch (ConstraintViolationException ignore) {
+				} catch (DoEditException.ConstraintViolated ignore) {
 				} // TODO Auto-generated catch block
             
             
@@ -222,9 +221,10 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		RemoveLinkEdit linkEdit;
 		try {
 			linkEdit = new RemoveLinkEdit(probNet, probNet.getVariable(name), node.getVariable(), true);
-			node.getProbNet().doEdit(linkEdit);
-
-			tableModel.removeRow(selectedRow);
+            ProbNet probNet1 = node.getProbNet();
+            linkEdit.doEdit(probNet1);
+            
+            tableModel.removeRow(selectedRow);
 			rowCount = valuesTable.getRowCount();
 			// Fixing issue #249
 			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/249/removing-the-two-parents-of-a-node
@@ -241,14 +241,12 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 			// till a new element is selected from the list
 			setEnabledRemoveValue(false);
 
-		} catch (DoEditException e) {
+		} catch (DoEditException.ConstraintViolated e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-		} catch (ConstraintViolationException e) {
-			e.printStackTrace();
-		} // TODO Auto-generated catch block
+		}  // TODO Auto-generated catch block
     
     
     }

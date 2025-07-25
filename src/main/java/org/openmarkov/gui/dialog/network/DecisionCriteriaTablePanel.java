@@ -10,7 +10,6 @@ package org.openmarkov.gui.dialog.network;
 import org.openmarkov.core.action.DecisionCriteriaEdit;
 import org.openmarkov.core.action.DecisionCriterionUnitEdit;
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
@@ -60,11 +59,11 @@ import java.util.List;
 					DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.RENAME,
 							probNet.getDecisionCriteria().get(row), newName);
 					try {
-						probNet.doEdit(criteriaEdit);
-						//edits.add(criteriaEdit);
-					} catch (ConstraintViolationException | DoEditException e1) {
+                        criteriaEdit.doEdit(probNet);
+                        //edits.add(criteriaEdit);
+					} catch (DoEditException.ConstraintViolated e1) {
 						JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-								stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
+								stringDatabase.getString("ConstraintViolated"), JOptionPane.ERROR_MESSAGE);
 						dataTable[row][column - 1] = criterionName;
 					}
 				}
@@ -80,9 +79,9 @@ import java.util.List;
 					DecisionCriterionUnitEdit criterionUnitEdit = new DecisionCriterionUnitEdit(probNet, criterionName,
 							newUnitName);
 					try {
-						probNet.doEdit(criterionUnitEdit);
-						//edits.add(criterionUnitEdit);
-					} catch (DoEditException | ConstraintViolationException e) {
+                        criterionUnitEdit.doEdit(probNet);
+                        //edits.add(criterionUnitEdit);
+					} catch (DoEditException.ConstraintViolated e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -109,12 +108,12 @@ import java.util.List;
 
 			// doEdit
 			try {
-				probNet.doEdit(criteriaEdit);
-				//edits.add(criteriaEdit);
+                criteriaEdit.doEdit(probNet);
+                //edits.add(criteriaEdit);
 
-			} catch (ConstraintViolationException | DoEditException e1) {
+			} catch (DoEditException.ConstraintViolated e1) {
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-						stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
+						stringDatabase.getString("ConstraintViolated"), JOptionPane.ERROR_MESSAGE);
 
 			}
 			/*
@@ -154,9 +153,9 @@ import java.util.List;
 				probNet.getDecisionCriteria().get(selectedRow), null);
 
 		try {
-			probNet.doEdit(criteriaEdit);
-			//edits.add(criteriaEdit);
-		} catch (DoEditException | ConstraintViolationException e) {
+            criteriaEdit.doEdit(probNet);
+            //edits.add(criteriaEdit);
+		} catch (DoEditException.ConstraintViolated e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -189,8 +188,8 @@ import java.util.List;
 				probNet.getDecisionCriteria().get(selectedRow), null);
 
 		try {
-			probNet.doEdit(criteriaEdit);
-			//edits.add(criteriaEdit);
+            criteriaEdit.doEdit(probNet);
+            //edits.add(criteriaEdit);
 			setData(dataTable);
 			/*
 			 * swap = valuesTable.getValueAt(selectedRow, 1);
@@ -199,7 +198,7 @@ import java.util.List;
 			 * 1, 1);
 			 */
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-		} catch (DoEditException | ConstraintViolationException e) {
+		} catch (DoEditException.ConstraintViolated e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -225,8 +224,8 @@ import java.util.List;
 		DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.DOWN,
 				probNet.getDecisionCriteria().get(selectedRow), null);
 		try {
-			probNet.doEdit(criteriaEdit);
-			//edits.add(criteriaEdit);
+            criteriaEdit.doEdit(probNet);
+            //edits.add(criteriaEdit);
 			setData(dataTable);
 			/*
 			 * swap = valuesTable.getValueAt(selectedRow, 1);
@@ -235,7 +234,7 @@ import java.util.List;
 			 * 1, 1);
 			 */
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
-		} catch (DoEditException | ConstraintViolationException e) {
+		} catch (DoEditException.ConstraintViolated e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

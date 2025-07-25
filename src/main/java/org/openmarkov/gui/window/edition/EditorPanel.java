@@ -669,8 +669,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         Node node = getSelectedNode();
         try {
             AbsorbNodeEdit absorbNode = new AbsorbNodeEdit(probNet, node.getVariable());
-            probNet.doEdit(absorbNode);
-        } catch (DoEditException | ConstraintViolationException e) {
+            absorbNode.doEdit(probNet);
+        } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
             e.printStackTrace();
         }
         
@@ -696,8 +696,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         Node node = getSelectedNode();
         try {
             AbsorbParentsEdit absorbParents = new AbsorbParentsEdit(probNet, node);
-            probNet.doEdit(absorbParents);
-        } catch (DoEditException | ConstraintViolationException e) {
+            absorbParents.doEdit(probNet);
+        } catch (DoEditException e) {
             e.printStackTrace();
         }
         
@@ -885,9 +885,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             if (clipboardAssistant.isThereDataStored()) {
                 visualNetwork.setSelectedAllObjects(false);
                 SelectedContent clipboardContent = clipboardAssistant.paste();
-                PasteEdit pasteEdit = new PasteEdit(visualNetwork, clipboardContent);
+                PasteEdit pasteEdit = new PasteEdit(probNet, clipboardContent);
                 try {
-                    probNet.doEdit(pasteEdit);
+                    pasteEdit.doEdit(probNet);
                     // Set the nodes and links we just pasted as selected
                     SelectedContent pastedContent = pasteEdit.getPastedContent();
                     for (Node node : pastedContent.getNodes()) {
@@ -896,8 +896,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                     for (Link<Node> link : pastedContent.getLinks()) {
                         visualNetwork.setSelectedLink(link, true);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (DoEditException e) {
                     JOptionPane.showMessageDialog(Utilities.getOwner(this),
                                                   stringDatabase.getString("CannotPasteAllNodes.Text.Label"),
                                                   stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.WARNING_MESSAGE);
@@ -995,8 +994,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
                 RemovePolicyEdit removePolicyEdit = new RemovePolicyEdit(visualNode.getNode(), (VisualDecisionNode) visualNode);
                 try {
-                    visualNode.getNode().getProbNet().doEdit(removePolicyEdit);
-                } catch (DoEditException | ConstraintViolationException e) {
+                    ProbNet probNet1 = visualNode.getNode().getProbNet();
+                    removePolicyEdit.doEdit(probNet1);
+                } catch (DoEditException.ConstraintViolated e) {
                     throw new UnreacheableException(e);
                 }
             }
@@ -1189,8 +1189,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                     if (node.isPreResolutionFinding() && preResolutionEvidence.getFinding(variable) != null) {
                         RemoveFindingEdit removeFindingEdit = new RemoveFindingEdit(node.getNode(), preResolutionEvidence, (VisualChanceNode) node, variable);
                         try {
-                            node.getNode().getProbNet().doEdit(removeFindingEdit);
-                        } catch (ConstraintViolationException | DoEditException e) {
+                            ProbNet probNet1 = node.getNode().getProbNet();
+                            removeFindingEdit.doEdit(probNet1);
+                        } catch (DoEditException.ConstraintViolated e) {
                             throw new UnreacheableException(e);
                         }
                     }
@@ -1665,14 +1666,14 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                     visualNode.setPostResolutionFinding(true);
                 } else {
                     AddFindingEdit addFindingEdit = new AddFindingEdit(visualNode.getNode(), evidenceCase, previousFinding, finding, (VisualChanceNode) visualNode);
-                    visualNode.getNode().getProbNet().doEdit(addFindingEdit);
+                    addFindingEdit.doEdit(visualNode.getNode().getProbNet());
                 }
             } catch (IncompatibleEvidenceException exc) {
                 JOptionPane.showMessageDialog(Utilities.getOwner(this),
                                               "ERROR\n" + stringDatabase.getString("ExceptionIncompatibleEvidence.Text.Label") + "\n\n" + exc
                                                       .getMessage(), stringDatabase.getString("ExceptionIncompatibleEvidence.Title.Label"),
                                               JOptionPane.ERROR_MESSAGE);
-            } catch (Exception exc) {
+            } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException exc) {
                 JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR" + "\n\n" + exc.getMessage(),
                                               stringDatabase.getString("ExceptionGeneric.Title.Label"), JOptionPane.ERROR_MESSAGE);
             }
@@ -1803,14 +1804,16 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             JOptionPane.showMessageDialog(Utilities.getOwner(this), "Incompatible evidence", "Error",
                                           JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-        } catch (Exception e) {
+        } catch (UnsupportedOperationException e) {
+            JOptionPane.showMessageDialog(null,
+                                          "ERROR\n" + stringDatabase.getString("NoPropagationCanBeDoneMessage1.Text.Label") + "\n"
+                                                  + stringDatabase.getString("NoPropagationCanBeDoneMessage2.Text.Label") + "\n\n" + probNet
+                                                  .getNetworkType(), stringDatabase.getString("NoPropagationCanBeDoneMessage.Title.Label"),
+                                          JOptionPane.ERROR_MESSAGE);
+        } catch (NonProjectablePotentialException | NotEvaluableNetworkException e) {
             LocalizedException localizedException = new LocalizedException(e);
             localizedException.showException();
             LogManager.getLogger().debug(e.getLocalizedMessage());
-
-//			JOptionPane
-//					.showMessageDialog(Utilities.getOwner(this), "Error during inference: " + e.getMessage(), "Error",
-//							JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
         evidenceCasesCompilationState.set(caseNumber, propagationSucceded);
@@ -2216,11 +2219,11 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         RemoveSelectedEdit cutEdit = new RemoveSelectedEdit(visualNetwork);
         visualNetwork.setSelectedAllObjects(false);
         try {
-            probNet.doEdit(cutEdit);
+            cutEdit.doEdit(probNet);
             propagationActive = isAutomaticPropagation();
             networkChanged = true;
             repaint();
-        } catch (Exception e) {
+        } catch (DoEditException e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
                                           stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
         }
@@ -2290,8 +2293,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 Node node2 = link.getNode2();
                 InvertLinkAndUpdatePotentialsEdit invertLink = new InvertLinkAndUpdatePotentialsEdit(probNet,
                                                                                                      node1.getVariable(), node2.getVariable());
-                probNet.doEdit(invertLink);
-            } catch (Exception e) {
+                invertLink.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
                 String message = e.getMessage();
                 if (message.equals("Child") || message.equals("Parent")) {
                     message = stringDatabase.getString("LinkNotReversible.Text." + message + ".Label");
@@ -2454,10 +2457,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                                                      selectedNode.getCoordinateY());
         AddNodeEdit addNodeEdit = new AddNodeEdit(probNet, newVariable, selectedNode.getNodeType(), position);
         try {
-            probNet.doEdit(addNodeEdit);
-        } catch (Exception e1) {
-            System.err.println(e1.toString());
-            e1.printStackTrace();
+            addNodeEdit.doEdit(probNet);
+        } catch (DoEditException.ConstraintViolated e1) {
             JOptionPane.showMessageDialog(this, e1.toString(), "Error creating node", JOptionPane.ERROR_MESSAGE);
         }
         adjustPanelDimension();

@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
@@ -49,9 +48,9 @@ import java.util.List;
 				NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.RENAME, newName,
 						agentName, dataTable);
 				try {
-					probNet.doEdit(networkAgentEdit);
-					edits.add(networkAgentEdit);
-				} catch (DoEditException | ConstraintViolationException e) {
+                    networkAgentEdit.doEdit(probNet);
+                    edits.add(networkAgentEdit);
+				} catch (DoEditException.ConstraintViolated e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -74,9 +73,9 @@ import java.util.List;
 			NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.ADD, "", option, null);
 			//doEdit
 			try {
-				probNet.doEdit(networkAgentEdit);
-				edits.add(networkAgentEdit);
-			} catch (DoEditException | ConstraintViolationException e) {
+                networkAgentEdit.doEdit(probNet);
+                edits.add(networkAgentEdit);
+			} catch (DoEditException.ConstraintViolated e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -106,9 +105,9 @@ import java.util.List;
 		String agentName = (String) valuesTable.getValueAt(selectedRow, 1);
 		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.REMOVE, "", agentName, null);
 		try {
-			probNet.doEdit(networkAgentEdit);
-			edits.add(networkAgentEdit);
-		} catch (DoEditException | ConstraintViolationException e) {
+            networkAgentEdit.doEdit(probNet);
+            edits.add(networkAgentEdit);
+		} catch (DoEditException.ConstraintViolated e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -135,15 +134,15 @@ import java.util.List;
 
 		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.UP, "", "", dataTable);
 		try {
-			probNet.doEdit(networkAgentEdit);
-			edits.add(networkAgentEdit);
+            networkAgentEdit.doEdit(probNet);
+            edits.add(networkAgentEdit);
 			setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
 			valuesTable.setValueAt(
 				valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
 			valuesTable.setValueAt(swap, selectedRow - 1, 1);*/
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-		} catch (DoEditException | ConstraintViolationException e) {
+		} catch (DoEditException.ConstraintViolated e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -163,15 +162,15 @@ import java.util.List;
 
 		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.DOWN, "", "", dataTable);
 		try {
-			probNet.doEdit(networkAgentEdit);
-			edits.add(networkAgentEdit);
+            networkAgentEdit.doEdit(probNet);
+            edits.add(networkAgentEdit);
 			setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
 			valuesTable.setValueAt(
 				valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
 			valuesTable.setValueAt(swap, selectedRow + 1, 1);*/
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
-		} catch (DoEditException | ConstraintViolationException e) {
+		} catch (DoEditException.ConstraintViolated e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

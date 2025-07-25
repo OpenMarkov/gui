@@ -55,7 +55,7 @@ public class MoveNodeEditTest {
 	 *
 	 * @throws Exception if an error occurrs.
 	 */
-	@BeforeEach public void setUp() throws org.openmarkov.core.exception.ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
+	@BeforeEach public void setUp() throws org.openmarkov.core.exception.DoEditException.ConstraintViolated {
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");
@@ -82,9 +82,9 @@ public class MoveNodeEditTest {
 
 		probNet.getPNESupport().setWithUndo(true);
 		MoveNodeEdit moveNodeEdit = new MoveNodeEdit(movedNodes);
-
-		probNet.doEdit(moveNodeEdit);
-	}
+        
+        moveNodeEdit.doEdit(probNet);
+    }
 
 	/**
 	 * This method undoes and redoes several times.

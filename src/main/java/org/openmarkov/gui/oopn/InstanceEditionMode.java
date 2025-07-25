@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.oopn;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.core.oopn.action.AddInstanceEdit;
@@ -43,16 +44,15 @@ public class InstanceEditionMode extends EditionMode {
                     String instanceName = JOptionPane.showInputDialog(null, "Instance Name:");
                     
                     if (instanceName != null) {
-                        AddInstanceEdit addInstanceEdit = new AddInstanceEdit((OOPNet) probNet, classNet, instanceName,
-                                                                              position);
                         try {
-                            probNet.doEdit(addInstanceEdit);
-                        } catch (Exception e1) {
-                            // TODO Localize
-                            JOptionPane.showMessageDialog(null, "Error while generating instance node.\n"
-                                                                  + "Look in the message window for more details", "Error",
+                            AddInstanceEdit addInstanceEdit =
+                                    new AddInstanceEdit((OOPNet) probNet, classNet, instanceName,
+                                                                                  position);
+                            addInstanceEdit.doEdit(probNet);
+                        } catch (DoEditException e1) {
+                            JOptionPane.showMessageDialog(null,
+                                                          "Error while generating instance node.\nLook in the message window for more details", "Error",
                                                           JOptionPane.ERROR_MESSAGE);
-                            e1.printStackTrace();
                         }
                         editorPanel.adjustPanelDimension();
                         editorPanel.repaint();

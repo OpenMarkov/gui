@@ -308,8 +308,8 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 				getCommentHTMLScrollPaneNetworkDefinition().getCommentText();
 		NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit(probNet, comment, getShowComment());
 		try {
-			probNet.doEdit(networkCommentEdit);
-		} catch (ConstraintViolationException | DoEditException e) {
+            networkCommentEdit.doEdit(probNet);
+        } catch (DoEditException.ConstraintViolated e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 					StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -336,16 +336,10 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 				if (probNet.getNetworkType().toString().compareTo(selectedNetworkType.toString()) != 0) {
 					ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit(probNet, selectedNetworkType);
 					try {
-						probNet.doEdit(changeNetworkType);
-						parent.update(probNet);
+                        changeNetworkType.doEdit(probNet);
+                        parent.update(probNet);
 						//parent.getNetworkAdvancedPanel().update(probNet); SUSTITUIDA POR 342
-					} catch (ConstraintViolationException e) {
-						e.printStackTrace();
-						JOptionPane
-								.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-										StringDatabase.getUniqueInstance().getString(e.getMessage()),
-										JOptionPane.ERROR_MESSAGE);
-					} catch (DoEditException e) {
+					} catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
 						// TODO maintain comboBox with the current probNet
 						// TODO temporal change in exception management
 						e.printStackTrace();

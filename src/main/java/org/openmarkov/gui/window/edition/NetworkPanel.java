@@ -11,7 +11,6 @@ import org.openmarkov.core.action.CloseParenthesisEdit;
 import org.openmarkov.core.action.OpenParenthesisEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance.ParameterArity;

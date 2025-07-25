@@ -8,6 +8,7 @@
 package org.openmarkov.gui.window.edition.mode;
 
 import org.openmarkov.core.action.AddNodeEdit;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.Node;
@@ -64,12 +65,11 @@ public abstract class NodeEditionMode extends EditionMode {
 					if (nodeType == NodeType.UTILITY && decisionCriteria != null) {
 						variable.setDecisionCriterion(decisionCriteria.get(0));
 					}
-					AddNodeEdit addNodeEdit = new AddNodeEdit(probNet, variable, nodeType, position);
+					
 					try {
-						probNet.doEdit(addNodeEdit);
-					} catch (Exception e1) {
-						System.err.println(e1.toString());
-						e1.printStackTrace();
+						AddNodeEdit addNodeEdit = new AddNodeEdit(probNet, variable, nodeType, position);
+						addNodeEdit.doEdit(probNet);
+					} catch (DoEditException.ConstraintViolated e1) {
 						JOptionPane.showMessageDialog(this.editorPanel, e1.toString(), "Error creating node",
 								JOptionPane.ERROR_MESSAGE);
 					}

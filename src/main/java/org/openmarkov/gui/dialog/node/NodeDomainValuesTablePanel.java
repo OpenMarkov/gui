@@ -12,16 +12,8 @@ import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.NodeReplaceStatesEdit;
 import org.openmarkov.core.action.PrecisionEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.DefaultStates;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.TemporalNetOperations;
-import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.gui.component.DiscretizeTablePanel;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
@@ -885,7 +877,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 }
                 try {
                     variableTypeEdit = new VariableTypeEdit(node, variableType);
-                    node.getProbNet().doEdit(variableTypeEdit);
+                    ProbNet probNet1 = node.getProbNet();
+                    variableTypeEdit.doEdit(probNet1);
                     // @ 2014/11/18. Issue 145.
                     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
                     // Propagation of the domain in related variables in temporal models
@@ -893,7 +886,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                         if (nodeRelatedNodes.size() > 0) {
                             for (Node relatedNode : nodeRelatedNodes) {
                                 variableTypeEdit = new VariableTypeEdit(relatedNode, variableType);
-                                relatedNode.getProbNet().doEdit(variableTypeEdit);
+                                ProbNet probNet = relatedNode.getProbNet();
+                                variableTypeEdit.doEdit(probNet);
                             }
                         }
                     }
@@ -901,9 +895,9 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     this.removeAll();
                     initialize();
                     setFieldsFromProperties(node);
-                } catch (ConstraintViolationException | DoEditException e1) {
+                } catch (DoEditException.ConstraintViolated e1) {
                     JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-                                                  stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
+                                                  stringDatabase.getString("ConstraintViolated"), JOptionPane.ERROR_MESSAGE);
                     comboBox.setSelectedIndex(optionDeselected);
                     comboBox.requestFocus();
                 }
@@ -920,7 +914,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 }
                 NodeReplaceStatesEdit nodeReplaceStatesEdit = new NodeReplaceStatesEdit(node, newStates);
                 try {
-                    node.getProbNet().doEdit(nodeReplaceStatesEdit);
+                    ProbNet probNet1 = node.getProbNet();
+                    nodeReplaceStatesEdit.doEdit(probNet1);
                     // @ 2014/11/18. Issue 145.
                     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
                     // Propagation of the domain in related variables in temporal models
@@ -928,7 +923,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                         if (nodeRelatedNodes.size() > 0) {
                             for (Node relatedNode : nodeRelatedNodes) {
                                 nodeReplaceStatesEdit = new NodeReplaceStatesEdit(relatedNode, newStates);
-                                relatedNode.getProbNet().doEdit(nodeReplaceStatesEdit);
+                                ProbNet probNet = relatedNode.getProbNet();
+                                nodeReplaceStatesEdit.doEdit(probNet);
                             }
                         }
                     }
@@ -936,7 +932,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     this.removeAll();
                     initialize();
                     setFieldsFromProperties(node);
-                } catch (ConstraintViolationException | DoEditException e) {
+                } catch (DoEditException.ConstraintViolated e) {
                     comboBox.setSelectedIndex(optionDeselected);
                     comboBox.requestFocus();
                     e.printStackTrace();
@@ -950,7 +946,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 if (node.getVariable().getPrecision() != Double.parseDouble(itemSelected)) {
                     PrecisionEdit precisionEdit = new PrecisionEdit(node, Double.parseDouble(itemSelected));
                     try {
-                        node.getProbNet().doEdit(precisionEdit);
+                        ProbNet probNet1 = node.getProbNet();
+                        precisionEdit.doEdit(probNet1);
                         // @ 2014/11/18. Issue 145.
                         // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
                         // Propagation of the domain in related variables in temporal models
@@ -958,12 +955,13 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             if (nodeRelatedNodes.size() > 0) {
                                 for (Node relatedNode : nodeRelatedNodes) {
                                     precisionEdit = new PrecisionEdit(relatedNode, Double.parseDouble(itemSelected));
-                                    relatedNode.getProbNet().doEdit(precisionEdit);
+                                    ProbNet probNet = relatedNode.getProbNet();
+                                    precisionEdit.doEdit(probNet);
                                 }
                             }
                         }
                         // @@@
-                    } catch (ConstraintViolationException | DoEditException e1) {
+                    } catch (DoEditException.ConstraintViolated e1) {
                         e1.printStackTrace();
                         JOptionPane.showMessageDialog(null, stringDatabase.getString(e1.getMessage()),
                                                       stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -1023,7 +1021,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node,
                                                                                               newPartitionedInterval);
                 try {
-                    node.getProbNet().doEdit(partitionedIntervalEdit);
+                    ProbNet probNet1 = node.getProbNet();
+                    partitionedIntervalEdit.doEdit(probNet1);
                     // @ 2014/11/18. Issue 145.
                     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
                     // Propagation of the domain in related variables in temporal models
@@ -1032,13 +1031,14 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             for (Node relatedNode : nodeRelatedNodes) {
                                 partitionedIntervalEdit = new PartitionedIntervalEdit(relatedNode,
                                                                                       newPartitionedInterval);
-                                relatedNode.getProbNet().doEdit(partitionedIntervalEdit);
+                                ProbNet probNet = relatedNode.getProbNet();
+                                partitionedIntervalEdit.doEdit(probNet);
                             }
                         }
                         
                     }
                     // @@@
-                } catch (DoEditException | ConstraintViolationException e) {
+                } catch (DoEditException.ConstraintViolated e) {
                     e.printStackTrace();
                 }
                 PartitionedInterval newPartitionInterval = node.getVariable().getPartitionedInterval();
@@ -1087,7 +1087,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             }
             NodeReplaceStatesEdit nodeReplaceStatesEdit = new NodeReplaceStatesEdit(node, newStates);
             try {
-                node.getProbNet().doEdit(nodeReplaceStatesEdit);
+                ProbNet probNet1 = node.getProbNet();
+                nodeReplaceStatesEdit.doEdit(probNet1);
                 // @ 2014/11/18. Issue 145.
                 // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
                 // Propagation of the domain in related variables in temporal models
@@ -1095,7 +1096,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     if (nodeRelatedNodes.size() > 0) {
                         for (Node relatedNode : nodeRelatedNodes) {
                             nodeReplaceStatesEdit = new NodeReplaceStatesEdit(relatedNode, newStates);
-                            relatedNode.getProbNet().doEdit(nodeReplaceStatesEdit);
+                            ProbNet probNet = relatedNode.getProbNet();
+                            nodeReplaceStatesEdit.doEdit(probNet);
                         }
                     }
                 }
@@ -1103,7 +1105,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 this.removeAll();
                 initialize();
                 setFieldsFromProperties(node);
-            } catch (ConstraintViolationException | DoEditException e) {
+            } catch (DoEditException.ConstraintViolated e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
                                               stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

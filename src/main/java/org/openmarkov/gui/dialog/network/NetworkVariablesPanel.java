@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.action.NetworkDefaultStatesEdit;
 import org.openmarkov.core.action.VariableTypeConstraintEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.ProbNet;
@@ -227,8 +226,8 @@ public class NetworkVariablesPanel extends JPanel {
 		}
 		if (variableTypeCE != null) {
 			try {
-				probNet.doEdit(variableTypeCE);
-			} catch (ConstraintViolationException | DoEditException e) {
+                variableTypeCE.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -244,8 +243,8 @@ public class NetworkVariablesPanel extends JPanel {
 			NetworkDefaultStatesEdit networkDefaultStatesEdit = new NetworkDefaultStatesEdit(probNet,
 					getDefaultStates());
 			try {
-				probNet.doEdit(networkDefaultStatesEdit);
-			} catch (ConstraintViolationException | DoEditException e) {
+                networkDefaultStatesEdit.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

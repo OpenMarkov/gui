@@ -7,11 +7,12 @@
 
 package org.openmarkov.gui.action;
 
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -117,14 +118,14 @@ import java.util.List;
                                    Object[][] notEditablePositions) {
         super(node.getProbNet());
         this.node = node;
-        Potential potential = node.getPotentials().get(0);
+        Potential potential = null;
+        potential = node.getPotentials().get(0);
         this.setExactDistrPotential(potential instanceof ExactDistrPotential);
         if (getExactDistrPotential()) {
             this.oldExactDistrPotential = (ExactDistrPotential) (potential);
             this.oldTablePotential = ((ExactDistrPotential) potential).getTablePotential();
-        } else {
+        } else
             this.oldTablePotential = (TablePotential) potential;
-        }
         this.row = row;
         this.col = col;
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
@@ -161,7 +162,7 @@ import java.util.List;
      * In case the potential is ExactDistrPotential...
      * Carmen Yago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
      */
-    @Override public void doEdit() throws DoEditException {
+    @Override public void doEdit() throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
         PotentialChangeEdit changePotentialEdit = null;
         if (!getExactDistrPotential()) {
             if (priorityList.isEmpty()) {
@@ -225,12 +226,14 @@ import java.util.List;
             changePotentialEdit = new PotentialChangeEdit(probNet, oldExactDistrPotential, exactDistrPotential);
         }
         
-        try {
-            probNet.doEdit(changePotentialEdit);
-        } catch (ConstraintViolationException e) {
-            e.printStackTrace();
-            throw new DoEditException(e.getToken());
-        }
+        changePotentialEdit.doEdit(probNet);
+    }
+    
+    @Override
+    public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
     }
     
     /**

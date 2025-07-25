@@ -6,6 +6,7 @@
  */
 package org.openmarkov.gui.window.edition.mode;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.action.MoveNodeEdit;
 import org.openmarkov.gui.graphic.VisualElement;
@@ -61,10 +62,9 @@ import java.util.List;
 
 				if (movedNodes.size() > 0) {
 					MoveNodeEdit moveNodeEdit = new MoveNodeEdit(movedNodes);
-
 					try {
-						probNet.getPNESupport().doEdit(moveNodeEdit);
-					} catch (Exception e1) {
+						moveNodeEdit.doEdit(probNet);
+					} catch (DoEditException.ConstraintViolated e1) {
 						e1.printStackTrace();
 						JOptionPane.showMessageDialog(editorPanel, e1.getMessage(), "Error moving nodes",
 								JOptionPane.ERROR_MESSAGE);
