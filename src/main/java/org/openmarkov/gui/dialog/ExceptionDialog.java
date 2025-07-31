@@ -2,15 +2,13 @@ package org.openmarkov.gui.dialog;
 
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.core.exception.OpenMarkovException2;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.core.logging.OpenMarkovLogger;
 
 import javax.swing.*;
+import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.MissingFormatArgumentException;
 import java.util.stream.Collectors;
 
 /**
@@ -23,26 +21,50 @@ public class ExceptionDialog {
     /**
      * Gets the title and message of an exception and then shows them with a dialog.
      *
-     * @param exception the exception to show.
+     * @param throwable the exception to show.
      */
-    public static void show(Exception exception) {
-        ExceptionDialog.show(exception, null);
+    public static void show(Throwable throwable) {
+        ExceptionDialog.show(null, throwable, null);
     }
     
     /**
      * Gets the title and message of an exception and then shows them with a dialog.
      *
-     * @param exception the exception to show.
-     * @param frame the parent component from which the dialog should pop.
+     * @param throwable the exception to show.
      */
-    public static void show(Exception exception, @Nullable java.awt.Component frame) {
-        TitleAndMessage titleAndMessage = getTitleAndMessage(exception);
+    public static void show(Throwable throwable, @Nullable java.awt.Component frame) {
+        ExceptionDialog.show(null, throwable, frame);
+    }
+    
+    /**
+     * Gets the title and message of an exception and then shows them with a dialog.
+     *
+     * @param throwable the exception to show.
+     */
+    public static void show(@Nullable String messagePrexif, Throwable throwable) {
+        ExceptionDialog.show(messagePrexif, throwable, null);
+    }
+    
+    /**
+     * Gets the title and message of an exception and then shows them with a dialog.
+     *
+     * @param throwable the exception to show.
+     * @param frame     the parent component from which the dialog should pop.
+     */
+    public static void show(@Nullable String messagePrexif, Throwable throwable, @Nullable Component frame) {
+        TitleAndMessage titleAndMessage = getTitleAndMessage(throwable);
         String title = titleAndMessage.title;
         String message = titleAndMessage.message;
-        if(title != null) {
+        if (messagePrexif != null) {
+            if (!messagePrexif.endsWith(" ")) {
+                messagePrexif += " ";
+            }
+            message = messagePrexif + message;
+        }
+        if (title != null) {
             title = title.replace("\\n", "\n");
         }
-        if(message != null) {
+        if (message != null) {
             message = message.replace("\\n", "\n");
         }
         JOptionPane.showMessageDialog(frame, message, title, JOptionPane.ERROR_MESSAGE);
@@ -51,11 +73,8 @@ public class ExceptionDialog {
     /**
      * Gets a title and a message for an {@link Exception}. This is different for different exception classes:
      * <ul>
-     *   <li>If the class extends {@link OpenMarkovException2}, the title and message will come from
-     *   {@code OpenMarkovException2#getExceptionTitle()} and {@code OpenMarkovException2#getExceptionMessage()}.</li>
-     *   <li>If the class extends {@link OpenMarkovException}, the title and message will come from calling
-     *   {@link StringDatabase#getString(String)} with {@link OpenMarkovException#getToken()} + {@code ".title"} and
-     *   {@code ".message"}   </li>
+     *   <li>If the class extends {@link OpenMarkovException}, the title and message will come from
+     *   {@code OpenMarkovException#getExceptionTitle()} and {@code OpenMarkovException#getExceptionMessage()}.</li>
      *   <li>If the exception is in a bundle file, it will take the title and message from the
      *   {@link StringDatabase#getUniqueInstance()}</li>
      *   <li>In any other case, the title is the localization of the key {@code "UnlocalizedJavaException.title"} and the
@@ -64,35 +83,24 @@ public class ExceptionDialog {
      *   </li>
      * </ul>
      *
-     * @param exception the exception to extract a title and message to represent it.
+     * @param throwable the exception to extract a title and message to represent it.
      * @return a title and a message representing the exception.
      */
-    private static TitleAndMessage getTitleAndMessage(Exception exception) {
-        if (exception instanceof OpenMarkovException2 openMarkovException2) {
+    private static TitleAndMessage getTitleAndMessage(Throwable throwable) {
+        if (throwable instanceof OpenMarkovException openMarkovException) {
             try {
-                var getExceptionTitle = OpenMarkovException2.class.getDeclaredMethod("getExceptionTitle");
+                var getExceptionTitle = OpenMarkovException.class.getDeclaredMethod("getExceptionTitle");
                 getExceptionTitle.setAccessible(true);
-                String title = (String) getExceptionTitle.invoke(openMarkovException2);
-                var getExceptionMessage = OpenMarkovException2.class.getDeclaredMethod("getExceptionMessage");
+                String title = (String) getExceptionTitle.invoke(openMarkovException);
+                var getExceptionMessage = OpenMarkovException.class.getDeclaredMethod("getExceptionMessage");
                 getExceptionMessage.setAccessible(true);
-                String message = (String) getExceptionMessage.invoke(openMarkovException2);
+                String message = (String) getExceptionMessage.invoke(openMarkovException);
                 return new TitleAndMessage(title, message);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
                 throw new UnreacheableException(ex);
             }
         }
-        if (exception instanceof OpenMarkovException openMarkovException) {
-            String token = openMarkovException.getToken();
-            String title = StringDatabase.getUniqueInstance().getString(token + ".title");
-            String message = StringDatabase.getUniqueInstance().getString(token + ".message");
-            try {
-                message = String.format(message, openMarkovException.getAttributes());
-            } catch (MissingFormatArgumentException e1) {
-                OpenMarkovLogger.LOGGER.warn("Invalid number of arguments in the formatter: " + message);
-            }
-            return new TitleAndMessage(title, message);
-        }
-        @Nullable Class<Exception> exceptionClass = (Class<Exception>) exception.getClass();
+        @Nullable Class<Exception> exceptionClass = (Class<Exception>) throwable.getClass();
         while (exceptionClass != null) {
             String exceptionClassName = exceptionClass.getName();
             if (exceptionClassName.contains(".")) {
@@ -115,17 +123,17 @@ public class ExceptionDialog {
             }
         }
         String title = StringDatabase.getUniqueInstance().getString("UnlocalizedJavaException.title");
-        String stackTrace = Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString)
+        String stackTrace = Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString)
                                   .filter(s -> !s.isBlank())
                                   .map(s -> "\tat " + s)
                                   .collect(Collectors.joining("\n"));
         String message = StringDatabase.getUniqueInstance()
-                                       .getString("UnlocalizedJavaException.message") + "\n" + exception + "\n" + stackTrace;
+                                       .getString("UnlocalizedJavaException.message") + "\n" + throwable + "\n" + stackTrace;
         return new TitleAndMessage(title, message);
     }
     
     /**
-     * Represents a title and a message of an {@link OpenMarkovException2}.
+     * Represents a title and a message of an {@link OpenMarkovException}.
      */
     private record TitleAndMessage(String title, String message) {
     }

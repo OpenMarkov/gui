@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassLocalizations>
+    <Localization class="org.openmarkov.gui.exception.CannotSavePreferenceException" value="Cannot save preference {key} with value {value}."/>
+    <Localization class="org.openmarkov.gui.exception.MissingPreferenceException" value="There is no preference by key {key}."/>
+    <Localization class="org.openmarkov.gui.exception.NoNetOpenedException" value="There is no network opened."/>
+</ClassLocalizations>

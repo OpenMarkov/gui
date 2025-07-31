@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.window.edition;
 
-import org.apache.logging.log4j.LogManager;
 import org.openmarkov.core.action.*;
 
 import org.openmarkov.core.exception.*;
@@ -23,6 +22,7 @@ import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.gui.action.PasteEdit;
 import org.openmarkov.gui.action.RemoveSelectedEdit;
+import org.openmarkov.gui.dialog.ExceptionDialog;
 import org.openmarkov.gui.dialog.PropagationOptionsDialog;
 import org.openmarkov.gui.dialog.inference.temporalevolution.TemporalEvolutionDialog;
 import org.openmarkov.gui.dialog.link.LinkRestrictionEditDialog;
@@ -33,7 +33,6 @@ import org.openmarkov.gui.dialog.node.CommonNodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.graphic.*;
-import org.openmarkov.core.localize.LocalizedException;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
@@ -1035,7 +1034,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                                                                                     false, true);
                 expectedUtilityDialog.setTitle("ExpectedUtilityDialog.Title.Label");
                 expectedUtilityDialog.requestValues();
-            } catch (IncompatibleEvidenceException | UnexpectedInferenceException | NotEvaluableNetworkException e) {
+            } catch (NonProjectablePotentialException | NotEvaluableNetworkException.NotApplicableNetwork |
+                     NotEvaluableNetworkException.UnsatisfiedContraints e) {
                 JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" + e.getMessage(), e.getMessage(),
                                               JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
@@ -1064,7 +1064,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             try {
                 OptimalPolicies veOptimalPolicy = new VEEvaluation(probNet);
                 optimalPolicy = veOptimalPolicy.getOptimalPolicy(visualNode.getNode().getVariable());
-            } catch (IncompatibleEvidenceException e) {
+            } catch (NonProjectablePotentialException e) {
                 JOptionPane.showMessageDialog(null,
                                               StringDatabase.getUniqueInstance()
                                                             .getString("LoadEvidence.Error.IncompatibleEvidence.Text"),
@@ -1072,13 +1072,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                                                             .getString("ExceptionGeneric.Title.Label"),
                                               JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
-            } catch (UnexpectedInferenceException e) {
-                JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString("GenericError.Text"),
-                                              StringDatabase.getUniqueInstance()
-                                                            .getString("ExceptionGeneric.Title.Label"),
-                                              JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace();
-            } catch (NotEvaluableNetworkException e) {
+            } catch (NotEvaluableNetworkException.NotApplicableNetwork | NotEvaluableNetworkException.UnsatisfiedContraints e) {
                 JOptionPane.showMessageDialog(null,
                                               StringDatabase.getUniqueInstance()
                                                             .getString("ExceptionNotEvaluableNetwork.Text.Label"),
@@ -1184,34 +1178,27 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         for (int i = 0; i < selectedNodes.size(); i++) {
             node = selectedNodes.get(i);
             Variable variable = node.getNode().getVariable();
-            try {
-                if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
-                    if (node.isPreResolutionFinding() && preResolutionEvidence.getFinding(variable) != null) {
-                        RemoveFindingEdit removeFindingEdit = new RemoveFindingEdit(node.getNode(), preResolutionEvidence, (VisualChanceNode) node, variable);
-                        try {
-                            ProbNet probNet1 = node.getNode().getProbNet();
-                            removeFindingEdit.doEdit(probNet1);
-                        } catch (DoEditException.ConstraintViolated e) {
-                            throw new UnreacheableException(e);
-                        }
-                    }
-                } else {
-                    if (node.isPreResolutionFinding()) {
-                        JOptionPane.showMessageDialog(Utilities.getOwner(this),
-                                                      "This node has a Pre-Resolution Finding that cannot be modified in Inference Mode.",
-                                                      stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-                        // TODO //...asaez...Internacionalizar la sentencia
-                    } else if (node.isPostResolutionFinding()
-                            && postResolutionEvidence.get(currentCase).getFinding(variable) != null) {
-                        postResolutionEvidence.get(currentCase).removeFinding(variable);
-                        node.setPostResolutionFinding(false);
+            if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
+                if (node.isPreResolutionFinding() && preResolutionEvidence.getFinding(variable) != null) {
+                    RemoveFindingEdit removeFindingEdit = new RemoveFindingEdit(node.getNode(), preResolutionEvidence, (VisualChanceNode) node, variable);
+                    try {
+                        ProbNet probNet1 = node.getNode().getProbNet();
+                        removeFindingEdit.doEdit(probNet1);
+                    } catch (DoEditException.ConstraintViolated e) {
+                        throw new UnreacheableException(e);
                     }
                 }
-            } catch (NoFindingException exc) {
-                JOptionPane.showMessageDialog(Utilities.getOwner(this),
-                                              "ERROR\n" + stringDatabase.getString("ExceptionNoFinding.Text.Label") + "\n\n" + exc
-                                                      .getMessage(), stringDatabase.getString("ExceptionNoFinding.Title.Label"),
-                                              JOptionPane.ERROR_MESSAGE);
+            } else {
+                if (node.isPreResolutionFinding()) {
+                    JOptionPane.showMessageDialog(Utilities.getOwner(this),
+                                                  "This node has a Pre-Resolution Finding that cannot be modified in Inference Mode.",
+                                                  stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+                    // TODO //...asaez...Internacionalizar la sentencia
+                } else if (node.isPostResolutionFinding()
+                        && postResolutionEvidence.get(currentCase).getFinding(variable) != null) {
+                    postResolutionEvidence.get(currentCase).removeFinding(variable);
+                    node.setPostResolutionFinding(false);
+                }
             }
         }
         if ((propagationActive) && (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
@@ -1549,14 +1536,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         }
         List<Finding> findings = postResolutionEvidence.get(currentCase).getFindings();
         for (int i = 0; i < findings.size(); i++) {
-            try {
-                postResolutionEvidence.get(currentCase).removeFinding(findings.get(i).getVariable());
-            } catch (NoFindingException exc) {
-                JOptionPane.showMessageDialog(Utilities.getOwner(this),
-                                              "ERROR\n" + stringDatabase.getString("ExceptionNoFinding.Text.Label") + "\n\n" + exc
-                                                      .getMessage(), stringDatabase.getString("ExceptionNoFinding.Title.Label"),
-                                              JOptionPane.ERROR_MESSAGE);
-            }
+            postResolutionEvidence.get(currentCase).removeFinding(findings.get(i).getVariable());
         }
         if (!doPropagation(postResolutionEvidence.get(currentCase), currentCase))
             setPropagationActive(false);
@@ -1576,27 +1556,20 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         for (int i = 0; i < postResolutionEvidence.size(); i++) {
             List<Finding> findings = postResolutionEvidence.get(i).getFindings();
             for (int j = 0; j < findings.size(); j++) {
-                try {
-                    if (node.getVariable() == (findings.get(j).getVariable())) {
-                        postResolutionEvidence.get(i).removeFinding(findings.get(j).getVariable());
-                        if (isAutomaticPropagation() && (inferenceAlgorithm != null)) {
-                            if (!doPropagation(postResolutionEvidence.get(i), i))
-                                setPropagationActive(false);
-                        }
-                        if (i == currentCase) {
-                            List<VisualNode> visualNodes = visualNetwork.getAllNodes();
-                            for (int k = 0; k < visualNodes.size(); k++) {
-                                if (visualNodes.get(k).getNode() == node) {
-                                    visualNodes.get(k).setPostResolutionFinding(false);// ...asaez....PENDIENTE........
-                                }
+                if (node.getVariable() == (findings.get(j).getVariable())) {
+                    postResolutionEvidence.get(i).removeFinding(findings.get(j).getVariable());
+                    if (isAutomaticPropagation() && (inferenceAlgorithm != null)) {
+                        if (!doPropagation(postResolutionEvidence.get(i), i))
+                            setPropagationActive(false);
+                    }
+                    if (i == currentCase) {
+                        List<VisualNode> visualNodes = visualNetwork.getAllNodes();
+                        for (int k = 0; k < visualNodes.size(); k++) {
+                            if (visualNodes.get(k).getNode() == node) {
+                                visualNodes.get(k).setPostResolutionFinding(false);// ...asaez....PENDIENTE........
                             }
                         }
                     }
-                } catch (NoFindingException exc) {
-                    JOptionPane.showMessageDialog(Utilities.getOwner(this),
-                                                  "ERROR\n" + stringDatabase.getString("ExceptionNoFinding.Text.Label") + "\n\n" + exc
-                                                          .getMessage(), stringDatabase.getString("ExceptionNoFinding.Title.Label"),
-                                                  JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -1652,11 +1625,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         Finding oldFinding = null;
         if (alreadyHasFinding) {
             // There is already a finding. Remove it
-            try {
-                oldFinding = evidenceCase.removeFinding(variable);
-            } catch (NoFindingException exc) {
-                // 	Ignore. Not possible
-            }
+            oldFinding = evidenceCase.removeFinding(variable);
         }
         // Add finding (unless we were toggling evidence)
         if (!alreadyHasFinding || !toggle || oldFinding.getState() != finding.getState()) {
@@ -1668,7 +1637,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                     AddFindingEdit addFindingEdit = new AddFindingEdit(visualNode.getNode(), evidenceCase, previousFinding, finding, (VisualChanceNode) visualNode);
                     addFindingEdit.doEdit(visualNode.getNode().getProbNet());
                 }
-            } catch (IncompatibleEvidenceException exc) {
+            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther exc) {
                 JOptionPane.showMessageDialog(Utilities.getOwner(this),
                                               "ERROR\n" + stringDatabase.getString("ExceptionIncompatibleEvidence.Text.Label") + "\n\n" + exc
                                                       .getMessage(), stringDatabase.getString("ExceptionIncompatibleEvidence.Title.Label"),
@@ -1694,19 +1663,12 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             if (!doPropagation(evidenceCase, currentCase))
             // if propagation does not succeed, restore previous state
             {
+                evidenceCase.removeFinding(variable);
                 if (alreadyHasFinding) {
                     try {
-                        evidenceCase.removeFinding(variable);
-                    } catch (NoFindingException e) {/* Not possible */
-                    }
-                    try {
                         evidenceCase.addFinding(oldFinding);
-                    } /* Not possible */ catch (IncompatibleEvidenceException e) {/* Not possible */
-                    }
-                } else {
-                    try {
-                        evidenceCase.removeFinding(variable);
-                    } catch (NoFindingException e) { /* Not possible */
+                    } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
+                        throw new UnreacheableException(e);
                     }
                 }
                 if (isInferenceMode) {
@@ -1800,21 +1762,13 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             updateNodesFindingState(evidenceCase);
             paintInferenceResults(caseNumber, individualProbabilities, evidenceCase);
             propagationSucceded = true;
-        } catch (IncompatibleEvidenceException e) {
+        } catch (IncompatibleEvidenceException|CannotNormalizeNullVectorException e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(this), "Incompatible evidence", "Error",
                                           JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-        } catch (UnsupportedOperationException e) {
-            JOptionPane.showMessageDialog(null,
-                                          "ERROR\n" + stringDatabase.getString("NoPropagationCanBeDoneMessage1.Text.Label") + "\n"
-                                                  + stringDatabase.getString("NoPropagationCanBeDoneMessage2.Text.Label") + "\n\n" + probNet
-                                                  .getNetworkType(), stringDatabase.getString("NoPropagationCanBeDoneMessage.Title.Label"),
-                                          JOptionPane.ERROR_MESSAGE);
-        } catch (NonProjectablePotentialException | NotEvaluableNetworkException e) {
-            LocalizedException localizedException = new LocalizedException(e);
-            localizedException.showException();
-            LogManager.getLogger().debug(e.getLocalizedMessage());
-            e.printStackTrace();
+        } catch (@SuppressWarnings("OverlyBroadCatchBlock")
+        NonProjectablePotentialException | NotEvaluableNetworkException e) {
+            ExceptionDialog.show(e);
         }
         evidenceCasesCompilationState.set(caseNumber, propagationSucceded);
         repaint();
@@ -2018,7 +1972,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 newEvidenceCase.addFinding(currentFindings.get(i));
             }
             addNewEvidenceCase(newEvidenceCase);
-        } catch (IncompatibleEvidenceException exc) {
+        } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther exc) {
             JOptionPane.showMessageDialog(Utilities.getOwner(this),
                                           "ERROR\n" + stringDatabase.getString("ExceptionIncompatibleEvidence.Text.Label") + "\n\n" + exc
                                                   .getMessage(), stringDatabase.getString("ExceptionIncompatibleEvidence.Title.Label"),

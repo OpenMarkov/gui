@@ -8,8 +8,7 @@
 package org.openmarkov.gui.menutoolbar.plugin;
 
 import org.jetbrains.annotations.NotNull;
-import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.core.localize.LocalizedException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.gui.menutoolbar.toolbar.ToolBarBasic;
 import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.plugin.PluginSearch;
@@ -43,24 +42,12 @@ public class ToolbarManager {
         
         if (!activeToolbars.contains(name)) {
             if (toolbarClasses.containsKey(name)) {
-                LocalizedException localizedException = null;
                 try {
                     Constructor<?> constructor = toolbarClasses.get(name).getConstructor(ActionListener.class);
                     instance = (ToolBarBasic) constructor.newInstance(mainPanel.getMainPanelListenerAssistant());
-                } catch (NoSuchMethodException e) {
-                    localizedException = new LocalizedException(new OpenMarkovException("NoSuchMethod", name), null);
-                } catch (SecurityException e) {
-                    localizedException = new LocalizedException(new OpenMarkovException("Security"), null);
-                } catch (InstantiationException e) {
-                    localizedException = new LocalizedException(new OpenMarkovException("Instantiation"), null);
-                } catch (IllegalAccessException e) {
-                    localizedException = new LocalizedException(new OpenMarkovException("IllegalAccess"), null);
-                } catch (IllegalArgumentException e) {
-                    localizedException = new LocalizedException(new OpenMarkovException("IllegalArgument"), null);
-                } catch (InvocationTargetException e) {
-                    localizedException = new LocalizedException(new OpenMarkovException("InvocationTarget"), null);
-                } finally {
-                    if (localizedException != null) localizedException.showException();
+                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                         InvocationTargetException e) {
+                    throw new UnreacheableException(e);
                 }
             }
             mainPanel.getToolBarPanel().add(instance);

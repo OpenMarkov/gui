@@ -3,9 +3,7 @@ package org.openmarkov.gui.configuration;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.core.localize.LocalizedException;
-import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.dialog.ExceptionDialog;
 
 import java.io.*;
 import java.util.Base64;
@@ -145,9 +143,7 @@ public final class LocalPreference<T extends Serializable> {
             String newNodeValue = Base64.getEncoder().encodeToString(byteOut.toByteArray());
             this.node.put(this.key, newNodeValue);
         } catch (IOException e) {
-            // Copied from OpenMarkovPreferences#set method.
-            new LocalizedException(new OpenMarkovException(
-                    "Preferences", StringDatabase.getUniqueInstance().getString(e.getMessage())), null).showException();
+            ExceptionDialog.show(e);
         }
     }
     

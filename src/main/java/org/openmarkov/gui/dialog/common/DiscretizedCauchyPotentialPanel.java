@@ -1,5 +1,6 @@
 package org.openmarkov.gui.dialog.common;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;

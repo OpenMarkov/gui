@@ -9,8 +9,7 @@ package org.openmarkov.gui.configuration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.core.localize.LocalizedException;
+import org.openmarkov.gui.dialog.ExceptionDialog;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -88,10 +87,7 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 			oos.writeObject(openMarkovConfiguration);
 			oos.close();
 		} catch (IOException e) {
-			LocalizedException configurationException = new LocalizedException(
-					new OpenMarkovException("ConfigurationException", configurationFileName), null);
-			configurationException.showException();
-			logger.info("Can not write configuration file: " + configurationFileName);
+			ExceptionDialog.show(e);
 		}
 	}
 
@@ -149,20 +145,14 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 		} catch (FileNotFoundException f) {
 			generateDefaultConfiguration(configurationsCollection);
 		} catch (IOException e) {
-			LocalizedException configurationException = new LocalizedException(
-					new OpenMarkovException("ConfigurationException", configurationFileName), null);
-			configurationException.showException();
-			logger.info(e);
+			ExceptionDialog.show(e);
 		} catch (ClassNotFoundException e) {
 			logger.info(e);
 		} finally {
 			try {
 				ois.close();
 			} catch (IOException e) {
-				LocalizedException configurationException = new LocalizedException(
-						new OpenMarkovException("ConfigurationException", configurationFileName), null);
-				configurationException.showException();
-				logger.info(e);
+				ExceptionDialog.show(e);
 			}
 		}
 	}

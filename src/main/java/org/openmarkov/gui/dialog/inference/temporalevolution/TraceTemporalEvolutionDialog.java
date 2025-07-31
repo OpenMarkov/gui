@@ -230,7 +230,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         //10/11/2022 error message when there is more than one node without policy
         try {
             MIDTemporalEvolution.checkDecision(this.originalProbNet, this.originalProbNet.getNode(decisionSelected));
-        } catch (NodesMissingPoliciesException e) {
+        } catch (NotAllNodesHavePoliciesException e) {
             JOptionPane.showMessageDialog(owner, stringDatabase.getString("DecisionWithoutPolicyWarning.Text.Label"), stringDatabase.getString("WarningWindow.Title.Label"),
                                           JOptionPane.WARNING_MESSAGE);
             return;
@@ -285,7 +285,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 
             } catch (IndexOutOfBoundsException ignore) {
                 //When pressing "Cancel" in progressMonitor
-            } catch (NotEvaluableNetworkException | IncompatibleEvidenceException e) {
+            } catch (@SuppressWarnings("OverlyBroadCatchBlock")
+            NonProjectablePotentialException | NotEvaluableNetworkException |
+            IncompatibleEvidenceException | CannotNormalizeNullVectorException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), stringDatabase.getString("ExceptionGeneric.Title.Label"),
                                               JOptionPane.ERROR_MESSAGE);
@@ -362,7 +364,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 initialize(owner);
             } catch (IndexOutOfBoundsException ignore) {
                 //When pressing "Cancel" in progressMonitor
-            } catch (NotEvaluableNetworkException | IncompatibleEvidenceException e) {
+            } catch (@SuppressWarnings("OverlyBroadCatchBlock")
+            NonProjectablePotentialException | NotEvaluableNetworkException |
+            IncompatibleEvidenceException | CannotNormalizeNullVectorException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), stringDatabase.getString("ExceptionGeneric.Title.Label"),
                                               JOptionPane.ERROR_MESSAGE);
@@ -440,7 +444,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @param isDiscounted     if true, discounted series are shown
      * @param showUpfront      if true, upfront values are added to time 0
      */
-    private void showByCriterionSeries(boolean[] markedCheckBoxes, boolean isDiscounted, boolean showUpfront) throws UnexpectedInferenceException {
+    private void showByCriterionSeries(boolean[] markedCheckBoxes, boolean isDiscounted, boolean showUpfront) throws UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable {
         
         List<XYSeries> result = new ArrayList<>();
         //At least there is one element marked
@@ -495,7 +499,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * This method only will be launched at the first time. In later
      * modifications and filters the established series are used to get other combined data
      */
-    private void createByCriterionSeries() throws UnexpectedInferenceException {
+    private void createByCriterionSeries() throws UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable {
         //Only one decision variable; conditioningVariables.size() =1
         arrayXYSeriesUpfront = new ArrayList<>();
         arrayXYSeries = new ArrayList<>();
@@ -525,7 +529,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                         xySeriesUpfront.add(0, upfrontTablePotential.getValue(upfrontTablePotential.getVariables(), new int[]{decisionStateIndex}));
                         break;
                     default:
-                        throw new UnexpectedInferenceException(stringDatabase.getString("UnexpectedInferenceException.TemporalEvolution"));
+                        throw new UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable(upfrontTablePotential);
                 }
                 
                 for (int slice = 0; slice <= numSlices; slice++) {
@@ -546,7 +550,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                             valueDiscount = tablePotentialDiscount.getValue(tablePotential.getVariables(), new int[]{decisionStateIndex});
                             break;
                         default:
-                            throw new UnexpectedInferenceException(stringDatabase.getString("UnexpectedInferenceException.TemporalEvolution"));
+                            throw new UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable(tablePotential);
                     }//if it is greater than two -->exception
                     xySeries.add(slice, value);
                     xySeriesDiscount.add(slice, valueDiscount);
@@ -715,7 +719,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                             targetFilename.substring(0, targetFilename.length() - 5) + temporalVariable.getBaseName()
                                     + ".xlsx", table);
                     datasheet.put(temporalVariable, table);
-                } catch (NotEvaluableNetworkException | IncompatibleEvidenceException | IOException e) {
+                } catch (@SuppressWarnings("OverlyBroadCatchBlock")
+                NonProjectablePotentialException | NotEvaluableNetworkException |
+                IncompatibleEvidenceException | IOException | CannotNormalizeNullVectorException e) {
                     e.printStackTrace();
                 }
             }
@@ -942,7 +948,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             if (isByCriterion) {
                 try {
                     createByCriterionSeries();
-                } catch (UnexpectedInferenceException e) {
+                } catch (UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable e) {
                     throw new UnreacheableException(e);
                 }
                 chartPanelWithCheckBox.add(getChartsByCriterionPanel(displaySeries(true, true), markedCheckBoxes), BorderLayout.CENTER);
@@ -1228,8 +1234,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 tabbedPane.removeTabAt(1);
                 tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title.Label"), null, getTablePane(),
                                   null);
-                
-            } catch (UnexpectedInferenceException e) {
+            } catch (UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable e) {
                 throw new UnreacheableException(e);
             }
         } else

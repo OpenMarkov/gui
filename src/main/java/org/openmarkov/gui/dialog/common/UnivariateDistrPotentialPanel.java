@@ -268,7 +268,7 @@ import java.util.List;
 	 * @author carmenyago
 	 */
 	@Override protected EvidenceCase getConfiguration(int col)
-			throws IncompatibleEvidenceException {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
 
 		List<Variable> parents = variables.subList(1, potential.getNumVariables());
 
@@ -314,7 +314,7 @@ import java.util.List;
 		EvidenceCase evi = null;
 		try {
 			evi = getConfiguration(selectedColumn);
-		} catch (IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
 			e.printStackTrace();
 		}
 		return evi;

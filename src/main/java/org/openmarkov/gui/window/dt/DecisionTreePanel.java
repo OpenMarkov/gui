@@ -171,7 +171,7 @@ import java.awt.event.MouseListener;
 					newEvi.addFinding(new Finding(branchVariable, branch.getBranchState()));
 				}
 			}
-		} catch (IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
 			e.printStackTrace();
 		}
 		return newEvi;

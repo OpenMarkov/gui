@@ -15,8 +15,8 @@ import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.gui.dialog.CommentListener;
+import org.openmarkov.gui.dialog.ExceptionDialog;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.core.localize.LocalizedException;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -342,10 +342,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 					} catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
 						// TODO maintain comboBox with the current probNet
 						// TODO temporal change in exception management
-						e.printStackTrace();
-
-						LocalizedException localizedException = new LocalizedException(new OpenMarkovException(e.getToken()));
-						localizedException.showException();
+						ExceptionDialog.show(e);
 					}
 				}
 			}

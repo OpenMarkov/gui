@@ -22,7 +22,6 @@ import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
-import org.openmarkov.core.localize.LocalizedException;
 
 import java.util.List;
 

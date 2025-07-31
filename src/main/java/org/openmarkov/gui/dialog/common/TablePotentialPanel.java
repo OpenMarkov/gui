@@ -315,7 +315,7 @@ import java.util.List;
                 EvidenceCase configuration = getConfiguration(i);
                 // If the column configuration has uncertainty hasUncertainty= true
                 hasUncertainty = tablePotential.hasUncertainty(configuration);
-            } catch (IncompatibleEvidenceException e) {
+            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
                                               stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -627,7 +627,7 @@ import java.util.List;
      * @return An evidence case object
      * @throws IncompatibleEvidenceException
      */
-    protected EvidenceCase getConfiguration(int col) throws IncompatibleEvidenceException {
+    protected EvidenceCase getConfiguration(int col) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         
         List<Variable> parents = variables.subList(1, potential.getNumVariables());
         
@@ -670,7 +670,7 @@ import java.util.List;
         EvidenceCase evi = null;
         try {
             evi = getConfiguration(selectedColumn);
-        } catch (IncompatibleEvidenceException e) {
+        } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             e.printStackTrace();
         }
         return evi;
@@ -854,7 +854,7 @@ import java.util.List;
             int selectedColumn = valuesTable.columnAtPoint(evt.getPoint());
             try {
                 configuration = getConfiguration(selectedColumn);
-            } catch (IncompatibleEvidenceException e) {
+            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
                 e.printStackTrace();
             }
             boolean hasUncertainty = tablePotential.hasUncertainty(configuration);

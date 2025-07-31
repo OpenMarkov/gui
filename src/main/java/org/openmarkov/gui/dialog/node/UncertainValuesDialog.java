@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.node;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;

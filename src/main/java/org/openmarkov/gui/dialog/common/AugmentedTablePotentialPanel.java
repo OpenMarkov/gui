@@ -308,7 +308,7 @@ import java.util.List;
 		EvidenceCase evi = null;
 		try {
 			evi = getConfiguration(selectedColumn);
-		} catch (IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
 			e.printStackTrace();
 		}
 		return evi;

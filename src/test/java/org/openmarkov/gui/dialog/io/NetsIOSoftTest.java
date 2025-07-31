@@ -38,7 +38,7 @@ public class NetsIOSoftTest {
 
     @Disabled("Ignored because a deprecated network")
     @Test
-    public void testURLConnection() throws Exception {
+    public void testURLConnection() throws org.xml.sax.SAXException, java.io.IOException, javax.xml.parsers.ParserConfigurationException, org.openmarkov.core.exception.ParserException {
         for (String urlString : urlsToTest) {
             URL url = new URL(urlString);
             NetsIO.openNetworkURL(url);
