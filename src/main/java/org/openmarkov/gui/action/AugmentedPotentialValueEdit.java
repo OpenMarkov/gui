@@ -90,7 +90,11 @@ import java.util.List;
      * Logger
      */
     private Logger logger;
-    
+    /**
+     * Node
+     */
+    private Node node;
+
     // Constructor
     
     /**
@@ -112,6 +116,7 @@ import java.util.List;
         logger = LogManager.getLogger(AugmentedPotentialValueEdit.class.getName());
         boolean isAugmentedTablePotential = false;
         
+        this.node = node;
         oldPotential = node.getPotentials().get(0);
         if (oldPotential instanceof AugmentedTablePotential) {
             oldAugmentedTablePotential = (AugmentedTablePotential) oldPotential;
@@ -156,6 +161,8 @@ import java.util.List;
      */
     public AugmentedPotentialValueEdit(Node node, String distributionName) {
         super(node.getProbNet());
+
+        this.node = node;
         //The old univariateDistrPotential
         oldPotential = node.getPotentials().get(0);
         oldUnivariateDistrPotential = (UnivariateDistrPotential) oldPotential;
@@ -175,7 +182,7 @@ import java.util.List;
      *
      */
     @Override public void doEdit() throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
-        PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
+        PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(node, oldPotential, newPotential);
         changePotentialEdit.doEdit(this.probNet);
     }
     

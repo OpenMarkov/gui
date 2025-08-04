@@ -254,7 +254,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
 				SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Table");
 
-				setPotentialEdit.setPotential();
+				setPotentialEdit.setInitialChange();
 
             }
 			// Show small uniform potentials as 'Exact' potentials. Saves clicks
@@ -262,7 +262,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 
 				SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Uniform");
 
-				setPotentialEdit.setPotential();
+				setPotentialEdit.setInitialChange();
 
 
 			}
@@ -628,14 +628,21 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			node.getPotentials().get(0).setComment(comment);
 		}
 
-		String potentialType = (String) potentialTypeComboBox.getSelectedItem();
-		SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, potentialType,lastPotential,hasPolicy,(VisualDecisionNode)visualNode);
+		SetPotentialEdit setPotentialEdit = null;
+		if(node.getNodeType() == NodeType.DECISION){
+			setPotentialEdit = new SetPotentialEdit(node,lastPotential, node.getPotential(),hasPolicy,(VisualDecisionNode)visualNode);
+		}else{
+			setPotentialEdit = new SetPotentialEdit(node,lastPotential,node.getPotential());
+		}
+
+
 		try {
 			ProbNet probNet = node.getProbNet();
 			setPotentialEdit.doEdit(probNet);
 		} catch (DoEditException.ConstraintViolated e){
 			e.printStackTrace();
 		}
+		node.finalizePotentialEdition();
 
 		node.getProbNet().getPNESupport().closeParenthesis();
 		return true;

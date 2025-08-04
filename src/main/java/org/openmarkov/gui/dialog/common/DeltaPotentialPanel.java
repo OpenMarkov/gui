@@ -135,7 +135,7 @@ import java.awt.*;
 	@Override public boolean saveChanges() {
 		boolean result = super.saveChanges();
 		ProbNet probNet = node.getProbNet();
-		Potential oldPotential = node.getPotentials().get(0);
+		Potential oldPotential = node.getPreviousPotential();
 		Potential newPotential = null;
 		if (node.getVariable().getVariableType() != VariableType.FINITE_STATES) {
 			double numericValue = Double.parseDouble(valueSpinner.getValue().toString());
@@ -153,7 +153,7 @@ import java.awt.*;
 			newPotential = new DeltaPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(), state);
 		}
 		newPotential.setComment(oldPotential.getComment());
-		PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
+		PotentialChangeEdit edit = new PotentialChangeEdit(node, oldPotential, newPotential);
 		try {
 			edit.doEdit(probNet);
 		} catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e) {
