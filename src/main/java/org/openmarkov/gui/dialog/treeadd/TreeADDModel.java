@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
+import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
@@ -227,6 +229,6 @@ public class TreeADDModel implements TreeModel {
 	 * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath, java.lang.Object)
 	 */
 	@Override public void valueForPathChanged(TreePath path, Object newValue) {
-		throw new UnsupportedOperationException();
+		throw new UnrecoverableException(new NotSupportedOperationException());
 	}
 }

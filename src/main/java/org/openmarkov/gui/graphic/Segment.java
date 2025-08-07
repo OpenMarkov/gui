@@ -7,7 +7,11 @@
 
 package org.openmarkov.gui.graphic;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+import org.openmarkov.core.exception.UnrecoverableException;
+
 import java.awt.geom.Point2D;
+import java.security.InvalidParameterException;
 
 /**
  * This class represents a segment delimited by two points.
@@ -66,13 +70,12 @@ public class Segment {
 	 * @param newEndPoint   second edge of the segment.
 	 * @throws IllegalArgumentException if both points are equals.
 	 */
-	public Segment(Point2D.Double newStartPoint, Point2D.Double newEndPoint) throws IllegalArgumentException {
-
+	public Segment(Point2D.Double newStartPoint, Point2D.Double newEndPoint) {
 		startPoint = newStartPoint;
 		endPoint = newEndPoint;
 		if (newStartPoint.getX() == newEndPoint.getX()) {
 			if (newStartPoint.getY() == newEndPoint.getY()) {
-				throw new IllegalArgumentException();
+				throw new UnrecoverableException(new InvalidArgumentException(newStartPoint.getY(), "Y for both start and end points", "both Y coordinates should be different"));
 			}
 			segmentType = SEGMENT_VERTICAL;
 			m = 0;

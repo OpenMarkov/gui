@@ -141,20 +141,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 			}
 		}
 	}
-
-	/**
-	 * @param event
-	 * @throws ExpandVetoException
-	 */
-	public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
-		Object triedToExpand = event.getPath().getLastPathComponent();
-		if (!(triedToExpand instanceof TreeADDPotential) && !(triedToExpand instanceof TreeADDBranch)) {
-			// Exception used to stop and expand/collapse from happening.
-			throw new ExpandVetoException(event);
-		}
-	}
-
-	// When clicking on a tree only can change top variable. If the tree does
+    
+    // When clicking on a tree only can change top variable. If the tree does
 	// not have subtrees trees are only permitted to change buttom up order
 	protected void setContextualMenuTreeADD(MouseEvent e, TreeADDPotential treeADD) {
 		contextualMenu.removeAll();
@@ -1380,8 +1368,12 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		}
 
 		@Override public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
-			treeADDEditorPanel.treeWillCollapse(event);
-		}
+            Object triedToExpand = event.getPath().getLastPathComponent();
+            if (!(triedToExpand instanceof TreeADDPotential) && !(triedToExpand instanceof TreeADDBranch)) {
+                // Exception used to stop and expand/collapse from happening.
+                throw new ExpandVetoException(event);
+            }
+        }
 	}
 
 	/**

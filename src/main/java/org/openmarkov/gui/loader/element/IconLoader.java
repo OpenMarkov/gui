@@ -7,7 +7,9 @@
 
 package org.openmarkov.gui.loader.element;
 
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.exception.ResourceNotFoundException;
 
 import javax.swing.*;
 import java.net.URL;
@@ -206,12 +208,10 @@ public class IconLoader {
 	 * @return a reference to the icon resource.
 	 * @throws MissingResourceException if the resource doesn't exist.
 	 */
-	public ImageIcon load(String iconName) throws MissingResourceException {
+	public ImageIcon load(String iconName) {
 		URL icon = getClass().getClassLoader().getResource(RESOURCE_ICONS_PATH + iconName);
 		if (icon == null) {
-			throw new MissingResourceException(
-					StringDatabase.getUniqueInstance().getString("IconResourceNotExists.Text.Label") + " "
-							+ RESOURCE_ICONS_PATH + iconName, getClass().getName(), iconName);
+			throw new UnreacheableException(new ResourceNotFoundException(RESOURCE_ICONS_PATH+iconName));
 		}
 		return new ImageIcon(icon);
 	}

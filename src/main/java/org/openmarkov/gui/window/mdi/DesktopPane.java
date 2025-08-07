@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.window.mdi;
 
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -86,7 +87,7 @@ public class DesktopPane extends JDesktopPane {
 				try {
 					previousFrame.setSelected(true);
 				} catch (PropertyVetoException e) {
-					throw new UnsupportedOperationException(stringDatabase.getString("SelectionVetoed.Text.Label"));
+					throw new UnreacheableException(e);
 				}
 			}
 		}
@@ -116,8 +117,8 @@ public class DesktopPane extends JDesktopPane {
 		if (!frame.isIcon()) {
 			try {
 				frame.setIcon(true);
-			} catch (PropertyVetoException ex) {
-				throw new UnsupportedOperationException(stringDatabase.getString("IconificationVetoed.Text.Label"));
+			} catch (PropertyVetoException e) {
+                throw new UnreacheableException(e);
 			}
 		}
 	}
@@ -134,8 +135,8 @@ public class DesktopPane extends JDesktopPane {
 		if (frame.isIcon()) {
 			try {
 				frame.setIcon(false);
-			} catch (PropertyVetoException ex) {
-				throw new UnsupportedOperationException(stringDatabase.getString("RestorationVetoed.Text.Label"));
+			} catch (PropertyVetoException e) {
+				throw new UnreacheableException(e);
 			}
 		}
 	}
@@ -297,7 +298,7 @@ public class DesktopPane extends JDesktopPane {
 					try {
 						frames[(i + 1) % l].setSelected(true);
 					} catch (PropertyVetoException e) {
-						throw new UnsupportedOperationException(stringDatabase.getString("SelectionVetoed.Text.Label"));
+                        throw new UnreacheableException(e);
 					}
 					end = true;
 				}
@@ -342,7 +343,7 @@ public class DesktopPane extends JDesktopPane {
 			try {
 				previousFrame.setSelected(true);
 			} catch (PropertyVetoException e) {
-				throw new UnsupportedOperationException(stringDatabase.getString("SelectionVetoed.Text.Label"));
+				throw new UnreacheableException(e);
 			}
 		}
 	}
@@ -368,7 +369,7 @@ public class DesktopPane extends JDesktopPane {
 		try {
 			frame.setSelected(true);
 		} catch (PropertyVetoException e) {
-			throw new UnsupportedOperationException(stringDatabase.getString("SelectionVetoed.Text.Label"));
+            throw new UnreacheableException(e);
 		}
 	}
 

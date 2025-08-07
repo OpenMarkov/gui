@@ -3,4 +3,5 @@
     <Localization class="org.openmarkov.gui.exception.CannotSavePreferenceException" value="Cannot save preference {key} with value {value}."/>
     <Localization class="org.openmarkov.gui.exception.MissingPreferenceException" value="There is no preference by key {key}."/>
     <Localization class="org.openmarkov.gui.exception.NoNetOpenedException" value="There is no network opened."/>
+    <Localization class="org.openmarkov.gui.exception.ResourceNotFoundException" value="Could not find resource {resource}."/>
 </ClassLocalizations>

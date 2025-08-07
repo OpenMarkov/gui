@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.window.mdi;
 
+import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -100,8 +102,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 			frame.setSelected(true);
 			frame.setMaximum(maximized);
 		} catch (PropertyVetoException e) {
-			throw new UnsupportedOperationException(
-					StringDatabase.getUniqueInstance().getString("SelectionVetoed.Text.Label"));
+			throw new UnreacheableException(e);
 		}
 	}
 

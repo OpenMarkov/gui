@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.core.logging.OpenMarkovLogger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -67,6 +68,7 @@ public class ExceptionDialog {
         if (message != null) {
             message = message.replace("\\n", "\n");
         }
+        OpenMarkovLogger.LOGGER.error("", throwable);
         JOptionPane.showMessageDialog(frame, message, title, JOptionPane.ERROR_MESSAGE);
     }
     

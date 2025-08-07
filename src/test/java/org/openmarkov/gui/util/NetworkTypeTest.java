@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.openmarkov.core.model.network.NodeType;
 
 import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -27,8 +28,7 @@ public class NetworkTypeTest {
 	 * of network.
 	 */
 	@Test public final void testGetNodeTypes() {
-		HashSet<NodeType> nodeTypes;
-
+		Set<NodeType> nodeTypes;
 		nodeTypes = NetworkType.BAYESIAN_NET.getNodeTypes();
 		assertEquals(nodeTypes.size(), 1);
 		assertTrue(nodeTypes.contains(NodeType.CHANCE));

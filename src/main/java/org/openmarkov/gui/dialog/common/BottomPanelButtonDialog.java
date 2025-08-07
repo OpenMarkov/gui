@@ -94,13 +94,10 @@ public class BottomPanelButtonDialog extends DialogBase {
 	 * @return a new components panel.
 	 */
 	protected JPanel getComponentsPanel() {
-
 		if (componentsPanel == null) {
 			componentsPanel = new JPanel();
 		}
-
 		return componentsPanel;
-
 	}
 
 	/**

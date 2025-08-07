@@ -63,7 +63,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -994,7 +993,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
         
         fileName = fileName + stringDatabase.getString("CostEffectiveness.ExpandNetwork.FileName") + ".pgmx";
         
-        ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet, preResolutionEvidence, fileName);
+        ProbNet expandedNetwork;
+        try{
+            expandedNetwork = TemporalNetOperations.expandNetwork(probNet, preResolutionEvidence, fileName);
+        } catch (NotSupportedOperationException e) {
+            ExceptionDialog.show(e);
+            return;
+        }
         
         NetworkPanel networkPanel = createNewFrame(expandedNetwork);
         //If enabled "save" tries to create the .bak file and throws an exception
@@ -1171,7 +1176,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
                                           getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
                                           OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-            } catch (IOException e) {
+            } catch (IOException | ParsingSourceException | EmptyDatabaseException e) {
                 ExceptionDialog.show("Evidence could not be loaded: ", e);
             }
         }

@@ -1072,7 +1072,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                                                             .getString("ExceptionGeneric.Title.Label"),
                                               JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
-            } catch (NotEvaluableNetworkException.NotApplicableNetwork | NotEvaluableNetworkException.UnsatisfiedContraints e) {
+            } catch (NotEvaluableNetworkException.NotApplicableNetwork |
+                     NotEvaluableNetworkException.UnsatisfiedContraints e) {
                 JOptionPane.showMessageDialog(null,
                                               StringDatabase.getUniqueInstance()
                                                             .getString("ExceptionNotEvaluableNetwork.Text.Label"),
@@ -1689,23 +1690,12 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      *
      * @return the inference algorithm assigned to the panel.
      */
-    public InferenceAlgorithm getInferenceAlgorithm() {
-        try {
+    public InferenceAlgorithm getInferenceAlgorithm() throws NotSupportedOperationException, NotEvaluableNetworkException {
+        if (inferenceAlgorithm == null) {
+            inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(probNet);
             if (inferenceAlgorithm == null) {
-                inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(probNet);
-                if (inferenceAlgorithm == null) {
-                    throw new UnsupportedOperationException();
-                }
-                // TODO - Delete this definition
-                //	            inferenceAlgorithm.setHeuristicFactory(new HeuristicFactory() {
-                //					@Override
-                //					public EliminationHeuristic getHeuristic(ProbNet probNet, List<List<Variable>> variables) {
-                //						return new SimpleElimination(probNet, variables);
-                //					}
-                //				});
+                throw new NotSupportedOperationException("there is no associated inference algorithm for " + probNet.localize());
             }
-        } catch (NotEvaluableNetworkException e) {
-            JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage());
         }
         return inferenceAlgorithm;
     }
@@ -1762,7 +1752,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             updateNodesFindingState(evidenceCase);
             paintInferenceResults(caseNumber, individualProbabilities, evidenceCase);
             propagationSucceded = true;
-        } catch (IncompatibleEvidenceException|CannotNormalizeNullVectorException e) {
+        } catch (IncompatibleEvidenceException | CannotNormalizeNullVectorException e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(this), "Incompatible evidence", "Error",
                                           JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
