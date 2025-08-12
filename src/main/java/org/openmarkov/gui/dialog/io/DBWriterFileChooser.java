@@ -6,6 +6,9 @@
  */
 package org.openmarkov.gui.dialog.io;
 
+import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+
+import java.io.File;
 import java.util.HashMap;
 
 @SuppressWarnings("serial") public class DBWriterFileChooser extends DBFileChooser {
@@ -15,6 +18,12 @@ import java.util.HashMap;
 		for (String extension : writersInfo.keySet()) {
 			addChoosableFileFilter(new FileFilterAll(extension, writersInfo.get(extension)));
 		}
+        setFileFilter(OpenMarkovPreferences
+                .get(OpenMarkovPreferences.LAST_SAVED_DB_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+                        FileChooser.DEFAULT_FILE_FORMAT));
+        File currentDirectory = new File(OpenMarkovPreferences
+                .get(OpenMarkovPreferences.LAST_SAVED_DB_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+        setCurrentDirectory(currentDirectory);
 	}
 
 	public DBWriterFileChooser() {

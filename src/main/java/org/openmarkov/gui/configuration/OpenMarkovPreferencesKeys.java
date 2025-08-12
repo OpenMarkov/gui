@@ -30,7 +30,6 @@ public interface OpenMarkovPreferencesKeys {
 	String LAST_OPEN_FILE_4 = "last open file 4";
 	String LAST_OPEN_FILE_5 = "last open file 5";
 	String STRING_LANGUAGES_PATH = "languages directory path";
-	String LAST_OPEN_DB_DIRECTORY = "last open db directory";
 
 	// positions
     String X_OPENMARKOV_MAIN_FRAME = "x openmarkov main frame";
@@ -69,5 +68,10 @@ public interface OpenMarkovPreferencesKeys {
     String LAST_OPENED_FORMAT = "last opened format";
 	String LAST_SAVED_FORMAT = "last saved format";
 	String LAST_LOADED_EVIDENCE_FORMAT = "last loaded evidence format";
+
+    // databases
+    String LAST_OPEN_DB_DIRECTORY = "last open db directory";
+    String LAST_SAVED_DB_FORMAT = "last saved db format";
+    String LAST_SAVED_DB_DIRECTORY = "last open db directory";
 
 }

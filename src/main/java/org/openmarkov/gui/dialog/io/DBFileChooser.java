@@ -35,8 +35,10 @@ import java.io.File;
 	@Override public int showSaveDialog(Component parent) {
 		int result = super.showSaveDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DB_DIRECTORY, getSelectedFile().getAbsolutePath(),
-					OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_SAVED_DB_FORMAT, ((FileFilterAll) getFileFilter()).getFileDescription(),
+                    OpenMarkovPreferences.OPENMARKOV_FORMATS);
+            OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_SAVED_DB_DIRECTORY, ((FileFilterAll) getFileFilter()).getFileDescription(),
+                    OpenMarkovPreferences.OPENMARKOV_FORMATS);
 		}
 		return result;
 	}

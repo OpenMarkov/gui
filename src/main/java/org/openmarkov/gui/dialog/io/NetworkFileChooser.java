@@ -67,7 +67,7 @@ import java.util.List;
 			setFileFilter("OpenMarkov");
 		} else {
 			setFileFilter(OpenMarkovPreferences
-					.get(FileChooser.DEFAULT_FILE_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+					.get(OpenMarkovPreferences.LAST_SAVED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
 							FileChooser.DEFAULT_FILE_FORMAT));
 		}
 	}
@@ -113,7 +113,7 @@ import java.util.List;
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
 
-			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPENED_FORMAT,
+			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_SAVED_FORMAT,
 					((FileFilterAll) getFileFilter()).getFileDescription(), OpenMarkovPreferences.OPENMARKOV_FORMATS);
 
 
