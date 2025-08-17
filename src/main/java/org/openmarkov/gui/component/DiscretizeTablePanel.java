@@ -159,7 +159,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 	@Override protected void initialize() {
 		// define the border and layout for the panel
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+        final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 				groupLayout.createSequentialGroup().addContainerGap()
 						.addComponent(getValuesTableScrollPane(), GroupLayout.PREFERRED_SIZE, STATES_TABLE_WIDTH,
@@ -471,7 +471,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 		if (buttonPanel == null) {
 			buttonPanel = new JPanel();
 			buttonPanel.setName("DiscretizeTablePanel.buttonPanel");
-			final GroupLayout groupLayout = new GroupLayout((JComponent) buttonPanel);
+            final GroupLayout groupLayout = new GroupLayout(buttonPanel);
 			groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING).addGroup(
 					groupLayout.createSequentialGroup().addGroup(
 							groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)

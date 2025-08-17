@@ -39,7 +39,6 @@ public class ToolbarManager {
     
     public void addToolbar(String name) {
         ToolBarBasic instance = null;
-        
         if (!activeToolbars.contains(name)) {
             if (toolbarClasses.containsKey(name)) {
                 try {

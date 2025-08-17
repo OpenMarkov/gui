@@ -77,7 +77,7 @@ import java.awt.*;
 	 * @return true if the dialog box can be closed.
 	 */
 	@Override protected boolean doOkClickBeforeHide() {
-		if (((SplitIntervalPanel) getJPanelSplitInterval()).getLimit().getText() == null) {
+        if (getJPanelSplitInterval().getLimit().getText() == null) {
 
 			return false;
 		}

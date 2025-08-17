@@ -42,8 +42,9 @@ public class EditionModeManager {
         EditionMode instance = null;
         if (editionModeClasses.containsKey(editionMode)) {
             try {
-                Constructor<?> constructor = null;
-                constructor = editionModeClasses.get(editionMode).getConstructor(EditorPanel.class, ProbNet.class);
+                Constructor<?> constructor = editionModeClasses
+                        .get(editionMode)
+                        .getConstructor(EditorPanel.class, ProbNet.class);
                 instance = (EditionMode) constructor.newInstance(editorPanel, probNet);
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException |
                      IllegalArgumentException | InvocationTargetException e) {
@@ -66,7 +67,7 @@ public class EditionModeManager {
         return PluginSearch.init()
                            .annotatedWith(EditionState.class)
                            .childrenOf(EditionMode.class)
-                .stream();
+                           .stream();
     }
     
     public Cursor getCursor(String newEditionModeName) {

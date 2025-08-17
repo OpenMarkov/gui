@@ -348,7 +348,7 @@ import java.util.List;
     private Object[][] setCanonicalTable(Object[][] oldValues, Node node) {
         
         Object[][] values = oldValues;
-        ICIPotential iciPotential = (ICIPotential) getThisICIPotential(node.getPotentials());
+        ICIPotential iciPotential = getThisICIPotential(node.getPotentials());
         List<Variable> variables = iciPotential.getVariables();
         int lastRow = values.length - 1;
         int lastColumn = values[0].length - 1;
@@ -412,10 +412,10 @@ import java.util.List;
         
         iciValuesTable.setDefaultRenderer(Double.class,
                                           new ICIValuesTableCellRenderer(getFirstEditableRow(), editableColumns,
-                                                                         (ICIPotential) getThisICIPotential(node.getPotentials())));
+                                                                         getThisICIPotential(node.getPotentials())));
         iciValuesTable.setDefaultRenderer(String.class,
                                           new ICIValuesTableCellRenderer(getFirstEditableRow(), editableColumns,
-                                                                         (ICIPotential) getThisICIPotential(node.getPotentials())));
+                                                                         getThisICIPotential(node.getPotentials())));
         
     }
     

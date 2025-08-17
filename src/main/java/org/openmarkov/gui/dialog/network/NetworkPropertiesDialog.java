@@ -84,7 +84,6 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
         initialize();
         setName("NetworkPropertiesDialog");
         setLocationRelativeTo(owner);
-        throw new UnrecoverableException(new CannotNormalizeNullVectorException(Arrays.asList()));
     }
     
     /**

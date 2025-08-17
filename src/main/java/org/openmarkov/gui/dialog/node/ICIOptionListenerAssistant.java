@@ -104,7 +104,7 @@ public class ICIOptionListenerAssistant implements ItemListener {
 			ICIPotential iciPotential = (ICIPotential) iciNode.getPotentials().get(0);
 			TablePotential tablePotential;
 			try {
-				tablePotential = (TablePotential) iciPotential.getCPT();
+                tablePotential = iciPotential.getCPT();
 				ArrayList<Potential> potentials = new ArrayList<Potential>();
 				potentials.add(tablePotential);
 				iciNode.setPotentials(potentials);

@@ -86,7 +86,7 @@ public class NetworkVariablesPanel extends JPanel {
 	 * initialises the layout for this panel.
 	 */
 	private void initialize() {
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+        final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
 				groupLayout.createSequentialGroup().addGap(26).addGroup(
 						groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup()

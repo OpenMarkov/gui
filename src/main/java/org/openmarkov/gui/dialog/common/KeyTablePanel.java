@@ -142,8 +142,8 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 	protected void initialize() {
 
 		setBorder(new LineBorder(UIManager.getColor("Table.dropLineColor"), 1, false));
-
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+        
+        final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 				groupLayout.createSequentialGroup().addContainerGap()
 						.addComponent(getValuesTableScrollPane(), GroupLayout.PREFERRED_SIZE, 406,
@@ -211,7 +211,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 		if (buttonPanel == null) {
 			buttonPanel = new JPanel();
 			buttonPanel.setName("KeyTablePanel.buttonPanel");
-			final GroupLayout groupLayout = new GroupLayout((JComponent) buttonPanel);
+            final GroupLayout groupLayout = new GroupLayout(buttonPanel);
 			groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING).addGroup(
 					groupLayout.createSequentialGroup().addGroup(
 							groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)

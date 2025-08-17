@@ -82,9 +82,7 @@ public class MenuHandlersTable {
      * @return the menu item handler
      */
     public MenuItemHandler menuitemhandlerFind(JMenuItem mi) {
-        
-        Object oHandler = htMenuItemHandlers.get(mi);
-        return (MenuItemHandler) oHandler;
+        return htMenuItemHandlers.get(mi);
     }
     
     /**

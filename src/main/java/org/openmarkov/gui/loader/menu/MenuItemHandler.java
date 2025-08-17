@@ -12,6 +12,9 @@ package org.openmarkov.gui.loader.menu;
  * Interface
  */
 
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -22,6 +25,8 @@ import java.awt.event.ItemEvent;
  * @author jlgozalo
  * @version 1.0
  */
+
+@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({}))
 public interface MenuItemHandler {
 
 	/**

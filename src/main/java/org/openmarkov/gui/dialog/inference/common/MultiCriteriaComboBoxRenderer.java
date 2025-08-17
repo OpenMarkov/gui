@@ -50,7 +50,7 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
 				if (value.getClass().equals(JComboBox.class)) {
 					comboBox.setSelectedItem(((JComboBox<String>) value).getSelectedItem());
 				} else if (value.getClass().equals(String.class)) {
-					comboBox.setSelectedItem((String) value);
+                    comboBox.setSelectedItem(value);
 				}
 
 				return comboBox;
@@ -70,7 +70,7 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
 					String selectedItem = ((JComboBox<String>) value).getSelectedItem().toString();
 					comboBox.setSelectedItem(selectedItem);
 				} else if (value.getClass().equals(String.class)) {
-					comboBox.setSelectedItem((String) value);
+                    comboBox.setSelectedItem(value);
 				}
 
 				return comboBox;

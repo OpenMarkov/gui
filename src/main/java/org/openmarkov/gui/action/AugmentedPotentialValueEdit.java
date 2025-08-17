@@ -144,11 +144,11 @@ import java.util.List;
             
             for (int i = firstEditableRow; i <= lastEditableRow; i++) {
                 int index = tablePotentialsPanelOperations.getPotentialIndex(i, col, newAugmentedTable);
-                newAugmentedValues[index] = new String("Complement");
+                newAugmentedValues[index] = "Complement";
             }
         }
         this.indexSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, newAugmentedTable);
-        newAugmentedValues[indexSelected] = new String(newValue);
+        newAugmentedValues[indexSelected] = newValue;
     }
     
     /**

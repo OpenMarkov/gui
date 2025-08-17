@@ -223,10 +223,10 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
             int secondLetterPosition = columnPosition / 26 - 1;
             if (columnPosition >= (26 * 27)) {
             } else if (columnPosition >= 26) {
-                columnId = columnId + ALPHABET.substring(secondLetterPosition, secondLetterPosition + 1) + ALPHABET
-                        .substring(firstLetterPosition, firstLetterPosition + 1);
+                columnId = columnId + ALPHABET.charAt(secondLetterPosition) + ALPHABET
+                        .charAt(firstLetterPosition);
             } else {
-                columnId = columnId + ALPHABET.substring(firstLetterPosition, firstLetterPosition + 1);
+                columnId = columnId + ALPHABET.charAt(firstLetterPosition);
             }
             columnsId[columnPosition] = columnId;
         }
@@ -599,7 +599,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
         String s1 = name.substring(0, cont1);
         int cont2 = name.indexOf("]");
         String s2 = name.substring(cont1, cont2);
-        String s3 = name.substring(cont2, name.length());
+        String s3 = name.substring(cont2);
         return s1 + "\\" + s2 + "\\" + s3;
     }
     
@@ -727,7 +727,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
             ListIterator<Integer> listIterator = priorityList.listIterator();
             double[] values = editPotential.getValues();
             while (listIterator.hasNext()) {
-                position = (Integer) listIterator.next();
+                position = listIterator.next();
                 int rowPosition = edit.getRowPosition(position);
                 int columnPosition = edit.getColumnPosition();
                 super.getModel().setValueAt(values[position], rowPosition, columnPosition);

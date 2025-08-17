@@ -271,7 +271,7 @@ import java.util.List;
 		if (buttonPanel == null) {
 			buttonPanel = new JPanel();
 			buttonPanel.setName("DiscretizeTablePanel.buttonPanel");
-			final GroupLayout groupLayout = new GroupLayout((JComponent) buttonPanel);
+            final GroupLayout groupLayout = new GroupLayout(buttonPanel);
 			groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING).addGroup(
 					groupLayout.createSequentialGroup().addGroup(
 							groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)

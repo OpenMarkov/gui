@@ -132,9 +132,9 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 										GroupLayout.PREFERRED_SIZE).addComponent(getJButtonApply()))
 						.addContainerGap()));
 		groupLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL,
-				new java.awt.Component[] { getJButtonAccept(), getJButtonCancel(), getJButtonApply() });
+                             getJButtonAccept(), getJButtonCancel(), getJButtonApply());
 		groupLayout.linkSize(javax.swing.SwingConstants.VERTICAL,
-				new java.awt.Component[] { getJButtonAccept(), getJButtonCancel(), getJButtonApply() });
+                             getJButtonAccept(), getJButtonCancel(), getJButtonApply());
 		getContentPane().setLayout(groupLayout);
 		setTitle(stringDatabase.getString("LanguageDialog.Title.Text"));
 		setModal(true);

@@ -9,12 +9,12 @@ package org.openmarkov.gui.toolplugin;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.annotation.Limits;
-import org.openmarkov.core.annotation.RequiredConstructors;
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 
 import javax.swing.*;
 
-@Limits(requiredConstructors = @RequiredConstructors({}))
+@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({}))
 /**
  * This interface is to be implemented to create a functionality that can be accessed in the {@code Tools} bar of
  * OpenMarkov's interface, where you'll find a menu item you can click to trigger the functionality of this {@code tool

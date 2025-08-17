@@ -454,7 +454,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 			node = visualNodes.get(index++);
 			if (node.pointInsideShape(position, g)) {
 				if (node.getInnerBox() instanceof FSVariableBox) {
-					int numStates = ((FSVariableBox) node.getInnerBox()).getNumStates();
+                    int numStates = node.getInnerBox().getNumStates();
 					for (int i = 0; i < numStates; i++) {
 						state = ((FSVariableBox) node.getInnerBox()).getVisualState(i);
 						if (state.pointInsideShape(position, g)) {
@@ -696,7 +696,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 					node.setTemporalPosition(new Point2D.Double(node.
 							getTemporalPosition().getX() + diffX, node.getTemporalPosition().getY() + diffY));
 					if (g2 != null) {
-						node.paint((Graphics2D) g2);
+                        node.paint(g2);
 					}
 
 				}

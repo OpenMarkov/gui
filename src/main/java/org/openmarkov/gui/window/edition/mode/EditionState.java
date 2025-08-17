@@ -6,17 +6,11 @@
  */
 package org.openmarkov.gui.window.edition.mode;
 
-import org.openmarkov.core.annotation.Limits;
-import org.openmarkov.core.annotation.RequiredConstructors;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.window.edition.EditorPanel;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Limits(classesThatCanBeAnnotated = EditionMode.class, requiredConstructors = @RequiredConstructors({EditorPanel.class, ProbNet.class}))
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface EditionState {
     String name();
     

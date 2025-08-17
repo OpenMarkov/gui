@@ -218,7 +218,7 @@ import java.util.List;
 		if (!leakyFlag) {//noisy parameters
 			newNoisyParameters[position] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
 			while (listIterator.hasNext() == true) {
-				priorityListPosition = (Integer) listIterator.next();
+                priorityListPosition = listIterator.next();
 				sum = Util.roundAndReduce(sum + newNoisyParameters[priorityListPosition], epsilon, maxDecimals);
 				//sum = sum + newNoisyParameters[priorityListPosition];
 				//sum = roundingDouble(sum + newNoisyParameters[priorityListPosition]);
@@ -231,7 +231,7 @@ import java.util.List;
 			if (sum > 1.0) {
 				listIterator = priorityList.listIterator();
 				while (listIterator.hasNext() == true && rest != 0) {
-					priorityListPosition = (Integer) listIterator.next();
+                    priorityListPosition = listIterator.next();
 					//rest = rest - newNoisyParameters[priorityListPosition];
 					rest = Util.roundAndReduce(rest - newNoisyParameters[priorityListPosition], epsilon, maxDecimals);
 					//rest = rest - newTable[pos];
@@ -255,7 +255,7 @@ import java.util.List;
 		} else if (leakyFlag) {//leaky parameters
 			newLeakyParameters[position] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
 			while (listIterator.hasNext() == true) {
-				priorityListPosition = (Integer) listIterator.next();
+                priorityListPosition = listIterator.next();
 				sum = Util.roundAndReduce(sum + newLeakyParameters[priorityListPosition], epsilon, maxDecimals);
 				//sum = roundingDouble(sum + newLeakyParameters[priorityListPosition]);
 				//sum += newTable[pos];
@@ -267,7 +267,7 @@ import java.util.List;
 			if (sum > 1.0) {
 				listIterator = priorityList.listIterator();
 				while (listIterator.hasNext() == true && rest != 0) {
-					priorityListPosition = (Integer) listIterator.next();
+                    priorityListPosition = listIterator.next();
 					rest = Util.roundAndReduce(rest - newLeakyParameters[priorityListPosition], epsilon, maxDecimals);
 					//rest = roundingDouble(rest - newLeakyParameters[priorityListPosition]);
 					//rest = rest - newTable[pos];

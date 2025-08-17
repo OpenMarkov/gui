@@ -121,7 +121,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	 */
 	private void initialize() {
 		setPreferredSize(new Dimension(700, 375));
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+        final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 				groupLayout.createSequentialGroup().addContainerGap()
 						.addComponent(getJLabelOtherPropertiesTable(), GroupLayout.DEFAULT_SIZE,

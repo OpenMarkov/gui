@@ -65,9 +65,9 @@ public class LinkInversionWithPotentialsUpdateValidator {
 		Node newNode1 = newProbNet.getNode(variable1);
 		Node newNode2 = newProbNet.getNode(variable2);
 		newProbNet.addLink(newNode2, newNode1, true);
-		newNode1.getParents().stream().
+        newNode1.getParents().
 			forEach(parentsNode1 -> newProbNet.addLink(parentsNode1, newNode2, true));
-		newNode2.getParents().stream().
+        newNode2.getParents().
 			forEach(parentsNode2 -> newProbNet.addLink(parentsNode2, newNode1, true));
 
 		// Check cycles

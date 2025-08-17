@@ -114,7 +114,7 @@ public class ICIOptionsPanel extends JPanel {
 	 */
 	private void initialize() {
 		// setPreferredSize( new Dimension( 700, 375 ) );
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+        final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 				groupLayout.createSequentialGroup().addContainerGap().addGroup(
 						groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(

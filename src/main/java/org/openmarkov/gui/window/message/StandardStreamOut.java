@@ -42,7 +42,7 @@ public class StandardStreamOut extends StandardStream {
 	 * separator string is defined by the system property line.separator.
 	 */
 	@Override public void println() {
-
-		messageArea.writeInformationMessage(System.getProperty("line.separator"));
+        
+        messageArea.writeInformationMessage(System.lineSeparator());
 	}
 }

@@ -278,7 +278,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     public void setFieldsFromProperties(Node properties) {
         setUploadingData(true);
         // jComboBoxStatesValues.removeItemListener(this);
-        (((DiscretizeTablePanel) getDiscretizedStatesPanel()).getStandardDomainButton()).removeActionListener(this);
+        (getDiscretizedStatesPanel().getStandardDomainButton()).removeActionListener(this);
         // jFormattedTextFieldPrecision.setValue( Double.valueOf(
         // properties.getVariable().getPrecision() ) );
         getJComboBoxPrecision().setSelectedItem(String.valueOf(properties.getVariable().getPrecision()));
@@ -414,7 +414,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             }
         }
         // jComboBoxStatesValues.addItemListener(this);
-        (((DiscretizeTablePanel) getDiscretizedStatesPanel()).getStandardDomainButton()).addActionListener(this);
+        (getDiscretizedStatesPanel().getStandardDomainButton()).addActionListener(this);
         setUploadingData(false);
     }
     
@@ -717,26 +717,26 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     index = aString.indexOf("(");
                 name = aString.substring(0, index);
                 data[i][position++] = name; // position 0
-                aString = aString.substring(index, aString.length());
+                aString = aString.substring(index);
                 lowSymbol = aString.substring(0, 1);
                 data[i][position++] = lowSymbol; // position 1
                 // find lowValue
-                aString = aString.substring(1, aString.length());
+                aString = aString.substring(1);
                 index = aString.indexOf(",");
                 lowValue = Double.valueOf(aString.substring(0, index));
                 data[i][position++] = lowValue; // position 2
                 // find separator
-                aString = aString.substring(index, aString.length());
+                aString = aString.substring(index);
                 data[i][position++] = aString.substring(0, 1); // position 3
                 // find upperValue
-                aString = aString.substring(1, aString.length());
+                aString = aString.substring(1);
                 index = aString.indexOf("]");
                 if (index < 0)
                     index = aString.indexOf(")");
                 upperValue = Double.valueOf(aString.substring(0, index));
                 data[i][position++] = upperValue; // position 4
                 // find upperSymbol
-                aString = aString.substring(index, aString.length());
+                aString = aString.substring(index);
                 upperSymbol = aString.substring(0, 1);
                 data[i][position++] = upperSymbol; // position 5
             }

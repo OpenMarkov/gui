@@ -419,7 +419,7 @@ public class VisualOONetwork extends VisualNetwork {
 			if (instance.isSelected()) {
 				instance.move(diffX, diffY);
 				if (g2 != null) {
-					instance.paint((Graphics2D) g2);
+                    instance.paint(g2);
 				}
 			}
 		}

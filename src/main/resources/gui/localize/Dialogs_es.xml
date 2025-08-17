@@ -211,13 +211,13 @@
             <Label value="Propiedades de la red"/>
         </Title>
         <DecisionCriteriaTab>
-            <Label value="Criterios de decisión"></Label>
+            <Label value="Criterios de decisión"/>
         </DecisionCriteriaTab>
         <AgentsTab>
-            <Label value="Agentes"></Label>
+            <Label value="Agentes"/>
         </AgentsTab>
         <TemporalOptionsTab>
-            <Label value="Opciones temporales"></Label>
+            <Label value="Opciones temporales"/>
         </TemporalOptionsTab>
     </NetworkPropertiesDialog>
     <NetworkDefinitionPanel>
@@ -306,18 +306,18 @@
     </NodePotentialTable>
     <NetworkDecisionCriteriaPanel>
         <DecisionCriteria>
-            <Text value="Criterios de decisión"></Text>
+            <Text value="Criterios de decisión"/>
             <ValuesTable>
                 <Columns>
                     <Id>
-                        <Prefix value="a"></Prefix>
-                        <Text value="Id"></Text>
+                        <Prefix value="a"/>
+                        <Text value="Id"/>
                     </Id>
                     <Name>
-                        <Text value="Criterio"></Text>
+                        <Text value="Criterio"/>
                     </Name>
                     <Unit>
-                        <Text value="Unidad"></Text>
+                        <Text value="Unidad"/>
                     </Unit>
                 </Columns>
             </ValuesTable>
@@ -325,26 +325,26 @@
     </NetworkDecisionCriteriaPanel>
     <NetworkAgentsPanel>
         <Agents>
-            <Text value="Agentes"></Text>
+            <Text value="Agentes"/>
         </Agents>
     </NetworkAgentsPanel>
     <NetworkTemporalOptionsPanel>
         <TemporalOptions>
-            <Title value="Opciones temporales"></Title>
-            <Label value="Duración del ciclo"></Label>
+            <Title value="Opciones temporales"/>
+            <Label value="Duración del ciclo"/>
             <Unit>
-                <DAY value="dias"></DAY>
-                <WEEK value="semanas"></WEEK>
-                <MONTH value="meses"></MONTH>
-                <YEAR value="años"></YEAR>
-                <HOUR value="horas"></HOUR>
-                <MINUTE value="minutos"></MINUTE>
-                <SECOND value="segundos"></SECOND>
-                <MILISECOND value="milisegundos"></MILISECOND>
+                <DAY value="dias"/>
+                <WEEK value="semanas"/>
+                <MONTH value="meses"/>
+                <YEAR value="años"/>
+                <HOUR value="horas"/>
+                <MINUTE value="minutos"/>
+                <SECOND value="segundos"/>
+                <MILISECOND value="milisegundos"/>
             </Unit>
             <DiscountUnit>
-                <YEAR value="por año"></YEAR>
-                <CYCLE value="por ciclo"></CYCLE>
+                <YEAR value="por año"/>
+                <CYCLE value="por ciclo"/>
             </DiscountUnit>
         </TemporalOptions>
     </NetworkTemporalOptionsPanel>

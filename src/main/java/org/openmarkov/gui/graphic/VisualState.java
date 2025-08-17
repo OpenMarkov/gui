@@ -262,9 +262,9 @@ public class VisualState extends VisualElement {
 	 * @return the position that this state occupies inside the inner box
 	 */
 	private int getStatePosition() {
-		InnerBox innerBox = (InnerBox) visualNode.getInnerBox();
+        InnerBox innerBox = visualNode.getInnerBox();
 		if (innerBox instanceof FSVariableBox) {
-			return (((FSVariableBox) innerBox).getNumStates() - stateIndex);
+            return (innerBox.getNumStates() - stateIndex);
 		} else {
 			return 1;
 		}

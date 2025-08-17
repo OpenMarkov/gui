@@ -242,7 +242,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		if (potentialTypeComboBox == null) {
 			List<String> filteredPotentialNames = potentialManager.getFilteredPotentials(node);
 			Collections.sort(filteredPotentialNames);
-			potentialTypeComboBox = new JComboBox<>((String[]) filteredPotentialNames.toArray(new String[0]));
+            potentialTypeComboBox = new JComboBox<>(filteredPotentialNames.toArray(new String[0]));
 			String currentPotentialType = node.getPotentials().get(0).getClass().getAnnotation(PotentialType.class).name();
 			// Compute the number of columns of the conditional probability table
 			int tableColumns = 1;

@@ -132,7 +132,7 @@ import java.util.List;
 		List<Variable> newVariables = new ArrayList<Variable>();
 		for (int i = 0; i < data.length; i++) {
 			for (int j = 0; j < potentialVariables.size(); j++) {
-				if (((String) data[i][0]).equals(potentialVariables.get(j).getName())) {
+                if (data[i][0].equals(potentialVariables.get(j).getName())) {
 					newVariables.add(potentialVariables.get(j));
 				}
 			}

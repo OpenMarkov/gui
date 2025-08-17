@@ -93,7 +93,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 		setCellBorders(table, value, isSelected, hasFocus, row, column);
 		setMinimumSize(table, value, isSelected, hasFocus, row, column);
 		if (value instanceof Double) {
-			value = formatter.format((Double) value);
+            value = formatter.format(value);
 		}
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && (row >= firstEditableRow) && uncertaintyInColumns != null
 				&& uncertaintyInColumns[column - 1]) {

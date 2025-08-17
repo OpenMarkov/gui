@@ -824,18 +824,18 @@ import java.util.List;
             TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
             boolean hasUncertainty = tablePotential.hasUncertainty(getEvidenceCaseFromSelectedColumn());
             if (hasUncertainty) {
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.toString())
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN)
                                               .setEnabled(false);
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT.toString())
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT)
                                               .setEnabled(true);
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE.toString())
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE)
                                               .setEnabled(true);
             } else {
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.toString())
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN)
                                               .setEnabled(true);
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT.toString())
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT)
                                               .setEnabled(false);
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE.toString())
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE)
                                               .setEnabled(false);
             }
         }

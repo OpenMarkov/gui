@@ -327,13 +327,10 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                                                                            .equals(criterionName))
                                                        .collect(Collectors.toList());
                     
-                    TemporalEvolution temporalEvolutionCriterion = new MIDTemporalEvolution(probNet, criterionNodes);
-                    
+                    MIDTemporalEvolution temporalEvolutionCriterion = new MIDTemporalEvolution(probNet, criterionNodes);
                     temporalEvolutionCriterion.setPreResolutionEvidence(evidence);
                     temporalEvolutionCriterion.setDecisionVariable(decisionSelected);
-                    
-                    ((MIDTemporalEvolution) temporalEvolutionCriterion).forceUnicriterion();
-                    
+                    temporalEvolutionCriterion.forceUnicriterion();
                     this.temporalEvolutionResults = temporalEvolutionCriterion.getTemporalEvolution();
                     //Upfront values
                     this.upfrontEvolutionByCriterion.put(criterionName, temporalEvolutionCriterion.getAtemporalUtility());
@@ -364,9 +361,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 initialize(owner);
             } catch (IndexOutOfBoundsException ignore) {
                 //When pressing "Cancel" in progressMonitor
-            } catch (@SuppressWarnings("OverlyBroadCatchBlock")
-            NonProjectablePotentialException | NotEvaluableNetworkException |
-            IncompatibleEvidenceException | CannotNormalizeNullVectorException e) {
+            } catch (NotEvaluableNetworkException | IncompatibleEvidenceException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), stringDatabase.getString("ExceptionGeneric.Title.Label"),
                                               JOptionPane.ERROR_MESSAGE);
@@ -402,6 +397,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      *
      * @param isDiscounted if true, discounted series are shown
      * @param showUpfront  if true, upfront values are added to time 0
+     *
      * @return List of @link(XYSeries) ready to be displayed
      */
     private List<XYSeries> displaySeries(boolean isDiscounted, boolean showUpfront) {
@@ -571,6 +567,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      *
      * @param xySeriesToDisplay List of XYSeries any series where each element contains one data line
      * @param markedCheckBoxes  array indicating which criteria are to be displayed
+     *
      * @return a ChartPanel displaying temporal evolution by criterion according to xySeriesToDisplay
      */
     private ChartPanel getChartsByCriterionPanel(List<XYSeries> xySeriesToDisplay, boolean[] markedCheckBoxes) {
@@ -997,6 +994,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * Gets the Charts Panel with the JFreeChart
      *
      * @param dataset Dataset for the JFreeChart
+     *
      * @return ChartsPanel
      */
     private ChartPanel getChartsPanel(XYDataset dataset) {
@@ -1369,6 +1367,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * Sum a list of series to obtain a new serie
      *
      * @param arraySeries
+     *
      * @return The XY series
      */
     private XYSeries sumSeries(ArrayList<XYSeries> arraySeries) {
@@ -1759,6 +1758,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * Allows to create an excel of a report
      *
      * @param filename
+     *
      * @throws IOException
      */
     private void createExcel(String filename) throws IOException {
@@ -1771,6 +1771,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      *
      * @param title
      * @param image
+     *
      * @return The legend label made
      */
     public JLabel makeLegendLabel(String title, Image image) {
@@ -1785,6 +1786,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      *
      * @param item
      * @param color
+     *
      * @return The image made
      */
     public Image makeImage(LegendItem item, Color color) {

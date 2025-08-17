@@ -32,7 +32,7 @@ abstract public class IconFactory {
 		int width = (int) r.getWidth() + 2 * (hMargin + 1);
 		int height = (int) r.getHeight() + 2 * vMargin;
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) image.createGraphics();
+        Graphics2D g = image.createGraphics();
 
 		int ovalWidth = Math.min(height, width);
 

@@ -428,7 +428,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	private void changeInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) {
 
 		TreePath parentPath = path.getParentPath();
-		TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
+        TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
 		ChangeIntervalDialog dialog = new ChangeIntervalDialog(Utilities.getOwner(this), branch);
 		TreeADDModel model = (TreeADDModel) jTree.getModel();
 		boolean minBelongsToLeft = false;
@@ -442,7 +442,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		boolean minBelongsToLeftDomain = !isLeftClosed;
 		boolean maxBelongsToLeftDomain = isRightClosed;
 		if (dialog.requestValues() == ChangeIntervalDialog.OK_BUTTON) {
-			ChangeIntervalPanel panel = (ChangeIntervalPanel) dialog.getChangeIntervalPanel();
+            ChangeIntervalPanel panel = dialog.getChangeIntervalPanel();
 			Double lowerBound = Double.parseDouble(panel.getMin().getText());
 			Double upperBound = Double.parseDouble(panel.getMax().getText());
 			JComboBox<String> minLimit = panel.minBelongsToLeft();// ( or [
@@ -592,7 +592,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 						parentBranches.remove(aux.size());
 					}
 				}
-				model.notifyTreeStructureChanged((TreePath) parentPath);
+                model.notifyTreeStructureChanged(parentPath);
 			}
 			for (int i = 0; i < jTree.getRowCount(); i++) {
 				jTree.expandRow(i);
@@ -609,12 +609,12 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	 */
 	private void splitInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) {
 		TreePath parentPath = path.getParentPath();
-		TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
+        TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
 		SplitIntervalDialog dialog = new SplitIntervalDialog(Utilities.getOwner(this));
 		TreeADDModel model = (TreeADDModel) jTree.getModel();
 		if (dialog.requestValues() == SplitIntervalDialog.OK_BUTTON) {
 			boolean belongsToLeft = false;
-			SplitIntervalPanel panel = (SplitIntervalPanel) dialog.getJPanelSplitInterval();
+            SplitIntervalPanel panel = dialog.getJPanelSplitInterval();
 			if (panel.belongsToLeft().isSelected()) {
 				belongsToLeft = true;
 			} else if (panel.belongsToRight().isSelected()) {
@@ -724,8 +724,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	 * @param path
 	 */
 	private void removeSubtree(ActionEvent ae, TreeADDBranch branch, TreePath path) {
-		Object parentPath = path.getParentPath();
-		TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
+        TreePath parentPath = path.getParentPath();
+        TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
 		Potential subPotential = branch.getPotential();
 		if (!(subPotential instanceof TreeADDPotential)) {
 			throw new UnreacheableException("Expected TreeADDPotential class, found: " + subPotential.getClass().getName());
@@ -758,8 +758,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	}
 
 	private void addVariablesToPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) {
-		Object parentPath = path.getParentPath();
-		TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
+        TreeADDPotential parentTreeADD = (TreeADDPotential) path.getParentPath().getLastPathComponent();
 		AddVariablesDialog dialog = new AddVariablesDialog(Utilities.getOwner(this), branch, parentTreeADD);
 		TreeADDModel model = (TreeADDModel) jTree.getModel();
 		if (dialog.requestValues() == AddVariablesDialog.OK_BUTTON) {
@@ -788,8 +787,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	}
 
 	private void removeVariablesFromPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) {
-		Object parentPath = path.getParentPath();
-		TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
+        TreeADDPotential parentTreeADD = (TreeADDPotential) path.getParentPath().getLastPathComponent();
 		RemoveVariablesDialog dialog = new RemoveVariablesDialog(Utilities.getOwner(this), branch, parentTreeADD);
 		TreeADDModel model = (TreeADDModel) jTree.getModel();
 		if (dialog.requestValues() == RemoveVariablesDialog.OK_BUTTON) {
@@ -833,8 +831,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		if (!(branch instanceof TreeADDBranch)) {
 			throw new UnreacheableException("Expected TreeADDBranch class, found: " + branch.getClass().getName());
 		}
-		Object parentPath = path.getParentPath();
-		TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
+        TreeADDPotential parentTreeADD = (TreeADDPotential) path.getParentPath().getLastPathComponent();
 		RemoveStatesDialog dialog = new RemoveStatesDialog(Utilities.getOwner(this), branch, parentTreeADD);
 		TreeADDModel model = (TreeADDModel) jTree.getModel();
 		if (dialog.requestValues() == RemoveStatesDialog.OK_BUTTON) {
@@ -858,12 +855,10 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 				List<TreeADDBranch> newTreeADDBranches = new ArrayList<TreeADDBranch>();
 				for (TreeADDBranch treeParentBranch : parentTreeADD.getBranches()) {
 					List<State> states = treeParentBranch.getBranchStates();
-					if (branch.getBranchStates().containsAll(states)) {
-						continue;
-					} else {
-						newTreeADDBranches.add(treeParentBranch);
-					}
-				}
+                    if (!branch.getBranchStates().containsAll(states)) {
+                        newTreeADDBranches.add(treeParentBranch);
+                    }
+                }
 				// Updating branches
 				List<State> branchStates = branch.getBranchStates();
 				for (State state : statesToEliminate) {
@@ -893,8 +888,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 				newTreeADDBranches.add(newBranch);
 				// Updating tree
 				parentTreeADD.setBranches(newTreeADDBranches);
-				model.notifyTreeStructureChanged((TreePath) parentPath);
-				jTree.expandPath((TreePath) parentPath);
+                model.notifyTreeStructureChanged(path.getParentPath());
+                jTree.expandPath(path.getParentPath());
 				for (int i = 0; i < jTree.getRowCount(); i++) {
 					jTree.expandRow(i);
 				}
@@ -903,8 +898,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	}
 
 	private void associateStates(ActionEvent ae, TreeADDBranch branch, TreePath path) {
-		Object parentPath = path.getParentPath();
-		TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
+        TreePath parentPath = path.getParentPath();
+        TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
 		// BranchStatesCheckBoxPanel checkBoxPanel = new
 		// BranchStatesCheckBoxPanel(treeADDBranch, parentTreeADD);
 		AddStatesToBranchDialog dialog = new AddStatesToBranchDialog(Utilities.getOwner(this), branch, parentTreeADD);
@@ -942,21 +937,19 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 			newTreeADDBranches.add(branch);
 			for (TreeADDBranch treeBranch : parentTreeADD.getBranches()) {
 				List<State> states = treeBranch.getBranchStates();
-				if (newBranchStates.containsAll(states)) {
-					continue;
-				} else {
-					for (State state : newBranchStates) {
-						if (states.contains(state)) {
-							states.remove(state);
-						}
-					}
-					treeBranch.setStates(states);
-					newTreeADDBranches.add(treeBranch);
-				}
-			}
+                if (!newBranchStates.containsAll(states)) {
+                    for (State state : newBranchStates) {
+                        if (states.contains(state)) {
+                            states.remove(state);
+                        }
+                    }
+                    treeBranch.setStates(states);
+                    newTreeADDBranches.add(treeBranch);
+                }
+            }
 			// Updating tree
 			parentTreeADD.setBranches(newTreeADDBranches);
-			model.notifyTreeStructureChanged((TreePath) parentPath);
+            model.notifyTreeStructureChanged(parentPath);
 			jTree.expandPath(path);
 			for (int i = 0; i < jTree.getRowCount(); i++) {
 				jTree.expandRow(i);
@@ -1087,8 +1080,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 						if (treeADDBranch.getRootVariable() == newRootVariable) {
 							Threshold min = treeADDBranch.getLowerBound();
 							Threshold max = treeADDBranch.getUpperBound();
-							partitionedInterval = new PartitionedInterval(min.belongsToLeft(), (double) min.getLimit(),
-									(double) max.getLimit(), max.belongsToLeft());
+                            partitionedInterval = new PartitionedInterval(min.belongsToLeft(), min.getLimit(),
+                                                                          max.getLimit(), max.belongsToLeft());
 							break;
 						}
 					}
@@ -1141,12 +1134,12 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		// set the new tree to its owner branch
 		branch.setPotential(newTreeADD);
 		// update the tree recursively bottom-up
-		Object parentPath = path.getParentPath();
+        TreePath parentPath = path.getParentPath();
 		Object previousParentPath = path.getLastPathComponent();
 		TreeADDModel model = (TreeADDModel) jTree.getModel();
 		while (parentPath != null) {
 			previousParentPath = parentPath;
-			parentPath = ((TreePath) parentPath).getParentPath();
+            parentPath = parentPath.getParentPath();
 		}
 		model.notifyTreeStructureChanged((TreePath) previousParentPath);
 		for (int i = 0; i < jTree.getRowCount(); i++) {
@@ -1196,8 +1189,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	 * @param path
 	 */
 	private void editPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) {
-		Object parentPath = path.getParentPath();
-		TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
+        TreePath parentPath = path.getParentPath();
+        TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
 		Potential potential = branch.getPotential();
 		ProbNet probNet = node.getProbNet();
 		ProbNet dummyProbNet = new ProbNet();

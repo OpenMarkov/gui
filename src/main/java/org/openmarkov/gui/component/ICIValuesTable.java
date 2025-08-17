@@ -103,7 +103,7 @@ import java.util.ListIterator;
 				double[] noisyPotential = iciEdit.getNewNoisyValues();
 				ListIterator<Integer> listIterator = priorityList.listIterator();
 				while (listIterator.hasNext() == true) {
-					priorityListPosition = (Integer) listIterator.next();
+                    priorityListPosition = listIterator.next();
 					super.getModel().setValueAt(noisyPotential[priorityListPosition],
 							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
 				}
@@ -111,7 +111,7 @@ import java.util.ListIterator;
 				double[] leakyPotential = iciEdit.getNewLeakyValues();
 				ListIterator<Integer> listIterator = priorityList.listIterator();
 				while (listIterator.hasNext() == true) {
-					priorityListPosition = (Integer) listIterator.next();
+                    priorityListPosition = listIterator.next();
 					super.getModel().setValueAt(leakyPotential[priorityListPosition],
 							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
 				}
@@ -133,7 +133,7 @@ import java.util.ListIterator;
 				double[] lastNoisyPotential = iciEdit.getLastNoisyValues();
 				ListIterator<Integer> listIterator = priorityList.listIterator();
 				while (listIterator.hasNext() == true) {
-					priorityListPosition = (Integer) listIterator.next();
+                    priorityListPosition = listIterator.next();
 					super.getModel().setValueAt(lastNoisyPotential[priorityListPosition],
 							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
 				}
@@ -141,7 +141,7 @@ import java.util.ListIterator;
 				double[] lastLeakyPotential = iciEdit.getLastNoisyValues();
 				ListIterator<Integer> listIterator = priorityList.listIterator();
 				while (listIterator.hasNext() == true) {
-					priorityListPosition = (Integer) listIterator.next();
+                    priorityListPosition = listIterator.next();
 					super.getModel().setValueAt(lastLeakyPotential[priorityListPosition],
 							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
 				}

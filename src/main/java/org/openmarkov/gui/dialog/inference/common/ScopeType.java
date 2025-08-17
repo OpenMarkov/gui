@@ -12,7 +12,8 @@ package org.openmarkov.gui.dialog.inference.common;
  */
 public enum ScopeType {
 	// Analysis type options
-	GLOBAL("ScopeSelector.Scenario.Global"), DECISION("ScopeSelector.Scenario.Decision");
+    GLOBAL("ScopeSelector.Scenario.Global"),
+    DECISION("ScopeSelector.Scenario.Decision");
 
 	private final String display;
 

@@ -37,17 +37,11 @@ public enum SelectionState {
     
     static {
         for (SelectionState state : SelectionState.values()) {
-            switch (state) {
-                case DEFAULT -> {
-                    state.currentCursor = CursorLoader.CURSOR_DEFAULT;
-                }
-                case MOVING -> {
-                    state.currentCursor = CursorLoader.CURSOR_NODES_MOVEMENT;
-                }
-                case SELECTING -> {
-                    state.currentCursor = CursorLoader.CURSOR_MULTIPLE_SELECTION;
-                }
-            }
+            state.currentCursor = switch (state) {
+                case DEFAULT -> CursorLoader.CURSOR_DEFAULT;
+                case MOVING -> CursorLoader.CURSOR_NODES_MOVEMENT;
+                case SELECTING -> CursorLoader.CURSOR_MULTIPLE_SELECTION;
+            };
         }
     }
     

@@ -7,8 +7,8 @@
 
 package org.openmarkov.gui.menutoolbar.toolbar;
 
-import org.openmarkov.core.annotation.Limits;
-import org.openmarkov.core.annotation.RequiredConstructors;
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasicImpl;
@@ -17,7 +17,7 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
 
-@Limits(classesThatCanBeAnnotated = ToolBarBasic.class, requiredConstructors = @RequiredConstructors(ActionListener.class))
+@ImplementationRequirements(hasToExtendOneOfTheseClasses = ToolBarBasic.class, requiresOneOfTheseConstructors = @RequiredConstructor(ActionListener.class))
 /**
  * This class is used to set the common features of all toolbars of the
  * application.

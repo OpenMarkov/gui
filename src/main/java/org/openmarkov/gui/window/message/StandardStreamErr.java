@@ -42,7 +42,7 @@ public class StandardStreamErr extends StandardStream {
 	 * separator string is defined by the system property line.separator.
 	 */
 	@Override public void println() {
-
-		messageArea.writeErrorMessage(System.getProperty("line.separator"));
+        
+        messageArea.writeErrorMessage(System.lineSeparator());
 	}
 }

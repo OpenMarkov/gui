@@ -18,6 +18,7 @@ open module org.openmarkov.gui {
     requires java.desktop;
     requires java.prefs;
     requires jeval;
+    requires org.apache.commons.lang3;
     
     
     exports org.openmarkov.gui.action;

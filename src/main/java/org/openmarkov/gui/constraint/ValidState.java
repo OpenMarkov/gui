@@ -75,7 +75,7 @@ public class ValidState extends PNConstraint {
 	 */
 	public boolean existState(String state, Node node) {
 		for (State states : node.getVariable().getStates()) {
-			if (states.getName().toUpperCase().equals(state.toUpperCase())) {
+            if (states.getName().equalsIgnoreCase(state)) {
 				return true;
 			}
 		}

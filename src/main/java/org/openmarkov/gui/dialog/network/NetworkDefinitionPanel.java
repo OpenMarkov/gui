@@ -108,7 +108,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 	private void initialize() {
 		setName("NetworkDefinitionPanel");
 		networkTypeManager = new NetworkTypeManager();
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+        final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 				groupLayout.createSequentialGroup().addContainerGap().addGroup(
 						groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(

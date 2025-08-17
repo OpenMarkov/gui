@@ -1857,8 +1857,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     private void paintInferenceResultsChanceOrDecisionNode(int caseNumber,
                                                            Map<Variable, TablePotential> individualProbabilities, EvidenceCase evidence, VisualNode visualNode) {
         Variable variable = visualNode.getNode().getVariable();
-        Potential potential = individualProbabilities.get(variable);
-        TablePotential tablePotential = (TablePotential) potential;
+        TablePotential tablePotential = individualProbabilities.get(variable);
         if (variable.getVariableType() != VariableType.NUMERIC) {
             if (tablePotential.getNumVariables() == 1) {
                 double[] values = tablePotential.getValues();

@@ -49,12 +49,8 @@ public class VisualContractedNodeLink extends VisualArrow {
 	}
 
 	@Override public String toString() {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(sourceInstance.toString());
-		sb.append(" |--> ");
-		sb.append(destNode.toString());
-
-		return sb.toString();
+        return sourceInstance.toString() +
+                " |--> " +
+                destNode.toString();
 	}
 }

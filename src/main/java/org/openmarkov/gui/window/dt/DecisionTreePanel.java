@@ -95,7 +95,7 @@ import java.awt.event.MouseListener;
 			root = new DecisionTreeBranch(probNet);
 			DecompositionGenerateDecisionTree genDT = new DecompositionGenerateDecisionTree(probNet, depth);
             genDT.setPreResolutionEvidence(branchEvidence);
-            ((DecisionTreeBranch) root).setChild(genDT.getDecisionTree());
+            root.setChild(genDT.getDecisionTree());
 		} 
 		return root;
 	}
@@ -148,7 +148,7 @@ import java.awt.event.MouseListener;
 		}
 		else {
 			DecisionTreeNode rootDT = (DecisionTreeNode)root;
-			DecisionTreeNode auxRoot = ((DecisionTreeBranch) buildDecisionTree(rootDT.getNetwork(), n, branchEvidence)).getChild();
+            DecisionTreeNode auxRoot = buildDecisionTree(rootDT.getNetwork(), n, branchEvidence).getChild();
 			if (parent != null) {
 				if (parent.getNodeType() == NodeType.DECISION
 						|| (!(parent.getVariable().getName().equalsIgnoreCase(auxRoot.getVariable().getName())))) {
@@ -307,7 +307,7 @@ import java.awt.event.MouseListener;
 
 
 	public DecisionTreeNode getDecisionTreeNode() {
-		DecisionTree dt = (DecisionTree)getJTree();				
+        DecisionTree dt = getJTree();
 		TreeModel model = dt.getModel();
 		DecisionTreeBranchPanel branchPanel = (DecisionTreeBranchPanel) model.getRoot();
 		DecisionTreeBranch root = branchPanel.getTreeBranch();

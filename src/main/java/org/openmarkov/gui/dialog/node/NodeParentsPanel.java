@@ -104,7 +104,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	 */
 	private void initialize() {
 		setPreferredSize(new Dimension(700, 300));
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+        final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 				groupLayout.createSequentialGroup().addContainerGap()
 						.addComponent(getJLabelNodeParentsTable(), GroupLayout.PREFERRED_SIZE, 80,

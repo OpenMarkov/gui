@@ -6,12 +6,16 @@
  */
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.model.network.Node;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({Node.class}))
 @SuppressWarnings("serial") public abstract class PotentialPanel extends JPanel {
 	private List<PanelResizeEventListener> listeners;
 	/**

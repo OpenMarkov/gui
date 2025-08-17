@@ -78,7 +78,7 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	 * column, the Add/Delete buttons
 	 */
 	private void initialize() {
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+        final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 				groupLayout.createSequentialGroup().addContainerGap()
 						.addComponent(getJLabelOtherPropertiesTable(), GroupLayout.DEFAULT_SIZE,

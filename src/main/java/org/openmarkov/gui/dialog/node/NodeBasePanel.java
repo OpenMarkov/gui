@@ -73,7 +73,7 @@ public class NodeBasePanel extends JPanel implements ItemListener {
 	 * initialize the layout for this panel
 	 */
 	private void initialize() {
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+        final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 				groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGap(0, 500, Short.MAX_VALUE));
 		groupLayout.setVerticalGroup(

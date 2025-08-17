@@ -61,7 +61,7 @@ public class MenuToolBarBasicImpl {
 		if (component instanceof AbstractButton) {
 			model = ((AbstractButton) component).getModel();
 			if (model instanceof JToggleButton.ToggleButtonModel) {
-				group = ((JToggleButton.ToggleButtonModel) model).getGroup();
+                group = model.getGroup();
 				if (group != null) {
 					elements = group.getElements();
 					while (!enabled && elements.hasMoreElements()) {

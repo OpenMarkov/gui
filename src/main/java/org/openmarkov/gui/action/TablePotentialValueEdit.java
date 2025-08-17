@@ -137,8 +137,8 @@ import java.util.List;
         
         if (isExactDistrPotential) {
             //copy returns null so
-            this.exactDistrPotential = new ExactDistrPotential(((ExactDistrPotential) potential).getVariables(),
-                                                               ((ExactDistrPotential) potential).getPotentialRole());
+            this.exactDistrPotential = new ExactDistrPotential(potential.getVariables(),
+                                                               potential.getPotentialRole());
             
             TablePotential newPotential = (TablePotential) (oldExactDistrPotential.getTablePotential().copy());
             this.exactDistrPotential.setTablePotential(newPotential);
@@ -183,7 +183,7 @@ import java.util.List;
             epsilon = Math.pow(10, -(maxDecimals + 2));
             newTable[potentialSelected] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
             while (listIterator.hasNext()) {
-                position = (Integer) listIterator.next();
+                position = listIterator.next();
                 if (isEditablePosition(position)) {
                     sum = Util.roundAndReduce(sum + newTable[position], epsilon, maxDecimals);
                 }
@@ -194,7 +194,7 @@ import java.util.List;
             if (sum > 1.0) {
                 listIterator = priorityList.listIterator();
                 while (listIterator.hasNext() && rest != 0) {
-                    position = (Integer) listIterator.next();
+                    position = listIterator.next();
                     if (this.isEditablePosition(position)) {
                         rest = Util.roundAndReduce(rest - newTable[position], epsilon, maxDecimals);
                         // rest = rest - newTable[pos];
@@ -212,7 +212,7 @@ import java.util.List;
                 boolean updated = false;
                 listIterator = priorityList.listIterator();
                 while (listIterator.hasNext() && !updated) {
-                    position = (Integer) listIterator.next();
+                    position = listIterator.next();
                     if (this.isEditablePosition(position)) {
                         newTable[position] = Util.roundAndReduce(newTable[position] + rest, epsilon, maxDecimals);
                         updated = true;
