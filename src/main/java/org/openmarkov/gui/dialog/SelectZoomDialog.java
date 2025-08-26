@@ -308,8 +308,7 @@ public class SelectZoomDialog extends OkCancelHorizontalDialog {
     private JSpinner getZoomSpinner() {
         if (zoomSpinner == null) {
             zoomSpinner = new JSpinner();
-            zoomSpinner.setModel(new SpinnerNumberModel((int) Math.round(Zoom.DEFAULT_VALUE * 100),
-                                                        (int) Math.round(Zoom.MIN_VALUE * 100), (int) Math.round(Zoom.MAX_VALUE * 100), 1));
+            zoomSpinner.setModel(new SpinnerNumberModel((int) Zoom.DEFAULT_VALUE * 100, (int) Zoom.MIN_VALUE * 100, (int) Zoom.MAX_VALUE * 100, 1));
         }
         return zoomSpinner;
     }
@@ -396,6 +395,7 @@ public class SelectZoomDialog extends OkCancelHorizontalDialog {
      * This method shows the dialog and requests the user a new zoom value.
      *
      * @param defaultZoom zoom that is selected as default.
+     *
      * @return OK_BUTTON if the user has pressed the 'Ok' button or
      * CANCEL_BUTTON if the user has pressed the 'Cancel' button.
      */

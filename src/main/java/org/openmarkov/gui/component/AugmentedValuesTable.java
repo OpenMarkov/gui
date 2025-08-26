@@ -117,6 +117,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
      * Check if newValue is a String or a Double
      *
      * @param newValue - new value to validate
+     *
      * @author carmenyago
      */
     @Override protected boolean castValue(Object newValue) {
@@ -254,32 +255,22 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
     private void selectAll(EventObject e) {
         // Returns the component that is handling the editing session.
         final Component editor = getEditorComponent();
-        if (editor == null || !(editor instanceof JTextComponent))
+        if (!(editor instanceof JTextComponent))
             return;
-        if (e == null) {
-            ((JTextComponent) editor).selectAll();
-            return;
-        }
-        // Typing in the cell was used to activate the editor
-        if (e instanceof KeyEvent && isSelectAllForKeyEvent) {
-            ((JTextComponent) editor).selectAll();
-            return;
-        }
-        // F2 was used to activate the editor
-        if (e instanceof ActionEvent && isSelectAllForActionEvent) {
-            ((JTextComponent) editor).selectAll();
-            return;
-        }
-        // A mouse click was used to activate the editor.
-        // Generally this is a double click and the second mouse click is
-        // passed to the editor which would remove the text selection unless
-        // we use the invokeLater()
-        if (e instanceof MouseEvent && isSelectAllForMouseEvent) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override public void run() {
-                    ((JTextComponent) editor).selectAll();
-                }
-            });
+        switch (e) {
+            case null -> ((JTextComponent) editor).selectAll();
+            // Typing in the cell was used to activate the editor
+            case KeyEvent keyEvent when isSelectAllForKeyEvent -> ((JTextComponent) editor).selectAll();
+            // F2 was used to activate the editor
+            case ActionEvent actionEvent when isSelectAllForActionEvent -> ((JTextComponent) editor).selectAll();
+            // A mouse click was used to activate the editor.
+            // Generally this is a double click and the second mouse click is
+            // passed to the editor which would remove the text selection unless
+            // we use the invokeLater()
+            case MouseEvent mouseEvent when isSelectAllForMouseEvent ->
+                    SwingUtilities.invokeLater(() -> ((JTextComponent) editor).selectAll());
+            default -> {
+            }
         }
     }
     

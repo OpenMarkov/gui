@@ -211,7 +211,7 @@ public class NetsIO {
      */
     public static ProbNetInfo openNetworkURL(URL url) throws SAXException, IOException, ParserConfigurationException, org.openmarkov.core.exception.ParserException {
         String networkName = url.getPath();
-        networkName = networkName.substring(networkName.lastIndexOf("/") + 1);
+        networkName = networkName.substring(networkName.lastIndexOf('/') + 1);
         
         String fileExtension = getFileExtension(networkName);
         FormatManager formatManager = FormatManager.getInstance();

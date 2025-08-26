@@ -13,9 +13,9 @@ import org.openmarkov.gui.component.ValuesTable;
 import javax.swing.*;
 
 /**
- * This class extends from <code>TablePotentialPanel</code>, is a panel used by
- * <code>ICIOptionListenerAssistant</code> to show the complete parameters
- * table. It is similar to <code>TablePotentialPanel</code> with the peculiarity
+ * This class extends from {@code TablePotentialPanel}, is a panel used by
+ * {@code ICIOptionListenerAssistant} to show the complete parameters
+ * table. It is similar to {@code TablePotentialPanel} with the peculiarity
  * that can not be edited cells
  *
  * @author myebra

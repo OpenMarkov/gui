@@ -57,7 +57,7 @@ public class NetworkVariablesPanel extends JPanel {
 	/**
 	 * Specifies if the network whose additionalProperties are edited is new.
 	 */
-	private boolean newNetwork = false;
+    private boolean newNetwork;
 	private ProbNet probNet;
 	private JComboBox<String> jComboBoxVariableType;
 

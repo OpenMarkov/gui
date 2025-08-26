@@ -112,16 +112,16 @@ import java.awt.*;
 	}
 
 	/**
-	 * read the <code>OpenMarkovPreferences</code> configuration, and set the
+     * read the {@code OpenMarkovPreferences} configuration, and set the
 	 * LastConnection preference to current Time
 	 */
 	private static void doReadPreferences() {
 		OpenMarkovPreferences.ensurePreferenceAreInitialized();
 		OpenMarkovPreferences
 				.set(OpenMarkovPreferencesKeys.LAST_CONNECTION, Double.toString(System.currentTimeMillis()),
-						OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
+                     OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
 		OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_USER_CONNECTED, System.getProperty("user.name"),
-				OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
+                                  OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
 	}
 
 	/**
@@ -130,7 +130,7 @@ import java.awt.*;
 	 *
 	 * @return new dimensions of the window.
 	 */
-	private Dimension screenPortionSize(Insets screenInsets) {
+    private static Dimension screenPortionSize(Insets screenInsets) {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = screen.width - screenInsets.right - screenInsets.left;
 		int height = screen.height - screenInsets.top - screenInsets.bottom;

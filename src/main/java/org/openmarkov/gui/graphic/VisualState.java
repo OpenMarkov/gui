@@ -94,7 +94,7 @@ public class VisualState extends VisualElement {
 	/**
 	 * Array of booleans that determine whether the state has evidence or not
 	 */
-	private List<Boolean> evidence = new ArrayList<>();
+    private List<Boolean> evidence;
 
 	/**
 	 * Formatting string for values shown in the visual state
@@ -121,11 +121,7 @@ public class VisualState extends VisualElement {
 		evidence = new ArrayList<>();
 		evidence.add(false);
 		currentStateValue = 0;
-		StringBuilder sb = new StringBuilder(formattingString);
-		for (int i = 0; i < NUMBER_OF_DECIMALS; ++i) {
-			sb.append("0");
-		}
-		formattingString = sb.toString();
+        formattingString = formattingString + "0".repeat(VisualState.NUMBER_OF_DECIMALS);
 	}
 
 	/**
@@ -265,10 +261,9 @@ public class VisualState extends VisualElement {
         InnerBox innerBox = visualNode.getInnerBox();
 		if (innerBox instanceof FSVariableBox) {
             return (innerBox.getNumStates() - stateIndex);
-		} else {
-			return 1;
-		}
-	}
+        }
+        return 1;
+    }
 
 	/**
 	 * Sets the color in which to paint depending on which is the associated
@@ -277,7 +272,7 @@ public class VisualState extends VisualElement {
 	 * @param caseNumber number of the evidence case
 	 * @param g          graphics object where paint the node.
 	 */
-	private void setColorCaseDependent(int caseNumber, Graphics2D g) {
+    private static void setColorCaseDependent(int caseNumber, Graphics2D g) {
 		if (caseNumber % 5 == 0) {
 			g.setPaint(EVIDENCE_CASE_0_COLOR);
 		} else if (caseNumber % 5 == 1) {
@@ -298,7 +293,7 @@ public class VisualState extends VisualElement {
 	 * @param y y coordinate reference for painting
 	 * @param g graphics object where paint the node.
 	 */
-	private void paintNotCompiled(Double x, Double y, Graphics2D g) {
+    private static void paintNotCompiled(Double x, Double y, Graphics2D g) {
 		Double aux1 = x;
 		int aux2 = Double.valueOf(InnerBox.BAR_FULL_LENGTH / 20).intValue();
 		while (aux1 < (x + InnerBox.BAR_FULL_LENGTH)) {
@@ -318,10 +313,10 @@ public class VisualState extends VisualElement {
 	 * @return shape of the State.
 	 */
 	@Override public Shape getShape(Graphics2D g) {
-		Double x = visualNode.getUpperLeftCornerX(g) + InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT - 1;
-		Double w = InnerBox.BOX_WIDTH - (InnerBox.STATES_INDENT * 2) + 1;
-		Double y = 0.0;
-		Double h = 0.0;
+        double x = visualNode.getUpperLeftCornerX(g) + InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT - 1;
+        double w = InnerBox.BOX_WIDTH - (InnerBox.STATES_INDENT * 2) + 1;
+        double y;
+        double h;
 		if (visualNode.getVisualNetwork().isPropagationActive()) {
 			y = visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
 					InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
@@ -345,12 +340,11 @@ public class VisualState extends VisualElement {
 	 * @param g graphics object where paint the node.
 	 */
 	@Override public void paint(Graphics2D g) {
-		Double xName = 0.0;
-		Double xBar = 0.0;
-		Double xValue = 0.0;
-		Double yText = 0.0;
-		Double yFirstBar = 0.0;
-		xName = visualNode.getUpperLeftCornerX(g) + InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT;
+        double xBar;
+        double xValue;
+        double yText;
+        double yFirstBar;
+        double xName = visualNode.getUpperLeftCornerX(g) + InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT;
 		boolean isNumeric = visualNode.getNode().getVariable().getVariableType() == VariableType.NUMERIC;
 		if (isNumeric) {
 			xBar = xName + InnerBox.BAR_HORIZONTAL_POSITION_UTILITY;
@@ -379,7 +373,7 @@ public class VisualState extends VisualElement {
 		g.setPaint(TEXT_COLOR);
 		g.setFont(STATES_FONT);
 		stateName = adjustText(stateName, InnerBox.BAR_HORIZONTAL_POSITION, 2, STATES_FONT, g);
-		g.drawString(stateName, xName.intValue(), yText.intValue());
+        g.drawString(stateName, (int) xName, (int) yText);
 		if (getVisualNode().getVisualNetwork().isPropagationActive()) {
 			for (int i = 0; i < stateValues.size(); i++) {
 				g.setPaint(Color.BLACK);
@@ -392,13 +386,13 @@ public class VisualState extends VisualElement {
 						 Double.valueOf(xBar + InnerBox.BAR_FULL_LENGTH).intValue(),
 						 Double.valueOf(yFirstBar + (i * InnerBox.BAR_HEIGHT) + InnerBox.BAR_HEIGHT).intValue());
 				setColorCaseDependent(i, g);
-				double barLength = 0.0;
+                double barLength;
 				if (isNumeric) {
 					InnerBox innerBox = visualNode.getInnerBox();
 					Double minRange = ((NumericVariableBox) innerBox).getMinValue();
 					Double maxRange = ((NumericVariableBox) innerBox).getMaxValue();
-					Double range = maxRange - minRange;
-					Double value = stateValues.get(i) - minRange;
+                    double range = maxRange - minRange;
+                    double value = stateValues.get(i) - minRange;
 					barLength = ((value * lengthRelationInBars) / range) / InnerBox.BAR_FULL_LENGTH;
 				} else {
 					barLength = (stateValues.get(i) * lengthRelationInBars) / InnerBox.BAR_FULL_LENGTH;
@@ -412,7 +406,7 @@ public class VisualState extends VisualElement {
 					DecimalFormat decimalFormat = new DecimalFormat(formattingString,
 							new DecimalFormatSymbols(Locale.US));
 					String formattedValue = String.valueOf(decimalFormat.format(stateValues.get(currentStateValue)));
-					g.drawString(formattedValue, (xValue.intValue()), yText.intValue());
+                    g.drawString(formattedValue, ((int) xValue), (int) yText);
 				}
 			}
 		} else {

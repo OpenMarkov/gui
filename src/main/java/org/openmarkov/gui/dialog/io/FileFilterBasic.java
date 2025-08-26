@@ -26,7 +26,7 @@ public class FileFilterBasic extends FileFilter {
 	 * @param file file of which obtain the extension.
 	 * @return extension of the file.
 	 */
-	protected String getExtension(File file) {
+    protected static String getExtension(File file) {
 
 		String extension = "";
 		String name = file.getName();

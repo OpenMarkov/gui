@@ -6,17 +6,11 @@
  */
 package org.openmarkov.gui.window.dt;
 
-import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
-import org.openmarkov.gui.window.MainPanelListenerAssistant;
 import org.openmarkov.gui.window.edition.Zoom;
 
 import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 @SuppressWarnings("serial") public class DecisionTree extends JTree{
 

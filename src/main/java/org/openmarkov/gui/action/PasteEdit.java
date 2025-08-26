@@ -82,8 +82,7 @@ import java.util.List;
         //Apply link creation edits
         List<Link<Node>> pastedLinks = new ArrayList<>();
         for (UndoableEdit edit : edits) {
-            if (edit instanceof AddLinkEdit) {
-                AddLinkEdit linkEdit = ((AddLinkEdit) edit);
+            if (edit instanceof AddLinkEdit linkEdit) {
                 linkEdit.doEdit(probNet);
                 pastedLinks.add(linkEdit.getLink());
             }

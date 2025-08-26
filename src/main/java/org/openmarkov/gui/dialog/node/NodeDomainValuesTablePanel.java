@@ -18,6 +18,7 @@ import org.openmarkov.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.gui.component.DiscretizeTablePanel;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.util.GUIDefaultStates;
 import org.openmarkov.gui.util.Utilities;
 
@@ -64,7 +65,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */
-    private boolean newNode = false;
+    private boolean newNode;
     /**
      * label for the values comboBox for the states of the node
      */
@@ -130,7 +131,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * TODO listener for actions -
      */
-    private NodeDomainValuesTablePanelListener listener = null;
+    private NodeDomainValuesTablePanelListener listener;
     private JComboBox<String> jComboBoxNodeVariableType;
     private boolean uploadingData = false;
     
@@ -164,7 +165,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     }
     
     /**
-     * <code>Initialize</code>
+     * {@code Initialize}
      * <p>
      * initialize the layout for this panel
      */
@@ -178,7 +179,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             getJPanelMonotonyUpDown().setVisible(false);
             getJLabelValuesPanel().setEnabled(false);
             getJLabelValuesPanel().setVisible(false);
-            getJFormattedTextFieldPrecision().setValue(Double.valueOf(node.getVariable().getPrecision()));
+            getJFormattedTextFieldPrecision().setValue(node.getVariable().getPrecision());
             // getJFormattedTextFieldUnit().setValue(value);
         }
         setPreferredSize(new Dimension(600, 375));
@@ -288,10 +289,9 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         if (properties != null) {
             if (properties.getVariable().getVariableType() == VariableType.DISCRETIZED
                     || properties.getVariable().getVariableType() == VariableType.NUMERIC) {
-                Object[][] tableData = null;
                 getDiscretizedStatesPanel().setDataFromPartitionedInterval(node.getVariable().getPartitionedInterval(),
                                                                            node.getVariable().getStates());
-                tableData = getDiscretizedStatesPanel().getData();
+                Object[][] tableData = getDiscretizedStatesPanel().getData();
                 for (int i = 0; i < tableData.length; i++) {
                     for (int j = 3; j < tableData[0].length; j++) {
                         if (j == 3 || j == 5) {
@@ -668,7 +668,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * @param states
      * @return The data from states
      */
-    protected Object[][] getDataFromStates(State[] states) {
+    protected static Object[][] getDataFromStates(State[] states) {
         int numColumns = 6; // key column is assigned in setData
         int rows = states.length;
         Object[][] data = new Object[rows][numColumns];
@@ -691,19 +691,17 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     // TODO this method must be changed when the Elvira parser will retrieve
     // data in an proper separated format
     protected Object[][] convertStringsToTableFormat(State[] states) {
-        Object[][] data;
         int i = 0;
-        int numIntervals = 0;
         int numColumns = 6; // name-symbol-value-separator-value-symbol
-        String aString = "";
-        String lowSymbol = "";
-        String upperSymbol = "";
+        String aString;
+        String lowSymbol;
+        String upperSymbol;
         double lowValue;
         double upperValue;
-        int index = 0;
-        String name = "";
-        numIntervals = states.length;
-        data = new Object[numIntervals][numColumns];
+        int index;
+        String name;
+        int numIntervals = states.length;
+        Object[][] data = new Object[numIntervals][numColumns];
         int position = 0;
         try {
             for (i = 0; i < numIntervals; i++) {
@@ -712,9 +710,9 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 // aString = GUIDefaultStates.getValuesInAString(states[i].getName());
                 aString = states[i].getName();
                 // find name & lowSymbol
-                index = aString.indexOf("[");
+                index = aString.indexOf('[');
                 if (index < 0)
-                    index = aString.indexOf("(");
+                    index = aString.indexOf('(');
                 name = aString.substring(0, index);
                 data[i][position++] = name; // position 0
                 aString = aString.substring(index);
@@ -722,18 +720,18 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 data[i][position++] = lowSymbol; // position 1
                 // find lowValue
                 aString = aString.substring(1);
-                index = aString.indexOf(",");
-                lowValue = Double.valueOf(aString.substring(0, index));
+                index = aString.indexOf(',');
+                lowValue = Double.parseDouble(aString.substring(0, index));
                 data[i][position++] = lowValue; // position 2
                 // find separator
                 aString = aString.substring(index);
                 data[i][position++] = aString.substring(0, 1); // position 3
                 // find upperValue
                 aString = aString.substring(1);
-                index = aString.indexOf("]");
+                index = aString.indexOf(']');
                 if (index < 0)
-                    index = aString.indexOf(")");
-                upperValue = Double.valueOf(aString.substring(0, index));
+                    index = aString.indexOf(')');
+                upperValue = Double.parseDouble(aString.substring(0, index));
                 data[i][position++] = upperValue; // position 4
                 // find upperSymbol
                 aString = aString.substring(index);
@@ -756,11 +754,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * @param values array of strings.
      * @return an array of arrays of objects that has the same elements.
      */
-    protected Object[][] convertStringsToTableDiscreteFormat(State[] values) {
-        Object[][] data;
-        int i, l;
-        l = values.length;
-        data = new Object[l][1];
+    protected static Object[][] convertStringsToTableDiscreteFormat(State[] values) {
+        int i;
+        int l = values.length;
+        Object[][] data = new Object[l][1];
         i = l - 1;
         for (State value : values) {
             data[i--][0] = GUIDefaultStates.getString(value.getName());
@@ -775,12 +772,11 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * @param values array of arrays of objects.
      * @return array of strings that has the same elements.
      */
-    protected String[] convertTableFormatToStrings(Object[][] values) {
-        String[] data;
-        int i, l;
-        String oneValue = "";
-        l = values.length;
-        data = new String[l];
+    protected static String[] convertTableFormatToStrings(Object[][] values) {
+        int i;
+        String oneValue;
+        int l = values.length;
+        String[] data = new String[l];
         // name-symbol-value-separator-value-symbol
         for (i = 0; i < l; i++) {
             // do nothing with values[i][0] = internal id
@@ -801,7 +797,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      *
      * @return true if all the states are defined and appears only once.
      */
-    public boolean checkStates() {
+    public static boolean checkStates() {
         return true;
     }
     
@@ -851,7 +847,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     @Override @SuppressWarnings("unchecked") public void itemStateChanged(ItemEvent itemEvent) {
         int optionDeselected = 0;
         ItemSelectable itemSelectable = itemEvent.getItemSelectable();
-        Object selected[] = itemSelectable.getSelectedObjects();
+        Object[] selected = itemSelectable.getSelectedObjects();
         String itemSelected = selected.length == 0 ? "null" : selected[0].toString();
         JComboBox<String> comboBox = (JComboBox<String>) itemEvent.getSource();
         // @ 2014/11/18. Issue 145.
@@ -863,8 +859,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             optionDeselected = comboBox.getSelectedIndex();
         }
         if (comboBox.getName().equals("jComboBoxNodeVariableType")) {
-            if (!(itemSelected == null) && itemEvent.getStateChange() == ItemEvent.SELECTED && !isUploadingData()) {
-                VariableTypeEdit variableTypeEdit = null;
+            if (itemSelected != null && itemEvent.getStateChange() == ItemEvent.SELECTED && !isUploadingData()) {
+                VariableTypeEdit variableTypeEdit;
                 VariableType variableType;
                 if (itemSelected.equals(stringDatabase
                                                 .getString("NodeDomainValuesTablePanel." + "jComboBoxNodeVariableType.Items.Discrete"))) {
@@ -883,7 +879,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
                     // Propagation of the domain in related variables in temporal models
                     if (nodeRelatedNodes != null) {
-                        if (nodeRelatedNodes.size() > 0) {
+                        if (!nodeRelatedNodes.isEmpty()) {
                             for (Node relatedNode : nodeRelatedNodes) {
                                 variableTypeEdit = new VariableTypeEdit(relatedNode, variableType);
                                 ProbNet probNet = relatedNode.getProbNet();
@@ -905,7 +901,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         } else if (comboBox.getName().equals("jComboBoxStatesValues")) {
             // warning mpalacios relative function to options position.
             // Review "otros" option
-            if (!(itemSelected == null) && itemEvent.getStateChange() == ItemEvent.SELECTED) {
+            if (itemSelected != null && itemEvent.getStateChange() == ItemEvent.SELECTED) {
                 int i = 0;
                 State[] newStates = new State[DefaultStates.getByIndex(comboBox.getSelectedIndex()).length];
                 for (String str : DefaultStates.getByIndex(comboBox.getSelectedIndex())) {
@@ -920,7 +916,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
                     // Propagation of the domain in related variables in temporal models
                     if (nodeRelatedNodes != null) {
-                        if (nodeRelatedNodes.size() > 0) {
+                        if (!nodeRelatedNodes.isEmpty()) {
                             for (Node relatedNode : nodeRelatedNodes) {
                                 nodeReplaceStatesEdit = new NodeReplaceStatesEdit(relatedNode, newStates);
                                 ProbNet probNet = relatedNode.getProbNet();
@@ -942,7 +938,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             }
             // PRECISION
         } else if (comboBox.getName().equals("jComboBoxPrecision")) {
-            if (!(itemSelected == null) && itemEvent.getStateChange() == ItemEvent.SELECTED) {
+            if (itemSelected != null && itemEvent.getStateChange() == ItemEvent.SELECTED) {
                 if (node.getVariable().getPrecision() != Double.parseDouble(itemSelected)) {
                     PrecisionEdit precisionEdit = new PrecisionEdit(node, Double.parseDouble(itemSelected));
                     try {
@@ -952,7 +948,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                         // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
                         // Propagation of the domain in related variables in temporal models
                         if (nodeRelatedNodes != null) {
-                            if (nodeRelatedNodes.size() > 0) {
+                            if (!nodeRelatedNodes.isEmpty()) {
                                 for (Node relatedNode : nodeRelatedNodes) {
                                     precisionEdit = new PrecisionEdit(relatedNode, Double.parseDouble(itemSelected));
                                     ProbNet probNet = relatedNode.getProbNet();
@@ -982,7 +978,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             limits[i] = newLimit;
                             int j = i;
                             while (j + 1 <= limits.length - 1 && limits[j] >= limits[j + 1]) {
-                                if (belongs[j] == false && belongs[j + 1] == true) {
+                                if (!belongs[j] && belongs[j + 1]) {
                                     limits[j + 1] = limits[j];
                                 } else {
                                     if (j + 1 == limits.length - 1) {
@@ -996,7 +992,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             // previous limits
                             int k = i;
                             while (k - 1 >= 0 && limits[k] <= limits[k - 1]) {
-                                if (belongs[k] == true && belongs[k - 1] == false) {
+                                if (belongs[k] && !belongs[k - 1]) {
                                     limits[k - 1] = limits[k];
                                 } else {
                                     if (k - 1 == 0) {
@@ -1027,7 +1023,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
                     // Propagation of the domain in related variables in temporal models
                     if (nodeRelatedNodes != null) {
-                        if (nodeRelatedNodes.size() > 0) {
+                        if (!nodeRelatedNodes.isEmpty()) {
                             for (Node relatedNode : nodeRelatedNodes) {
                                 partitionedIntervalEdit = new PartitionedIntervalEdit(relatedNode,
                                                                                       newPartitionedInterval);
@@ -1070,7 +1066,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         // Propagation of the domain in related variables in temporal models
         List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
         //
-        if (standardDomainDialog.requestValues() == StandardDomainsDialog.OK_BUTTON) {
+        if (standardDomainDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             List<JRadioButton> radioButtons = ((StandardDomainPanel) (standardDomainDialog.getJPanelStandardDomains()))
                     .getRadioButtons();
             int index = 0;
@@ -1093,7 +1089,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
                 // Propagation of the domain in related variables in temporal models
                 if (nodeRelatedNodes != null) {
-                    if (nodeRelatedNodes.size() > 0) {
+                    if (!nodeRelatedNodes.isEmpty()) {
                         for (Node relatedNode : nodeRelatedNodes) {
                             nodeReplaceStatesEdit = new NodeReplaceStatesEdit(relatedNode, newStates);
                             ProbNet probNet = relatedNode.getProbNet();

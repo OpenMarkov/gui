@@ -11,7 +11,6 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.UnrecoverableException;
 
 import java.awt.geom.Point2D;
-import java.security.InvalidParameterException;
 
 /**
  * This class represents a segment delimited by two points.
@@ -195,7 +194,6 @@ public class Segment {
 	 * @return a point that both segments have jointly or null if they have not.
 	 */
 	public Point2D.Double cutPoint(Segment segment) {
-
 		if (segmentType == SEGMENT_NORMAL) {
 
 			return (segment.getSegmentType() == SEGMENT_NORMAL) ?
@@ -218,22 +216,21 @@ public class Segment {
 	 * @return an array which contains the points that the circle and the
 	 * segment have jointly or null if they haven't.
 	 */
-	private Point2D.Double[] cutPointVertical(Segment segment, double circleRadius) {
+    private static Point2D.Double[] cutPointVertical(Segment segment, double circleRadius) {
 
 		double r2 = Math.pow(circleRadius, 2);
 		double b2 = Math.pow(segment.getB(), 2);
 		double y = Math.sqrt(r2 - b2);
-		Point2D.Double point1 = null, point2 = null;
-
-		if (Double.isNaN(y)) {
+        
+        if (Double.isNaN(y)) {
 
 			return null;
 		}
-		point1 = new Point2D.Double(segment.getB(), y);
+        Point2D.Double point1 = new Point2D.Double(segment.getB(), y);
 		if (!segment.insideSegment(point1)) {
 			point1 = null;
 		}
-		point2 = new Point2D.Double(segment.getB(), -y);
+        Point2D.Double point2 = new Point2D.Double(segment.getB(), -y);
 		if (!segment.insideSegment(point2)) {
 			point2 = null;
 		}
@@ -255,7 +252,7 @@ public class Segment {
 	 * @return an array which contains the points that the circle and the
 	 * segment have jointly or null if they haven't.
 	 */
-	private Point2D.Double[] cutPointHorizontal(Segment segment, double circleRadius) {
+    private static Point2D.Double[] cutPointHorizontal(Segment segment, double circleRadius) {
 
 		double r2 = Math.pow(circleRadius, 2);
 		double segmentM = segment.getM();
@@ -265,20 +262,18 @@ public class Segment {
 		double segmentM2plus1 = segmentM2 + 1;
 		double segmentMsegmentB = segmentM * segmentB;
 		double squareroot = Math.sqrt(segmentM2plus1 * r2 - segmentB2);
-		double x;
-		Point2D.Double point1 = null, point2 = null;
-
-		if (Double.isNaN(squareroot)) {
+        
+        if (Double.isNaN(squareroot)) {
 
 			return null;
 		}
-		x = (-segmentMsegmentB + squareroot) / segmentM2plus1;
-		point1 = new Point2D.Double(x, segmentM * x + segmentB);
+        double x = (-segmentMsegmentB + squareroot) / segmentM2plus1;
+        Point2D.Double point1 = new Point2D.Double(x, segmentM * x + segmentB);
 		if (!segment.insideSegment(point1)) {
 			point1 = null;
 		}
 		x = (-segmentMsegmentB - squareroot) / segmentM2plus1;
-		point2 = new Point2D.Double(x, segmentM * x + segmentB);
+        Point2D.Double point2 = new Point2D.Double(x, segmentM * x + segmentB);
 		if (!segment.insideSegment(point2)) {
 			point2 = null;
 		}

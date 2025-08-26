@@ -67,8 +67,7 @@ import java.util.List;
 				stringDatabase.getString("AddAgent.Title"), JOptionPane.QUESTION_MESSAGE);
 
 		if (option != null) {
-			int newIndex = 0;
-			newIndex = valuesTable.getRowCount();
+            int newIndex = valuesTable.getRowCount();
 
 			NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.ADD, "", option, null);
 			//doEdit
@@ -127,8 +126,7 @@ import java.util.List;
 
 	@Override protected void actionPerformedUpValue() {
 		int selectedRow = valuesTable.getSelectedRow();
-		Object swap = null;
-		swap = dataTable[selectedRow][0];
+        Object swap = dataTable[selectedRow][0];
 		dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
 		dataTable[selectedRow - 1][0] = swap;
 
@@ -155,8 +153,7 @@ import java.util.List;
 
 	@Override protected void actionPerformedDownValue() {
 		int selectedRow = valuesTable.getSelectedRow();
-		Object swap = null;
-		swap = dataTable[selectedRow][0];
+        Object swap = dataTable[selectedRow][0];
 		dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];
 		dataTable[selectedRow + 1][0] = swap;
 

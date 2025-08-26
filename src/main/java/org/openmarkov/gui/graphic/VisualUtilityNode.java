@@ -9,9 +9,11 @@ package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
 /**
@@ -26,22 +28,22 @@ public class VisualUtilityNode extends VisualNode {
 	 * Internal color of the visual node.
 	 */
 	private static final Color BACKGROUND_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.NODEUTILITY_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					new Color(208, 230, 178));
+            .getColor(OpenMarkovPreferencesKeys.NODEUTILITY_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      new Color(208, 230, 178));
 
 	/**
 	 * Color of lines and letters.
 	 */
 	private static final Color FOREGROUND_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.NODEUTILITY_FOREGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					Color.BLACK);
+            .getColor(OpenMarkovPreferencesKeys.NODEUTILITY_FOREGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      Color.BLACK);
 
 	/**
 	 * Color of the letters
 	 */
 	private static final Color TEXT_FOREGROUND_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.NODEUTILITY_TEXT_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					Color.BLACK);
+            .getColor(OpenMarkovPreferencesKeys.NODEUTILITY_TEXT_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      Color.BLACK);
 
 	/**
 	 * Creates a new visual node from a node.
@@ -93,13 +95,11 @@ public class VisualUtilityNode extends VisualNode {
 		double textWidth = getWidth(text, g);
 		double centerPosX = getTemporalPosition().getX();
 		double centerPosY = getTemporalPosition().getY();
-
-		Double hexagonWidth = 0.0;
-		Double hexagonHeight = 0.0;
-		double triangleWidth = 0.0;
-		Point2D.Double[] points = null;
-
-		if (isExpanded()) {
+        
+        double hexagonWidth;
+        double hexagonHeight;
+        
+        if (isExpanded()) {
 			hexagonHeight = innerBox.getInnerBoxHeight(g) + textHeight + 2 * VERTICAL_SPACE_TO_TEXT
 					+ NODE_EXPANDED_HEIGHT_MARGIN * 2;
 			hexagonWidth = NODE_EXPANDED_WIDTH + 8.0;
@@ -111,10 +111,10 @@ public class VisualUtilityNode extends VisualNode {
 				hexagonWidth = textWidth + 2 * HORIZONTAL_SPACE_TO_TEXT;
 			}
 		}
-
-		triangleWidth = 8.0;
-
-		points = new Point2D.Double[6];
+        
+        double triangleWidth = 8.0;
+        
+        Point2D.Double[] points = new Point2D.Double[6];
 		points[0] = new Point2D.Double(centerPosX - (hexagonWidth / 2), centerPosY);
 		points[3] = new Point2D.Double(centerPosX + (hexagonWidth / 2), centerPosY);
 		points[1] = new Point2D.Double(points[0].getX() + triangleWidth, centerPosY - (hexagonHeight / 2));
@@ -135,7 +135,7 @@ public class VisualUtilityNode extends VisualNode {
 
 		Point2D.Double[] points = getPoints(g);
 		int length = points.length;
-		GeneralPath polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD, length);
+        GeneralPath polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, length);
 
 		polygon.moveTo(points[0].getX(), points[0].getY());
 		for (int i = 1; i < length; i++) {

@@ -87,7 +87,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 	/**
 	 * Icon loader.
 	 */
-	protected IconLoader iconLoader = null;
+    protected IconLoader iconLoader;
 	/**
 	 * String Database
 	 */
@@ -413,29 +413,17 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 			removeValueButton.setEnabled(true);
 			if (index == 0) {
 				upValueButton.setEnabled(false);
-				if (index == (rowCount - 1)) {
-					downValueButton.setEnabled(false);
-				} else {
-					downValueButton.setEnabled(true);
-				}
+                downValueButton.setEnabled(index != (rowCount - 1));
 			} else if (index == (valuesTable.getRowCount() - 1)) {
 				downValueButton.setEnabled(false);
-				if (index == 0) {
-					upValueButton.setEnabled(false);
-				} else {
-					upValueButton.setEnabled(true);
-				}
-				upValueButton.setEnabled(true);
+                upValueButton.setEnabled(true);
+                upValueButton.setEnabled(true);
 			} else {
 				upValueButton.setEnabled(true);
 				downValueButton.setEnabled(true);
 			}
 		}
-		if (rowCount <= 2) {
-			removeValueButton.setEnabled(false);
-		} else {
-			removeValueButton.setEnabled(true);
-		}
+        removeValueButton.setEnabled(rowCount > 2);
 	}
 
 	/**
@@ -473,11 +461,11 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 		DefaultTableModel model = (DefaultTableModel) valuesTable.getModel();
 		int columnCount = model.getColumnCount();
 		int rowCount = model.getRowCount();
-		int i = 0;
-		int j = 0;
+        int i;
+        int j;
 		Object[][] datatmp = new Object[rowCount][columnCount];
 		Vector vectorData = model.getDataVector();
-		Vector vectorRow = null;
+        Vector vectorRow;
 
 		for (i = 0; i < rowCount; i++) {
 			vectorRow = (Vector) vectorData.get(i);

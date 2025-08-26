@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.dialog.costeffectiveness;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;

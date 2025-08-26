@@ -71,25 +71,23 @@ public class ICIOptionListenerAssistant implements ItemListener {
 		if (e.getStateChange() == ItemEvent.DESELECTED) {
 			// has been deselected canonical
 			previousModel = CANONICAL;
-		} else if (e.getStateChange() == ItemEvent.SELECTED) {
 		}
-		if (previousModel == CANONICAL) {
-			// do nothing
-		} else if (previousModel == TPC) { // tpc --&gt; Canonical
-			for (Component component : parentPanel.getComponents()) {
-				if (component instanceof ICIOptionsPanel) {
-					continue;
-				}
-				component.setVisible(false);
-			}
-			parentPanel.validate();
-			// cpTablePanel.setVisible(false);
-			parentPanel.repaint();
-			// parentPanel.add(iciValuesTablePanel, BorderLayout.CENTER);
-			iciValuesTablePanel.setVisible(true);
-			parentPanel.repaint();
-		}
-	}
+        if (previousModel == TPC) {
+            // tpc --&gt; Canonical
+            for (Component component : parentPanel.getComponents()) {
+                if (component instanceof ICIOptionsPanel) {
+                    continue;
+                }
+                component.setVisible(false);
+            }
+            parentPanel.validate();
+            // cpTablePanel.setVisible(false);
+            parentPanel.repaint();
+            // parentPanel.add(iciValuesTablePanel, BorderLayout.CENTER);
+            iciValuesTablePanel.setVisible(true);
+            parentPanel.repaint();
+        }
+    }
 
 	private void itemStateChangedTPC(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED) {

@@ -28,11 +28,11 @@ public class KeyListSelectionDialog extends OkCancelHorizontalDialog {
 	/**
 	 * Elements of the table.
 	 */
-	private Object[][] data = null;
+    private Object[][] data;
 	/**
 	 * Columns of the table.
 	 */
-	private String[] columns = null;
+    private String[] columns;
 	/**
 	 * Selected rows of the table.
 	 */
@@ -192,8 +192,8 @@ public class KeyListSelectionDialog extends OkCancelHorizontalDialog {
 	 */
 	private void fillSelectedRows() {
 		int selectedRowCount = valuesTable.getSelectedRowCount();
-		int index = 0;
-		int[] selectedIndexes = null;
+        int index;
+        int[] selectedIndexes;
 		if (selectedRowCount > 0) {
 			selectedIndexes = valuesTable.getSelectedRows();
 			selectedRows = new Object[selectedRowCount][columns.length];

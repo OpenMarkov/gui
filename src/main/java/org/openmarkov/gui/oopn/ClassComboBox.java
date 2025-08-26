@@ -152,8 +152,8 @@ public class ClassComboBox extends JComboBox<String> implements MDIListener {
 			this.addItem(className);
 		}
 	}
-
-	private String getClassName(String title) {
+    
+    private static String getClassName(String title) {
 		return FilenameUtils.getBaseName(title).replace("*", "");
 	}
 

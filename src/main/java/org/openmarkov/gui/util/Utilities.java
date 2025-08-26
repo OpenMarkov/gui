@@ -20,46 +20,41 @@ import java.awt.event.MouseEvent;
  * and fix warnings
  */
 public class Utilities {
-
-	/**
-	 * private constructor for a class with only static methods
-	 */
-	private Utilities() {
-
-	}
-
-	/**
-	 * Returns the window that owns the component.
-	 *
-	 * @param component component whose top level window will be returned.
-	 * @return the top level ancestor of the component, if it exists and it is a
-	 * Window instance, of null if it isn't a window instance.
-	 */
-	public static Window getOwner(JComponent component) {
-
-		Container ancestor = component.getTopLevelAncestor();
-
-		if (ancestor == null) {
-
-			return null;
-		} else if (ancestor instanceof Window) {
-			return (Window) ancestor;
-		} else {
-			return null;
-		}
-
-	}
-
-	/**
-	 * Checks if the mouse event hasn't key modifiers.
-	 *
-	 * @param e mouse event information.
-	 * @return true if the mouse event hasn't modifiers; otherwise, false.
-	 */
-	public static boolean noMouseModifiers(MouseEvent e) {
-
-		return ((e.getModifiersEx() & 0xF) == 0);
-
-	}
-
+    
+    /**
+     * private constructor for a class with only static methods
+     */
+    private Utilities() {
+    
+    }
+    
+    /**
+     * Returns the window that owns the component.
+     *
+     * @param component component whose top level window will be returned.
+     *
+     * @return the top level ancestor of the component, if it exists and it is a
+     * Window instance, of null if it isn't a window instance.
+     */
+    public static Window getOwner(JComponent component) {
+        Container ancestor = component.getTopLevelAncestor();
+        if (ancestor instanceof Window window) {
+            return window;
+        }
+        return null;
+    }
+    
+    /**
+     * Checks if the mouse event hasn't key modifiers.
+     *
+     * @param e mouse event information.
+     *
+     * @return true if the mouse event hasn't modifiers; otherwise, false.
+     */
+    public static boolean noMouseModifiers(MouseEvent e) {
+        
+        return ((e.getModifiersEx() & 0xF) == 0);
+        
+    }
+    
 }

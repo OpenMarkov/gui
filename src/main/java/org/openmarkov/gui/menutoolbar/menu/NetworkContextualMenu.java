@@ -83,7 +83,7 @@ class NetworkContextualMenu extends ContextualMenu {
 	private JMenuItem getExpandedNetworkMenuItem() {
 		if (expandNetworkMenuItem == null) {
 			expandNetworkMenuItem = new LocalizedMenuItem(MenuItemNames.EXPAND_NETWORK_MENUITEM,
-					ActionCommands.EXPAND_NETWORK);
+                                                          ActionCommands.EXPAND_NETWORK.getCommandName());
 			expandNetworkMenuItem.addActionListener(listener);
 		}
 		return expandNetworkMenuItem;
@@ -97,7 +97,7 @@ class NetworkContextualMenu extends ContextualMenu {
 	private JMenuItem getTECriterionMenuItem() {
 		if (teCriterionMenuItem == null) {
 			teCriterionMenuItem = new LocalizedMenuItem(MenuItemNames.TEMPORAL_EVOLUTION_BY_CRITERION_MENUITEM,
-					ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION);
+                                                        ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION.getCommandName());
 			teCriterionMenuItem.addActionListener(listener);
 		}
 		return teCriterionMenuItem;
@@ -126,7 +126,7 @@ class NetworkContextualMenu extends ContextualMenu {
 	 */
 	private JMenuItem getPasteMenuItem() {
 		if (pasteMenuItem == null) {
-			pasteMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_PASTE_MENUITEM, ActionCommands.CLIPBOARD_PASTE,
+            pasteMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_PASTE_MENUITEM, ActionCommands.CLIPBOARD_PASTE.getCommandName(),
 					IconLoader.ICON_PASTE_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
 			pasteMenuItem.addActionListener(listener);
 		}
@@ -141,7 +141,7 @@ class NetworkContextualMenu extends ContextualMenu {
 	private JMenuItem getNetworkPropertiesMenuItem() {
 		if (networkPropertiesMenuItem == null) {
 			networkPropertiesMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_NETWORKPROPERTIES_MENUITEM,
-					ActionCommands.NETWORK_PROPERTIES);
+                                                              ActionCommands.NETWORK_PROPERTIES.getCommandName());
 			networkPropertiesMenuItem.addActionListener(listener);
 		}
 		return networkPropertiesMenuItem;
@@ -155,9 +155,9 @@ class NetworkContextualMenu extends ContextualMenu {
 	 */
 	@Override protected JComponent getJComponentActionCommand(String actionCommand) {
 		JComponent component = null;
-		if (actionCommand.equals(ActionCommands.CLIPBOARD_PASTE)) {
+        if (actionCommand.equals(ActionCommands.CLIPBOARD_PASTE.getCommandName())) {
 			component = pasteMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
+        } else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES.getCommandName())) {
 			component = networkPropertiesMenuItem;
 		}
 		return component;

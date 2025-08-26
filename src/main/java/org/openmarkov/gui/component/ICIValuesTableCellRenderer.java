@@ -22,7 +22,7 @@ import java.util.List;
 @SuppressWarnings("serial") public class ICIValuesTableCellRenderer extends ValuesTableCellRenderer {
 	private List<Variable> variables;
 	private int[] numColumnsParents;
-	private int acummulativeColumns[];
+    private int[] acummulativeColumns;
 
 	public ICIValuesTableCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns, ICIPotential iciPotential) {
 		super(firstEditableRow, uncertaintyInColumns);

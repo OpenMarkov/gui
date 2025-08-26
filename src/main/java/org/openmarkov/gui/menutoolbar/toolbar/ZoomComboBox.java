@@ -88,17 +88,15 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
 	 * @return the integer zoom value or null if the string has not a correct
 	 * value.
 	 */
-	private Integer getZoomValue(String zoomString) {
+    private static Integer getZoomValue(String zoomString) {
 		Integer result;
-		int length;
-		String substring;
+        String substring;
 		String zString = zoomString.trim();
-		int percentajePosition;
-		length = zString.length();
+        int length = zString.length();
 		if (length == 0) {
 			return null;
 		}
-		percentajePosition = zString.indexOf("%");
+        int percentajePosition = zString.indexOf('%');
 		if (percentajePosition >= 0) {
 			if (percentajePosition == (length - 1)) {
 				substring = zString.substring(0, percentajePosition);

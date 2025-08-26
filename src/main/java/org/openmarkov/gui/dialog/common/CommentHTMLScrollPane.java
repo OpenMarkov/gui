@@ -173,7 +173,7 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 				if (hTMLTextEditor.getOkButtonStatus()) {
 					setCommentHTMLTextPaneText(hTMLTextEditor.getCommentText());
 					isChanged = true;
-					isEmpty = hTMLTextEditor.getCommentText().trim().replaceAll("[\r\n]", "").equals("");
+                    isEmpty = hTMLTextEditor.getCommentText().trim().replaceAll("[\r\n]", "").isEmpty();
 					notifyCommentChanged();
 				}
 			} catch (IllegalArgumentException ignored) {

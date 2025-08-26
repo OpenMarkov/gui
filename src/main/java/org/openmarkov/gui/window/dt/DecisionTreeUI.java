@@ -27,7 +27,7 @@ public class DecisionTreeUI extends BasicTreeUI {
 		}
 
 		@Override public void mousePressed(MouseEvent e) {
-			Double zoom = ((DecisionTree) tree).getZoom();
+            double zoom = ((DecisionTree) tree).getZoom();
 			int newX = (int) (e.getX() / zoom);
 			int newY = (int) (e.getY() / zoom);
 			e.translatePoint(newX - e.getX(), newY - e.getY());

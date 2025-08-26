@@ -99,8 +99,8 @@ import java.util.List;
 	 * @return a new tableModel.
 	 */
 	protected ValuesTableModel getTableModel() {
-
-		LinkRestrictionValuesTableModel tableModel = null;
+        
+        LinkRestrictionValuesTableModel tableModel;
 		if (valuesTable == null) {
 			tableModel = new LinkRestrictionValuesTableModel(data, columns, firstEditableRow);
 		} else if (valuesTable.getTableModel() == null) {
@@ -138,13 +138,11 @@ import java.util.List;
 	 *            Child node of the link.
 	 */
 	public void setData(Node node1, Node node2) {
-
-		Object[][] tableData = null;
-		String[] newColumns = null;
-		newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(this.node1.getVariable().getNumStates() + 1);
+        
+        String[] newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(this.node1.getVariable().getNumStates() + 1);
 		setFirstEditableRow(1);
 		setLastEditableRow(node2.getVariable().getNumStates());
-		tableData = convertListPotentialsToTableFormat(node1, node2);
+        Object[][] tableData = convertListPotentialsToTableFormat(node1, node2);
 		this.data = tableData;
 		this.columns = newColumns;
 
@@ -178,8 +176,7 @@ import java.util.List;
 	 * @return he table data to be set
 	 */
 	protected Object[][] convertListPotentialsToTableFormat(Node node1, Node node2) {
-		Object[][] values = null;
-		values = setValuesTableSize(values);
+        Object[][] values = setValuesTableSize();
 		values = setParentsNameInUpperLeftCornerArea(values);
 		values = setParentsStatesInTopArea(values);
 		values = setNodeStatesInLeftArea(values);
@@ -226,11 +223,11 @@ import java.util.List;
 
 		Object[][] values = oldValues;
 		NodeType type = node2.getNodeType();
-		Variable var = node2.getVariable();
-		State[] states = var.getStates();
-		for (int i = var.getNumStates(); i > 0; i--) {
+        Variable variable = node2.getVariable();
+        State[] states = variable.getStates();
+        for (int i = variable.getNumStates(); i > 0; i--) {
 			if (type != NodeType.UTILITY) {
-				values[i][0] = states[var.getNumStates() - i].getName();
+                values[i][0] = states[variable.getNumStates() - i].getName();
 			} else {
 				values[i][0] = "";
 			}
@@ -249,9 +246,9 @@ import java.util.List;
 	private Object[][] setParentsStatesInTopArea(Object[][] oldValues) {
 
 		Object[][] values = oldValues;
-
-		Variable var = node1.getVariable();
-		State[] states = var.getStates();
+        
+        Variable variable = node1.getVariable();
+        State[] states = variable.getStates();
 		for (int i = 1; i <= node1.getVariable().getNumStates(); i++) {
 			values[0][i] = states[i - 1].getName();
 		}
@@ -278,19 +275,17 @@ import java.util.List;
 	/**
 	 * Set values table size for the link restriction potential.
 	 *
-	 * @param oldValues - the table that is being modified
 	 * @return the table data having the correct size to displau the link
 	 * restriction potential.
 	 */
-
-	private Object[][] setValuesTableSize(Object[][] oldValues) {
-		Object[][] values = oldValues;
-		setBaseIndexForCoordinates(1);
+    
+    private Object[][] setValuesTableSize() {
+        setBaseIndexForCoordinates(1);
 		setFirstEditableRow(1);
 
 		setVariables(link.getRestrictionsPotential().getVariables());
 		// create the array of arrays
-		values = new Object[node2.getVariable().getNumStates() + 1][node1.getVariable().getNumStates() + 1];
+        Object[][] values = new Object[node2.getVariable().getNumStates() + 1][node1.getVariable().getNumStates() + 1];
 		return values;
 	}
 

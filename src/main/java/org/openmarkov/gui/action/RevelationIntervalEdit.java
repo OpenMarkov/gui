@@ -153,10 +153,9 @@ import org.openmarkov.core.model.network.ProbNet;
 	private PartitionedInterval getNewPartitionedInterval() {
 		if (link.getRevealingIntervals().isEmpty()) {
 			return new PartitionedInterval(false, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
-		} else {
-			PartitionedInterval interval = link.getRevealingIntervals().get(link.getRevealingIntervals().size() - 1);
-			return new PartitionedInterval(false, interval.getLimit(1), Double.POSITIVE_INFINITY, false);
-		}
-	}
+        }
+        PartitionedInterval interval = link.getRevealingIntervals().get(link.getRevealingIntervals().size() - 1);
+        return new PartitionedInterval(false, interval.getLimit(1), Double.POSITIVE_INFINITY, false);
+    }
 
 }

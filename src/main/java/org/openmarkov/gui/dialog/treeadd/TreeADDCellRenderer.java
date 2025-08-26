@@ -60,9 +60,9 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
         this.probNet = probNet;
         this.add(leftLabel, BorderLayout.WEST);
         this.add(rightLabel, BorderLayout.CENTER);
-        leftLabel.setHorizontalAlignment(JLabel.CENTER);
-        leftLabel.setHorizontalTextPosition(JLabel.LEADING);
-        rightLabel.setHorizontalAlignment(JLabel.RIGHT);
+        leftLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        leftLabel.setHorizontalTextPosition(SwingConstants.LEADING);
+        rightLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         setBackground(Color.white);
         // TODO: Add a background color attribute
         textIconFont = new Font("Helvetica", Font.BOLD, 15);
@@ -76,9 +76,11 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
         rightLabel.setText(null);
         if (value instanceof TreeADDBranch) {
             return getTreeCellRendererBranch(tree, (TreeADDBranch) value, selected, expanded, leaf, row, hasFocus);
-        } else if (value instanceof Potential) {
+        }
+        if (value instanceof Potential) {
             return getTreeCellRendererPotential(tree, (Potential) value, selected, expanded, leaf, row, hasFocus);
-        } else if (value instanceof String) {
+        }
+        if (value instanceof String) {
             leftLabel.setText("@" + value);
             return this;
         }
@@ -133,8 +135,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
      */
     public Component getTreeCellRendererPotential(JTree tree, Potential potential, boolean selected, boolean expanded,
                                                   boolean leaf, int row, boolean hasFocus) {
-        if (potential instanceof TreeADDPotential) {
-            TreeADDPotential treeADDPotential = (TreeADDPotential) potential;
+        if (potential instanceof TreeADDPotential treeADDPotential) {
             Variable topVariable = treeADDPotential.getRootVariable();
             leftLabel.setIcon(getIcon(topVariable));
         } else {
@@ -144,7 +145,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
     }
     
     private Icon getIcon(Variable variable) {
-        Icon icon = null;
+        Icon icon;
         if (iconsPool.containsKey(variable)) {
             icon = iconsPool.get(variable);
         } else {
@@ -186,7 +187,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
      * Creates what is displayed in a branch for discretized or finite states
      * variables
      */
-    public String getBranchDescriptiontHTML(TreeADDBranch treeBranch) {
+    public static String getBranchDescriptiontHTML(TreeADDBranch treeBranch) {
         String txtLeft = "<html><table border=1>";
         Variable topVariable = treeBranch.getRootVariable();
         if (topVariable == null) {
@@ -195,8 +196,8 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
             Threshold min = treeBranch.getLowerBound();
             Threshold max = treeBranch.getUpperBound();
             String intervalString = "";
-            String minimun = "";
-            String maximun = "";
+            String minimun;
+            String maximun;
             intervalString += !min.belongsToLeft() ? "[" : "(";
             if (min.getLimit() == Double.NEGATIVE_INFINITY) {
                 minimun = "-" + "\u221E";

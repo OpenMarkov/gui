@@ -24,6 +24,7 @@ import org.openmarkov.gui.action.PasteEdit;
 import org.openmarkov.gui.action.RemoveSelectedEdit;
 import org.openmarkov.gui.dialog.ExceptionDialog;
 import org.openmarkov.gui.dialog.PropagationOptionsDialog;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.inference.temporalevolution.TemporalEvolutionDialog;
 import org.openmarkov.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.gui.dialog.link.RevelationArcEditDialog;
@@ -32,6 +33,7 @@ import org.openmarkov.gui.dialog.node.AddFindingDialog;
 import org.openmarkov.gui.dialog.node.CommonNodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
+import org.openmarkov.gui.exception.NoSelectedNodeException;
 import org.openmarkov.gui.graphic.*;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
@@ -52,7 +54,6 @@ import javax.swing.undo.CannotUndoException;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
-import java.lang.UnsupportedOperationException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -137,7 +138,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * Network panel associated to this editor panel
      */
-    private NetworkPanel networkPanel = null;
+    private NetworkPanel networkPanel;
     /**
      * Pre resolution evidence
      */
@@ -241,7 +242,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public static boolean requestNetworkProperties(Window owner, ProbNet probNet) {
         NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(owner, probNet);
-        return (dialogProperties.showProperties() == NetworkPropertiesDialog.OK_BUTTON);
+        return (dialogProperties.showProperties() == OkCancelHorizontalDialog.OK_BUTTON);
     }
     
     /**
@@ -360,8 +361,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         // Specific functionality depending on the edition mode;
         editionMode.mousePressed(e, cursorPosition, g);
         // Generic functionality regardless of the edition mode
-        VisualNode node = null;
-        VisualLink link = null;
+        VisualNode node;
+        VisualLink link;
         if (SwingUtilities.isLeftMouseButton(e)) {
             if (e.getClickCount() == 2) {
                 if (Utilities.noMouseModifiers(e)) {
@@ -427,7 +428,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     private void showContextualMenu(MouseEvent e, Graphics2D g) {
         VisualElement selectedElement = visualNetwork.getElementInPosition(cursorPosition, g);
-        ContextualMenu contextualMenu = null;
+        ContextualMenu contextualMenu;
         if (selectedElement != null) {
             contextualMenu = getContextualMenu(selectedElement, this);
             visualNetwork.selectElement(selectedElement);
@@ -681,9 +682,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
         if (selectedNodes.size() == 1) { // Always happens
             return selectedNodes.get(0).getNode();
-        } else {
-            throw new UnreacheableException("There must be at least one selected node in the network.");
         }
+        throw new UnreacheableException(new NoSelectedNodeException(visualNetwork));
     }
     
     /**
@@ -766,9 +766,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      *                to be edited is new.
      * @return true, if the user save the changes on node; otherwise, false.
      */
-    private boolean requestNodePropertiesToUser2(Window owner, Node node, boolean newNode) {
+    private static boolean requestNodePropertiesToUser2(Window owner, Node node, boolean newNode) {
         NodePropertiesDialog nodePropertiesDialog = new CommonNodePropertiesDialog(owner, node, newNode);
-        return (nodePropertiesDialog.requestProperties() == NodePropertiesDialog.OK_BUTTON);
+        return (nodePropertiesDialog.requestProperties() == OkCancelHorizontalDialog.OK_BUTTON);
     }
     
     private boolean requestPotentialValues(Window owner, Node node, boolean newNode, boolean readOnly) {
@@ -777,7 +777,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 potentialsDialog.requestValues()// to know if the user has
                         // selected the ok button when
                         // closing the dialog
-                        == NodePropertiesDialog.OK_BUTTON
+                        == OkCancelHorizontalDialog.OK_BUTTON
         );
     }
     
@@ -792,7 +792,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     private boolean requestLinkRestrictionValues(Window owner, Link<Node> link) {
         linkRestrictionDialog = new LinkRestrictionEditDialog(owner, link);
-        return (linkRestrictionDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
+        return (linkRestrictionDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
     }
     
     // private boolean requestCostEffectiveness(Window owner,
@@ -813,7 +813,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     private boolean requestRevelationArcValues(Window owner, Link<Node> link) {
         revelationArcDialog = new RevelationArcEditDialog(owner, link);
-        return (revelationArcDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
+        return (revelationArcDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
     }
     
     /**
@@ -912,14 +912,14 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * @return true if there is data stored in the clipboard; otherwise, false.
      */
     public boolean isThereDataStored() {
-        return (clipboardAssistant != null) ? clipboardAssistant.isThereDataStored() : false;
+        return clipboardAssistant != null && clipboardAssistant.isThereDataStored();
     }
     
     /**
      * This method imposes a policy in a decision node.
      */
     public void imposePolicyInNode() {
-        VisualNode visualNode = null;
+        VisualNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
             visualNode = selectedNode.get(0);
@@ -963,7 +963,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * This method edits an imposed policy of a decision node.
      */
     public void editNodePolicy() {
-        VisualNode visualNode = null;
+        VisualNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
             visualNode = selectedNode.get(0);
@@ -986,7 +986,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * This method removes an imposed policy from a decision node.
      */
     public void removePolicyFromNode() {
-        VisualNode visualNode = null;
+        VisualNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
             visualNode = selectedNode.get(0);
@@ -1005,10 +1005,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         repaint();
     }
     
-    private boolean requestImposePolicyValues(Window owner, VisualNode visualNode) {
+    private static boolean requestImposePolicyValues(Window owner, VisualNode visualNode) {
         PotentialEditDialog imposePolicyDialog = new PotentialEditDialog(owner, visualNode, false);
         imposePolicyDialog.setTitle("ImposePolicydialog.Title.Label");
-        return (imposePolicyDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
+        return (imposePolicyDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
     }
     
     
@@ -1016,17 +1016,16 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * This method shows the expected utility of a decision node.
      */
     public void showExpectedUtilityOfNode() {
-        VisualNode visualNode = null;
+        VisualNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
             visualNode = selectedNode.get(0);
             Node node = visualNode.getNode();
             try {
-                Potential expectedUtility = null;
                 
                 VEExpectedUtilityDecision veExpectedUtilityDecision = new VEExpectedUtilityDecision(probNet,
                                                                                                     node.getVariable());
-                expectedUtility = veExpectedUtilityDecision.getExpectedUtility();
+                Potential expectedUtility = veExpectedUtilityDecision.getExpectedUtility();
                 
                 Node dummyNode = new Node(new ProbNet(), node.getVariable(), node.getNodeType());
                 dummyNode.setPotential(expectedUtility);
@@ -1053,12 +1052,11 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void showOptimalPolicyOfNode() {
         VisualNetwork n = getVisualNetwork();
-        VisualNode visualNode = null;
+        VisualNode visualNode;
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
         if (selectedNodes.size() == 1) {
             visualNode = selectedNodes.get(0);
             ProbNet dummyProbNet = new ProbNet();
-            Node dummy = null;
             Potential optimalPolicy = null;
             
             try {
@@ -1085,7 +1083,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             
             dummyProbNet.addPotential(optimalPolicy);
             Variable conditionedVariable = optimalPolicy.getVariable(0);
-            dummy = dummyProbNet.getNode(conditionedVariable);
+            Node dummy = dummyProbNet.getNode(conditionedVariable);
             dummy.setNodeType(NodeType.DECISION);
             dummy.setPolicyType(PolicyType.OPTIMAL);
             for (Variable variable : optimalPolicy.getVariables()) {
@@ -1111,9 +1109,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * This method expands a node.
      */
     public void expandNode() {
-        VisualNode visualNode = null;
+        VisualNode visualNode;
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
-        if (selectedNodes.size() > 0) {
+        if (!selectedNodes.isEmpty()) {
             for (int i = 0; i < selectedNodes.size(); i++) {
                 visualNode = selectedNodes.get(i);
                 if (!(visualNode.isExpanded())) {
@@ -1129,9 +1127,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * This method contracts a node.
      */
     public void contractNode() {
-        VisualNode visualNode = null;
+        VisualNode visualNode;
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
-        if (selectedNodes.size() > 0) {
+        if (!selectedNodes.isEmpty()) {
             for (int i = 0; i < selectedNodes.size(); i++) {
                 visualNode = selectedNodes.get(i);
                 if (visualNode.isExpanded()) {
@@ -1166,7 +1164,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     
     private boolean requestAddFindingValues(Window owner, VisualNode node, Finding finding) {
         addFindingDialog = new AddFindingDialog(owner, node, finding, networkPanel, this);
-        return (addFindingDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
+        return (addFindingDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
     }
     
     /**
@@ -1174,7 +1172,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void removeFinding() {
         setPropagationActive(isAutomaticPropagation());
-        VisualNode node = null;
+        VisualNode node;
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
         for (int i = 0; i < selectedNodes.size(); i++) {
             node = selectedNodes.get(i);
@@ -1432,9 +1430,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void updateNodesExpansionState(int newWorkingMode) {
         if (newWorkingMode == NetworkPanel.EDITION_WORKING_MODE) {
-            VisualNode visualNode = null;
+            VisualNode visualNode;
             List<VisualNode> allNodes = visualNetwork.getAllNodes();
-            if (allNodes.size() > 0) {
+            if (!allNodes.isEmpty()) {
                 for (int i = 0; i < allNodes.size(); i++) {
                     visualNode = allNodes.get(i);
                     if (visualNode.isExpanded()) {
@@ -1445,16 +1443,12 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 repaint();
             }
         } else if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
-            VisualNode visualNode = null;
+            VisualNode visualNode;
             List<VisualNode> allNodes = visualNetwork.getAllNodes();
-            if (allNodes.size() > 0) {
+            if (!allNodes.isEmpty()) {
                 for (int i = 0; i < allNodes.size(); i++) {
                     visualNode = allNodes.get(i);
-                    if (visualNode.getNode().getRelevance() >= getExpansionThreshold()) {
-                        visualNode.setExpanded(true);
-                    } else {
-                        visualNode.setExpanded(false);
-                    }
+                    visualNode.setExpanded(visualNode.getNode().getRelevance() >= getExpansionThreshold());
                     repaint();
                 }
             }
@@ -1471,7 +1465,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         // visual states and consider that the network has been changed.
         for (VisualNode visualNode : visualNetwork.getAllNodes()) {
             InnerBox innerBox = visualNode.getInnerBox();
-            VisualState visualState = null;
+            VisualState visualState;
             if (innerBox instanceof FSVariableBox || innerBox instanceof NumericVariableBox) {
                 if (innerBox instanceof FSVariableBox) {
                     visualState = ((FSVariableBox) innerBox).getVisualState(0);
@@ -1490,7 +1484,14 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
              TODO - Always true, remove the or condition and set the network as changed when the criteria is modified
              for example, when the scale change
               */
-            if (networkChanged || true) {
+            
+            for (int i = 0; i < postResolutionEvidence.size(); i++) {
+                doPropagation(getEvidenceCase(i), i);
+            }
+            updateNodesFindingState(postResolutionEvidence.get(currentCase));
+            networkChanged = false;
+            /*
+            if (networkChanged) {
                 for (int i = 0; i < postResolutionEvidence.size(); i++) {
                     doPropagation(getEvidenceCase(i), i);
                 }
@@ -1502,6 +1503,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                         setPropagationActive(false);
                 }
             }
+            */
         } else if (evidenceCasesCompilationState.get(currentCase) == false) {
             // Even if propagation mode is manual, a propagation should be
             // done the first time that inference mode is selected
@@ -1589,7 +1591,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         boolean areFindings = false;
         List<Finding> findings = postResolutionEvidence.get(currentCase).getFindings();
         if (findings != null) {
-            if (findings.size() > 0) {
+            if (!findings.isEmpty()) {
                 areFindings = true;
             }
         }
@@ -1672,11 +1674,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                         throw new UnreacheableException(e);
                     }
                 }
-                if (isInferenceMode) {
-                    visualNode.setPostResolutionFinding(alreadyHasFinding);
-                } else {
-                    visualNode.setPreResolutionFinding(alreadyHasFinding);
-                }
+                visualNode.setPostResolutionFinding(alreadyHasFinding);
             }
         }
         networkPanel.getMainPanel().getMainPanelMenuAssistant().updateOptionsFindingsDependent(networkPanel);
@@ -1932,7 +1930,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     public void temporalEvolution() {
-        VisualNode node = null;
+        VisualNode node;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
             node = selectedNode.get(0);
@@ -1943,7 +1941,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         }/*
         else if(selectedNode == null){
         	new CostEffectivenessDialog(Utilities.getOwner (this), probNet, true, true).setVisible(true);
-        }*/ else if (selectedNode.size() == 0) {
+        }*/ else if (selectedNode.isEmpty()) {
             new TemporalEvolutionDialog(Utilities.getOwner(this), getNetworkPanel().getProbNet(), preResolutionEvidence);
         }
         
@@ -2368,10 +2366,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void adjustPanelDimension() {
         double[] bounds = getBounds((Graphics2D) getGraphics());
-        Dimension newDimension = null;
         currentWidth = Math.min(MAX_WIDTH, bounds[1]);
         currentHeight = Math.min(MAX_HEIGHT, bounds[3]);
-        newDimension = new Dimension((int) Math.round(getNewWidth()), (int) Math.round(getNewHeight()));
+        Dimension newDimension = new Dimension((int) Math.round(getNewWidth()), (int) Math.round(getNewHeight()));
         setPreferredSize(newDimension);
         setSize(newDimension);
     }
@@ -2461,7 +2458,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     public void cancelAction() {
-        Boolean alreadyModifiedNetwork = networkPanel.getModified();
+        boolean alreadyModifiedNetwork = networkPanel.getModified();
         probNet.getPNESupport().undoAndDelete();
         // We restore the network state to not modified, if it was not already modified
         if (!alreadyModifiedNetwork) {

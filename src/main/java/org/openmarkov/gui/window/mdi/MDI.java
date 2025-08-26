@@ -8,8 +8,6 @@
 package org.openmarkov.gui.window.mdi;
 
 import org.openmarkov.core.exception.UnreacheableException;
-import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.event.InternalFrameEvent;
@@ -91,8 +89,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	 */
 	public void createNewFrame(FrameContentPanel newContentPanel, boolean maximized)
 			throws UnsupportedOperationException {
-		InternalFrame frame = null;
-		frame = (InternalFrame) desktopPane.createNewInternalFrame(newContentPanel);
+        InternalFrame frame = (InternalFrame) desktopPane.createNewInternalFrame(newContentPanel);
 		frame.addInternalFrameListener(this);
 		frame.addFrameTitleListener(this);
 		frame.setTitle(newContentPanel.getTitle());
@@ -216,7 +213,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	@Override public void internalFrameClosing(InternalFrameEvent e) {
 		JInternalFrame frame = e.getInternalFrame();
 		try {
-			desktopPane.selectFrame(frame);
+            DesktopPane.selectFrame(frame);
 			if (notifyFrameClosing(frame)) {
 				desktopPane.closeCurrentInternalFrame();
 			}
@@ -300,21 +297,15 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	@Override public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
 		try {
-			if (actionCommand.equals(MDIMenu.WINDOW_MINIMIZEALL_MENUITEM)) {
-				desktopPane.minimizeAll();
-			} else if (actionCommand.equals(MDIMenu.WINDOW_RESTOREALL_MENUITEM)) {
-				desktopPane.restoreAll();
-			} else if (actionCommand.equals(MDIMenu.WINDOW_CASCADE_MENUITEM)) {
-				desktopPane.cascade();
-			} else if (actionCommand.equals(MDIMenu.WINDOW_MOSAIC_MENUITEM)) {
-				desktopPane.mosaic();
-			} else if (actionCommand.equals(MDIMenu.WINDOW_PREVIOUS_MENUITEM)) {
-				desktopPane.previous();
-			} else if (actionCommand.equals(MDIMenu.WINDOW_NEXT_MENUITEM)) {
-				desktopPane.next();
-			} else {
-				desktopPane.selectFrame(mdiMenu.getPanelByMenuItem((JCheckBoxMenuItem) e.getSource()));
-			}
+            switch (actionCommand) {
+                case MDIMenu.WINDOW_MINIMIZEALL_MENUITEM -> desktopPane.minimizeAll();
+                case MDIMenu.WINDOW_RESTOREALL_MENUITEM -> desktopPane.restoreAll();
+                case MDIMenu.WINDOW_CASCADE_MENUITEM -> desktopPane.cascade();
+                case MDIMenu.WINDOW_MOSAIC_MENUITEM -> desktopPane.mosaic();
+                case MDIMenu.WINDOW_PREVIOUS_MENUITEM -> desktopPane.previous();
+                case MDIMenu.WINDOW_NEXT_MENUITEM -> desktopPane.next();
+                default -> desktopPane.selectFrame(mdiMenu.getPanelByMenuItem((JCheckBoxMenuItem) e.getSource()));
+            }
 		} catch (UnsupportedOperationException exc) {
 			System.err.println(exc.getMessage());
 		}

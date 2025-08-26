@@ -3,5 +3,13 @@
     <Localization class="org.openmarkov.gui.exception.CannotSavePreferenceException" value="Cannot save preference {key} with value {value}."/>
     <Localization class="org.openmarkov.gui.exception.MissingPreferenceException" value="There is no preference by key {key}."/>
     <Localization class="org.openmarkov.gui.exception.NoNetOpenedException" value="There is no network opened."/>
+    <Localization class="org.openmarkov.gui.exception.NoSelectedNodeException"
+                  value="There should be a node selected in the network."/>
     <Localization class="org.openmarkov.gui.exception.ResourceNotFoundException" value="Could not find resource {resource}."/>
+    <Localization class="org.openmarkov.gui.exception.UnexpectedMenuActionException"
+                  value="Unexpected menu action found: {actionCommand}"/>
+    <Localization class="org.openmarkov.gui.exception.WrongClassException"
+                  value="Expected class {expectedClass}, found: {foundClass}"/>
+    <Localization class="org.openmarkov.gui.exception.WrongRoleException"
+                  value="Expected role {expectedRole}, found: {foundRole}"/>
 </ClassLocalizations>

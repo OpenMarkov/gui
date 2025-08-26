@@ -24,21 +24,17 @@ public class MenuLocalizer {
 	 * Suffix that has mnemonic string resources.
 	 */
 	private final static String MNEMONIC_SUFFIX = ".Mnemonic";
-	/**
-	 * String resource.
-	 */
-	private static StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
-	public static String getString(String stringId) {
-		return stringDatabase.getString(stringId);
+    
+    public static String getString(String stringId) {
+        return StringDatabase.getUniqueInstance().getString(stringId);
 	}
 
 	public static String getLabel(String stringId) {
-		return stringDatabase.getString(stringId + LABEL_SUFFIX);
+        return StringDatabase.getUniqueInstance().getString(stringId + LABEL_SUFFIX);
 	}
 
 	public static String getMnemonic(String stringId) {
-		return stringDatabase.getString(stringId + MNEMONIC_SUFFIX);
+        return StringDatabase.getUniqueInstance().getString(stringId + MNEMONIC_SUFFIX);
 	}
 
 }

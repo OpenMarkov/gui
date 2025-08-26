@@ -20,8 +20,8 @@ import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
 /**
- * <code>UnivariateDistrPotentialEdit</code> is a simple edit that allows to modify the
- * node's <code>Potential</code> values when its potential is an UnivariateDistrPotential.
+ * {@code UnivariateDistrPotentialEdit} is a simple edit that allows to modify the
+ * node's {@code Potential} values when its potential is an UnivariateDistrPotential.
  *
  * @author carmenyago
  * @version 1.0  03/04/2017
@@ -74,7 +74,7 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 	// Constructor
 
 	/**
-	 * Creates a new <code>UnivariateDistrPotentialEdit</code> in which one value of the <code>distributionTable</code> is changed.
+     * Creates a new {@code UnivariateDistrPotentialEdit} in which one value of the {@code distributionTable} is changed.
 	 * Specifying the node to be edited, the new value to be inserted in (row,col) and the notEditablePositions of the displayed table.
 	 *
 	 * @param node                 - the node to be changed
@@ -95,13 +95,13 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
 		this.newPotential = new UnivariateDistrPotential(oldPotential);
 		this.newDistributionTable = newPotential.getDistributionTable();
-		this.potentialSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, newDistributionTable);
+        this.potentialSelected = PotentialsTablePanelOperations.getPotentialIndex(row, col, newDistributionTable);
 		newDistributionTable.getFunctionValues()[potentialSelected] = newValue;
 	}
 
 	/**
-	 * Creates a new <code>UnivariateDistrPotentialEdit</code> specifying the node to be and the new probability distribution.
-	 * This is used when the distribution of <code>UnivariateDistrPotential</code> is changed.
+     * Creates a new {@code UnivariateDistrPotentialEdit} specifying the node to be and the new probability distribution.
+     * This is used when the distribution of {@code UnivariateDistrPotential} is changed.
 	 *
 	 * @param node             - the node to be edited
 	 * @param distributionName - the name of the distribution to be created. Represents the attribute name in ProbDensFunctionType which represents the distribution class
@@ -110,9 +110,8 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 	public UnivariateDistrPotentialValueEdit(Node node, String distributionName) {
 		super(node.getProbNet());
 		this.node = node;
-		UnivariateDistrPotential potential = null;
-			//The old univariateDistrPotential
-			potential = (UnivariateDistrPotential) node.getPotentials().get(0);
+        //The old univariateDistrPotential
+        UnivariateDistrPotential potential = (UnivariateDistrPotential) node.getPotentials().get(0);
 			this.oldPotential = potential;
 		if (distributionName.equals(potential.getProbDensFunctionName())) {
 			this.newPotential = new UnivariateDistrPotential(potential);
@@ -129,8 +128,7 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 	 * and updates the probNet
 	 */
 	@Override public void doEdit() throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
-		PotentialChangeEdit changePotentialEdit = null;
-		changePotentialEdit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
+        PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
 		changePotentialEdit.doEdit(probNet);
 	}
 	

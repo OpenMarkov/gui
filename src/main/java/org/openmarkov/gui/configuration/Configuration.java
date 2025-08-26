@@ -10,21 +10,21 @@ package org.openmarkov.gui.configuration;
 public interface Configuration extends DefaultConfiguration {
 
 	/**
-	 * @return Component name. <code>String</code>
+     * @return Component name. {@code String}
 	 */
 	String getComponentName();
 
 	/**
-	 * @param name <code>String</code>. Property name.
-	 * @return An <code>Object</code> whose name = <code>name</code>.
+     * @param name {@code String}. Property name.
+     * @return An {@code Object} whose name = {@code name}.
 	 */
 	Object getProperty(String name);
 
 	/**
 	 * Creates or modifies a property.
 	 *
-	 * @param name  <code>String</code>. Property name.
-	 * @param value <code>Object</code>.
+     * @param name  {@code String}. Property name.
+     * @param value {@code Object}.
 	 */
 	void setProperty(String name, Object value);
 

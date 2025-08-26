@@ -8,9 +8,9 @@
 package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.action.VisualChanceNodeFindingChangeListener;
-import org.openmarkov.core.action.VisualDecisionNodePolicyChangeListener;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -32,8 +32,8 @@ public class VisualChanceNode extends VisualNode implements VisualChanceNodeFind
 	 * Internal color of the visual node when there is no finding established.
 	 */
 	private static final Color BACKGROUND_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.NODECHANCE_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					new Color(251, 249, 153));
+            .getColor(OpenMarkovPreferencesKeys.NODECHANCE_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      new Color(251, 249, 153));
 
 	/**
 	 * Internal color of the visual node when there is a preResolution
@@ -51,22 +51,22 @@ public class VisualChanceNode extends VisualNode implements VisualChanceNodeFind
 	 * Color of lines and letters.
 	 */
 	private static final Color FOREGROUND_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.NODECHANCE_FOREGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					Color.BLACK);
+            .getColor(OpenMarkovPreferencesKeys.NODECHANCE_FOREGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      Color.BLACK);
 
 	/**
 	 * Color of the border when the node is alwaysObserved.
 	 */
 	private static final Color ALWAYS_OBSERVED_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.ALWAYS_OBSERVED_VARIABLE, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					new Color(128, 0, 0));
+            .getColor(OpenMarkovPreferencesKeys.ALWAYS_OBSERVED_VARIABLE, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      new Color(128, 0, 0));
 
 	/**
 	 * Color of the letters
 	 */
 	private static final Color TEXT_FOREGROUND_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.NODECHANCE_TEXT_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					Color.BLACK);
+            .getColor(OpenMarkovPreferencesKeys.NODECHANCE_TEXT_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      Color.BLACK);
 
 	/**
 	 * Width of a the arc of the rounded rectangle.
@@ -172,8 +172,8 @@ public class VisualChanceNode extends VisualNode implements VisualChanceNodeFind
 	 * @return shape of the node.
 	 */
 	@Override public Shape getShape(Graphics2D g) {
-
-		double dimensions[] = getNodeDimensions(g);
+        
+        double[] dimensions = getNodeDimensions(g);
 
 		return new RoundRectangle2D.Double(dimensions[0], dimensions[1], dimensions[2], dimensions[3], dimensions[4],
 				dimensions[5]);
@@ -188,8 +188,8 @@ public class VisualChanceNode extends VisualNode implements VisualChanceNodeFind
 	 * doesn't.
 	 */
 	@Override public Point2D.Double getCutPoint(Segment segment, Graphics2D g) {
-
-		double dimensions[] = getNodeDimensions(g);
+        
+        double[] dimensions = getNodeDimensions(g);
 		double radius = dimensions[4] / 2;
 		double rectangleWidth = dimensions[2] - dimensions[4];
 		double rectangleHeight = dimensions[3] - dimensions[5];
@@ -205,12 +205,10 @@ public class VisualChanceNode extends VisualNode implements VisualChanceNodeFind
 		Point2D.Double circleURCenter = new Point2D.Double(point2.getX(), point3.getY());
 		Point2D.Double circleDLCenter = new Point2D.Double(point6.getX(), point7.getY());
 		Point2D.Double circleDRCenter = new Point2D.Double(point5.getX(), point4.getY());
-		Point2D.Double point;
-		Point2D.Double[] points;
-
-		// try to find the cut point in the upper horizontal segment of the
+        
+        // try to find the cut point in the upper horizontal segment of the
 		// round rectangle
-		point = segment.cutPoint(new Segment(point1, point2));
+        Point2D.Double point = segment.cutPoint(new Segment(point1, point2));
 		if (point != null) {
 			return point;
 		}
@@ -234,7 +232,7 @@ public class VisualChanceNode extends VisualNode implements VisualChanceNodeFind
 		}
 		// try to find the cut point in the upper left corner of the round
 		// rectangle
-		points = segment.cutPoint(circleULCenter, radius);
+        Point2D.Double[] points = segment.cutPoint(circleULCenter, radius);
 		if (points != null) {
 			for (int i = 0; i < points.length; i++) {
 				if ((points[i].getX() < circleULCenter.getX()) && (points[i].getY() < circleULCenter.getY())) {

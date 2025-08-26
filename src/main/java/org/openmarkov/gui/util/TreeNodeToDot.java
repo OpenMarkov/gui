@@ -1,7 +1,6 @@
 package org.openmarkov.gui.util;
 
 import org.openmarkov.core.dt.DecisionTreeBranch;
-import org.openmarkov.core.dt.DecisionTreeElement;
 import org.openmarkov.core.dt.DecisionTreeNode;
 import org.openmarkov.core.model.network.NodeType;
 
@@ -13,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TreeNodeToDot {
-
-    private final String C_decisionColor = "#cfe3fd";
-    private final String C_chanceColor = "#fbf999";
-    private final String C_utilityColor = "#d0e6b2";
+    
+    private static final String C_decisionColor = "#cfe3fd";
+    private static final String C_chanceColor = "#fbf999";
+    private static final String C_utilityColor = "#d0e6b2";
 
     private class DotNode {
         private String nodeName;
@@ -56,13 +55,13 @@ public class TreeNodeToDot {
         }
 
         private String buildStyle() {
-            if (this.type.equals(NodeType.CHANCE)) {
+            if (this.type == NodeType.CHANCE) {
                 return "shape = \"oval\", fillcolor=\"" + C_chanceColor + "\"";
-            } else if (this.type.equals(NodeType.DECISION)) {
-                return "shape = \"box\", fillcolor=\"" + C_decisionColor + "\"";
-            } else {
-                return "shape = \"hexagon\", fillcolor=\"" + C_utilityColor + "\"";
             }
+            if (this.type == NodeType.DECISION) {
+                return "shape = \"box\", fillcolor=\"" + C_decisionColor + "\"";
+            }
+            return "shape = \"hexagon\", fillcolor=\"" + C_utilityColor + "\"";
         }
 
         private String buildLabel() {
@@ -106,11 +105,10 @@ public class TreeNodeToDot {
         }
 
         private String buildLabel() {
-            if (this.sourceNode.getType().equals(NodeType.CHANCE)) {
+            if (this.sourceNode.getType() == NodeType.CHANCE) {
                 return "<b>" + this.branchState + "</b><br/>P=" + df.format(this.probability);
-            } else {
-                return "<b>" + this.branchState + "</b>";
             }
+            return "<b>" + this.branchState + "</b>";
         }
 
         @Override
@@ -174,8 +172,7 @@ public class TreeNodeToDot {
         // Analyze the branches of that node
         for (Object elements : treeNode.getChildren()) {
             DecisionTreeBranch branch = (DecisionTreeBranch) elements;
-            String branchState = null;
-            branchState = branch.getBranchState().getName();
+            String branchState = branch.getBranchState().getName();
 
             DecisionTreeNode childNode = branch.getChild();
             DotNode destinationNode = new DotNode(numNode, childNode.getVariable().getName(), (double) childNode.getUtility(), childNode.getNodeType());

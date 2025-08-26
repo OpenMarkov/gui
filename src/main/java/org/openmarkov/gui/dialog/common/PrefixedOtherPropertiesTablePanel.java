@@ -45,7 +45,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 	/**
 	 * Key prefix.
 	 */
-	private String keyPrefix = null;
+    private String keyPrefix;
 	
 	private Node node = null;
 	
@@ -138,14 +138,13 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 	 * @return a data object with one more column that contains the keys.
 	 */
 	private Object[][] fillDataKeys(Object[][] oldData) {
-
-		Object[][] newData = null;
-		int i1 = 0;
-		int i2 = 0;
-		int l1 = 0;
-		int l2 = 0;
-
-		l1 = oldData.length;
+        
+        Object[][] newData;
+        int i1;
+        int i2;
+        int l2;
+        
+        int l1 = oldData.length;
 		if (l1 > 0) {
 			l2 = oldData[0].length + 1;
 			newData = new Object[l1][l2];
@@ -362,17 +361,11 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 	@Override public void valueChanged(ListSelectionEvent e) {
 		super.valueChanged(e);
 		int rowCount = valuesTable.getRowCount();
-		if (rowCount >= 1) {
-			removeValueButton.setEnabled(true);
-		} else {
-			removeValueButton.setEnabled(false);
-		}
+        removeValueButton.setEnabled(rowCount >= 1);
 	}
 	
 	@Override public void tableChanged(TableModelEvent e) {
 		int row = e.getLastRow();
-		e.getSource();
-
 		if (e.getType() == TableModelEvent.UPDATE) {
 			String newName = ((DefaultTableModel) e.getSource()).getValueAt(row, 1).toString();
 			String newValue = ((DefaultTableModel) e.getSource()).getValueAt(row, 2).toString();

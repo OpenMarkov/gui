@@ -58,7 +58,7 @@ public class NumericVariableBox extends InnerBox {
 	 * This variable contains the visual state that is part
 	 * of this inner box.
 	 */
-	private VisualState visualState = null;
+    private VisualState visualState;
 
 	/**
 	 * Creates a new numeric variable innerBox.
@@ -189,10 +189,10 @@ public class NumericVariableBox extends InnerBox {
 		visualState.paint(g);
 
 		//draw the scale in the bottom part
-		Double scaleXPostion =
+        double scaleXPostion =
 				visualNode.getUpperLeftCornerX(g) + INTERNAL_MARGIN + STATES_INDENT + BAR_HORIZONTAL_POSITION_UTILITY
 						- 1;
-		Double scaleYPostion = visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + INTERNAL_MARGIN
+        double scaleYPostion = visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + INTERNAL_MARGIN
 				+ STATES_VERTICAL_SEPARATION + SCALE_VERTICAL_SEPARATION + (
 				BAR_HEIGHT * (
 						visualState.getNumberOfValues() - 1
@@ -212,10 +212,10 @@ public class NumericVariableBox extends InnerBox {
 				scaleXPostion + BAR_FULL_LENGTH, scaleYPostion + (BAR_HEIGHT / 2)));
 
 		g.setFont(SCALE_FONT);
-		g.drawString("" + minValue, scaleXPostion.intValue() - SCALE_RANGE_HORIZONTAL_OFFSET,
-				scaleYPostion.intValue() + g.getFont().getSize() + SCALE_RANGE_VERTICAL_OFFSET);
-		g.drawString("" + maxValue, (int) (scaleXPostion.intValue() + BAR_FULL_LENGTH) - SCALE_RANGE_HORIZONTAL_OFFSET,
-				scaleYPostion.intValue() + g.getFont().getSize() + SCALE_RANGE_VERTICAL_OFFSET);
+        g.drawString("" + minValue, (int) scaleXPostion - SCALE_RANGE_HORIZONTAL_OFFSET,
+                     (int) scaleYPostion + g.getFont().getSize() + SCALE_RANGE_VERTICAL_OFFSET);
+        g.drawString("" + maxValue, (int) ((int) scaleXPostion + BAR_FULL_LENGTH) - SCALE_RANGE_HORIZONTAL_OFFSET,
+                     (int) scaleYPostion + g.getFont().getSize() + SCALE_RANGE_VERTICAL_OFFSET);
 		g.setFont(INNERBOX_FONT);
 	}
 
@@ -226,7 +226,7 @@ public class NumericVariableBox extends InnerBox {
 	 * @return the height of the innerBox.
 	 */
 	@Override public double getInnerBoxHeight(Graphics2D g) {
-		double innerBoxHeight = 0.0;
+        double innerBoxHeight;
 		if (visualNode.getVisualNetwork().isPropagationActive()) {
 			innerBoxHeight = INTERNAL_MARGIN * 2 + STATES_VERTICAL_SEPARATION + SCALE_VERTICAL_SEPARATION
 					+ (visualState.getNumberOfValues() - 1) * BAR_HEIGHT + BAR_HEIGHT / 2 + SCALE_FONT.getSize();

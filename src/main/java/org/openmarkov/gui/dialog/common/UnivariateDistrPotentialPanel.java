@@ -37,7 +37,7 @@ import java.util.List;
 
 	/**
 	 * Variables of the AugmentedTablePotential.
-	 * The attribute <code>variables</code> contains the variables of the AugmentedTable
+     * The attribute {@code variables} contains the variables of the AugmentedTable
 	 */
 	protected List<Variable> potentialVariables;
 
@@ -109,7 +109,7 @@ import java.util.List;
 	 * revised--&gt;minor changes
 	 */
 	@Override protected ValuesTableModel getTableModel() {
-		AugmentedValuesTableModel tableModel = null;
+        AugmentedValuesTableModel tableModel;
 		if ((valuesTable == null) || (valuesTable.getTableModel() == null))
 			tableModel = new AugmentedValuesTableModel(data, columns, firstEditableRow);
 		else
@@ -125,18 +125,16 @@ import java.util.List;
 		// Sets the probNet in the table
 
 		valuesTable.setData(node);
-
-		Object[][] tableData = null;
-		uncertaintyInColumns = null;
-		String[] newColumns = null;
-
-		// tableData contains the table to be displayed in ValuesTable
+        
+        uncertaintyInColumns = null;
+        
+        // tableData contains the table to be displayed in ValuesTable
 		// No override. Overriding some internal methos
-		tableData = convertListPotentialsToTableFormat();
+        Object[][] tableData = convertListPotentialsToTableFormat();
 
 		// Sets the column names in Excel style: A, B, C,....AA,AB...
 		// These column names aren't displayed
-		newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(tableData[0].length);
+        String[] newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(tableData[0].length);
 
 		//Sets the table model in valuesTable
 		//No override
@@ -178,13 +176,12 @@ import java.util.List;
 	 * tableSize is always greater than 0
 	 */
 	@Override protected Object[][] createEmptyTable() {
-
-		int numRows = 0;
-		int numColumns = 1; // Variables column
+        
+        int numColumns = 1; // Variables column
 
 		// First editable row coincides with the number of parents
 		//CHANGE (minor node by tablePotential
-		firstEditableRow = tablePotentialsPanelOperations.calculateFirstEditableRow(tablePotential);
+        firstEditableRow = PotentialsTablePanelOperations.calculateFirstEditableRow(tablePotential);
 
 		// The baseIndexForCoordinates is the first editable row--&gt;What for--&gt;UNCLEAR
 		// The property baseIndexForCoordinates is not Visible. baseIndexForCoordinates= row
@@ -197,7 +194,7 @@ import java.util.List;
 		// Number of states of the variable of the node; if isTableDeltaPotential numDimensions=1
 		int numDimensions = tablePotential.getDimensions()[0];
 		// Parent variables + states of node variable
-		numRows = firstEditableRow + numDimensions;
+        int numRows = firstEditableRow + numDimensions;
 		lastEditableRow = numRows - 1;
 
 		/*if (!isTableDeltaPotential) numRows++;*/ //--&gt; UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
@@ -226,7 +223,7 @@ import java.util.List;
 
 			// put the values on the table
 			for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {
-				int potentialIndex = tablePotentialsPanelOperations.getPotentialIndex(i, j, tablePotential);
+                int potentialIndex = PotentialsTablePanelOperations.getPotentialIndex(i, j, tablePotential);
 				String value = initialValues[potentialIndex];
 				values[i][j] = value;
 			}
@@ -256,7 +253,7 @@ import java.util.List;
 
 	/**
 	 * This method generates the evidenceCase based on the column selected on
-	 * the <code>valuesTable</code> object.
+     * the {@code valuesTable} object.
 	 * The evidence case has a finding for every parent of the node and its state in column
 	 * <p>
 	 * UNCLEAR When is the parents list reordered???
@@ -279,7 +276,7 @@ import java.util.List;
 		/*
 		 * If there is no potential, an exception is shown (caught) and startPosition=0
 		 */
-		int startPosition = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, node);
+        int startPosition = PotentialsTablePanelOperations.getPotentialStartIndexOfColumn(col, node);
 
 		// gets the configuration of startPosition--&gt; the data position in tablePotential corresponding to
 		// the beginning of the column
@@ -297,8 +294,8 @@ import java.util.List;
 		int j = 0;
 		// Adds to evidence a finding containing the parent and its configuration
 		Finding finding;
-		for (Variable var : parents) {
-			finding = new Finding(var, parentsConfiguration[j]);
+        for (Variable variable : parents) {
+            finding = new Finding(variable, parentsConfiguration[j]);
 			evidence.addFinding(finding);
 			j++;
 		}
@@ -361,12 +358,11 @@ import java.util.List;
 	 * @param e
 	 */
 	@Override protected void doubleClickEvent(MouseEvent e) {
-		String function = null;
-		
-		List<Variable> parameterVariables = ((UnivariateDistrPotential) potential).getParameterVariables();
+        
+        List<Variable> parameterVariables = ((UnivariateDistrPotential) potential).getParameterVariables();
 		int row = valuesTable.rowAtPoint(e.getPoint());
 		int column = valuesTable.columnAtPoint(e.getPoint());
-		function = (String) valuesTable.getValueAt(row, column);
+        String function = (String) valuesTable.getValueAt(row, column);
 		ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables,
 				function);
 		expressionDialog.setVisible(true);

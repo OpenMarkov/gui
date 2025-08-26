@@ -117,10 +117,9 @@ import java.util.List;
 	protected KeyTablePanel getNodeStatesTablePanel() {
 		if (this.variableType != VariableType.NUMERIC) {
 			return getNodeDiscreteStatesTablePanel();
-		} else {
-			return getNodeDiscretizedStatesTablePanel();
-		}
-	}
+        }
+        return getNodeDiscretizedStatesTablePanel();
+    }
 
 	/**
 	 * This method initializes NodeValuesTable.
@@ -170,18 +169,17 @@ import java.util.List;
 			}
 		}
 	}
-
-	protected Object[][] convertStringsToTableDiscreteFormat(Link<Node> link) {
+    
+    protected static Object[][] convertStringsToTableDiscreteFormat(Link<Node> link) {
 		Node node = link.getNode1();
 		State[] values = node.getVariable().getStates();
 		List<State> revealingStates = link.getRevealingStates();
-		Object[][] data;
-		int i, l;
-		l = values.length;
-		data = new Object[l][2];
+        int i;
+        int l = values.length;
+        Object[][] data = new Object[l][2];
 		i = l - 1;
 		for (State value : values) {
-			data[i][0] = revealingStates.contains(value) ? true : false;
+            data[i][0] = revealingStates.contains(value);
 			data[i--][1] = value.getName();
 		}
 		return data;

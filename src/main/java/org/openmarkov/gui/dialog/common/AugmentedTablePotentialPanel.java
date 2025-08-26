@@ -55,7 +55,7 @@ import java.util.List;
 		extends TablePotentialPanel {
 	/**
 	 * Variables of the AugmentedTablePotential.
-	 * The attribute <code>variables</code> contains the variables of the AugmentedTable
+     * The attribute {@code variables} contains the variables of the AugmentedTable
 	 */
 	protected List<Variable> potentialVariables;
 
@@ -118,7 +118,7 @@ import java.util.List;
 	 * revised--&gt;minor changes
 	 */
 	@Override protected ValuesTableModel getTableModel() {
-		AugmentedValuesTableModel tableModel = null;
+        AugmentedValuesTableModel tableModel;
 		if ((valuesTable == null) || (valuesTable.getTableModel() == null))
 			tableModel = new AugmentedValuesTableModel(data, columns, firstEditableRow);
 		else
@@ -155,18 +155,16 @@ import java.util.List;
 		// Sets the probNet in the table
 
 		valuesTable.setData(node);
-
-		Object[][] tableData = null;
-		uncertaintyInColumns = null;
-		String[] newColumns = null;
-
-		// tableData contains the table to be displayed in ValuesTable
+        
+        uncertaintyInColumns = null;
+        
+        // tableData contains the table to be displayed in ValuesTable
 		// No override. Overriding some internal methos
-		tableData = convertListPotentialsToTableFormat();
+        Object[][] tableData = convertListPotentialsToTableFormat();
 
 		// Sets the column names in Excel style: A, B, C,....AA,AB...
 		// These column names aren't displayed
-		newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(tableData[0].length);
+        String[] newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(tableData[0].length);
 
 		//Sets the table model in valuesTable
 		//No override
@@ -224,13 +222,12 @@ import java.util.List;
 	 * tableSize is always greater than 0
 	 */
 	@Override protected Object[][] createEmptyTable() {
-
-		int numRows = 0;
-		int numColumns = 1; // Variables column
+        
+        int numColumns = 1; // Variables column
 
 		// First editable row coincides with the number of parents
 		//CHANGE (minor node by tablePotential
-		firstEditableRow = tablePotentialsPanelOperations.calculateFirstEditableRow(tablePotential);
+        firstEditableRow = PotentialsTablePanelOperations.calculateFirstEditableRow(tablePotential);
 
 		// The baseIndexForCoordinates is the first editable row--&gt;What for--&gt;UNCLEAR
 		// The property baseIndexForCoordinates is not Visible. baseIndexForCoordinates= row
@@ -243,7 +240,7 @@ import java.util.List;
 		// Number of states of the variable of the node; if isTableDeltaPotential numDimensions=1
 		int numDimensions = tablePotential.getDimensions()[0];
 		// Parent variables + states of node variable
-		numRows = firstEditableRow + numDimensions;
+        int numRows = firstEditableRow + numDimensions;
 		lastEditableRow = numRows - 1;
 
 		/*if (!isTableDeltaPotential) numRows++;*/ //--&gt; UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
@@ -271,7 +268,7 @@ import java.util.List;
 
 			// put the values on the table
 			for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {
-				int potentialIndex = tablePotentialsPanelOperations.getPotentialIndex(i, j, tablePotential);
+                int potentialIndex = PotentialsTablePanelOperations.getPotentialIndex(i, j, tablePotential);
 				String value = initialValues[potentialIndex];
 				values[i][j] = value;
 			}
@@ -399,15 +396,13 @@ import java.util.List;
 
 		@Override public void mouseClicked(MouseEvent e) {
 			if (e.getClickCount() == 1) {
-
-				String function = null;
-				List<Variable> parameterVariables = ((AugmentedTablePotential) potential).getParameterVariables();
+                List<Variable> parameterVariables = ((AugmentedTablePotential) potential).getParameterVariables();
 				ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables,
-						function);
+                                                                                             null);
 				expressionDialog.setVisible(true);
 				if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
-					function = expressionDialog.getExpression();
-					int row = valuesTable.rowAtPoint(e.getPoint());
+                    String function = expressionDialog.getExpression();
+                    int row = valuesTable.rowAtPoint(e.getPoint());
 					int column = valuesTable.columnAtPoint(e.getPoint());
 					valuesTable.setValueAt(function, row, column);
 				}

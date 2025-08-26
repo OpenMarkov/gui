@@ -29,9 +29,9 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	/**
 	 * Singleton pattern
 	 */
-	private static OpenMarkovConfiguration openMarkovConfiguration;
-
-	private final String configurationFileName = "OpenMarkov.conf";
+    private static OpenMarkovConfiguration OPEN_MARKOV_CONFIGURATION = new OpenMarkovConfiguration();
+    
+    private static final String CONFIGURATION_FILE_NAME = "OpenMarkov.conf";
 
 	private HashMap<String, Configuration> configurations;
 
@@ -54,20 +54,17 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	/**
 	 * Singleton pattern.
 	 *
-	 * @return <code>OpenMarkovConfiguration</code>
+     * @return {@code OpenMarkovConfiguration}
 	 */
 	public static OpenMarkovConfiguration getUniqueInstance() {
-		if (openMarkovConfiguration == null) {
-			openMarkovConfiguration = new OpenMarkovConfiguration();
-		}
-		return openMarkovConfiguration;
+        return OPEN_MARKOV_CONFIGURATION;
 	}
 
 	/**
-	 * @param pluginName   <code>String</code>
-	 * @param propertyName <code>String</code>
-	 * @return Property value or <code>null</code> if property does not exists.
-	 * <code>Object</code>
+     * @param pluginName   {@code String}
+     * @param propertyName {@code String}
+     * @return Property value or {@code null} if property does not exists.
+     * {@code Object}
 	 */
 	public static Object getProperty(String pluginName, String propertyName) {
 		Configuration componentConfiguration = getUniqueInstance().getComponentConfiguration(pluginName);
@@ -80,11 +77,11 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	/**
 	 * Write configuration to disk in serialized format.
 	 */
-	public void writeConfiguration() {
+    public static void writeConfiguration() {
 		try {
-			FileOutputStream fos = new FileOutputStream(configurationFileName);
+            FileOutputStream fos = new FileOutputStream(CONFIGURATION_FILE_NAME);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(openMarkovConfiguration);
+            oos.writeObject(OPEN_MARKOV_CONFIGURATION);
 			oos.close();
 		} catch (IOException e) {
 			ExceptionDialog.show(e);
@@ -99,9 +96,9 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	}
 
 	/**
-	 * @param name <code>String</code>.
-	 * @return <code>ComponentConfiguration</code> if it exists, otherwise
-	 * <code>null</code>.
+     * @param name {@code String}.
+     * @return {@code ComponentConfiguration} if it exists, otherwise
+     * {@code null}.
 	 */
 	public Configuration getComponentConfiguration(String name) {
 		return configurations.get(name);
@@ -110,18 +107,17 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	/**
 	 * Creates configurations for each component.<p>
 	 * To extend this method for each component:<ol>
-	 * <li>Create a class that implements <code>ComponentConfiguration</code>.
+     * <li>Create a class that implements {@code ComponentConfiguration}.
 	 * <li>Create an object of that class.
 	 * <li>Put that object in the HashMap.
 	 * </ol>
 	 *
-	 * @return <code>HashMap</code> with key = <code>String</code> (component
-	 * name) and value = an <code>object</code> that implements
-	 * <code>ComponentConfiguration</code>.
+     * @return {@code HashMap} with key = {@code String} (component
+     * name) and value = an {@code object} that implements
+     * {@code ComponentConfiguration}.
 	 */
-	private HashMap<String, Configuration> createConfigurationObjects() {
-		HashMap<String, Configuration> configurations;
-		configurations = new HashMap<String, Configuration>();
+    private static HashMap<String, Configuration> createConfigurationObjects() {
+        HashMap<String, Configuration> configurations = new HashMap<String, Configuration>();
 		// Create a class that implements Configuration
 		String kernelComponenteName = "kernel";
 		ComponentConfiguration kernelConfiguration = new ComponentConfiguration(kernelComponenteName); // component name
@@ -134,9 +130,9 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 		HashMap<String, Configuration> configurationsCollection = createConfigurationObjects();
 		ObjectInputStream ois = null;
 		try {
-			FileInputStream fis = new FileInputStream(configurationFileName);
+            FileInputStream fis = new FileInputStream(CONFIGURATION_FILE_NAME);
 			ois = new ObjectInputStream(fis);
-			openMarkovConfiguration = (OpenMarkovConfiguration) ois.readObject();
+            OPEN_MARKOV_CONFIGURATION = (OpenMarkovConfiguration) ois.readObject();
 			if (configurations == null) {
 				generateDefaultConfiguration(configurationsCollection);
 			} else {
@@ -158,8 +154,8 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	}
 
 	/**
-	 * @param configurationsCollection <code>HashMap</code> with <code>key =
-	 *                                 String</code> and <code>value = ComponentConfiguration</code>
+     * @param configurationsCollection {@code HashMap} with {@code key =
+     *                                 String} and {@code value = ComponentConfiguration}
 	 */
 	private void generateDefaultConfiguration(HashMap<String, Configuration> configurationsCollection) {
 		ArrayList<Configuration> configurationsArray = new ArrayList<Configuration>(configurationsCollection.values());

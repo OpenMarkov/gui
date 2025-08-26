@@ -65,25 +65,15 @@ class PreferencesTableModel extends AbstractTableModel {
 	}
 
 	@Override public String getColumnName(int column) {
-		switch (column) {
-		case 0:
-			return "Key";
-		case 1:
-			return "Value";
-		default:
-			return "-";
-		}
+        return switch (column) {
+            case 0 -> "Key";
+            case 1 -> "Value";
+            default -> "-";
+        };
 	}
 
 	@Override public boolean isCellEditable(int rowIndex, int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return false;
-		case 1:
-			return true;
-		default:
-			return false;
-		}
+        return columnIndex == 1;
 	}
 
 	@Override public void setValueAt(Object aValue, int rowIndex, int columnIndex) {

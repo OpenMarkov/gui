@@ -35,6 +35,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -194,11 +195,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         
         this.setTitle(stringDatabase.getString("InferenceOptionsDialog.Title"));
         // If the net has more than atemporal variables, the net would be temporal
-        if (!probNet.hasConstraint(OnlyAtemporalVariables.class)) {
-            isTemporal = true;
-        } else {
-            isTemporal = false;
-        }
+        isTemporal = !probNet.hasConstraint(OnlyAtemporalVariables.class);
         
         if (probNet.getDecisionCriteria() != null && probNet.getDecisionCriteria().size() > 1) {
             this.isMulticriteria = true;
@@ -240,7 +237,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         this.pack();
         
         if (onlyShowThisType != null) {
-            if (onlyShowThisType.equals(MulticriteriaOptions.Type.UNICRITERION)) {
+            if (onlyShowThisType == MulticriteriaOptions.Type.UNICRITERION) {
                 if (unicriterion != null) {
                     unicriterion.doClick();
                 }
@@ -249,7 +246,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                     costEffectiveness.setEnabled(false);
                 }
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setUnicriterionOptionsShowed(true);
-            } else if (onlyShowThisType.equals(MulticriteriaOptions.Type.COST_EFFECTIVENESS)) {
+            } else if (onlyShowThisType == MulticriteriaOptions.Type.COST_EFFECTIVENESS) {
                 if (costEffectiveness != null) {
                     costEffectiveness.doClick();
                 }
@@ -261,11 +258,13 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
             }
         } else {
-            if (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType()
-                       .equals(MulticriteriaOptions.Type.UNICRITERION)) {
+            if (probNet.getInferenceOptions()
+                       .getMultiCriteriaOptions()
+                       .getMulticriteriaType() == MulticriteriaOptions.Type.UNICRITERION) {
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setUnicriterionOptionsShowed(true);
-            } else if (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType()
-                              .equals(MulticriteriaOptions.Type.COST_EFFECTIVENESS)) {
+            } else if (probNet.getInferenceOptions()
+                              .getMultiCriteriaOptions()
+                              .getMulticriteriaType() == MulticriteriaOptions.Type.COST_EFFECTIVENESS) {
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
             }
         }
@@ -311,10 +310,9 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
             multicriteriaPanel.setVisible(true);
             
             if (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType() != null) {
-                if (multicriteriaOptions.getMulticriteriaType().equals(MulticriteriaOptions.Type.UNICRITERION)) {
+                if (multicriteriaOptions.getMulticriteriaType() == MulticriteriaOptions.Type.UNICRITERION) {
                     unicriterion.doClick();
-                } else if (multicriteriaOptions.getMulticriteriaType()
-                                               .equals(MulticriteriaOptions.Type.COST_EFFECTIVENESS)) {
+                } else if (multicriteriaOptions.getMulticriteriaType() == MulticriteriaOptions.Type.COST_EFFECTIVENESS) {
                     costEffectiveness.doClick();
                 }
             }
@@ -351,10 +349,9 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         
         JComboBox<String> comboBoxUse = null;
         JComboBox<String> comboBoxDiscountUnits = null;
-        MultiCriteriaTableModel model;
         ValuesTableCellRenderer renderer = new ValuesTableCellRenderer(1);
         
-        model = new MultiCriteriaTableModel();
+        MultiCriteriaTableModel model = new MultiCriteriaTableModel();
         
         // Construction of the TableModel
         if (costEffectiveness.isSelected()) {
@@ -409,7 +406,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                 comboBoxUse.addItem(Criterion.CECriterion.Effectiveness.toString());
                 
                 // Set the selected item in the combobox with criterion data
-                if (criterion.getCECriterion().equals(Criterion.CECriterion.Cost)) {
+                if (criterion.getCECriterion() == Criterion.CECriterion.Cost) {
                     comboBoxUse.setSelectedItem(Criterion.CECriterion.Cost.toString());
                 } else {/*if(criterion.getCECriterion().equals(Criterion.CECriterion.Effectiveness)){*/
                     comboBoxUse.setSelectedItem(Criterion.CECriterion.Effectiveness.toString());
@@ -433,7 +430,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                     } else {
                         for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
                             
-                            if (criterion.getDiscountUnit().equals(unit)) {
+                            if (criterion.getDiscountUnit() == unit) {
                                 String newUnit = StringDatabase.getUniqueInstance().getString(
                                         "NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
                                 comboBoxDiscountUnits.setSelectedItem(newUnit);
@@ -480,7 +477,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                     } else {
                         for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
                             
-                            if (criterion.getDiscountUnit().equals(unit)) {
+                            if (criterion.getDiscountUnit() == unit) {
                                 String newUnit = StringDatabase.getUniqueInstance().getString(
                                         "NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
                                 comboBoxDiscountUnits.setSelectedItem(newUnit);
@@ -524,28 +521,23 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
             @Override public boolean editCellAt(int row, int column, EventObject e) {
                 boolean result = super.editCellAt(row, column, e);
                 final Component editor = getEditorComponent();
-                if (editor == null || !(editor instanceof JTextComponent) || (
+                if (!(editor instanceof JTextComponent text) || (
                         isTemporal && costEffectiveness.isSelected() && column == CE_USE_COLUMN
                 ) || (isTemporal && unicriterion.isSelected() && column == UNICRITERIA_DISCOUNT_UNIT_COLUMN)) {
                     return result;
                 }
                 
                 if (e instanceof MouseEvent) {
-                    EventQueue.invokeLater(new Runnable() {
-                        
-                        @Override public void run() {
-                            JTextComponent text = ((JTextComponent) editor);
-                            if (text.getText().indexOf(" ") != -1) {
-                                text.setText(text.getText().substring(0, text.getText().indexOf(" ")));
-                            }
-                            text.selectAll();
+                    EventQueue.invokeLater(() -> {
+                        if (text.getText().indexOf(' ') != -1) {
+                            text.setText(text.getText().substring(0, text.getText().indexOf(' ')));
                         }
+                        text.selectAll();
                     });
                     
                 } else {
-                    JTextComponent text = ((JTextComponent) editor);
-                    if (text.getText().indexOf(" ") != -1) {
-                        text.setText(text.getText().substring(0, text.getText().indexOf(" ")));
+                    if (text.getText().indexOf(' ') != -1) {
+                        text.setText(text.getText().substring(0, text.getText().indexOf(' ')));
                     }
                     text.selectAll();
                 }
@@ -590,10 +582,10 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                         // If the edited cell is a cost effectiveness scale
                     } else if (column == CE_SCALE_COLUMN) {
                         String scale = table.getValueAt(row, CE_SCALE_COLUMN).toString();
-                        if (scale.indexOf(" ") != -1) {
-                            scale = scale.substring(0, scale.indexOf(" "));
+                        if (scale.indexOf(' ') != -1) {
+                            scale = scale.substring(0, scale.indexOf(' '));
                         }
-                        DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+                        DecimalFormat format = (DecimalFormat) NumberFormat.getInstance(Locale.ENGLISH);
                         format.applyLocalizedPattern("#.###");
                         scale = format.format(Double.parseDouble(scale));
                         decisionCriteria.get(row - 1).setCeScale(Double.parseDouble(scale));
@@ -603,10 +595,10 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                         // If the edited cell is a discount
                         if (column == CE_DISCOUNT_COLUMN) {
                             String discount = table.getValueAt(row, CE_DISCOUNT_COLUMN).toString();
-                            if (discount.indexOf(" ") != -1) {
-                                discount = discount.substring(0, discount.indexOf(" "));
+                            if (discount.indexOf(' ') != -1) {
+                                discount = discount.substring(0, discount.indexOf(' '));
                             }
-                            DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+                            DecimalFormat format = (DecimalFormat) NumberFormat.getInstance(Locale.ENGLISH);
                             format.applyLocalizedPattern("#.###");
                             discount = format.format(Double.parseDouble(discount));
                             double discountDouble = Double.parseDouble(discount);
@@ -630,10 +622,10 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                     // If the edited cell is a unicriterion scale
                     if (column == UNICRITERIA_SCALE_COLUMN) {
                         String scale = table.getValueAt(row, UNICRITERIA_SCALE_COLUMN).toString();
-                        if (scale.indexOf(" ") != -1) {
-                            scale = scale.substring(0, scale.indexOf(" "));
+                        if (scale.indexOf(' ') != -1) {
+                            scale = scale.substring(0, scale.indexOf(' '));
                         }
-                        DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+                        DecimalFormat format = (DecimalFormat) NumberFormat.getInstance(Locale.ENGLISH);
                         format.applyLocalizedPattern("#.###");
                         scale = format.format(Double.parseDouble(scale));
                         decisionCriteria.get(row - 1).setUnicriterizationScale(Double.parseDouble(scale));
@@ -643,10 +635,10 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                         // If the edited cell is a discount
                         if (column == UNICRITERIA_DISCOUNT_COLUMN) {
                             String discount = table.getValueAt(row, UNICRITERIA_DISCOUNT_COLUMN).toString();
-                            if (discount.indexOf(" ") != -1) {
-                                discount = discount.substring(0, discount.indexOf(" "));
+                            if (discount.indexOf(' ') != -1) {
+                                discount = discount.substring(0, discount.indexOf(' '));
                             }
-                            DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+                            DecimalFormat format = (DecimalFormat) NumberFormat.getInstance(Locale.ENGLISH);
                             format.applyLocalizedPattern("#.###");
                             discount = format.format(Double.parseDouble(discount));
                             double discountDouble = Double.parseDouble(discount);
@@ -923,11 +915,11 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         transitionsButtonGroup.add(getHalfCycleButton());
         transitionsButtonGroup.add(getEndOfCycleButton());
         
-        if (this.temporalOptions.getTransition().equals(TransitionTime.BEGINNING)) {
+        if (this.temporalOptions.getTransition() == TransitionTime.BEGINNING) {
             beginningOfCycleButton.setSelected(true);
-        } else if (this.temporalOptions.getTransition().equals(TransitionTime.HALF)) {
+        } else if (this.temporalOptions.getTransition() == TransitionTime.HALF) {
             halfCycleButton.setSelected(true);
-        } else if (this.temporalOptions.getTransition().equals(TransitionTime.END)) {
+        } else if (this.temporalOptions.getTransition() == TransitionTime.END) {
             endOfCycleButton.setSelected(true);
         }
     }

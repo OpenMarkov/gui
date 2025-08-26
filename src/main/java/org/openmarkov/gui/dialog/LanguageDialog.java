@@ -10,6 +10,7 @@ package org.openmarkov.gui.dialog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
 import org.openmarkov.core.localize.Languages;
 import org.openmarkov.core.localize.LocaleChangeEvent;
@@ -197,8 +198,8 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 				@Override public void actionPerformed(final ActionEvent e) {
 					String newLanguage = Languages.getShortNameByIndex(jComboBoxLanguages.getSelectedIndex());
 					stringDatabase.setLanguage(newLanguage);
-					OpenMarkovPreferences.set(OpenMarkovPreferences.PREFERENCE_LANGUAGE, newLanguage,
-											  OpenMarkovPreferences.OPENMARKOV_LANGUAGES);
+                    OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.PREFERENCE_LANGUAGE, newLanguage,
+                                              OpenMarkovPreferences.OPENMARKOV_LANGUAGES);
 					// next line must be re-written to use some Event method
 					// to notify visibility to false instead calling
 					// getParent()
@@ -244,8 +245,8 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 				@Override public void actionPerformed(final ActionEvent arg0) {
 					String newLanguage = Languages.getShortNameByIndex(jComboBoxLanguages.getSelectedIndex());
 					StringDatabase.getUniqueInstance().setLanguage(newLanguage);
-					OpenMarkovPreferences.set(OpenMarkovPreferences.PREFERENCE_LANGUAGE, newLanguage,
-											  OpenMarkovPreferences.OPENMARKOV_LANGUAGES);
+                    OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.PREFERENCE_LANGUAGE, newLanguage,
+                                              OpenMarkovPreferences.OPENMARKOV_LANGUAGES);
 				}
 			});
 			jButtonApply.setName("Apply");

@@ -41,44 +41,42 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
 		if (rendererType == USE_RENDERER) {
 			if (row == 0) {
 				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			} else {
-				JComboBox<String> comboBox = new JComboBox<String>();
-				//				comboBox.addItem(Criterion.CECriterion.Null.toString());
-				comboBox.addItem(Criterion.CECriterion.Cost.toString());
-				comboBox.addItem(Criterion.CECriterion.Effectiveness.toString());
-
-				if (value.getClass().equals(JComboBox.class)) {
-					comboBox.setSelectedItem(((JComboBox<String>) value).getSelectedItem());
-				} else if (value.getClass().equals(String.class)) {
-                    comboBox.setSelectedItem(value);
-				}
-
-				return comboBox;
-			}
-		} else if (rendererType == DISCOUNT_UNIT_RENDERER) {
+            }
+            JComboBox<String> comboBox = new JComboBox<String>();
+            //				comboBox.addItem(Criterion.CECriterion.Null.toString());
+            comboBox.addItem(Criterion.CECriterion.Cost.toString());
+            comboBox.addItem(Criterion.CECriterion.Effectiveness.toString());
+            
+            if (value.getClass() == JComboBox.class) {
+                comboBox.setSelectedItem(((JComboBox<String>) value).getSelectedItem());
+            } else if (value.getClass() == String.class) {
+                comboBox.setSelectedItem(value);
+            }
+            
+            return comboBox;
+        }
+        if (rendererType == DISCOUNT_UNIT_RENDERER) {
 			if (row == 0) {
 				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			} else {
-				JComboBox<String> comboBox = new JComboBox<String>();
-				for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
-					String newUnit = StringDatabase.getUniqueInstance()
-							.getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
-					comboBox.addItem(newUnit);
-				}
-
-				if (value.getClass().equals(JComboBox.class)) {
-					String selectedItem = ((JComboBox<String>) value).getSelectedItem().toString();
-					comboBox.setSelectedItem(selectedItem);
-				} else if (value.getClass().equals(String.class)) {
-                    comboBox.setSelectedItem(value);
-				}
-
-				return comboBox;
-			}
-		} else {
-			return null;
-		}
-
-	}
+            }
+            JComboBox<String> comboBox = new JComboBox<String>();
+            for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
+                String newUnit = StringDatabase.getUniqueInstance()
+                                               .getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
+                comboBox.addItem(newUnit);
+            }
+            
+            if (value.getClass() == JComboBox.class) {
+                String selectedItem = ((JComboBox<String>) value).getSelectedItem().toString();
+                comboBox.setSelectedItem(selectedItem);
+            } else if (value.getClass() == String.class) {
+                comboBox.setSelectedItem(value);
+            }
+            
+            return comboBox;
+        }
+        return null;
+        
+    }
 
 }

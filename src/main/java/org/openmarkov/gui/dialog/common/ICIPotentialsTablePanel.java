@@ -13,10 +13,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
-import org.openmarkov.gui.component.ICIValuesTable;
-import org.openmarkov.gui.component.ICIValuesTableCellRenderer;
-import org.openmarkov.gui.component.PotentialsTablePanelOperations;
-import org.openmarkov.gui.component.ValuesTableModel;
+import org.openmarkov.gui.component.*;
 import org.openmarkov.gui.dialog.node.ICIOptionsPanel;
 import org.openmarkov.core.localize.StringDatabase;
 
@@ -92,7 +89,7 @@ import java.util.List;
      * @param listPotentials - potentials for the variable
      */
     public static int calculateLastEditableRow(List<Potential> listPotentials) {
-        int row = 0;
+        int row;
         if (listPotentials != null) {
             row = listPotentials.get(0).getVariables().get(0).getNumStates() + 1;
             // numStates of the child variable plus one empty cell plus a cell
@@ -104,7 +101,7 @@ import java.util.List;
     }
     
     public static int calculateFirstEditableRow(List<Potential> listPotentials) {
-        int row = 0;
+        int row;
         if (listPotentials != null) {
             
             row = 2; // In a canonical table there are always two rows: one for
@@ -184,12 +181,11 @@ import java.util.List;
     @Override public void setData(Node properties) {
         this.node = properties;
         iciValuesTable.setData(node);
-        Object[][] tableData = null;
-        String[] newColumns = null;
+        Object[][] tableData;
+        String[] newColumns;
         if (properties.getPotentials() != null) {
             tableData = convertListPotentialsToCanonicalTableFormat(properties);
-            newColumns = ICIValuesTable
-                    .getColumnsIdsSpreadSheetStyle(ICIValuesTable.howManyCanonicalColumns(properties));
+            newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(ICIValuesTable.howManyCanonicalColumns(properties));
             setFirstEditableRow(calculateFirstEditableRow(node.getPotentials()));
             setLastEditableRow(calculateLastEditableRow(node.getPotentials()));
             setData(tableData, newColumns, firstEditableRow, lastEditableRow, properties.getNodeType());
@@ -214,7 +210,7 @@ import java.util.List;
      * @param properties - node additionalProperties
      * @return the number of rows of this Potentials Table
      */
-    protected int howManyCanonicalRows(Node properties) {
+    protected static int howManyCanonicalRows(Node properties) {
         
         int numRows = 2;// The first two rows are first for parent´s name and
         // second one for parent´s states
@@ -233,13 +229,13 @@ import java.util.List;
      * @param properties - to obtain the required number of rows and columns
      * @return the blank data table
      */
-    private Object[][] setBlankCanonicalTable(Node properties) {
+    private static Object[][] setBlankCanonicalTable(Node properties) {
         
-        Object[][] blankTable = null;
         int numRows = howManyCanonicalRows(properties);
         int numColumns = ICIValuesTable.howManyCanonicalColumns(properties);
-        blankTable = new Object[numRows][numColumns];
+        Object[][] blankTable = new Object[numRows][numColumns];
         for (int i = 0; i < properties.getVariable().getStates().length; i++) {
+            //TODO?
         }
         
         return blankTable;
@@ -251,7 +247,7 @@ import java.util.List;
      * @param listPotentials
      * @return this ICI potential
      */
-    private ICIPotential getThisICIPotential(List<Potential> listPotentials) {
+    private static ICIPotential getThisICIPotential(List<Potential> listPotentials) {
         return ((ICIPotential) listPotentials.get(0));
     }
     
@@ -284,10 +280,10 @@ import java.util.List;
     }
     
     /**
-     * Prepare the table data from the <code>Potential</code>s and States.
+     * Prepare the table data from the {@code Potential}s and States.
      * <p>
      * If the Potential is null, then the information is taken from the
-     * <code>NodeProperties</code>
+     * {@code NodeProperties}
      *
      * @param properties - node properties
      * @return the table data to be set
@@ -313,7 +309,6 @@ import java.util.List;
      */
     
     private Object[][] setCanonicalTableSize(Node properties) {
-        int numRows = 0;
         int numColumns = 2; // at least, there is one column for leak potential
         // and the first one with child states and name
         // first editable row in a canonical table is always the third one
@@ -328,7 +323,7 @@ import java.util.List;
         
         setVariables(variables);
         
-        numRows = getVariables().get(0).getNumStates() + row;
+        int numRows = getVariables().get(0).getNumStates() + row;
         
         setLastEditableRow(numRows - 1);
         
@@ -429,8 +424,7 @@ import java.util.List;
         if (node != null && node.getNodeType() == NodeType.UTILITY) {
             this.variables = new ArrayList<Variable>();
             this.variables.add(node.getVariable());
-            for (Variable variable : variables)
-                this.variables.add(variable);
+            this.variables.addAll(variables);
         } else
             
             this.variables = variables;
@@ -478,7 +472,7 @@ import java.util.List;
      */
     protected ValuesTableModel getTableModel() {
         
-        ValuesTableModel tableModel = null;
+        ValuesTableModel tableModel;
         if (iciValuesTable == null) {
             tableModel = new ValuesTableModel(data, columns, firstEditableRow);
         } else if (iciValuesTable.getTableModel() == null) {

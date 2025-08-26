@@ -27,8 +27,8 @@ import java.util.List;
 //import org.openmarkov.core.model.network.potential.PotentialRole;
 
 /**
- * <code>NodePotentialEdit</code> is a simple edit that allows to modify the
- * node's <code>Potential</code> values. It is implemented for TablePotential
+ * {@code NodePotentialEdit} is a simple edit that allows to modify the
+ * node's {@code Potential} values. It is implemented for TablePotential
  * Only
  *
  * @author mpalacios
@@ -101,7 +101,7 @@ import java.util.List;
     // Constructor
     
     /**
-     * Creates a new <code>NodePotentialEdit</code> specifying the node to be
+     * Creates a new {@code NodePotentialEdit} specifying the node to be
      * edited, the new value of the potential, the row and column where is the
      * value to be modified and a priority list for potentials updating.
      *
@@ -118,8 +118,7 @@ import java.util.List;
                                    Object[][] notEditablePositions) {
         super(node.getProbNet());
         this.node = node;
-        Potential potential = null;
-        potential = node.getPotentials().get(0);
+        Potential potential = node.getPotentials().get(0);
         this.setExactDistrPotential(potential instanceof ExactDistrPotential);
         if (getExactDistrPotential()) {
             this.oldExactDistrPotential = (ExactDistrPotential) (potential);
@@ -133,7 +132,7 @@ import java.util.List;
         this.priorityList = priorityList;
         this.notEditablePostitions = notEditablePositions;
         this.indexSelected = tablePotentialsPanelOperations.calculateLastEditableRow(node) - row;
-        this.increment = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, node);
+        this.increment = PotentialsTablePanelOperations.getPotentialStartIndexOfColumn(col, node);
         
         if (isExactDistrPotential) {
             //copy returns null so
@@ -163,7 +162,7 @@ import java.util.List;
      * Carmen Yago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
      */
     @Override public void doEdit() throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
-        PotentialChangeEdit changePotentialEdit = null;
+        PotentialChangeEdit changePotentialEdit;
         if (!getExactDistrPotential()) {
             if (priorityList.isEmpty()) {
                 // User is editing a new column of potentials //node
@@ -175,12 +174,10 @@ import java.util.List;
                 priorityList.add(potentialSelected);
             }
             Iterator<Integer> listIterator = priorityList.listIterator();
-            Double sum = 0.0;
-            Double rest = 0.0;
-            int position = 0;
+            double sum = 0.0;
+            int position;
             int maxDecimals = 10;
-            double epsilon;
-            epsilon = Math.pow(10, -(maxDecimals + 2));
+            double epsilon = Math.pow(10, -(maxDecimals + 2));
             newTable[potentialSelected] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
             while (listIterator.hasNext()) {
                 position = listIterator.next();
@@ -189,7 +186,7 @@ import java.util.List;
                 }
                 // sum += newTable[pos];
             }
-            rest = Math.abs(Util.roundAndReduce(1 - sum, epsilon, maxDecimals));
+            double rest = Math.abs(Util.roundAndReduce(1 - sum, epsilon, maxDecimals));
             // rest = Math.abs( 1 - sum );
             if (sum > 1.0) {
                 listIterator = priorityList.listIterator();
@@ -239,7 +236,7 @@ import java.util.List;
     /**
      * Gets the table-potential of the node
      *
-     * @return variable1 <code>Variable</code>
+     * @return variable1 {@code Variable}
      */
     public TablePotential getPotential() {
         return tablePotential;

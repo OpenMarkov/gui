@@ -87,7 +87,7 @@ import java.util.prefs.Preferences;
 
 	public String toString() {
 		String name = pref.name();
-		if ((name == null) || ("".equals(name))) { // if root node
+        if ((name == null) || (name.isEmpty())) { // if root node
 			name = "System Preferences";
 			if (pref.isUserNode())
 				name = "User Preferences";

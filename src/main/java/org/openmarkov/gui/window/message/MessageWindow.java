@@ -67,7 +67,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 	/**
 	 * convenience variable to store the owner Frame
 	 */
-	private JFrame ownerFrame = null;
+    private JFrame ownerFrame;
 
 	/**
 	 * This is the default constructor

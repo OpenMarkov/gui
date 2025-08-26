@@ -31,11 +31,11 @@ import java.util.EventObject;
 @SuppressWarnings("serial") public class CEPDialog extends JDialog {
     
     // Constants
-    private final int DEFAULT_NUM_DECIMALS = 6;
+    private static final int DEFAULT_NUM_DECIMALS = 6;
     
-    private final String INTERVENTION_RANGE_COLOR = "#C9EFFB";
+    private static final String INTERVENTION_RANGE_COLOR = "#C9EFFB";
     
-    private final String CLICKABLE_COLUMN_COLOR = "#DDF5D8";
+    private static final String CLICKABLE_COLUMN_COLOR = "#DDF5D8";
     
     private CEP cep;
     
@@ -49,7 +49,7 @@ import java.util.EventObject;
     
     /**
      * @param owner
-     * @param cep     <code>CEP</code>
+     * @param cep     {@code CEP}
      * @param probNet
      */
     public CEPDialog(Window owner, CEP cep, ProbNet probNet) {
@@ -115,9 +115,9 @@ import java.util.EventObject;
     // Public method
     
     /**
-     * @param cep <code>CEP</code>
+     * @param cep {@code CEP}
      *
-     * @return <code>JTable</code>
+     * @return {@code JTable}
      */
     public JTable getJTableFromCEP(final CEP cep) {
         // Set data in jTable
@@ -162,8 +162,7 @@ import java.util.EventObject;
                 int row = jtableCEP.rowAtPoint(event.getPoint());
                 int column = jtableCEP.columnAtPoint(event.getPoint());
                 if (column == CEPColumns.INTERVENTION.ordinal()) {
-                    InterventionDialog interventionDialog = null;
-                    interventionDialog = new InterventionDialog(getOwner(), probNet, cep.getStrategyTrees()[row]);
+                    InterventionDialog interventionDialog = new InterventionDialog(getOwner(), probNet, cep.getStrategyTrees()[row]);
                     interventionDialog.setVisible(true);
                 }
             }
@@ -173,9 +172,9 @@ import java.util.EventObject;
     }
     
     /**
-     * @return Array of <code>String</code>s with the columns headings
+     * @return Array of {@code String}s with the columns headings
      */
-    private String[] getColumnsStrings() {
+    private static String[] getColumnsStrings() {
         int numColumns = CEPColumns.values().length;
         String[] columnsNames = new String[numColumns];
         for (int i = 0; i < numColumns; i++) {
@@ -185,11 +184,11 @@ import java.util.EventObject;
     }
     
     /**
-     * @param cep <code>CEP</code>
+     * @param cep {@code CEP}
      *
-     * @return Rectangular matrix for a <code>JTable</code>.
+     * @return Rectangular matrix for a {@code JTable}.
      */
-    private Object[][] getDataFromCEP(CEP cep) {
+    private static Object[][] getDataFromCEP(CEP cep) {
         double[] costs = cep.getCosts();
         double[] effectiveness = cep.getEffectivities();
         int numRows = costs.length;
@@ -208,8 +207,8 @@ import java.util.EventObject;
         return data;
     }
     
-    private String getFirstLine(String string) {
-        int indexEOL = string.indexOf("\n");
+    private static String getFirstLine(String string) {
+        int indexEOL = string.indexOf('\n');
         return indexEOL == -1 ? string : string.substring(0, indexEOL);
     }
     
@@ -250,10 +249,10 @@ import java.util.EventObject;
      * @param cep
      * @param intervalIndex
      *
-     * @return Left end point. <code>String</code>
+     * @return Left end point. {@code String}
      */
-    private String getLambdaLeftEndPoint(CEP cep, int intervalIndex) {
-        Double threshold;
+    private static String getLambdaLeftEndPoint(CEP cep, int intervalIndex) {
+        double threshold;
         if (intervalIndex == 0) {
             threshold = cep.getMinThreshold();
         } else {
@@ -266,10 +265,10 @@ import java.util.EventObject;
      * @param cep
      * @param intervalIndex
      *
-     * @return Right end point. <code>String</code>
+     * @return Right end point. {@code String}
      */
-    private String getLambdaRightEndPoint(CEP cep, int intervalIndex, int numIntervals) {
-        Double threshold;
+    private static String getLambdaRightEndPoint(CEP cep, int intervalIndex, int numIntervals) {
+        double threshold;
         if (intervalIndex == numIntervals - 1) {
             threshold = cep.getMaxThreshold();
         } else {

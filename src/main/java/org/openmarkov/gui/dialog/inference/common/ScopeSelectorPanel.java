@@ -86,7 +86,7 @@ public class ScopeSelectorPanel extends JPanel {
         mainPanel.add(getDecisionSelectorPanel());
         
         List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
-        if (decisionNodes == null || decisionNodes.size() < 1) {
+        if (decisionNodes == null || decisionNodes.isEmpty()) {
             for (Component component : scopeTypePanel.getComponents()) {
                 component.setEnabled(false);
             }
@@ -140,10 +140,10 @@ public class ScopeSelectorPanel extends JPanel {
                     refreshScenario();
                 }
             });
-            if (scopeTypeEnum.equals(ScopeType.GLOBAL)) {
+            if (scopeTypeEnum == ScopeType.GLOBAL) {
                 globalRadioButton = selectedScopeType;
                 scopeTypeSelectorPanel.add(globalRadioButton);
-            } else if (scopeTypeEnum.equals(ScopeType.DECISION)) {
+            } else if (scopeTypeEnum == ScopeType.DECISION) {
                 decisionRadioButton = selectedScopeType;
                 scopeTypeSelectorPanel.add(decisionRadioButton);
             }
@@ -156,12 +156,12 @@ public class ScopeSelectorPanel extends JPanel {
         // Get all the avaible decision nodes (without policy)
         List<Node> avaibleDecisionNodes = new ArrayList<>();
         for (Node node : probNet.getNodes(NodeType.DECISION)) {
-            if (node.getPotentials().size() == 0) {
+            if (node.getPotentials().isEmpty()) {
                 avaibleDecisionNodes.add(node);
             }
         }
         
-        if (avaibleDecisionNodes.size() == 0) {
+        if (avaibleDecisionNodes.isEmpty()) {
             couldBeDecision = false;
         }
         
@@ -170,17 +170,10 @@ public class ScopeSelectorPanel extends JPanel {
         }
         
         if (!couldBeDecision || !couldBeGlobal) {
-            if (couldBeGlobal) {
-                //scopeTypeSelector.setSelectedItem(stringDatabase.getValuesInAString(ScopeType.GLOBAL.toString()));
-                globalRadioButton.setSelected(true);
-                decisionRadioButton.setEnabled(false);
-                setScopeType(ScopeType.GLOBAL);
-            } else {
-                //scopeTypeSelector.setSelectedItem(stringDatabase.getValuesInAString(ScopeType.DECISION.toString()));
-                decisionRadioButton.setSelected(true);
-                globalRadioButton.setEnabled(false);
-                setScopeType(ScopeType.DECISION);
-            }
+            //scopeTypeSelector.setSelectedItem(stringDatabase.getValuesInAString(ScopeType.GLOBAL.toString()));
+            globalRadioButton.setSelected(true);
+            decisionRadioButton.setEnabled(false);
+            setScopeType(ScopeType.GLOBAL);
             for (Component component : scopeTypePanel.getComponents()) {
                 component.setEnabled(false);
             }
@@ -204,7 +197,7 @@ public class ScopeSelectorPanel extends JPanel {
         decisionSelector = new JComboBox<>();
         for (Node node : probNet.getNodes(NodeType.DECISION)) {
             // If the decision has not an imposed policy, add to the selector
-            if (node.getPotentials().size() == 0) {
+            if (node.getPotentials().isEmpty()) {
                 decisionSelector.addItem(node.getName());
             }
         }
@@ -219,7 +212,7 @@ public class ScopeSelectorPanel extends JPanel {
         }
         decisionSelectorPanel.add(decisionSelector);
         
-        if (scopeType.equals(ScopeType.GLOBAL)) {
+        if (scopeType == ScopeType.GLOBAL) {
             setDecisionSelected(null);
             for (Component component : decisionSelectorPanel.getComponents()) {
                 component.setEnabled(false);

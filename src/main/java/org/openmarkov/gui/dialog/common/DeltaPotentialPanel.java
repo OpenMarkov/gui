@@ -69,12 +69,8 @@ import java.awt.*;
 					defaultSpinnerValue = maxValue / 2;
 				}
 			} else if (maxValue == Double.POSITIVE_INFINITY) {
-				if (minValue == Double.NEGATIVE_INFINITY) {
-					defaultSpinnerValue = 0;
-				} else {
-					defaultSpinnerValue = minValue * 2;
-				}
-			} else {
+                defaultSpinnerValue = minValue * 2;
+            } else {
 				defaultSpinnerValue = minValue + Math.abs(maxValue - minValue) / 2;
 			}
 			//Create the model with the defaultValue, the min and max values and the precision

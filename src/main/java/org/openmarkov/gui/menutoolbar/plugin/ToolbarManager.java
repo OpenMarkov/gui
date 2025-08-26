@@ -59,7 +59,7 @@ public class ToolbarManager {
      *
      * @return a list with the plugins detected with Toolbar annotations.
      */
-    private final @NotNull Stream<Class<ToolBarBasic>> findAllToolbars() {
+    private static @NotNull Stream<Class<ToolBarBasic>> findAllToolbars() {
         return PluginSearch.init()
                            .annotatedWith(Toolbar.class)
                            .childrenOf(ToolBarBasic.class)

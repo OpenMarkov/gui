@@ -93,8 +93,8 @@ public class MenuNodeLinkedList {
 	 * @return true if the element is empty (list=null)
 	 */
 	public boolean isEmpty() {
-
-		return (getSize() == 0 ? true : false);
+        
+        return (getSize() == 0);
 	}
 
 	/**

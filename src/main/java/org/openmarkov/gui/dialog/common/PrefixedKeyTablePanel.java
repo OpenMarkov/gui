@@ -46,7 +46,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 	/**
 	 * Key prefix.
 	 */
-	private String keyPrefix = null;
+    private String keyPrefix;
 
 	private Node node;
 
@@ -99,14 +99,13 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 	 * @return a data object with one more column that contains the keys.
 	 */
 	private Object[][] fillDataKeys(Object[][] oldData) {
-
-		Object[][] newData = null;
-		int i1 = 0;
-		int i2 = 0;
-		int l1 = 0;
-		int l2 = 0;
-
-		l1 = oldData.length;
+        
+        Object[][] newData;
+        int i1;
+        int i2;
+        int l2;
+        
+        int l1 = oldData.length;
 		if (l1 > 0) {
 			l2 = oldData[0].length + 1;
 			newData = new Object[l1][l2];
@@ -145,9 +144,8 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 				stringDatabase.getString("AddState.Title"), JOptionPane.QUESTION_MESSAGE);
 
 		if (option != null) {
-			int newIndex = 0;
-
-			newIndex = valuesTable.getRowCount();
+            
+            int newIndex = valuesTable.getRowCount();
 
 			NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.ADD, newIndex, option);
 
@@ -182,7 +180,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 	@Override protected void actionPerformedRemoveValue() {
 
 		int selectedRow = valuesTable.getSelectedRow();
-		int rowCount = 0;
+        int rowCount;
 
 		NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.REMOVE, selectedRow, "");
 
@@ -228,7 +226,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 	@Override protected void actionPerformedUpValue() {
 
 		int selectedRow = valuesTable.getSelectedRow();
-		Object swap = null;
+        Object swap;
 
 		NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
 
@@ -262,7 +260,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 	@Override protected void actionPerformedDownValue() {
 
 		int selectedRow = valuesTable.getSelectedRow();
-		Object swap = null;
+        Object swap;
 
 		NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
 
@@ -300,11 +298,11 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 	@Override public Object[][] getData() {
 
 		Object[][] content = super.getData();
-		Object[][] result = null;
+        Object[][] result;
 		int rowCount = content.length;
-		int columnCount = 0;
-		int i = 0;
-		int j = 0;
+        int columnCount;
+        int i;
+        int j;
 
 		if (rowCount > 0) {
 			columnCount = content[0].length;
@@ -374,7 +372,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 		try {
 			// We iterate the related nodes, if any
 			if (nodeRelatedNodes != null) {
-				if (nodeRelatedNodes.size() > 0) {
+                if (!nodeRelatedNodes.isEmpty()) {
 					for (Node relatedNode : nodeRelatedNodes) {
 						// we create the edit for the realted node
 						nodeStateEdit = new NodeStateEdit(relatedNode, stateAction, selectedRow, option);

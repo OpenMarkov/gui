@@ -19,8 +19,8 @@ import org.openmarkov.core.model.network.ProbNet;
 	private PartitionedInterval currentPartitionedInterval;
 
 	private PartitionedInterval newPartitionedInterval;
-
-	private Node node = null;
+    
+    private Node node;
 
 	public PartitionedIntervalEdit(Node node, PartitionedInterval newPartitionedInterval) {
 		super(node.getProbNet());

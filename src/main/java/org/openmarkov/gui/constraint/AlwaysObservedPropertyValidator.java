@@ -15,13 +15,11 @@ public class AlwaysObservedPropertyValidator {
 	/*****
 	 * Checks if a node can have the alwaysObserved property.
 	 * @param node
-	 * @return <code>true</code> if the node can have the alwaysObserved property.
+     * @return {@code true} if the node can have the alwaysObserved property.
 	 */
 	public static boolean validate(Node node) {
 		if (!node.getProbNet().hasConstraint(NoRevelationArc.class)) {
-			if (node.getNodeType() == NodeType.CHANCE) {
-				return true;
-			}
+            return node.getNodeType() == NodeType.CHANCE;
 		}
 		return false;
 	}

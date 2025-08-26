@@ -373,7 +373,7 @@ public abstract class VisualNode extends VisualElement {
      * @return The contour stroke
      */
     protected Stroke getContourStroke() {
-        Stroke s = null;
+        Stroke s;
         if (node.isInput()) {
             s = (isSelected()) ? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE;
         } else {

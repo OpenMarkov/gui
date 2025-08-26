@@ -84,11 +84,9 @@ import java.awt.event.MouseEvent;
 	 * Invoked when the button 'add' is pressed.
 	 */
 	@Override protected void actionPerformedAddValue() {
-
-		int rowCount = 0;
-		rowCount = valuesTable.getRowCount();
-		int newIndex = 0;
-		newIndex = valuesTable.getRowCount();
+        
+        int rowCount = valuesTable.getRowCount();
+        int newIndex = valuesTable.getRowCount();
 		RevelationIntervalEdit revelationArcStateEdit = new RevelationIntervalEdit(link, StateAction.ADD, newIndex, 0,
 				false);
 		try {
@@ -133,7 +131,7 @@ import java.awt.event.MouseEvent;
 		int column = arg0.getColumn();
 		int row = arg0.getLastRow();
 		int numRows = ((DiscretizeTableModel) arg0.getSource()).getRowCount();
-		boolean lower = (column - 1 == LOWER_BOUND_SYMBOL_COLUMN_INDEX ? true : false);
+        boolean lower = (column - 1 == LOWER_BOUND_SYMBOL_COLUMN_INDEX);
 		if (arg0.getType() == TableModelEvent.UPDATE && ((DiscretizeTableModel) arg0.getSource())
 				.getValueAt(row, column) instanceof Double) {
 			double newValue = (Double) ((DiscretizeTableModel) arg0.getSource()).getValueAt(row, column);

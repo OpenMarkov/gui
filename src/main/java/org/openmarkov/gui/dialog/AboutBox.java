@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.dialog;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openmarkov.gui.loader.element.ImageLoader;
 import org.openmarkov.core.localize.StringDatabase;
 
@@ -16,7 +14,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.MissingResourceException;
 
 /**
  * Class to show an About Box window for the OpenMarkov Project
@@ -31,48 +28,43 @@ public class AboutBox extends JDialog implements ActionListener {
      * default id
      */
     private static final long serialVersionUID = -2926600957370532009L;
-    String product = "";
-    String version = "0.4.0-SNAPSHOT";
-    String copyright = "";
-    String copyright2 = "";
-    String authors = "";
-    String advertisement = "";
-    String trademark = "";
-    String openMarkovLogoImage = "";
-    String lineSeparatorImage = "";
-    BorderLayout borderLayoutAboutBox = new BorderLayout();
-    JPanel jPanelAboutText = new JPanel();
-    JPanel jPanelAboutButton = new JPanel();
-    ImageIcon openMarkovLogo = new ImageIcon();
-    ImageIcon lineSeparator = new ImageIcon();
-    JLabel jLabelLogo = new JLabel();
-    JLabel jLabelProduct = new JLabel();
-    JLabel jLabelVersion = new JLabel();
-    JLabel jLabelCopyright = new JLabel();
-    JLabel jLabelCopyright2 = new JLabel();
-    JLabel jLabelAuthors = new JLabel();
-    JLabel jLabelLineSeparators = new JLabel();
-    JLabel jLabelAdvertisement = new JLabel();
-    JLabel jLabelTrademark = new JLabel();
-    JButton jButtonOK = new JButton();
-    GridLayout gridLayoutText = new GridLayout();
-    FlowLayout flowLayoutButtons = new FlowLayout();
+    private String product = "";
+    private String version = "0.4.0-SNAPSHOT";
+    private String copyright = "";
+    private String copyright2 = "";
+    private String authors = "";
+    private String advertisement = "";
+    private String trademark = "";
+    private String openMarkovLogoImage = "";
+    private String lineSeparatorImage = "";
+    private BorderLayout borderLayoutAboutBox = new BorderLayout();
+    private JPanel jPanelAboutText = new JPanel();
+    private JPanel jPanelAboutButton = new JPanel();
+    private ImageIcon openMarkovLogo = new ImageIcon();
+    private ImageIcon lineSeparator = new ImageIcon();
+    private JLabel jLabelLogo = new JLabel();
+    private JLabel jLabelProduct = new JLabel();
+    private JLabel jLabelVersion = new JLabel();
+    private JLabel jLabelCopyright = new JLabel();
+    private JLabel jLabelCopyright2 = new JLabel();
+    private JLabel jLabelAuthors = new JLabel();
+    private JLabel jLabelLineSeparators = new JLabel();
+    private JLabel jLabelAdvertisement = new JLabel();
+    private JLabel jLabelTrademark = new JLabel();
+    private JButton jButtonOK = new JButton();
+    private GridLayout gridLayoutText = new GridLayout();
+    private FlowLayout flowLayoutButtons = new FlowLayout();
     /**
      * size of the window and position
      */
-    int height = 0;
-    int width = 0;
-    int x = 0;
-    int y = 0;
+    private int height = 0;
+    private int width = 0;
+    private int x = 0;
+    private int y = 0;
     /**
      * String database
      */
     private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-    /**
-     * Image Loader
-     */
-    private ImageLoader imageLoader = null;
-    private Logger logger;
     /**
      * AboutBox visual components
      */
@@ -94,7 +86,6 @@ public class AboutBox extends JDialog implements ActionListener {
         super(parent, "", true);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setTitle(stringDatabase.getString("AboutBox.Title.Text"));
-        imageLoader = new ImageLoader();
         jbInit();
         this.setVisible(true);
         anAboutBox = this;
@@ -123,8 +114,7 @@ public class AboutBox extends JDialog implements ActionListener {
      * @param parent the parent for the AboutBox frame
      * @return anAboutBox dialog
      */
-    public AboutBox getUniqueInstance(JFrame parent) {
-        this.logger = LogManager.getLogger(AboutBox.class);
+    private AboutBox getUniqueInstance(JFrame parent) {
         if (anAboutBox == null) { // singleton
             new AboutBox(parent);
         } else { // it is already created and not visible
@@ -148,8 +138,8 @@ public class AboutBox extends JDialog implements ActionListener {
         lineSeparatorImage = stringDatabase.getString("AboutBox.LineSeparatorImage.URL");
         
         // look for the images to show in the box
-        openMarkovLogo = imageLoader.load(openMarkovLogoImage);
-        lineSeparator = imageLoader.load(lineSeparatorImage);
+        openMarkovLogo = ImageLoader.load(openMarkovLogoImage);
+        lineSeparator = ImageLoader.load(lineSeparatorImage);
         // put the title of the box
         setTitle(product);
         // mark the layout and the size for the About box
@@ -168,20 +158,20 @@ public class AboutBox extends JDialog implements ActionListener {
         jLabelLogo.setText(stringDatabase.getString("AboutBox.jLabelLogo.BlankSpace.Text"));
         this.getContentPane().add(jLabelLogo, java.awt.BorderLayout.NORTH);
         // set the items and add to the panel and then to the box
-        setTextInLabelAligned(jLabelProduct, product, JLabel.CENTER);
+        setTextInLabelAligned(jLabelProduct, product, SwingConstants.CENTER);
         jLabelProduct.setHorizontalAlignment(SwingConstants.CENTER);
         jLabelProduct.setHorizontalTextPosition(SwingConstants.LEADING);
         jLabelProduct.setFont(new Font("", Font.PLAIN, 16));
-        setTextInLabelAligned(jLabelVersion, version, JLabel.CENTER);
-        setTextInLabelAligned(jLabelCopyright, copyright, JLabel.CENTER);
-        setTextInLabelAligned(jLabelCopyright2, copyright2, JLabel.CENTER);
+        setTextInLabelAligned(jLabelVersion, version, SwingConstants.CENTER);
+        setTextInLabelAligned(jLabelCopyright, copyright, SwingConstants.CENTER);
+        setTextInLabelAligned(jLabelCopyright2, copyright2, SwingConstants.CENTER);
         setTextInLabelAligned(jLabelLineSeparators, stringDatabase.getString("AboutBox.jLabelLogo.BlankSpace.Text"),
-                              JLabel.CENTER);
+                              SwingConstants.CENTER);
         jLabelLineSeparators.setHorizontalAlignment(SwingConstants.CENTER);
         jLabelLineSeparators.setHorizontalTextPosition(SwingConstants.CENTER);
         jLabelLineSeparators.setIcon(lineSeparator);
-        setTextInLabelAligned(jLabelAdvertisement, advertisement, JLabel.LEFT);
-        setTextInLabelAligned(jLabelTrademark, trademark, JLabel.LEFT);
+        setTextInLabelAligned(jLabelAdvertisement, advertisement, SwingConstants.LEFT);
+        setTextInLabelAligned(jLabelTrademark, trademark, SwingConstants.LEFT);
         jPanelAboutText.setLayout(gridLayoutText);
         gridLayoutText.setColumns(1);
         gridLayoutText.setRows(8);

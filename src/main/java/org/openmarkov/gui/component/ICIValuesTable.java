@@ -40,7 +40,7 @@ import java.util.ListIterator;
 	 * @return the number of columns in the table
 	 */
 	public static int howManyCanonicalColumns(Node properties) {
-		int numColumns = 0;
+        int numColumns;
 		if (properties.getParents() != null) {
 			int aux = 1;// first column for child states
 			for (Node parent : properties.getParents()) {
@@ -94,7 +94,7 @@ import java.util.ListIterator;
 	}
 
 	@Override public void undoableEditHappened(UndoableEditEvent arg0) {
-		int priorityListPosition = 0;
+        int priorityListPosition;
 		UndoableEdit edit = arg0.getEdit();
 		if (edit instanceof ICITablePotentialValueEdit) {
 			ICITablePotentialValueEdit iciEdit = (ICITablePotentialValueEdit) arg0.getEdit();
@@ -102,7 +102,7 @@ import java.util.ListIterator;
 			if (!iciEdit.getLeakyFlag()) {// noisy parameters
 				double[] noisyPotential = iciEdit.getNewNoisyValues();
 				ListIterator<Integer> listIterator = priorityList.listIterator();
-				while (listIterator.hasNext() == true) {
+                while (listIterator.hasNext()) {
                     priorityListPosition = listIterator.next();
 					super.getModel().setValueAt(noisyPotential[priorityListPosition],
 							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
@@ -110,7 +110,7 @@ import java.util.ListIterator;
 			} else {// leaky parametes
 				double[] leakyPotential = iciEdit.getNewLeakyValues();
 				ListIterator<Integer> listIterator = priorityList.listIterator();
-				while (listIterator.hasNext() == true) {
+                while (listIterator.hasNext()) {
                     priorityListPosition = listIterator.next();
 					super.getModel().setValueAt(leakyPotential[priorityListPosition],
 							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
@@ -124,15 +124,14 @@ import java.util.ListIterator;
 	}
 
 	@Override public void undoEditHappened(UndoableEditEvent event) {
-		int priorityListPosition = 0;
+        int priorityListPosition;
 		UndoableEdit edit = event.getEdit();
-		if (edit instanceof ICITablePotentialValueEdit) {
-			ICITablePotentialValueEdit iciEdit = (ICITablePotentialValueEdit) edit;
-			priorityList = iciEdit.getPriorityList();
+        if (edit instanceof ICITablePotentialValueEdit iciEdit) {
+            priorityList = iciEdit.getPriorityList();
 			if (!iciEdit.getLeakyFlag()) {// noisy parameters
 				double[] lastNoisyPotential = iciEdit.getLastNoisyValues();
 				ListIterator<Integer> listIterator = priorityList.listIterator();
-				while (listIterator.hasNext() == true) {
+                while (listIterator.hasNext()) {
                     priorityListPosition = listIterator.next();
 					super.getModel().setValueAt(lastNoisyPotential[priorityListPosition],
 							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
@@ -140,7 +139,7 @@ import java.util.ListIterator;
 			} else {// leaky parametes
 				double[] lastLeakyPotential = iciEdit.getLastNoisyValues();
 				ListIterator<Integer> listIterator = priorityList.listIterator();
-				while (listIterator.hasNext() == true) {
+                while (listIterator.hasNext()) {
                     priorityListPosition = listIterator.next();
 					super.getModel().setValueAt(lastLeakyPotential[priorityListPosition],
 							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());

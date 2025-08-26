@@ -43,7 +43,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	/**
 	 * Network whose visual representation is managed by this object.
 	 */
-	protected ProbNet probNet = null;
+    protected ProbNet probNet;
 
 	/**
 	 * This variable indicates if nodes must be drawn by title.
@@ -130,7 +130,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	public double[] getNetworkBounds(Graphics2D g) {
 
 		double[] networkBounds = { Double.MAX_VALUE, Double.MIN_VALUE, Double.MAX_VALUE, Double.MIN_VALUE };
-		Rectangle2D nodeBounds = null;
+        Rectangle2D nodeBounds;
 
 		for (VisualNode node : visualNodes) {
 			nodeBounds = node.getShape(g).getBounds2D();
@@ -154,19 +154,16 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * the visual representation of the nodes and links that don't exist.
 	 */
 	protected void constructVisualInfo() {
-
-		List<Node> nodesToAdd = null;
-		List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
+        
+        List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
 		List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
-		List<Link<Node>> links = null;
-		Node nodeToCheck = null;
-		Link<Node> linkToCheck = null;
-		VisualNode vNode1 = null;
-		VisualNode vNode2 = null;
-		int i = -1;
-		int visualNodesCount = -1;
-
-		nodesToAdd = probNet.getNodes();
+        Node nodeToCheck;
+        Link<Node> linkToCheck;
+        VisualNode vNode1;
+        VisualNode vNode2;
+        int i;
+        
+        List<Node> nodesToAdd = probNet.getNodes();
 		for (VisualNode vNode : visualNodes) {
 			nodeToCheck = vNode.getNode();
 			int index = nodesToAdd.indexOf(nodeToCheck);
@@ -190,7 +187,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		}
 
 		//links = probNet.backupProbNet.getLinks();
-		links = probNet.getLinks();
+        List<Link<Node>> links = probNet.getLinks();
 
 		for (VisualLink vLink : visualLinks) {
 			linkToCheck = vLink.getLink();
@@ -201,7 +198,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 			}
 		}
 		visualLinks.removeAll(vLinksToDelete);
-		visualNodesCount = visualNodes.size();
+        int visualNodesCount = visualNodes.size();
 		for (Link<Node> link : links) {
 			i = 0;
 			vNode1 = null;
@@ -232,7 +229,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param vNodesToDelete
 	 * @return True iff the link contains the node to delete
 	 */
-	protected boolean containsNodeToDelete(Link<Node> linkToCheck, List<VisualNode> vNodesToDelete) {
+    protected static boolean containsNodeToDelete(Link<Node> linkToCheck, List<VisualNode> vNodesToDelete) {
 
 		for (VisualNode vNode : vNodesToDelete)
 			if (linkToCheck.contains(vNode.getNode()))
@@ -392,8 +389,8 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * else, returns null.
 	 */
 	public VisualNode whatNodeInPosition(Point2D.Double position, Graphics2D g) {
-
-		VisualNode node = null;
+        
+        VisualNode node;
 		VisualNode nodeFound = null;
 		int index = 0, length = visualNodes.size();
 
@@ -417,10 +414,10 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * else, returns null.
 	 */
 	public InnerBox whatInnerBoxInPosition(Point2D.Double position, Graphics2D g) {
-
-		InnerBox innerBox = null;
+        
+        InnerBox innerBox;
 		InnerBox innerBoxFound = null;
-		VisualNode node = null;
+        VisualNode node;
 		int index = 0;
 		int nodesLength = visualNodes.size();
 		while ((innerBoxFound == null) && (index < nodesLength)) {
@@ -444,10 +441,10 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * else, returns null.
 	 */
 	public VisualState whatStateInPosition(Point2D.Double position, Graphics2D g) {
-
-		VisualState state = null;
+        
+        VisualState state;
 		VisualState stateFound = null;
-		VisualNode node = null;
+        VisualNode node;
 		int index = 0;
 		int nodesLength = visualNodes.size();
 		while ((stateFound == null) && (index < nodesLength)) {
@@ -477,8 +474,8 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * else, returns null.
 	 */
 	public VisualLink whatLinkInPosition(Point2D.Double position, Graphics2D g) {
-
-		VisualLink link = null;
+        
+        VisualLink link;
 		VisualLink linkFound = null;
 		int index = 0;
 		int length = visualLinks.size();
@@ -503,7 +500,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * element, else returns null.
 	 */
 	public VisualElement getElementInPosition(Point2D.Double position, Graphics2D g) {
-		VisualElement elementSelected = null;
+        VisualElement elementSelected;
 		if ((elementSelected = whatNodeInPosition(position, g)) == null) {
 			elementSelected = whatLinkInPosition(position, g);
 		}
@@ -791,9 +788,9 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 *
 	 * @param movedNodes list where is saved the moved nodes information.
 	 */
-	public void fillDifferencesNodesMovedInfo(List<MovedNodeInfo> movedNodes) {
-
-		Node node = null;
+    public static void fillDifferencesNodesMovedInfo(List<MovedNodeInfo> movedNodes) {
+        
+        Node node;
 
 		for (MovedNodeInfo movedNode : movedNodes) {
 			node = movedNode.getNode();
@@ -845,9 +842,9 @@ public class VisualNetwork implements PNUndoableEditListener {
 	public List<VisualLink> getLinksOfNodes(List<VisualNode> nodes, boolean onlyBothEnds) {
 		ArrayList<VisualLink> links = new ArrayList<VisualLink>();
 		int i, l = nodes.size();
-		boolean found = false;
-		boolean foundSource = false;
-		boolean foundDestination = false;
+        boolean found;
+        boolean foundSource;
+        boolean foundDestination;
 		for (VisualLink visualLink : visualLinks) {
 			found = false;
 			foundSource = false;
@@ -971,23 +968,20 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 	public void visualDecisionNodeRefresh(){
-
-		List<Node> nodesToAdd = null;
-		List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
+        
+        List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
 		List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
-		List<Link<Node>> links = null;
-		Node nodeToCheck = null;
-		Link<Node> linkToCheck = null;
-		VisualNode vNode1 = null;
-		VisualNode vNode2 = null;
-		int i = -1;
-		int visualNodesCount = -1;
-
-		nodesToAdd = probNet.getNodes();
+        Node nodeToCheck;
+        Link<Node> linkToCheck;
+        VisualNode vNode1;
+        VisualNode vNode2;
+        int i;
+        
+        List<Node> nodesToAdd = probNet.getNodes();
 		for (VisualNode vNode : visualNodes) {
 			nodeToCheck = vNode.getNode();
-
-			if (!vNode.getNode().getNodeType().equals(NodeType.DECISION)) {
+            
+            if (vNode.getNode().getNodeType() != NodeType.DECISION) {
 				nodesToAdd.remove(nodeToCheck);
 
 			} else {
@@ -1004,7 +998,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		}
 
 		//links = probNet.backupProbNet.getLinks();
-		links = probNet.getLinks();
+        List<Link<Node>> links = probNet.getLinks();
 
 		for (VisualLink vLink : visualLinks) {
 			linkToCheck = vLink.getLink();
@@ -1015,7 +1009,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 			}
 		}
 		visualLinks.removeAll(vLinksToDelete);
-		visualNodesCount = visualNodes.size();
+        int visualNodesCount = visualNodes.size();
 		for (Link<Node> link : links) {
 			i = 0;
 			vNode1 = null;
@@ -1053,20 +1047,14 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @return the visual representation of the node.
 	 */
 	protected VisualNode createVisualNode(Node node) {
-
-		VisualNode visualNode = null;
-		switch (node.getNodeType()) {
-		case CHANCE:
-			visualNode = new VisualChanceNode(node, this);
-			break;
-		case DECISION:
-			visualNode = new VisualDecisionNode(node, this);
-			break;
-		case UTILITY:
-			visualNode = new VisualUtilityNode(node, this);
-			break;
-		}
-		return visualNode;
+        
+        VisualNode visualNode = switch (node.getNodeType()) {
+            case CHANCE -> new VisualChanceNode(node, this);
+            case DECISION -> new VisualDecisionNode(node, this);
+            case UTILITY -> new VisualUtilityNode(node, this);
+            default -> null;
+        };
+        return visualNode;
 	}
 
 	@Override public void undoEditHappened(UndoableEditEvent event) {
@@ -1102,8 +1090,8 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param g
 	 */
 	public void addToSelection(java.awt.geom.Point2D.Double cursorPosition, Graphics2D g) {
-		VisualNode node = null;
-		VisualLink link = null;
+        VisualNode node;
+        VisualLink link;
 
 		if ((node = whatNodeInPosition(cursorPosition, g)) != null) {
 			setSelectedNode(node, !node.isSelected());
@@ -1120,8 +1108,8 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @return true if there is an element in the position
 	 */
 	public VisualElement selectElementInPosition(java.awt.geom.Point2D.Double cursorPosition, Graphics2D g) {
-		VisualNode node = null;
-		VisualLink link = null;
+        VisualNode node;
+        VisualLink link;
 		VisualElement selectedElement = null;
 		if ((node = whatNodeInPosition(cursorPosition, g)) != null) {
 			if (!node.isSelected()) {
@@ -1148,7 +1136,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param g
 	 */
 	public void startLinkCreation(java.awt.geom.Point2D.Double cursorPosition, Graphics2D g) {
-		VisualNode node = null;
+        VisualNode node;
 
 		if ((node = whatNodeInPosition(cursorPosition, g)) != null) {
 			newLink = new VisualArrow(node.getPosition(), cursorPosition);
@@ -1173,7 +1161,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		PNEdit linkEdit = null;
 		if (newLink != null) {
 			newLink = null;
-			VisualNode newLinkDestination = null;
+            VisualNode newLinkDestination;
 			if (newLinkSource != null) {
 				if ((newLinkDestination = whatNodeInPosition(point, g)) != null) {
 					if (!newLinkSource.equals(newLinkDestination)) {

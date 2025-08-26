@@ -28,9 +28,9 @@ import javax.swing.*;
 	public ChangeIntervalPanel(TreeADDBranch treeBranch) {
 		min = treeBranch.getLowerBound();
 		max = treeBranch.getUpperBound();
-
-		Float minDomainLimit = (float) treeBranch.getRootVariable().getPartitionedInterval().getMin();
-		Float maxDomainLimit = (float) treeBranch.getRootVariable().getPartitionedInterval().getMax();
+        
+        float minDomainLimit = (float) treeBranch.getRootVariable().getPartitionedInterval().getMin();
+        float maxDomainLimit = (float) treeBranch.getRootVariable().getPartitionedInterval().getMax();
 
 		boolean isLeftClosed = treeBranch.getRootVariable().getPartitionedInterval().isLeftClosed(); // true -> [) 
 		boolean isRightClosed = treeBranch.getRootVariable().getPartitionedInterval().isRightClosed();

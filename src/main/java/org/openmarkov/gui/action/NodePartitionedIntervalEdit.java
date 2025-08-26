@@ -17,7 +17,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.util.GUIDefaultStates;
 
 /**
- * <code>NodePartitionedIntervalEdit</code> is a simple edit that allows to modify
+ * {@code NodePartitionedIntervalEdit} is a simple edit that allows to modify
  * the node partitioned interval.
  *
  * @author Miguel Palacios
@@ -32,7 +32,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit {
 	/**
 	 * The predefined increment for new intervals
 	 */
-	private final int increment = 2;
+    private static final int increment = 2;
 	/**
 	 * The state index that partitioned interval belongs to.
 	 */
@@ -40,7 +40,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit {
 	/**
 	 * The node edited
 	 */
-	private Node node = null;
+    private Node node;
 	/**
 	 * Action to do with the partitioned interval
 	 */
@@ -66,7 +66,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit {
 	private double lastValue;
 
 	/**
-	 * Creates a new <code>PartiTionedIntervalEdit</code> to edit the limit
+     * Creates a new {@code PartiTionedIntervalEdit} to edit the limit
 	 * symbol of the interval
 	 *
 	 * @param node        The node that contain the partionInterval object to be edited.
@@ -86,7 +86,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit {
 	}
 
 	/**
-	 * Creates a new <code>NodePartiTionedIntervalEdit</code> to edit the
+     * Creates a new {@code NodePartiTionedIntervalEdit} to edit the
 	 * limit value of the interval
 	 *
 	 * @param node        The node that contains the partionInterval object to be edited.
@@ -200,11 +200,11 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit {
 	 */
 
 	private PartitionedInterval getNewPartitionedInterval() {
-		double limits[] = currentPartitionedInterval.getLimits();
-		double newLimits[] = new double[limits.length + 1];
-		boolean belongsToLeftSide[] = currentPartitionedInterval.
+        double[] limits = currentPartitionedInterval.getLimits();
+        double[] newLimits = new double[limits.length + 1];
+        boolean[] belongsToLeftSide = currentPartitionedInterval.
 				getBelongsToLeftSide();
-		boolean newBelongsToLeftSide[] = new boolean[limits.length + 1];
+        boolean[] newBelongsToLeftSide = new boolean[limits.length + 1];
 		for (int i = 0; i < limits.length; i++) {
 			newLimits[i] = limits[i];
 			newBelongsToLeftSide[i] = belongsToLeftSide[i];
@@ -224,8 +224,8 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit {
 	public Object[] getNewRowOfData(StateAction stateAction) {
 		String firstSymbol = null;
 		String secondSymbol = null;
-		double limits[] = null;
-		boolean belongsToLeftSide[];
+        double[] limits = null;
+        boolean[] belongsToLeftSide;
 		if (stateAction == StateAction.ADD) {
 			limits = node.getVariable().getPartitionedInterval().
 					getLimits();

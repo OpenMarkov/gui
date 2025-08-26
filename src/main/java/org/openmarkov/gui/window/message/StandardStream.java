@@ -21,7 +21,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Object where to write messages.
 	 */
-	protected MessageArea messageArea = null;
+    protected MessageArea messageArea;
 
 	/**
 	 * Constructor that links this object with the text area.

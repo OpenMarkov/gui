@@ -30,7 +30,7 @@ import java.util.List;
 	/**
 	 * Information of the movement of the nodes.
 	 */
-	private List<VisualNode> movedNodes = null;
+    private List<VisualNode> movedNodes;
 	/**
 	 * Current selection state.
 	 */
@@ -59,8 +59,8 @@ import java.util.List;
 		if (selectionState == SelectionState.MOVING) {
 			if (nodeMoved) {
 				movedNodes = visualNetwork.fillVisualNodesSelected();
-
-				if (movedNodes.size() > 0) {
+                
+                if (!movedNodes.isEmpty()) {
 					MoveNodeEdit moveNodeEdit = new MoveNodeEdit(movedNodes);
 					try {
 						moveNodeEdit.doEdit(probNet);

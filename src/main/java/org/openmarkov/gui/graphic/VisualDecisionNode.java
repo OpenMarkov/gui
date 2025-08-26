@@ -11,6 +11,7 @@ import org.openmarkov.core.action.VisualDecisionNodePolicyChangeListener;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -29,8 +30,8 @@ public class VisualDecisionNode extends VisualNode implements VisualDecisionNode
 	 * Internal color of the visual node when there is no finding established.
 	 */
 	private static final Color BACKGROUND_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.NODEDECISION_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					new Color(207, 227, 253));
+            .getColor(OpenMarkovPreferencesKeys.NODEDECISION_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      new Color(207, 227, 253));
 
 	/**
 	 * Internal color of the visual node when there is a preResolution finding
@@ -54,15 +55,15 @@ public class VisualDecisionNode extends VisualNode implements VisualDecisionNode
 	 * Color of lines and letters.
 	 */
 	private static final Color FOREGROUND_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.NODEDECISION_FOREGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					Color.BLACK);
+            .getColor(OpenMarkovPreferencesKeys.NODEDECISION_FOREGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      Color.BLACK);
 
 	/**
 	 * Color of the letters
 	 */
 	private static final Color TEXT_FOREGROUND_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.NODEDECISION_TEXT_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					Color.BLACK);
+            .getColor(OpenMarkovPreferencesKeys.NODEDECISION_TEXT_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      Color.BLACK);
 
 	/**
 	 * This attribute indicates if the node has an imposed policy
@@ -87,7 +88,7 @@ public class VisualDecisionNode extends VisualNode implements VisualDecisionNode
 		postResolutionFinding = false;
 		setTemporalPosition(new Point2D.Double(node.getCoordinateX(), node.getCoordinateY()));
 		innerBox = new FSVariableBox(this);
-		setHasPolicy(node.getPotentials().size() != 0);
+        setHasPolicy(!node.getPotentials().isEmpty());
 	}
 
 	/**
@@ -141,13 +142,9 @@ public class VisualDecisionNode extends VisualNode implements VisualDecisionNode
 		String text = getNodeString();
 		double textHeight = getHeight(text, g);
 		double textWidth = getWidth(text, g);
-		double rectangleWidth = 0.0;
-		double rectangleHeight = 0.0;
-		double left = 0.0;
-		double right = 0.0;
-		double top = 0.0;
-		double bottom = 0.0;
-		Point2D.Double[] points = new Point2D.Double[4];
+        double rectangleWidth;
+        double rectangleHeight;
+        Point2D.Double[] points = new Point2D.Double[4];
 
 		if (isExpanded()) {
 			rectangleHeight = innerBox.getInnerBoxHeight(g) + textHeight + 2 * VERTICAL_SPACE_TO_TEXT
@@ -161,11 +158,11 @@ public class VisualDecisionNode extends VisualNode implements VisualDecisionNode
 				rectangleWidth = textWidth + 2 * HORIZONTAL_SPACE_TO_TEXT;
 			}
 		}
-
-		left = getTemporalPosition().getX() - rectangleWidth / 2;
-		right = left + rectangleWidth;
-		top = getTemporalPosition().getY() - rectangleHeight / 2;
-		bottom = top + rectangleHeight;
+        
+        double left = getTemporalPosition().getX() - rectangleWidth / 2;
+        double right = left + rectangleWidth;
+        double top = getTemporalPosition().getY() - rectangleHeight / 2;
+        double bottom = top + rectangleHeight;
 		points[0] = new Point2D.Double(left, top);
 		points[1] = new Point2D.Double(right, top);
 		points[2] = new Point2D.Double(right, bottom);

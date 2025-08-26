@@ -43,7 +43,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	/**
 	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
-	private boolean newNode = false;
+    private boolean newNode;
 
 	/**
 	 * constructor without construction parameters
@@ -86,10 +86,9 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	 * title of the nodes.
 	 */
 	private static Object[][] fillArrayWithNodes(List<Node> nodes) {
-		int i, l;
-		Object[][] result;
-		l = nodes.size();
-		result = new Object[l][2];
+        int i;
+        int l = nodes.size();
+        Object[][] result = new Object[l][2];
 		for (i = 0; i < l; i++) {
 			result[i][0] = "p_" + i; // internal name for the parent
 			result[i][1] = nodes.get(i).getName();
@@ -98,7 +97,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	}
 
 	/**
-	 * <code>Initialize</code>
+     * {@code Initialize}
 	 * <p>
 	 * initialize the layout for this panel
 	 */

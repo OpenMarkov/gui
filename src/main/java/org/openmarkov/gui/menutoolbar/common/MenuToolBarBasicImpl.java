@@ -52,11 +52,11 @@ public class MenuToolBarBasicImpl {
 	 * @param component component whose group will be processed.
 	 */
 	private static void clearSelection(JComponent component) {
-
-		ButtonModel model = null;
-		ButtonGroup group = null;
+        
+        ButtonModel model;
+        ButtonGroup group;
 		boolean enabled = false;
-		Enumeration<AbstractButton> elements = null;
+        Enumeration<AbstractButton> elements;
 
 		if (component instanceof AbstractButton) {
 			model = ((AbstractButton) component).getModel();
@@ -103,9 +103,9 @@ public class MenuToolBarBasicImpl {
 	 *                     added.
 	 */
 	public static void addOptionText(JComponent component, String defaultLabel, String text) {
-
-		AbstractButton abstractButton = null;
-		String newText = "";
+        
+        AbstractButton abstractButton;
+        String newText;
 
 		if (component != null) {
 			if (component instanceof AbstractButton) {
@@ -126,9 +126,8 @@ public class MenuToolBarBasicImpl {
 	 */
 	public static void setText(JComponent component, String newCaption) {
 		if (component != null) {
-			if (component instanceof JMenuItem) {
-				JMenuItem jMenuItem = ((JMenuItem) component);
-				if (newCaption != null) {
+            if (component instanceof JMenuItem jMenuItem) {
+                if (newCaption != null) {
 					jMenuItem.setText(newCaption);
 				}
 			}

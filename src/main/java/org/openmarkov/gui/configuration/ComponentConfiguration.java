@@ -30,7 +30,7 @@ import java.util.Properties;
 	// Constructor
 
 	/**
-	 * @param componentName <code>String</code>
+     * @param componentName {@code String}
 	 */
 	public ComponentConfiguration(String componentName) {
 		this.componentName = componentName;
@@ -38,7 +38,7 @@ import java.util.Properties;
 	}
 
 	public static OperatingSystem getOperatingSystem() {
-		OperatingSystem operatingSystem = null;
+        OperatingSystem operatingSystem;
 		Properties properties = System.getProperties();
 		String osName = properties.getProperty("os.name");
 		if (osName.toLowerCase().contains("windows")) {

@@ -29,8 +29,8 @@ public class DecisionTreeModel implements TreeModel {
 		this.listeners = new HashSet<>();
 		this.root = buildPanelTree(root);
 	}
-
-	private DecisionTreeElementPanel buildPanelTree(DecisionTreeElement treeElement) {
+    
+    private static DecisionTreeElementPanel buildPanelTree(DecisionTreeElement treeElement) {
 		DecisionTreeElementPanel treeElementPanel = null;
 		if (treeElement instanceof DecisionTreeNode) {
 			treeElementPanel = new DecisionTreeNodePanel((DecisionTreeNode) treeElement);

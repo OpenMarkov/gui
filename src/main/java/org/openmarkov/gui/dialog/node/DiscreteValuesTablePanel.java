@@ -42,7 +42,7 @@ public class DiscreteValuesTablePanel extends JPanel implements ItemListener {
 	/**
 	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
-	private boolean newNode = false;
+    private boolean newNode;
 	/**
 	 * label for the values comboBox for the states of the node
 	 */
@@ -153,7 +153,7 @@ public class DiscreteValuesTablePanel extends JPanel implements ItemListener {
 	}
 
 	/**
-	 * <code>Initialize</code>
+     * {@code Initialize}
 	 * <p>
 	 * initialize the layout for this panel
 	 */
@@ -298,7 +298,7 @@ public class DiscreteValuesTablePanel extends JPanel implements ItemListener {
 	 *
 	 * @param states states to translate.
 	 */
-	protected void translateStates(String[] states) {
+    protected static void translateStates(String[] states) {
 		int i, l = states.length;
 		for (i = 0; i < l; i++) {
 			states[i] = GUIDefaultStates.getString(states[i]);
@@ -312,11 +312,10 @@ public class DiscreteValuesTablePanel extends JPanel implements ItemListener {
 	 * @param values array of strings.
 	 * @return an array of arrays of objects that has the same elements.
 	 */
-	protected Object[][] convertStringsToTableFormat(String[] values) {
-		Object[][] data;
-		int i, l;
-		l = values.length;
-		data = new Object[l][1];
+    protected static Object[][] convertStringsToTableFormat(String[] values) {
+        int i;
+        int l = values.length;
+        Object[][] data = new Object[l][1];
 		for (i = 0; i < l; i++) {
 			data[i][0] = values[i];
 		}
@@ -330,11 +329,10 @@ public class DiscreteValuesTablePanel extends JPanel implements ItemListener {
 	 * @param values array of arrays of objects.
 	 * @return array of strings that has the same elements.
 	 */
-	protected String[] convertTableFormatToStrings(Object[][] values) {
-		String[] data;
-		int i, l;
-		l = values.length;
-		data = new String[l];
+    protected static String[] convertTableFormatToStrings(Object[][] values) {
+        int i;
+        int l = values.length;
+        String[] data = new String[l];
 		for (i = 0; i < l; i++) {
 			data[i] = (String) values[i][0];
 		}
@@ -348,13 +346,11 @@ public class DiscreteValuesTablePanel extends JPanel implements ItemListener {
 	 * @return true if all the states are defined and appears only once.
 	 */
 	public boolean checkStates() {
-		Object[][] data;
-		int i, l;
-		HashSet<Object> statesSet = new HashSet<Object>();
+        HashSet<Object> statesSet = new HashSet<Object>();
 		prefixedKeyTablePanelNodeStatesValues.stopCellEditing();
-		data = prefixedKeyTablePanelNodeStatesValues.getData();
-		i = 0;
-		l = data.length;
+        Object[][] data = prefixedKeyTablePanelNodeStatesValues.getData();
+        int i = 0;
+        int l = data.length;
 		if (l == 0) {
 			JOptionPane.showMessageDialog(this, stringDatabase.getString("EmptyStateList.Text.Label"),
 					stringDatabase.getString("EmptyStateList.Title.Label"), JOptionPane.ERROR_MESSAGE);
@@ -367,13 +363,14 @@ public class DiscreteValuesTablePanel extends JPanel implements ItemListener {
 						stringDatabase.getString("EmptyState.Title.Label"), JOptionPane.ERROR_MESSAGE);
 				this.setValidDataInPanel(false);
 				return false;
-			} else if (!statesSet.add(data[i][0])) {
-				JOptionPane.showMessageDialog(this, stringDatabase.getString("DuplicatedState.Text.Label"),
-						stringDatabase.getString("DuplicatedState.Title.Label"), JOptionPane.ERROR_MESSAGE);
-				this.setValidDataInPanel(false);
-				return false;
-			}
-			i++;
+            }
+            if (!statesSet.add(data[i][0])) {
+                JOptionPane.showMessageDialog(this, stringDatabase.getString("DuplicatedState.Text.Label"),
+                                              stringDatabase.getString("DuplicatedState.Title.Label"), JOptionPane.ERROR_MESSAGE);
+                this.setValidDataInPanel(false);
+                return false;
+            }
+            i++;
 		}
 		this.setValidDataInPanel(true);
 		return true;

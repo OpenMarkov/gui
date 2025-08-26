@@ -51,7 +51,7 @@ public abstract class NodeEditionMode extends EditionMode {
 						}
 					}
 					String nodeName = Util.getNextNodeName(nodeType, existingNames);
-					State states[] = DefaultStates.getStatesNodeType(nodeType, probNet.getDefaultStates());
+                    State[] states = DefaultStates.getStatesNodeType(nodeType, probNet.getDefaultStates());
 					for (int i = 0; i < states.length; i++) {
 						states[i] = new State(GUIDefaultStates.getString(states[i].getName()));
 					}

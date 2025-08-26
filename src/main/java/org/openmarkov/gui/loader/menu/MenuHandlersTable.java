@@ -24,10 +24,7 @@ import java.util.Hashtable;
  */
 public class MenuHandlersTable {
     
-    /**
-     * MenuHandlersTable unique instance. Used in singleton pattern.
-     */
-    private static MenuHandlersTable menuHandlersTable = null;
+
     /**
      * htMenuItemHandlers table to store the set of menu handlers
      */
@@ -43,23 +40,12 @@ public class MenuHandlersTable {
     }
     
     /**
-     * @return MenuHandlersTable unique instance (singleton pattern).
-     */
-    public static MenuHandlersTable getUniqueInstance() {
-        
-        if (menuHandlersTable == null) {
-            menuHandlersTable = new MenuHandlersTable();
-        }
-        return menuHandlersTable;
-    }
-    
-    /**
      * Register a menu item handler in the handler table by name
      *
      * @param sHandlerName the name of the handler for the element
      * @param mih          the MenuItem handler
      */
-    public void registerMenuItemHandler(String sHandlerName, MenuItemHandler mih) {
+    public static void registerMenuItemHandler(String sHandlerName, MenuItemHandler mih) {
         
         htMenuItemHandlers.put(sHandlerName, mih);
     }
@@ -70,7 +56,7 @@ public class MenuHandlersTable {
      * @param mi  the menu item
      * @param mih the handler for the menu item
      */
-    public void registerMenuItemHandler(JMenuItem mi, MenuItemHandler mih) {
+    public static void registerMenuItemHandler(JMenuItem mi, MenuItemHandler mih) {
         
         htMenuItemHandlers.put(mi, mih);
     }
@@ -81,7 +67,7 @@ public class MenuHandlersTable {
      * @param mi the menu item which handler we are looking for
      * @return the menu item handler
      */
-    public MenuItemHandler menuitemhandlerFind(JMenuItem mi) {
+    public static MenuItemHandler menuitemhandlerFind(JMenuItem mi) {
         return htMenuItemHandlers.get(mi);
     }
     
@@ -91,7 +77,7 @@ public class MenuHandlersTable {
      * @param sName the name of the menu item handler we are looking for
      * @return the menu item handler
      */
-    public MenuItemHandler menuitemhandlerFind(String sName) {
+    public static MenuItemHandler menuitemhandlerFind(String sName) {
         
         if (sName == null) {
             return null;

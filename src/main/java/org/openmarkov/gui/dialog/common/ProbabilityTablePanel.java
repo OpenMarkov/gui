@@ -51,12 +51,12 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	/**
 	 * Name of the columns of the table.
 	 */
-	protected String[] columns = null;
+    protected String[] columns;
 
 	/**
 	 * Data of the cells.
 	 */
-	protected Object[][] data = null;
+    protected Object[][] data;
 	/**
 	 * number of positions in this table
 	 */
@@ -82,7 +82,7 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	/**
 	 * Icon loader.
 	 */
-	protected IconLoader iconLoader = null;
+    protected IconLoader iconLoader;
 	/**
 	 * Properties for options to display in the table
 	 */
@@ -186,6 +186,7 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	public void setShowNetValues(boolean showNetValues) {
 
 		this.showNetValues = showNetValues;
+        //TODO
 		if (isShowNetValues()) {
 			// show Net values
 		} else {

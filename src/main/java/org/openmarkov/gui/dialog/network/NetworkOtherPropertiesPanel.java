@@ -123,7 +123,7 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	 */
 	private PrefixedOtherPropertiesTablePanel getOtherPropertiesTablePanel() {
 		if (otherPropertiesTablePanel == null) {
-			String columnNames[] = new String[] { stringDatabase.getString(
+            String[] columnNames = new String[]{stringDatabase.getString(
 					"NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn.Label"),
 					stringDatabase.getString(
 							"NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyNameColumn.Label"),

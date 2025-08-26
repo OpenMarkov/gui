@@ -74,14 +74,12 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog {
 			// node variable type
 			VariableType varType = ((NodeDefinitionPanel) getNodeDefinitionPanel()).getVariableType();
 			if (varType != null) {
-				if (varType.equals(VariableType.FINITE_STATES) || varType.equals(VariableType.DISCRETIZED)) {
+                if (varType == VariableType.FINITE_STATES || varType == VariableType.DISCRETIZED) {
 					//changed by mpalacios
 					//result = ((DiscreteValuesTablePanel) getNodeDiscreteValuesTablePanel())
 					//			.checkStates();
-					result = ((NodeDomainValuesTablePanel) getNodeDomainValuesTablePanel()).checkStates();
-				} else if (varType.equals(VariableType.DISCRETIZED)) {
-					result = ((NodeDomainValuesTablePanel) getNodeDomainValuesTablePanel()).checkStates();
-				} else if (varType.equals(VariableType.NUMERIC)) {
+                    result = NodeDomainValuesTablePanel.checkStates();
+                } else if (varType == VariableType.NUMERIC) {
 					// TODO this must be set when continuos will be implemented
 					result = true;
 				}

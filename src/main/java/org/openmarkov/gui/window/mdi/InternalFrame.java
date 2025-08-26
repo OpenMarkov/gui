@@ -29,7 +29,7 @@ public class InternalFrame extends JInternalFrame implements FrameContentPanelCo
 	/**
 	 * Panel to show the information.
 	 */
-	private FrameContentPanel contentPanel = null;
+    private FrameContentPanel contentPanel;
 	/**
 	 * This variable contains the instant of creation of this internal frame. It
 	 * will allow to order the internal frames on the main window.
@@ -60,7 +60,7 @@ public class InternalFrame extends JInternalFrame implements FrameContentPanelCo
 		setMaximizable(true);
 		setIconifiable(true);
 		setClosable(true);
-		this.setFrameIcon(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIcon16());
+        this.setFrameIcon(OpenMarkovLogoIcon.getOpenMarkovLogoIcon16());
 		setLayout(new BorderLayout());
 		setContentPane(contentPanel);
 		contentPanel.setFrameContentPanelContainer(this);

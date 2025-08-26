@@ -30,19 +30,18 @@ public class AbsorbNodeValidator {
 
         // Test if only utility children and no grandchildren
         List<Node> children = node.getChildren();
-        switch (children.size()) {
-            case 0:
-                return false;
-            default:
+        return switch (children.size()) {
+            case 0 -> false;
+            default -> {
                 for (Node child : children) {
-                    if (child.getNodeType() != NodeType.UTILITY || child.getChildren().size() > 0) {
-                        return false;
+                    if (child.getNodeType() != NodeType.UTILITY || !child.getChildren().isEmpty()) {
+                        yield false;
                     }
                 }
                 // Only utility children, no grandchildren
-                return true;
-
-        }
+                yield true;
+            }
+        };
 
     }
 }

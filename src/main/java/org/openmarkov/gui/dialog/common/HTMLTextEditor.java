@@ -48,7 +48,7 @@ public class HTMLTextEditor extends JDialog {
 	 *  comment, although the Ok button updates this, meaning
 	 *  is likely to hold the new comment rather than the old one.
 	 */
-	private String commentText = "";
+    private String commentText;
 	
 	/**
 	 * HTMLTextEditor dialog constructor

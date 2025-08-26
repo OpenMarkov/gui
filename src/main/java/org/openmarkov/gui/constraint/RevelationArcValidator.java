@@ -26,7 +26,7 @@ public class RevelationArcValidator {
 	 * revelation arc
 	 *
 	 * @param link
-	 * @return <code>true</code> if a link restriction can be applied to the
+     * @return {@code true} if a link restriction can be applied to the
 	 *         link.
 	 */
 	public static boolean validate(Link<Node> link) {
@@ -35,13 +35,10 @@ public class RevelationArcValidator {
 		Node node2 = link.getNode2();
 		ProbNet net = node1.getProbNet();
 		if (!net.hasConstraint(NoRevelationArc.class)) {
-
-			if ((node1.getNodeType() == NodeType.CHANCE || node1.getNodeType() == NodeType.DECISION) && (
-					node2.getNodeType() == NodeType.CHANCE
-			)) {
-
-				return true;
-			}
+            
+            return (node1.getNodeType() == NodeType.CHANCE || node1.getNodeType() == NodeType.DECISION) && (
+                    node2.getNodeType() == NodeType.CHANCE
+            );
 		}
 		return false;
 	}

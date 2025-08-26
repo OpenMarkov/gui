@@ -7,10 +7,7 @@
 
 package org.openmarkov.gui.dialog.network;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.inference.tasks.OptimalIntervention;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -20,7 +17,6 @@ import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.treeadd.TreeADDCellRenderer;
 import org.openmarkov.gui.dialog.treeadd.TreeADDEditorPanel;
-import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

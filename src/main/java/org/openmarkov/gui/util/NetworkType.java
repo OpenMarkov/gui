@@ -48,9 +48,7 @@ public enum NetworkType {
     static {
         for (NetworkType type : NetworkType.values()) {
             switch (type) {
-                case BAYESIAN_NET -> {
-                    type.nodeTypes.add(NodeType.CHANCE);
-                }
+                case BAYESIAN_NET -> type.nodeTypes.add(NodeType.CHANCE);
                 case INFLUENCE_DIAGRAM, SIMPLE_MARKOV_MODEL, MARKOV_DECISION_PROCESS, POMDP, DAN -> {
                     type.nodeTypes.add(NodeType.CHANCE);
                     type.nodeTypes.add(NodeType.DECISION);

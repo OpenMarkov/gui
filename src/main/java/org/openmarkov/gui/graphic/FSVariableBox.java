@@ -28,7 +28,7 @@ public class FSVariableBox extends InnerBox {
 	 * This variable contains a list of all the visual states that are part
 	 * of this inner box.
 	 */
-	public HashMap<Integer, VisualState> visualStates = null;
+    public HashMap<Integer, VisualState> visualStates;
 
 	/**
 	 * Creates a new Finite States Variable innerBox.
@@ -154,7 +154,7 @@ public class FSVariableBox extends InnerBox {
 	 * @return the height of the innerBox.
 	 */
 	@Override public double getInnerBoxHeight(Graphics2D g) {
-		double innerBoxHeight = 0.0;
+        double innerBoxHeight;
 		int numEstados = visualStates.size();
 		if (visualNode.getVisualNetwork().isPropagationActive()) {
 			innerBoxHeight = INTERNAL_MARGIN + (STATES_VERTICAL_SEPARATION * (numEstados)) + (

@@ -82,7 +82,7 @@ public class TablePotentialPanelTest extends TablePotentialPanel {
 	}
 
 	@Test public void testHowManyRows() {
-		assertEquals(this.howManyRows(probNet.getNode("E")), 5);
+        assertEquals(TablePotentialPanel.howManyRows(probNet.getNode("E")), 5);
 	}
 
 	@Test public void testNumberOfColumns() {

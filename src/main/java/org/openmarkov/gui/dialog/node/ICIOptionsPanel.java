@@ -39,7 +39,7 @@ public class ICIOptionsPanel extends JPanel {
 	/**
 	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
-	private boolean newNode = false;
+    private boolean newNode;
 	/**
 	 * buttongroups of the options *
 	 */
@@ -108,7 +108,7 @@ public class ICIOptionsPanel extends JPanel {
 	}
 
 	/**
-	 * <code>Initialize</code>
+     * {@code Initialize}
 	 * <p>
 	 * initialize the layout for this panel
 	 */

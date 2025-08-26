@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial") public class DistributionParameterDialog extends OkCancelHorizontalDialog {
-
-	private double[] parameters = null;
-	private List<TextField> parameterTextFields = null;
+    
+    private double[] parameters;
+    private List<TextField> parameterTextFields;
 	public DistributionParameterDialog(Window owner, String distributionType, double[] parameters) {
 		super(owner);
 		this.parameters = parameters;
@@ -87,8 +87,8 @@ import java.util.List;
 	public double[] getParameters() {
 		return parameters;
 	}
-
-	private class TextFieldFocusListener implements FocusListener {
+    
+    private static class TextFieldFocusListener implements FocusListener {
 		@Override public void focusGained(FocusEvent e) {
 			((TextComponent) e.getSource()).selectAll();
 

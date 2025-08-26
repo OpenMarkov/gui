@@ -77,13 +77,8 @@ import java.awt.*;
 	 * @return true if the dialog box can be closed.
 	 */
 	@Override protected boolean doOkClickBeforeHide() {
-        if (getJPanelSplitInterval().getLimit().getText() == null) {
-
-			return false;
-		}
-
-		return true;
-	}
+        return getJPanelSplitInterval().getLimit().getText() != null;
+    }
 
 	/**
 	 * This method carries out the actions when the user press the Cancel button

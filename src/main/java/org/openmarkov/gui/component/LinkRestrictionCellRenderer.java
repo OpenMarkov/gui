@@ -16,8 +16,8 @@ import java.awt.*;
 
 	private static Color INCOMPATIBILITY_COLOR = new Color(255, 88, 88);
 	private static Color COMPATIBILITY_COLOR = new Color(174, 255, 174);
-	private final String INCOMPATIBILITY_VALUE = "0";
-	private final String COMPATIBILITY_VALUE = "1";
+    private static final String INCOMPATIBILITY_VALUE = "0";
+    private static final String COMPATIBILITY_VALUE = "1";
 
 	public LinkRestrictionCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns, TablePotential potential) {
 		super(firstEditableRow, uncertaintyInColumns);

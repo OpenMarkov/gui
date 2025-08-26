@@ -47,7 +47,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	/**
 	 * Prefixed data.
 	 */
-	private Object[][] prefixedData = null;
+    private Object[][] prefixedData;
 	/**
 	 * Array that contains the prefixed data that is not in the table.
 	 */
@@ -80,11 +80,10 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	}
 
 	private static Object[][] fillArrayWithNodes(List<Node> nodes) {
-
-		int i, l;
-		Object[][] result;
-		l = nodes.size();
-		result = new Object[l][2];
+        
+        int i;
+        int l = nodes.size();
+        Object[][] result = new Object[l][2];
 		for (i = 0; i < l; i++) {
 			result[i][0] = "p_" + i; //internal name for the parent
 			result[i][1] = nodes.get(i).getName();
@@ -112,13 +111,12 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 * Invoked when the button 'add' is pressed.
 	 */
 	@Override protected void actionPerformedAddValue() {
-
-		int newIndex = 0;
-		int i = 0;
-		int l = 0;
-		Object[][] newData = null;
-
-		newIndex = valuesTable.getRowCount();
+        
+        int i;
+        int l;
+        Object[][] newData;
+        
+        int newIndex = valuesTable.getRowCount();
 		if (absentData == null) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(this), "Ningún nodo disponible",
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.INFORMATION_MESSAGE);
@@ -164,10 +162,9 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	private Object[][] requestNewData() {
 
 		Object[][] possibleData = absentData;
-		KeyListSelectionDialog dialog = null;
-		dialog = new KeyListSelectionDialog(Utilities.getOwner(this), titleToSelectRows, possibleData, columns);
-
-		return (dialog.requestSelectRows() == KeyListSelectionDialog.OK_BUTTON) ? dialog.getSelectedRows() : null;
+        KeyListSelectionDialog dialog = new KeyListSelectionDialog(Utilities.getOwner(this), titleToSelectRows, possibleData, columns);
+        
+        return (dialog.requestSelectRows() == OkCancelHorizontalDialog.OK_BUTTON) ? dialog.getSelectedRows() : null;
 
 	}
 
@@ -225,8 +222,8 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
             linkEdit.doEdit(probNet1);
             
             tableModel.removeRow(selectedRow);
-			rowCount = valuesTable.getRowCount();
-			// Fixing issue #249
+            valuesTable.getRowCount();
+            // Fixing issue #249
 			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/249/removing-the-two-parents-of-a-node
 			// Removed the "if" clause
 			// No parent is selected after a removal

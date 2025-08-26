@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -195,7 +194,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         double[] refValues = new double[uncertainColumn.size()];
         ComplementFamily comp = new ComplementFamily(uncertainColumn);
         DirichletFamily dir = new DirichletFamily(uncertainColumn);
-        List<UncertainValue> otherUncertain = new ArrayList<UncertainValue>();
         for (int i = 0; i < uncertainColumn.size(); i++) {
             UncertainValue uncertainValue = uncertainColumn.get(i);
             if (uncertainValue.getProbDensFunction() instanceof ComplementFunction) {
@@ -206,7 +204,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
                 otherIndexes.add(i);
             }
         }
-        otherUncertain = getElementsFromIndexes(uncertainColumn, otherIndexes);
+        List<UncertainValue> otherUncertain = getElementsFromIndexes(uncertainColumn, otherIndexes);
         // Process other
         FamilyDistribution other = new FamilyDistribution(otherUncertain);
         double[] meanOther = other.getMean();
@@ -324,12 +322,9 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     }
     
     private int getPositionBaseUncertainValue(TablePotential potential, EvidenceCase configuration) {
-        int[] coordinates;
-        int sizeCoordinates;
-        int pos;
         int sizeEvi = configuration.getFindings().size();
-        sizeCoordinates = sizeEvi + (isChanceVariable ? 1 : 0);
-        coordinates = new int[sizeCoordinates];
+        int sizeCoordinates = sizeEvi + (isChanceVariable ? 1 : 0);
+        int[] coordinates = new int[sizeCoordinates];
         List<Variable> varsTable = potential.getVariables();
         int startLoop;
         if (isChanceVariable) {
@@ -341,7 +336,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         for (int i = startLoop; i < sizeCoordinates; i++) {
             coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
         }
-        pos = potential.getPosition(coordinates);
+        int pos = potential.getPosition(coordinates);
         return pos;
     }
     
@@ -350,7 +345,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     }
     
     private void fillDistributionsTableModel(Variable variable, EvidenceCase configuration, TablePotential potential) {
-        UncertainValue[] uncertainTable = potential.getUncertainValues();
+        potential.getUncertainValues();
         TablePotential projectedPotential = null;
         try {
             projectedPotential = potential.tableProject(configuration, null).get(0);
@@ -359,7 +354,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         }
         UncertainValue[] projectedUncertainTable = projectedPotential.getUncertainValues();
         // Get the table of uncertain values
-        uncertainTable = !hasUncertainValues(projectedUncertainTable) ?
+        UncertainValue[] uncertainTable = !hasUncertainValues(projectedUncertainTable) ?
                 createExactUncertainValuesFromDouble(projectedPotential) :
                 projectedPotential.getUncertainValues();
         // Fill the table for the dialog
@@ -402,7 +397,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         columnModel.getColumn(0).setCellEditor(null);
     }
     
-    private String getString(double[] parameters) {
+    private static String getString(double[] parameters) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parameters.length; ++i) {
             sb.append(parameters[i]);
@@ -416,7 +411,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      *                           used for creating the uncertain values
      * @return An array of uncertain values
      */
-    private UncertainValue[] createExactUncertainValuesFromDouble(TablePotential projectedPotential) {
+    private static UncertainValue[] createExactUncertainValuesFromDouble(TablePotential projectedPotential) {
         double[] tableProjected = projectedPotential.getValues();
         UncertainValue[] uncertainTable = new UncertainValue[tableProjected.length];
         for (int i = 0; i < tableProjected.length; i++) {
@@ -425,8 +420,8 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         return uncertainTable;
     }
     
-    private String getConfigurationDescription(Variable variable, boolean isChanceVariable,
-                                               EvidenceCase configuration) {
+    private static String getConfigurationDescription(Variable variable, boolean isChanceVariable,
+                                                      EvidenceCase configuration) {
         StringBuilder sb = new StringBuilder();
         sb.append((isChanceVariable) ? "P" : "U");
         sb.append("(");
@@ -488,7 +483,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         return verify;
     }
     
-    private List<UncertainValue> reverse(List<UncertainValue> list) {
+    private static List<UncertainValue> reverse(List<UncertainValue> list) {
         List<UncertainValue> rev = new ArrayList<UncertainValue>();
         for (int i = list.size() - 1; i >= 0; i--) {
             rev.add(list.get(i));
@@ -519,7 +514,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         return comply;
     }
     
-    private boolean verifyGlobalConstraintUncertainty(List<UncertainValue> uncertainValues) {
+    private static boolean verifyGlobalConstraintUncertainty(List<UncertainValue> uncertainValues) {
         FamilyDistribution family = new FamilyDistribution(uncertainValues);
         return (doVerifyRule1(family) && doVerifyRule2(family) && doVerifyRule3(family));
     }
@@ -531,9 +526,9 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      * • the sum of the maxima of all the distributions (different from Complement)
      * cannot be greater than 1.
      */
-    private boolean doVerifyRule1(FamilyDistribution family) {
-        boolean verify = false;
-        List<UncertainValue> exactRangeOrUncertain = null;
+    private static boolean doVerifyRule1(FamilyDistribution family) {
+        boolean verify;
+        List<UncertainValue> exactRangeOrUncertain;
         List<Class<? extends ProbDensFunction>> rangeOrTriangTypes = new ArrayList<>();
         rangeOrTriangTypes.add(RangeFunction.class);
         rangeOrTriangTypes.add(TriangularFunction.class);
@@ -565,12 +560,11 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         return verify;
     }
     
-    @SuppressWarnings("unused") private boolean doVerifyRule4(FamilyDistribution family) {
-        boolean verify;
+    @SuppressWarnings("unused") private static boolean doVerifyRule4(FamilyDistribution family) {
         List<UncertainValue> uncertainFamily = family.getFamily();
         int totalSizeFamily = uncertainFamily.size();
         List<UncertainValue> compUncertain = getUncertainValuesOfClass(uncertainFamily, ComplementFunction.class);
-        verify = (totalSizeFamily != compUncertain.size());
+        boolean verify = (totalSizeFamily != compUncertain.size());
         if (!verify) {
             String message = "Rule 4 of the specification of sensitivity analysis in ProbModelXML has been violated. Please, check the distributions and its parameters.";
             JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
@@ -578,11 +572,10 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         return verify;
     }
     
-    private boolean doVerifyRule3(FamilyDistribution family) {
-        int totalSizeFamily;
+    private static boolean doVerifyRule3(FamilyDistribution family) {
         boolean verify;
         List<UncertainValue> uncertainFamily = family.getFamily();
-        totalSizeFamily = uncertainFamily.size();
+        int totalSizeFamily = uncertainFamily.size();
         List<UncertainValue> dirUncertain = getUncertainValuesOfClass(uncertainFamily, DirichletFunction.class);
         int numDirichlet = dirUncertain.size();
         if (numDirichlet > 0) {
@@ -616,11 +609,10 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      * • all the others must be Exact, with v = 0, or Complement;
      * • at least one of the others must be Complement.
      */
-    private boolean doVerifyRule2(FamilyDistribution family) {
-        int totalSizeFamily;
+    private static boolean doVerifyRule2(FamilyDistribution family) {
         boolean verify;
         List<UncertainValue> uncertainFamily = family.getFamily();
-        totalSizeFamily = uncertainFamily.size();
+        int totalSizeFamily = uncertainFamily.size();
         List<UncertainValue> betaUncertain = getUncertainValuesOfClass(uncertainFamily, BetaFunction.class);
         int numBeta = betaUncertain.size();
         if (numBeta > 0) {
@@ -651,9 +643,8 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         return verify;
     }
     
-    private boolean areAllZero(double[] x) {
-        boolean allZero;
-        allZero = true;
+    private static boolean areAllZero(double[] x) {
+        boolean allZero = true;
         for (int i = 0; (i < x.length) && allZero; i++) {
             allZero = x[i] == 0.0;
         }
@@ -759,7 +750,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         }
     }
     
-    public class DistributionTableModel extends DefaultTableModel {
+    public static class DistributionTableModel extends DefaultTableModel {
         
         private static final long serialVersionUID = 1L;
         
@@ -775,7 +766,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     /**
      * This class is used for painting and coloring the table and the headers
      */
-    @SuppressWarnings("unused") private class RendererConfigurationTable extends DefaultTableCellRenderer {
+    @SuppressWarnings("unused") private static class RendererConfigurationTable extends DefaultTableCellRenderer {
         
         private static final long serialVersionUID = 1L;
         

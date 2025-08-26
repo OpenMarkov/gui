@@ -168,8 +168,8 @@ import java.util.Map;
 		uncertaintyPanel.setVisible(uncertaintyCheckBox.isSelected());
 		matrixTypeComboBox.setSelectedItem(currentMatrixType);
 	}
-
-	private boolean isValidTimeVariable(Variable variable) {
+    
+    private static boolean isValidTimeVariable(Variable variable) {
 		return variable.isTemporal();
 	}
 
@@ -177,9 +177,8 @@ import java.util.Map;
 		WeibullHazardPotential oldPotential = (WeibullHazardPotential) this.node.getPotentials().get(0);
 		String[] covariates = regressionPanel.getCovariates();
 		double[] coefficients = regressionPanel.getCoefficients();
-		Variable timeVariable = null;
-		String selectedTimeVariable = timeVariableComboBox.getSelectedItem().toString();
-        timeVariable = node.getProbNet().getVariable(selectedTimeVariable);
+        String selectedTimeVariable = timeVariableComboBox.getSelectedItem().toString();
+        Variable timeVariable = node.getProbNet().getVariable(selectedTimeVariable);
         
         
         double[] uncertaintyMatrix = null;
@@ -297,19 +296,19 @@ import java.util.Map;
 			}
 		}
 	}
-
-	private class CovarianceTableModel extends DefaultTableModel {
+    
+    private static class CovarianceTableModel extends DefaultTableModel {
 
 		@Override public boolean isCellEditable(int row, int column) {
-			return row > 0 && column > 0 && row >= column;
+            return column > 0 && row >= column;
 		}
 
 		@Override public Class<?> getColumnClass(int columnIndex) {
 			return (columnIndex == 0) ? String.class : Double.class;
 		}
 	}
-
-	private class CovarianceTableCellRenderer extends DefaultTableCellRenderer {
+    
+    private static class CovarianceTableCellRenderer extends DefaultTableCellRenderer {
 		@Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 				boolean hasFocus, int row, int column) {
 			Color backgroundColor = Color.WHITE;

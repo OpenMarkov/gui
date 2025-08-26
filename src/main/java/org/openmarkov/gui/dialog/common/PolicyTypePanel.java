@@ -167,8 +167,7 @@ import java.awt.event.ItemListener;
 		} else if (e.getStateChange() == ItemEvent.SELECTED) {
 			parent.setEnabledPotentialTypeCombobox(true);
 			if (previousPolicy == PolicyType.PROBABILISTIC) {
-				RemovePolicyEdit removePolicyEdit = null;
-				removePolicyEdit = new RemovePolicyEdit(node);
+                RemovePolicyEdit removePolicyEdit = new RemovePolicyEdit(node);
 				try {
 					ProbNet probNet = node.getProbNet();
 					removePolicyEdit.doEdit(probNet);
@@ -187,9 +186,9 @@ import java.awt.event.ItemListener;
 		} else if (e.getStateChange() == ItemEvent.SELECTED) {
 			parent.setEnabledPotentialTypeCombobox(true);
 			if (previousPolicy == PolicyType.OPTIMAL) {
-				SetPotentialEdit setPotentialEdit = null;
-				setPotentialEdit = new SetPotentialEdit(node,
-						TablePotential.class.getAnnotation(PotentialType.class).name());
+                SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node,
+                                                                         TablePotential.class.getAnnotation(PotentialType.class)
+                                                                                             .name());
 				try {
 					ProbNet probNet = node.getProbNet();
 					setPotentialEdit.doEdit(probNet);

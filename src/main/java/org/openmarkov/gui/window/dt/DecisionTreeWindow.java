@@ -14,7 +14,7 @@ import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import java.awt.*;
 
 @SuppressWarnings("serial") public class DecisionTreeWindow extends FrameContentPanel {
-	private String title = null;
+    private String title;
 	private DecisionTreePanel decisionTreePanel = null;
 
 	public DecisionTreeWindow(ProbNet probNet) {

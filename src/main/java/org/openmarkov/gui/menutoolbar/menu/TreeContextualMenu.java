@@ -67,7 +67,7 @@ public class TreeContextualMenu extends ContextualMenu {
      */
     private JMenuItem getExpandNextMenuItem() {
         if (expandNextMenuItem == null) {
-            expandNextMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_EXPAND_NEXT_MENUITEM, ActionCommands.TREE_EXPAND_NEXT);
+            expandNextMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_EXPAND_NEXT_MENUITEM, ActionCommands.TREE_EXPAND_NEXT.getCommandName());
             expandNextMenuItem.addActionListener(listener);
         }
         return expandNextMenuItem;
@@ -80,7 +80,7 @@ public class TreeContextualMenu extends ContextualMenu {
      */
     private JMenuItem getExpandAllMenuItem() {
         if (expandAllMenuItem == null) {
-            expandAllMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_EXPAND_ALL_MENUITEM, ActionCommands.TREE_EXPAND_ALL);
+            expandAllMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_EXPAND_ALL_MENUITEM, ActionCommands.TREE_EXPAND_ALL.getCommandName());
             expandAllMenuItem.addActionListener(listener);
         }
         return expandAllMenuItem;
@@ -93,7 +93,7 @@ public class TreeContextualMenu extends ContextualMenu {
      */
     private JMenuItem getOpenNetworkMenuItem() {
         if (openNetworkMenuItem == null) {
-            openNetworkMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_OPEN_NETWORK_MENUITEM, ActionCommands.TREE_OPEN_NETWORK);
+            openNetworkMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_OPEN_NETWORK_MENUITEM, ActionCommands.TREE_OPEN_NETWORK.getCommandName());
             openNetworkMenuItem.addActionListener(listener);
         }
         return openNetworkMenuItem;
@@ -106,7 +106,7 @@ public class TreeContextualMenu extends ContextualMenu {
      */
     private JMenuItem getShowCEPMenuItem() {
         if (showCEPMenuItem == null) {
-            showCEPMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_SHOW_CEP_MENUITEM, ActionCommands.TREE_SHOW_CEP);
+            showCEPMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_SHOW_CEP_MENUITEM, ActionCommands.TREE_SHOW_CEP.getCommandName());
             showCEPMenuItem.addActionListener(listener);
         }
         return showCEPMenuItem;
@@ -119,7 +119,7 @@ public class TreeContextualMenu extends ContextualMenu {
      */
     private JMenuItem getSaveGraphvizMenuItem() {
         if (saveGraphvizMenuItem == null) {
-            saveGraphvizMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_SAVE_GRAPHVIZ, ActionCommands.TREE_SAVE_GRAPHVIZ);
+            saveGraphvizMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_SAVE_GRAPHVIZ, ActionCommands.TREE_SAVE_GRAPHVIZ.getCommandName());
             saveGraphvizMenuItem.addActionListener(listener);
         }
         return saveGraphvizMenuItem;
@@ -133,21 +133,12 @@ public class TreeContextualMenu extends ContextualMenu {
      */
     @Override
     protected JComponent getJComponentActionCommand(String actionCommand) {
-        JComponent component = null;
-        switch (actionCommand) {
-            case ActionCommands.TREE_EXPAND_NEXT:
-                component = expandNextMenuItem;
-                break;
-            case ActionCommands.TREE_EXPAND_ALL:
-                component = expandAllMenuItem;
-                break;
-            case ActionCommands.TREE_OPEN_NETWORK:
-                component = openNetworkMenuItem;
-                break;
-            case ActionCommands.TREE_SHOW_CEP:
-                component = showCEPMenuItem;
-                break;
-        }
-        return component;
+        return switch (ActionCommands.of(actionCommand)) {
+            case ActionCommands.TREE_EXPAND_NEXT -> expandNextMenuItem;
+            case ActionCommands.TREE_EXPAND_ALL -> expandAllMenuItem;
+            case ActionCommands.TREE_OPEN_NETWORK -> openNetworkMenuItem;
+            case ActionCommands.TREE_SHOW_CEP -> showCEPMenuItem;
+            case null, default -> null;
+        };
     }
 }

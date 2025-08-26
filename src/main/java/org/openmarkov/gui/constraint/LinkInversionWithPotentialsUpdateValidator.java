@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.constraint;
 
-import java.util.List;
-
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;

@@ -50,7 +50,7 @@ public class DesktopPane extends JDesktopPane {
 	 * This method initialises this
 	 */
 	private void initialize() {
-		setBackground(SystemColor.WHITE);
+        setBackground(Color.WHITE);
 		// setBackground(SystemColor.controlShadow);
 	}
 
@@ -61,10 +61,9 @@ public class DesktopPane extends JDesktopPane {
 	 * @return the internal frame that has been created.
 	 */
 	public JInternalFrame createNewInternalFrame(FrameContentPanel newContentPanel) {
-		JInternalFrame frame = null;
-		int posX = 0, posY = 0;
+        int posX = 0, posY = 0;
 		// newContentPanel.add(splitPane);
-		frame = new InternalFrame(newContentPanel);
+        JInternalFrame frame = new InternalFrame(newContentPanel);
 		frame.setBounds(posX, posY, getWidth() / 2, getHeight() / 2);
 		add(frame);
 		return frame;
@@ -113,7 +112,7 @@ public class DesktopPane extends JDesktopPane {
 	 * @param frame frame to be minimized.
 	 * @throws UnsupportedOperationException if iconification is vetoed.
 	 */
-	private void minimize(JInternalFrame frame) throws UnsupportedOperationException {
+    private static void minimize(JInternalFrame frame) throws UnsupportedOperationException {
 		if (!frame.isIcon()) {
 			try {
 				frame.setIcon(true);
@@ -131,7 +130,7 @@ public class DesktopPane extends JDesktopPane {
 	 * @param frame frame to be restored.
 	 * @throws UnsupportedOperationException if restoration is vetoed.
 	 */
-	private void restore(JInternalFrame frame) throws UnsupportedOperationException {
+    private static void restore(JInternalFrame frame) throws UnsupportedOperationException {
 		if (frame.isIcon()) {
 			try {
 				frame.setIcon(false);
@@ -151,7 +150,7 @@ public class DesktopPane extends JDesktopPane {
 	public void minimizeAll() throws UnsupportedOperationException {
 		JInternalFrame[] frames = getAllFrames();
 		JInternalFrame selected = getSelectedFrame();
-		int i = frames.length;
+        int i;
 		int l = frames.length;
 		for (i = 0; i < l; i++) {
 			minimize(frames[i]);
@@ -171,7 +170,7 @@ public class DesktopPane extends JDesktopPane {
 	public void restoreAll() throws UnsupportedOperationException {
 		JInternalFrame[] frames = getAllFrames();
 		JInternalFrame selected = getSelectedFrame();
-		int i = frames.length;
+        int i;
 		int l = frames.length;
 		for (i = 0; i < l; i++) {
 			restore(frames[i]);
@@ -199,7 +198,7 @@ public class DesktopPane extends JDesktopPane {
 		JInternalFrame selected = getSelectedFrame();
 		int x = 0;
 		int y = 0;
-		int i = frames.length;
+        int i;
 		int l = frames.length;
 		int initialX = 0;
 		int initialY = 0;
@@ -236,17 +235,17 @@ public class DesktopPane extends JDesktopPane {
 	public void mosaic() throws UnsupportedOperationException {
 		JInternalFrame[] frames = getAllFrames();
 		JInternalFrame selected = getSelectedFrame();
-		int i = frames.length;
-		int j = frames.length;
+        int i;
+        int j;
 		int l = frames.length;
 		int k = 0;
-		int lines = 0;
-		int cols = 0;
-		int remaining = 0;
-		int xPosition = 0;
-		int yPosition = 0;
-		int posX = 0;
-		int posY = 0;
+        int lines;
+        int cols;
+        int remaining;
+        int xPosition;
+        int yPosition;
+        int posX;
+        int posY;
 		if (l > 0) {
 			lines = (int) Math.ceil(Math.sqrt(l));
 			cols = (int) Math.ceil((double) l / lines);
@@ -365,7 +364,7 @@ public class DesktopPane extends JDesktopPane {
 	 * @param frame internal frame that will be selected.
 	 * @throws UnsupportedOperationException if the selection is vetoed.
 	 */
-	public void selectFrame(JInternalFrame frame) throws UnsupportedOperationException {
+    public static void selectFrame(JInternalFrame frame) throws UnsupportedOperationException {
 		try {
 			frame.setSelected(true);
 		} catch (PropertyVetoException e) {

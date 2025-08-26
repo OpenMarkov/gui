@@ -14,8 +14,8 @@ import org.openmarkov.gui.graphic.VisualNode;
 import java.awt.*;
 
 public class VisualContractedNodeLink extends VisualArrow {
-	VisualInstance sourceInstance = null;
-	VisualNode destNode = null;
+    VisualInstance sourceInstance;
+    VisualNode destNode;
 
 	public VisualContractedNodeLink(VisualInstance sourceInstance, VisualNode destNode) {
 		super(sourceInstance.getPosition(), destNode.getPosition());

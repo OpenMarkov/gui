@@ -62,7 +62,7 @@ public class MDIMenu extends Component {
 	/**
 	 * Object that represents the menu 'Window'.
 	 */
-	private JMenu windowMenu = null;
+    private JMenu windowMenu;
 	/**
 	 * Object that represents the item 'Window - Cascade'.
 	 */
@@ -107,7 +107,7 @@ public class MDIMenu extends Component {
 	/**
 	 * Listener of the user's actions.
 	 */
-	private ActionListener listener = null;
+    private ActionListener listener;
 
 	/**
 	 * This is the default constructor. Beside initialiting this object, it
@@ -283,7 +283,7 @@ public class MDIMenu extends Component {
 		JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(text);
 		menuItem.addActionListener(listener);
 		groupSelectionPanels.add(menuItem);
-		if (panelToMenuItem.size() == 0) {
+        if (panelToMenuItem.isEmpty()) {
 			windowMenu.add(getJSeparator());
 		}
 		panelToMenuItem.put(panel, menuItem);
@@ -316,7 +316,7 @@ public class MDIMenu extends Component {
 		menuItemToPanel.remove(menuItem);
 		groupSelectionPanels.remove(menuItem);
 		windowMenu.remove(menuItem);
-		if (panelToMenuItem.size() == 0) {
+        if (panelToMenuItem.isEmpty()) {
 			windowMenu.remove(getJSeparator());
 		}
 	}

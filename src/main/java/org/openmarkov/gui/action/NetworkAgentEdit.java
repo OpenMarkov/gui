@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <code>NetworkAgentEdit</code> is a simple edit that allow modify
+ * {@code NetworkAgentEdit} is a simple edit that allow modify
  * the agents of a network
  *
  * @author myebra
@@ -84,8 +84,8 @@ import java.util.List;
 					}
 				}
 			}
-
-			if (agents.size() == 0) {
+            
+            if (agents.isEmpty()) {
 				agents = null;
 			}
 			probNet.setAgents(agents);

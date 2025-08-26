@@ -1,10 +1,8 @@
 package org.openmarkov.gui.dialog.common;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;
-import org.openmarkov.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -66,9 +64,9 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
 
     private void editMedianPotential() {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner (this), medianDummyNode, false, isReadOnly());
-        if (potentialEditDialog.requestValues() == NodePropertiesDialog.OK_BUTTON)
+        if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON)
         {
-            // Do nothing?
+            // TODO: Do nothing?
         }else
         {
             medianDummyNode.getProbNet().getPNESupport ().undoAndDelete ();
@@ -77,9 +75,9 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
 
     private void editScalePotential() {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner (this), scaleDummyNode, false, isReadOnly());
-        if (potentialEditDialog.requestValues() == NodePropertiesDialog.OK_BUTTON)
+        if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON)
         {
-            // Do nothing?
+            // TODO: Do nothing?
         }else
         {
             scaleDummyNode.getProbNet().getPNESupport ().undoAndDelete ();

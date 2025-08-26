@@ -51,7 +51,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 			return 0;
 		}
 		Potential potential = node.getPotentials().get(0);
-		if (this.getIsExactDistrPotential(potential)) {
+        if (PotentialsTablePanelOperations.getIsExactDistrPotential(potential)) {
 			return potential.getNumVariables() - 1;
 		}
         return node.getPotentials().get(0).getNumVariables() - 1 + node.getVariable().getStates().length - 1;
@@ -63,7 +63,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 * @param potential - The potential to check
 	 * @return true if the class of the potential is ExactDistrPotential; false otherwise
 	 */
-	public boolean getIsExactDistrPotential(Potential potential) {
+    public static boolean getIsExactDistrPotential(Potential potential) {
 		return (potential instanceof ExactDistrPotential);
 		// potential.getClass().getName().equals("org.openmarkov.core.model.network.potential.ExactDistrPotential");
 	}
@@ -86,8 +86,8 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	/**
 	 * Created for univariateDistributions
 	 */
-
-	public int getPotentialIndex(int row, int column, TablePotential tableDistribution) {
+    
+    public static int getPotentialIndex(int row, int column, TablePotential tableDistribution) {
 		// First of all we get the start index of the column
 		int potentialIndex = getPotentialStartIndexOfColumn(column, tableDistribution);
 
@@ -98,8 +98,8 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		potentialIndex += (lastRow - row);
 		return potentialIndex;
 	}
-
-	public int getPotentialStartIndexOfColumn(int column, TablePotential tablePotential) {
+    
+    public static int getPotentialStartIndexOfColumn(int column, TablePotential tablePotential) {
 
 		// Index in tablePotential of the beginning of the column
 		int position = 0;
@@ -115,13 +115,12 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		//
 		// Now there is no difference between CHANCE and UTILITY
 		int[] dimensions = tablePotential.getDimensions();
-		int numberOfDimensions = 0;
-		if (dimensions == null) {
+        if (dimensions == null) {
 			return 0;
-		} else
-			numberOfDimensions = dimensions.length - 1;
-
-		int lowerBound = 0;
+        }
+        int numberOfDimensions = dimensions.length - 1;
+        
+        int lowerBound = 0;
 		//if (getIsExactDistrPotential(potential)) lowerBound = -1;
 		for (int i = numberOfDimensions; i > lowerBound; i--) {
 			int dimension = dimensions[i];
@@ -130,21 +129,19 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		}
 		return position;
 	}
-
-	public int calculateFirstEditableRow(TablePotential potential) {
-		int row = 0;
-		row = potential.getNumVariables() - 1;
+    
+    public static int calculateFirstEditableRow(TablePotential potential) {
+        int row = potential.getNumVariables() - 1;
 		return row;
 	}
-
-	public int calculateLastEditableRow(TablePotential potential) {
-
-		int row = 0;
-		//	if (getIsExactDistrPotential(potential))
+    
+    public static int calculateLastEditableRow(TablePotential potential) {
+        
+        //	if (getIsExactDistrPotential(potential))
 		//		row =potential.getNumVariables()-1;
 
 		// Number of parents + Number of variable states -1
-		row = potential.getNumVariables() - 1 + potential.getVariable(0).getStates().length - 1;
+        int row = potential.getNumVariables() - 1 + potential.getVariable(0).getStates().length - 1;
 		return row;
 	}
 
@@ -159,7 +156,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 * @param node   - the node with the potential
 	 * @return index of the potential.
 	 */
-	public int getPotentialStartIndexOfColumn(int column, Node node) {
+    public static int getPotentialStartIndexOfColumn(int column, Node node) {
 		/*
 		 * This code is here and in getPotentialIndex because this method is used not only in  getPotentialIndex
 		 * but in org.openmarkov.gui.action.TablePotentialValueEdit
@@ -171,7 +168,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		}
 
 		Potential potential = node.getPotentials().get(0);
-		TablePotential tablePotential = null;
+        TablePotential tablePotential;
 
 		if (getIsExactDistrPotential(potential))
 			tablePotential = ((ExactDistrPotential) potential).getTablePotential();
@@ -194,13 +191,12 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		//
 		// Now there is no difference between CHANCE and UTILITY
 		int[] dimensions = tablePotential.getDimensions();
-		int numberOfDimensions = 0;
-		if (dimensions == null) {
+        if (dimensions == null) {
 			return 0;
-		} else
-			numberOfDimensions = dimensions.length - 1;
-
-		int lowerBound = 0;
+        }
+        int numberOfDimensions = dimensions.length - 1;
+        
+        int lowerBound = 0;
 		if (getIsExactDistrPotential(potential))
 			lowerBound = -1;
 		for (int i = numberOfDimensions; i > lowerBound; i--) {

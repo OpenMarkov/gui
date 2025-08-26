@@ -55,7 +55,7 @@ public class KeyTable extends JTable {
 	/**
 	 * Indicates if the object is already created.
 	 */
-	protected boolean created = false;
+    protected boolean created;
 	/**
 	 * This variable says if the table can be modified. False by default
 	 */
@@ -203,8 +203,8 @@ public class KeyTable extends JTable {
 	 * This method configures the table to a default state.
 	 */
 	protected void defaultConfiguration() {
-
-		TableCellEditor editorCell = null;
+        
+        TableCellEditor editorCell;
 
 		setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setBackground(BACKGROUND_COLOR);// Component color
@@ -230,7 +230,7 @@ public class KeyTable extends JTable {
 			header.setResizingAllowed(false);
 			header.setVisible(this.showColumnHeader);
 			if (this.showColumnHeader) {
-				header.setVisible(this.showColumnHeader);
+                header.setVisible(true);
 			} else {
 				header.setPreferredSize(new Dimension(20, 0));
 			}

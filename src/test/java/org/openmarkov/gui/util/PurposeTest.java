@@ -35,9 +35,7 @@ public class PurposeTest {
 	 * unknown purpose.
 	 */
 	@Test public final void testGetString() {
-		String string;
-
-		string = Purpose.getString("treatment");
+        String string = Purpose.getString("treatment");
 		assertEquals("Treatment", string);
 		string = Purpose.getString("unknown");
 		assertEquals(string, ">>> purpose.unknown.Text <<<");

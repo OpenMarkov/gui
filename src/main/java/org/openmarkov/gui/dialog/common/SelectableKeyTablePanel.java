@@ -25,108 +25,105 @@ import javax.swing.table.TableModel;
  * according to the class type.
  ***/
 public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements TableModelListener {
-	/***
-	 * Preferred column width
-	 */
-	private static final int CHECKBOX_COLUMN_WIDTH = 60;
-	private static final int STATENAME_COLUMN_WIDTH = 440;
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	/***
-	 * Link containing the revelation conditions
-	 */
-	private Link<Node> link;
-	/****
-	 * Node whose values are revealing
-	 */
-	private Node node;
-
-	public SelectableKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
-			boolean firstColumnHidden, Link<Node> link) {
-		super(newColumns, new Object[0][0], newKeyPrefix, true);
-		this.link = link;
-		this.node = link.getNode1();
-		super.getAddValueButton().setVisible(false);
-		super.getRemoveValueButton().setVisible(false);
-		super.getDownValueButton().setVisible(false);
-		super.getUpValueButton().setVisible(false);
-
-	}
-
-	/****
-	 * Adjusts the column width. The checkbox column is thinner than the node's state column
-	 */
-	public void adjustColumnSize() {
-
-		getValuesTable().getColumnModel().getColumn(0).setPreferredWidth(CHECKBOX_COLUMN_WIDTH);
-		getValuesTable().getColumnModel().getColumn(1).setMaxWidth(CHECKBOX_COLUMN_WIDTH);
-		getValuesTable().getColumnModel().getColumn(1).setPreferredWidth(STATENAME_COLUMN_WIDTH);
-
-	}
-
-	/**
-	 * This method initializes tableModel.
-	 *
-	 * @return a new tableModel.
-	 */
-	@Override protected DefaultTableModel getTableModel() {
-
-		if (tableModel == null) {
-
-			tableModel = new SelectableTableModel(data, columns);
-		}
-		return tableModel;
-	}
-
-	/**
-	 * Invoked when the row selection changes.
-	 *
-	 * @param e selection event information.
-	 */
-	@Override public void tableChanged(TableModelEvent e) {
-		int row = e.getFirstRow();
-		int column = e.getColumn();
-		TableModel model = (TableModel) e.getSource();
-		Object data = model.getValueAt(row, column);
-		State[] states = node.getVariable().getStates();
-		if (states.length > 0) {
-			State selectedState = states[states.length - row - 1];
-			RevelationStateEdit arcEdit = new RevelationStateEdit(link, selectedState, Boolean.valueOf((Boolean) data));
-			try {
+    /***
+     * Preferred column width
+     */
+    private static final int CHECKBOX_COLUMN_WIDTH = 60;
+    private static final int STATENAME_COLUMN_WIDTH = 440;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    /***
+     * Link containing the revelation conditions
+     */
+    private Link<Node> link;
+    /****
+     * Node whose values are revealing
+     */
+    private Node node;
+    
+    public SelectableKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
+                                   boolean firstColumnHidden, Link<Node> link) {
+        super(newColumns, new Object[0][0], newKeyPrefix, true);
+        this.link = link;
+        this.node = link.getNode1();
+        super.getAddValueButton().setVisible(false);
+        super.getRemoveValueButton().setVisible(false);
+        super.getDownValueButton().setVisible(false);
+        super.getUpValueButton().setVisible(false);
+        
+    }
+    
+    /****
+     * Adjusts the column width. The checkbox column is thinner than the node's state column
+     */
+    public void adjustColumnSize() {
+        
+        getValuesTable().getColumnModel().getColumn(0).setPreferredWidth(CHECKBOX_COLUMN_WIDTH);
+        getValuesTable().getColumnModel().getColumn(1).setMaxWidth(CHECKBOX_COLUMN_WIDTH);
+        getValuesTable().getColumnModel().getColumn(1).setPreferredWidth(STATENAME_COLUMN_WIDTH);
+        
+    }
+    
+    /**
+     * This method initializes tableModel.
+     *
+     * @return a new tableModel.
+     */
+    @Override protected DefaultTableModel getTableModel() {
+        
+        if (tableModel == null) {
+            
+            tableModel = new SelectableTableModel(data, columns);
+        }
+        return tableModel;
+    }
+    
+    /**
+     * Invoked when the row selection changes.
+     *
+     * @param e selection event information.
+     */
+    @Override public void tableChanged(TableModelEvent e) {
+        int row = e.getFirstRow();
+        int column = e.getColumn();
+        TableModel model = (TableModel) e.getSource();
+        Object data = model.getValueAt(row, column);
+        State[] states = node.getVariable().getStates();
+        if (states.length > 0) {
+            State selectedState = states[states.length - row - 1];
+            RevelationStateEdit arcEdit = new RevelationStateEdit(link, selectedState, (Boolean) data);
+            try {
                 ProbNet probNet = node.getProbNet();
                 arcEdit.doEdit(probNet);
             } catch (DoEditException.ConstraintViolated e6) {
-				e6.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e6.getMessage()),
-						stringDatabase.getString(e6.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-		}
-	}
-
-	class SelectableTableModel extends DefaultTableModel {
-
-		private static final long serialVersionUID = 4478294244055128574L;
-
-		public SelectableTableModel(Object[][] data, String[] columns) {
-			super(data, columns);
-
-		}
-
-		@Override public boolean isCellEditable(int row, int col) {
-			if (col == 1) {
-				return true;
-			} else
-				return false;
-		}
-
-		@Override public Class<?> getColumnClass(int c) {
-			if (getRowCount() > 0) {
-				return getValueAt(0, c).getClass();
-			} else
-				return Object.class;
-		}
-
-	}
+                e6.printStackTrace();
+                JOptionPane.showMessageDialog(this, stringDatabase.getString(e6.getMessage()),
+                                              stringDatabase.getString(e6.getMessage()), JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    static class SelectableTableModel extends DefaultTableModel {
+        
+        private static final long serialVersionUID = 4478294244055128574L;
+        
+        public SelectableTableModel(Object[][] data, String[] columns) {
+            super(data, columns);
+            
+        }
+        
+        @Override public boolean isCellEditable(int row, int col) {
+            return col == 1;
+        }
+        
+        @Override public Class<?> getColumnClass(int c) {
+            if (getRowCount() <= 0) {
+                return Object.class;
+            }
+            return getValueAt(0, c).getClass();
+        }
+        
+    }
 }

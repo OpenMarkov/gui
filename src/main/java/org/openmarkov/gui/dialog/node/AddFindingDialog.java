@@ -30,7 +30,7 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     /**
      * Object where the finding will be set.
      */
-    protected VisualNode visualNode = null;
+    protected VisualNode visualNode;
     /**
      * Button group that holds the radio buttons that will be shown. There is a
      * radio button for each state of the node.
@@ -39,7 +39,7 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     
     private JSpinner evidenceSpinner;
     
-    private EditorPanel editorPanel = null;
+    private EditorPanel editorPanel;
     
     private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     
@@ -163,7 +163,7 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         VariableType variableType = visualNode.getNode().getVariable().getVariableType();
         Object selectedState;
         
-        if (variableType.equals(VariableType.FINITE_STATES)) {
+        if (variableType == VariableType.FINITE_STATES) {
             selectedState = buttonGroup.getSelection().getActionCommand();
         } else {
             selectedState = evidenceSpinner.getValue();
@@ -174,16 +174,13 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     }
     
     public double getEvidenceValue() {
-        
-        double evidenceValue = Double.parseDouble(evidenceSpinner.getValue().toString());
-        
-        return evidenceValue;
+        return Double.parseDouble(evidenceSpinner.getValue().toString());
     }
     
     @Override
     protected boolean doOkClickBeforeHide() {
         Variable variable = visualNode.getNode().getVariable();
-        if (variable.getVariableType().equals(VariableType.FINITE_STATES)) {
+        if (variable.getVariableType() == VariableType.FINITE_STATES) {
             newFinding = new Finding(variable, variable.getState((String) getSelectedState()));
         } else {
             newFinding = new Finding(variable, (Double) getSelectedState());

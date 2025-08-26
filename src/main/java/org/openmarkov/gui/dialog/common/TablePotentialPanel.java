@@ -259,16 +259,14 @@ import java.util.List;
         
         valuesTable.setData(node);
         
-        Object[][] tableData = null;
         uncertaintyInColumns = null;
-        String[] newColumns = null;
         
         // tableData contains the table to be displayed in ValuesTable
-        tableData = convertListPotentialsToTableFormat();
+        Object[][] tableData = convertListPotentialsToTableFormat();
         
         // Sets the column names in Excel style: A, B, C,....AA,AB...
         // These column names aren't displayed
-        newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(tableData[0].length);
+        String[] newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(tableData[0].length);
         
         //Calculated in convertListPotentialsToTableFormat--&gt;createEmptyTable()
         //setFirstEditableRow(tablePotentialsPanelOperations.calculateFirstEditableRow(node));
@@ -330,7 +328,7 @@ import java.util.List;
      * calculate the number of rows of the table based on the parents and  states of the node variable
      * Last row with the name of the variable when TablePotential REMOVED
      */
-    protected int howManyRows(Node n) {
+    protected static int howManyRows(Node n) {
         return n.getParents().size() + n.getVariable().getStates().length;
     }
     
@@ -341,7 +339,7 @@ import java.util.List;
      * @return the table data to be set
      */
     protected Object[][] convertListPotentialsToTableFormat() {
-        Object[][] values = null;
+        Object[][] values;
         
         // Empty array values[number_of_rows][number_of_colums]
         values = createEmptyTable();
@@ -378,7 +376,6 @@ import java.util.List;
             JOptionPane.showMessageDialog(this, "There are no potentials");
             return null;
         }
-        int numRows = 0;
         int numColumns = 1; // Variables column
         
         // First editable row coincides with the number of parents
@@ -400,7 +397,7 @@ import java.util.List;
         if (!isExactDistrPotential)
             numDimensions = tablePotential.getDimensions()[0];
         // Parent variables + states of node variable
-        numRows = firstEditableRow + numDimensions;
+        int numRows = firstEditableRow + numDimensions;
         lastEditableRow = numRows - 1;
         
         /*if (!isTableDeltaPotential) numRows++;*/ //--&gt; UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
@@ -502,8 +499,7 @@ import java.util.List;
         double[] initialValues = tablePotential.getValues();
         double[] roundedValues = new double[initialValues.length];
         int maxDecimals = 10;
-        double epsilon;
-        epsilon = Math.pow(10, -(maxDecimals + 2));
+        double epsilon = Math.pow(10, -(maxDecimals + 2));
         for (int i = 0; i < initialValues.length; i++) {
             roundedValues[i] = Util.roundAndReduce(initialValues[i], epsilon, maxDecimals);
         }
@@ -562,8 +558,8 @@ import java.util.List;
         // We multiply the number of columns above each state and the index of
         // this variable (in wich state is)
         for (int i = 1; i < potential.getVariables().size(); i++) {
-            Variable var = potential.getVariables().get(i);
-            tempMultiplier = tempMultiplier / var.getNumStates();
+            Variable variable = potential.getVariables().get(i);
+            tempMultiplier = tempMultiplier / variable.getNumStates();
             tempColumnPosition += stateIndices[i] * tempMultiplier;
         }
         
@@ -617,7 +613,7 @@ import java.util.List;
     
     /**
      * This method generates the evidenceCase based on the column selected on
-     * the <code>valuesTable</code> object.
+     * the {@code valuesTable} object.
      * The evidence case has a finding for every parent of the node and its state in column
      * <p>
      * UNCLEAR When is the parents list reordered???
@@ -636,7 +632,7 @@ import java.util.List;
         /*
          * If there is no potential, an exception is shown (caught) and startPosition=0
          */
-        int startPosition = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, node);
+        int startPosition = PotentialsTablePanelOperations.getPotentialStartIndexOfColumn(col, node);
         
         // gets the configuration of startPosition--&gt; the data position in tablePotential corresponding to
         // the beginning of the column
@@ -691,11 +687,10 @@ import java.util.List;
             uncertDialog = new UncertainValuesDialog(Utilities.getOwner(this), evidenceCase, tablePotential);
         }
         int button = uncertDialog.requestUncertainValues();
-        if (button == UncertainValuesDialog.OK_BUTTON) {
-            UncertainValuesEdit uncertEdit = null;
-            uncertEdit = new UncertainValuesEdit(node, uncertDialog.getUncertainColumn(),
-                                                 uncertDialog.getValuesColumn(), uncertDialog.getPosBase(), selectedColumn,
-                                                 uncertDialog.isChanceVariable());
+        if (button == OkCancelHorizontalDialog.OK_BUTTON) {
+            UncertainValuesEdit uncertEdit = new UncertainValuesEdit(node, uncertDialog.getUncertainColumn(),
+                                                                     uncertDialog.getValuesColumn(), uncertDialog.getPosBase(), selectedColumn,
+                                                                     uncertDialog.isChanceVariable());
             try {
                 ProbNet probNet = node.getProbNet();
                 uncertEdit.doEdit(probNet);
@@ -759,7 +754,7 @@ import java.util.List;
      * revised--&gt;minor changes
      */
     protected ValuesTableModel getTableModel() {
-        ValuesTableModel tableModel = null;
+        ValuesTableModel tableModel;
         if ((valuesTable == null) || (valuesTable.getTableModel() == null))
             tableModel = new ValuesTableModel(data, columns, firstEditableRow);
         else
@@ -784,10 +779,10 @@ import java.util.List;
      */
     @Override public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
-        if (actionCommand.equals(ActionCommands.UNCERTAINTY_ASSIGN) || actionCommand
-                .equals(ActionCommands.UNCERTAINTY_EDIT)) {
+        if (actionCommand.equals(ActionCommands.UNCERTAINTY_ASSIGN.getCommandName()) || actionCommand
+                .equals(ActionCommands.UNCERTAINTY_EDIT.getCommandName())) {
             showUncertaintyDialog();
-        } else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE)) {
+        } else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE.getCommandName())) {
             removeUncertainty();
         }
     }
@@ -820,22 +815,21 @@ import java.util.List;
      * revised--&gt;not changed
      */
     protected void updateContextualMenuOptions() {
-        if (node.getPotentials().size() > 0 && node.getPotentials().get(0) instanceof TablePotential) {
-            TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
+        if (!node.getPotentials().isEmpty() && node.getPotentials().get(0) instanceof TablePotential tablePotential) {
             boolean hasUncertainty = tablePotential.hasUncertainty(getEvidenceCaseFromSelectedColumn());
             if (hasUncertainty) {
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN)
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.getCommandName())
                                               .setEnabled(false);
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT)
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT.getCommandName())
                                               .setEnabled(true);
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE)
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE.getCommandName())
                                               .setEnabled(true);
             } else {
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN)
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.getCommandName())
                                               .setEnabled(true);
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT)
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT.getCommandName())
                                               .setEnabled(false);
-                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE)
+                getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE.getCommandName())
                                               .setEnabled(false);
             }
         }
@@ -847,8 +841,7 @@ import java.util.List;
      * @param evt
      */
     protected void doubleClickEvent(MouseEvent evt) {
-        if (node.getPotentials().size() > 0 && node.getPotentials().get(0) instanceof TablePotential) {
-            TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
+        if (!node.getPotentials().isEmpty() && node.getPotentials().get(0) instanceof TablePotential tablePotential) {
             
             EvidenceCase configuration = null;
             int selectedColumn = valuesTable.columnAtPoint(evt.getPoint());
@@ -893,7 +886,7 @@ import java.util.List;
      */
     protected void setCellRenderers(boolean[] uncertaintyInColumns) {
         
-        TableCellRenderer cellRenderer = null;
+        TableCellRenderer cellRenderer;
         
         if (node.getNodeType() != NodeType.DECISION) {
             // Creates the TableCellRenderer distinguishing if the node has or not link restrictions
@@ -984,12 +977,12 @@ import java.util.List;
 		This is the case if the new read only value is different from the previous one.
 		 */
         if (wasReadOnly != readOnly) {
-            boolean[] uncertaintyInColumns = null;
+            boolean[] uncertaintyInColumns;
             if (node.getPotentials() != null) {
                 uncertaintyInColumns = getUncertaintyInColumns();
                 setCellRenderers(uncertaintyInColumns);
             } else {
-                setCellRenderers(uncertaintyInColumns);
+                setCellRenderers(null);
             }
         }
         getValuesTable().setModifiable(!readOnly);

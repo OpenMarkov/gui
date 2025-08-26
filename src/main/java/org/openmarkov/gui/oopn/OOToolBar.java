@@ -63,7 +63,7 @@ import java.awt.event.MouseMotionListener;
 		if (instanceCreationButton == null) {
 			instanceCreationButton = new JToggleButton();
 			instanceCreationButton.setIcon(iconLoader.load(ICON_INSTANCE_ENABLED));
-			instanceCreationButton.setActionCommand(ActionCommands.INSTANCE_CREATION);
+            instanceCreationButton.setActionCommand(ActionCommands.INSTANCE_CREATION.getCommandName());
 			instanceCreationButton.setFocusable(false);
 			instanceCreationButton.setToolTipText(StringDatabase.getUniqueInstance()
 					.getString(ActionCommands.INSTANCE_CREATION + STRING_TOOLTIP_SUFFIX));
@@ -88,7 +88,7 @@ import java.awt.event.MouseMotionListener;
 
 	@Override protected JComponent getJComponentActionCommand(String actionCommand) {
 		JComponent component = null;
-		if (actionCommand.equals(ActionCommands.INSTANCE_CREATION)) {
+        if (actionCommand.equals(ActionCommands.INSTANCE_CREATION.getCommandName())) {
 			component = instanceCreationButton;
 		}
 		return component;

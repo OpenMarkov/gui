@@ -29,7 +29,7 @@ public class LinkRestrictionValidator {
 	 * associated.
 	 *
 	 * @param link
-	 * @return <code>true</code> if a link restriction can be applied to the
+     * @return {@code true} if a link restriction can be applied to the
 	 *         link.
 	 */
 	public static boolean validate(Link<Node> link) {
@@ -47,9 +47,7 @@ public class LinkRestrictionValidator {
 
 				if (var1.getVariableType() == VariableType.FINITE_STATES)
 					if (node2.getNodeType() != NodeType.UTILITY) {
-						if (var2.getVariableType() == VariableType.FINITE_STATES) {
-							return true;
-						}
+                        return var2.getVariableType() == VariableType.FINITE_STATES;
 					} else {
 						return true;
 					}

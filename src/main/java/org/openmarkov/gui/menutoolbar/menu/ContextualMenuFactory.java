@@ -84,7 +84,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	/**
 	 * Listener for all the contextual menus.
 	 */
-	private ActionListener listener = null;
+    private ActionListener listener;
 
 	/**
 	 * Creates a new instance.

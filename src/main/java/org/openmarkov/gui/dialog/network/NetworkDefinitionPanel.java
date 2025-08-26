@@ -71,7 +71,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 	/**
 	 * Specifies if the network whose additionalProperties are edited is new.
 	 */
-	private boolean newNetwork = false;
+    private boolean newNetwork;
 	private ProbNet probNet;
 	private NetworkPropertiesDialog parent;
 	private NetworkTypeManager networkTypeManager;
@@ -196,7 +196,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 						stringDatabase.getString("NetworkDefinitionPanel.NetworkTypes.Items.BayesianNetwork"));
 			} else {
 				jComboBoxNetworkTypes.setSelectedItem(stringDatabase.getString(
-						"NetworkDefinitionPanel.NetworkTypes.Items." + networkTypeManager
+                        "NetworkDefinitionPanel.NetworkTypes.Items." + NetworkTypeManager
 								.getName(probNet.getNetworkType())));
 				jComboBoxNetworkTypes.addActionListener(new ActionListener() {
 					@Override public void actionPerformed(ActionEvent arg0) {
@@ -275,14 +275,14 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 	 */
 	private void setFieldsFromProperties(ProbNet probNet) {
 		getJComboBoxNetworkTypes().setSelectedItem(stringDatabase.getString(
-				"NetworkDefinitionPanel.NetworkTypes.Items." + networkTypeManager.getName(probNet.getNetworkType())));
+                "NetworkDefinitionPanel.NetworkTypes.Items." + NetworkTypeManager.getName(probNet.getNetworkType())));
 		// set the title for comment
 		MessageFormat messageForm = new MessageFormat(
 				stringDatabase.getString("NetworkDefinitionPanel." + "CommentHTMLScrollPaneNetworkDefinition.Text"));
 		// String shortNetworkName = (String)network.properties.
 		// get(netPropertyNames.NAME.toString());
 		String shortNetworkName = probNet.getName();
-		int lastIndexOfSlashPath = shortNetworkName.lastIndexOf("\\");
+        int lastIndexOfSlashPath = shortNetworkName.lastIndexOf('\\');
 		shortNetworkName = shortNetworkName.substring(lastIndexOfSlashPath + 1);
 		Object[] labelArgs = new Object[] { shortNetworkName };
 		getCommentHTMLScrollPaneNetworkDefinition().setTitle(messageForm.format(labelArgs));
@@ -296,7 +296,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 	 *
 	 * @return true, if the name field isn't empty; otherwise, false.
 	 */
-	protected boolean checkName() {
+    protected static boolean checkName() {
 		// String name = getJTextFieldNetworkName().getText();
 		return true;
 	}
@@ -318,7 +318,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 
 	private void networkTypeChanged() {
 		String itemSelected = (String) jComboBoxNetworkTypes.getSelectedItem();
-		if (!(itemSelected == null)) {
+        if (itemSelected != null) {
 			org.openmarkov.core.model.network.type.NetworkType selectedNetworkType = null;
 			for (String networkTypeName : networkTypeManager.getNetworkTypeNames()) {
 				if (itemSelected.equals(stringDatabase

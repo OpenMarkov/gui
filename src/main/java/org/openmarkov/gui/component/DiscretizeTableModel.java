@@ -52,13 +52,10 @@ public class DiscretizeTableModel extends DefaultTableModel {
 	@Override public Class<?> getColumnClass(int columnId) {
 		Class<?> value = String.class;
 		switch (columnId) {
-		case COLUMN_LOWER_LIMIT_VALUE:
+            case COLUMN_LOWER_LIMIT_VALUE, COLUMN_UPPER_LIMIT_VALUE:
 			value = Double.class;
 			break;
-		case COLUMN_UPPER_LIMIT_VALUE:
-			value = Double.class;
-			break;
-		default:
+            default:
 			//value = String.class;
 			break;
 		}
@@ -71,12 +68,8 @@ public class DiscretizeTableModel extends DefaultTableModel {
 	 * @return true if the cell is editable
 	 */
 	@Override public boolean isCellEditable(int row, int column) {
-
-		if (column == COLUMN_ID || column == COLUMN_LOWER_LIMIT_SYMBOL || column == COLUMN_SEPARATOR
-				|| column == COLUMN_UPPER_LIMIT_SYMBOL) {
-			return false;
-		}
-		return true;
-	}
+        return column != COLUMN_ID && column != COLUMN_LOWER_LIMIT_SYMBOL && column != COLUMN_SEPARATOR
+                && column != COLUMN_UPPER_LIMIT_SYMBOL;
+    }
 
 }

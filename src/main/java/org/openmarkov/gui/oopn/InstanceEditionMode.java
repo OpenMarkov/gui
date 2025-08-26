@@ -64,7 +64,7 @@ public class InstanceEditionMode extends EditionMode {
         }
     }
     
-    private ClassComboBox getClassComboBox() {
+    private static ClassComboBox getClassComboBox() {
         ClassComboBox classComboBox = null;
         
         for (Component toolbar : MainPanel.getUniqueInstance().getToolBarPanel().getComponents()) {

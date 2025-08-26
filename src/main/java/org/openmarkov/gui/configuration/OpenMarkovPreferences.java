@@ -24,7 +24,7 @@ import java.util.prefs.Preferences;
  * @version 1.1 30 Oct 2009 - adding kernel and languages subsets. - adding
  * getInt/setInt methods - adding interface implementation (constants)
  */
-public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
+public class OpenMarkovPreferences {
     /**
      * the package nodes in the Preferences
      */
@@ -37,20 +37,18 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
      * public static Preferences OPENMARKOV_KERNEL_PREFERENCES =
      * Preferences.systemRoot().node( OPENMARKOV_SYSTEM_PREFERENCES );
      */
-    public static Preferences OPENMARKOV_PREFERENCES = Preferences.userRoot().node(OPENMARKOV_NODE_PREFERENCES);
-    public static Preferences OPENMARKOV_DIRECTORIES = OPENMARKOV_PREFERENCES.node("directories");
-    public static Preferences OPENMARKOV_POSITIONS = OPENMARKOV_PREFERENCES.node("positions");
-    public static Preferences OPENMARKOV_COLORS = OPENMARKOV_PREFERENCES.node("colors");
-    public static Preferences OPENMARKOV_LANGUAGES = OPENMARKOV_PREFERENCES.node("languages");
-    public static Preferences OPENMARKOV_FORMATS = OPENMARKOV_PREFERENCES.node("formats");
-    
-    private static StringDatabase stringDatabase;
+    public static final Preferences OPENMARKOV_PREFERENCES = Preferences.userRoot().node(OPENMARKOV_NODE_PREFERENCES);
+    public static final Preferences OPENMARKOV_DIRECTORIES = OPENMARKOV_PREFERENCES.node("directories");
+    public static final Preferences OPENMARKOV_POSITIONS = OPENMARKOV_PREFERENCES.node("positions");
+    public static final Preferences OPENMARKOV_COLORS = OPENMARKOV_PREFERENCES.node("colors");
+    public static final Preferences OPENMARKOV_LANGUAGES = OPENMARKOV_PREFERENCES.node("languages");
+    public static final Preferences OPENMARKOV_FORMATS = OPENMARKOV_PREFERENCES.node("formats");
     
     /**
      * constructor.
      */
     private OpenMarkovPreferences() {
-        stringDatabase = StringDatabase.getUniqueInstance();
+    
     }
     
     static {
@@ -66,7 +64,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
     }
     
     /**
-     * get a string <code>Preference</code> with a specific key
+     * get a string {@code Preference} with a specific key
      *
      * @param key          - the key to get the preference
      * @param defaultValue - a default value to set if no key is found
@@ -83,7 +81,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
     }
     
     /**
-     * get a boolean <code>Preference</code> with a specific key
+     * get a boolean {@code Preference} with a specific key
      *
      * @param key            - the key to get the preference
      * @param preferences    - the preferences node to look for
@@ -101,7 +99,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
     }
     
     /**
-     * get an integer <code>Preference</code> with a specific key
+     * get an integer {@code Preference} with a specific key
      *
      * @param key            - the key to get the preference
      * @param preferences    - the preferences node to look for
@@ -116,14 +114,16 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
             
             System.out.println("wrong access to " + key);
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, stringDatabase.getString(ex.getMessage() + "wrong access to " + key),
-                                          stringDatabase.getString(ex.getMessage() + "wrong access to " + key), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance()
+                                                              .getString(ex.getMessage() + "wrong access to " + key),
+                                          StringDatabase.getUniqueInstance()
+                                                        .getString(ex.getMessage() + "wrong access to " + key), JOptionPane.ERROR_MESSAGE);
         }
         return result;
     }
     
     /**
-     * get a Color <code>Preference</code> with a specific key
+     * get a Color {@code Preference} with a specific key
      *
      * @param key          - the key to get the preference
      * @param preferences  - the preferences node to look for
@@ -132,9 +132,9 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
      */
     public static Color getColor(String key, Preferences preferences, Color defaultColor) {
         Color result = defaultColor;
-        int redParam = 0;
-        int greenParam = 0;
-        int blueParam = 0;
+        int redParam;
+        int greenParam;
+        int blueParam;
         try {
             Preferences child = preferences.node(key);
             redParam = child.getInt("RED", defaultColor.getRed());
@@ -148,7 +148,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
     }
     
     /**
-     * set a string <code>Preference</code> with a specific key
+     * set a string {@code Preference} with a specific key
      *
      * @param key         - the key to access the preference
      * @param value       - the string value to set the preference
@@ -164,7 +164,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
     }
     
     /**
-     * set a boolean <code>Preference</code> with a specific key
+     * set a boolean {@code Preference} with a specific key
      *
      * @param key         - the key to access the preference
      * @param value       - the boolean value to set the preference
@@ -180,7 +180,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
     }
     
     /**
-     * set a integer <code>Preference</code> with a specific key
+     * set a integer {@code Preference} with a specific key
      *
      * @param key         - the key to access the preference
      * @param value       - the int value to set the preference
@@ -196,7 +196,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
     }
     
     /**
-     * set a Color <code>Preference</code> with a specific key
+     * set a Color {@code Preference} with a specific key
      *
      * @param key         - the key to access the preference
      * @param value       - the int value to set the preference
@@ -228,34 +228,34 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
         // OPENMARKOV COLORS PREFERENCES
         setDefaultColors();
         // OPENMARKOV OTHER PREFERENCES
-        set(PREFERENCE_LANGUAGE, System.getProperty("user.language"), OPENMARKOV_LANGUAGES);
+        set(OpenMarkovPreferencesKeys.PREFERENCE_LANGUAGE, System.getProperty("user.language"), OPENMARKOV_LANGUAGES);
         // set the default initial flag
-        setBoolean(INITIALIZED, true, OPENMARKOV_PREFERENCES);
+        setBoolean(OpenMarkovPreferencesKeys.INITIALIZED, true, OPENMARKOV_PREFERENCES);
     }
     
     /**
      * set default directories
      */
     public static void setDefaultDirectories() {
-        set(LAST_OPEN_DIRECTORY, "", OPENMARKOV_DIRECTORIES);
-        set(LAST_OPEN_FILE_1, "", OPENMARKOV_DIRECTORIES);
-        set(LAST_OPEN_FILE_2, "", OPENMARKOV_DIRECTORIES);
-        set(LAST_OPEN_FILE_3, "", OPENMARKOV_DIRECTORIES);
-        set(LAST_OPEN_FILE_4, "", OPENMARKOV_DIRECTORIES);
-        set(LAST_OPEN_FILE_5, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE_1, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE_2, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE_3, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE_4, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE_5, "", OPENMARKOV_DIRECTORIES);
         // set( STRING_RESOURCES_PATH, "openmarkov/gui/localize/",
         // OPENMARKOV_LANGUAGES );
-        set(STRING_LANGUAGES_PATH, "localize", OPENMARKOV_LANGUAGES);
+        set(OpenMarkovPreferencesKeys.STRING_LANGUAGES_PATH, "localize", OPENMARKOV_LANGUAGES);
     }
     
     /**
      * set default dimensions
      */
     public static void setDefaultDimensions() {
-        setInteger(X_OPENMARKOV_MAIN_FRAME, 0, OPENMARKOV_POSITIONS);
-        setInteger(Y_OPENMARKOV_MAIN_FRAME, 0, OPENMARKOV_POSITIONS);
-        setInteger(X_OPEMARKOV_HELP_DIMENSION, 640, OPENMARKOV_POSITIONS);
-        setInteger(Y_OPENMARKOV_HELP_DIMENSION, 480, OPENMARKOV_POSITIONS);
+        setInteger(OpenMarkovPreferencesKeys.X_OPENMARKOV_MAIN_FRAME, 0, OPENMARKOV_POSITIONS);
+        setInteger(OpenMarkovPreferencesKeys.Y_OPENMARKOV_MAIN_FRAME, 0, OPENMARKOV_POSITIONS);
+        setInteger(OpenMarkovPreferencesKeys.X_OPEMARKOV_HELP_DIMENSION, 640, OPENMARKOV_POSITIONS);
+        setInteger(OpenMarkovPreferencesKeys.Y_OPENMARKOV_HELP_DIMENSION, 480, OPENMARKOV_POSITIONS);
     }
     
     /**
@@ -263,72 +263,72 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
      */
     public static void setDefaultColors() {
         // OPENMARKOV COLORS PREFERENCEs
-        setColor(OpenMarkovPreferences.NODECHANCE_BACKGROUND_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.NODECHANCE_BACKGROUND_COLOR, // def
                  new Color(251, 249, 153), // cream color before it was --&gt;
                  // //new Color( 235, 245, 35 ),
                  // //one type of yellow
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.NODECHANCE_FOREGROUND_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.NODECHANCE_FOREGROUND_COLOR, // def
                  Color.BLACK, // black color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.NODECHANCE_TEXT_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.NODECHANCE_TEXT_COLOR, // def
                  Color.BLACK, // black color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.NODEDECISION_BACKGROUND_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.NODEDECISION_BACKGROUND_COLOR, // def
                  new Color(207, 227, 253), // light blue color before it was
                  // --&gt; //new Color( 25, 255, 255 ),
                  // // gray color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.NODEDECISION_FOREGROUND_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.NODEDECISION_FOREGROUND_COLOR, // def
                  Color.BLACK, // black color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.NODEDECISION_TEXT_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.NODEDECISION_TEXT_COLOR, // def
                  Color.BLACK, // black color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.NODEUTILITY_BACKGROUND_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.NODEUTILITY_BACKGROUND_COLOR, // def
                  new Color(208, 230, 178), // light green color before it was
                  // --&gt; //new Color( 0, 125, 0 ),
                  // //green color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.NODEUTILITY_FOREGROUND_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.NODEUTILITY_FOREGROUND_COLOR, // def
                  Color.BLACK, // black color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.NODEUTILITY_TEXT_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.NODEUTILITY_TEXT_COLOR, // def
                  new Color(0, 0, 0), // black color before it was --&gt; //new
                  // Color( 230, 230, 230 ), //one dark
                  // green color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_1, // def
+        setColor(OpenMarkovPreferencesKeys.TABLE_HEADER_TEXT_COLOR_1, // def
                  new Color(0, 0, 0), // black color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_2, // def
+        setColor(OpenMarkovPreferencesKeys.TABLE_HEADER_TEXT_COLOR_2, // def
                  new Color(0, 0, 0), // black color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_3, // def
+        setColor(OpenMarkovPreferencesKeys.TABLE_HEADER_TEXT_COLOR_3, // def
                  new Color(0, 0, 0), // black color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.TABLE_HEADER_TEXT_BACKGROUND_COLOR_1, // def
+        setColor(OpenMarkovPreferencesKeys.TABLE_HEADER_TEXT_BACKGROUND_COLOR_1, // def
                  new Color(150, 150, 150), // another light light gray color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.TABLE_HEADER_TEXT_BACKGROUND_COLOR_2, // def
+        setColor(OpenMarkovPreferencesKeys.TABLE_HEADER_TEXT_BACKGROUND_COLOR_2, // def
                  new Color(170, 170, 170), // another light gray color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.TABLE_FIRST_COLUMN_FOREGROUND_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.TABLE_FIRST_COLUMN_FOREGROUND_COLOR, // def
                  new Color(0, 0, 0), // black color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.TABLE_FIRST_COLUMN_BACKGROUND_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.TABLE_FIRST_COLUMN_BACKGROUND_COLOR, // def
                  new Color(192, 192, 192), // light gray color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.TABLE_CELLS_FOREGROUND_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.TABLE_CELLS_FOREGROUND_COLOR, // def
                  new Color(0, 0, 0), // black color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.TABLE_CELLS_BACKGROUND_COLOR, // def
+        setColor(OpenMarkovPreferencesKeys.TABLE_CELLS_BACKGROUND_COLOR, // def
                  new Color(255, 255, 255), // white color
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.REVELATION_ARC_VARIABLE, // def
+        setColor(OpenMarkovPreferencesKeys.REVELATION_ARC_VARIABLE, // def
                  new Color(128, 0, 0), // dark red
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
-        setColor(OpenMarkovPreferences.ALWAYS_OBSERVED_VARIABLE, // def
+        setColor(OpenMarkovPreferencesKeys.ALWAYS_OBSERVED_VARIABLE, // def
                  new Color(128, 0, 0), // dark red
                  OpenMarkovPreferences.OPENMARKOV_COLORS);
     }

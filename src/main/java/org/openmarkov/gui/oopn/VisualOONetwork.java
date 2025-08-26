@@ -65,7 +65,7 @@ public class VisualOONetwork extends VisualNetwork {
 	/**
 	 * Set of selected instances.
 	 */
-	private Set<VisualInstance> selectedInstances = new HashSet<VisualInstance>();
+    private Set<VisualInstance> selectedInstances;
 
 	/**
 	 * Set of selected parameter links.
@@ -103,16 +103,14 @@ public class VisualOONetwork extends VisualNetwork {
 			}
 			visualReferenceLinks.clear();
 			for (ReferenceLink link : ((OOPNet) probNet).getReferenceLinks()) {
-				if (link instanceof InstanceReferenceLink) {
-					InstanceReferenceLink instanceLink = (InstanceReferenceLink) link;
-					VisualInstance sourceVisualInstance = visualInstances
+                if (link instanceof InstanceReferenceLink instanceLink) {
+                    VisualInstance sourceVisualInstance = visualInstances
 							.get(instanceLink.getSourceInstance().getName());
 					VisualInstance destVisualInstance = visualInstances.get(instanceLink.getDestInstance().getName())
 							.getSubInstance(instanceLink.getDestSubInstance().getName());
 					visualReferenceLinks.add(new VisualReferenceLink(link, sourceVisualInstance, destVisualInstance));
-				} else if (link instanceof NodeReferenceLink) {
-					NodeReferenceLink nodeLink = (NodeReferenceLink) link;
-					VisualNode sourceNode = getVisualNode(nodeLink.getSourceNode());
+                } else if (link instanceof NodeReferenceLink nodeLink) {
+                    VisualNode sourceNode = getVisualNode(nodeLink.getSourceNode());
 					VisualNode destinationNode = getVisualNode(nodeLink.getDestinationNode());
 					visualReferenceLinks.add(new VisualReferenceLink(link, sourceNode, destinationNode));
 				}
@@ -141,8 +139,8 @@ public class VisualOONetwork extends VisualNetwork {
 			visualLinks.removeAll(linksToRemove);
 		}
 	}
-
-	private HashMap<VisualNode, VisualInstance> getContractedNodes(Collection<VisualInstance> visualInstances) {
+    
+    private static HashMap<VisualNode, VisualInstance> getContractedNodes(Collection<VisualInstance> visualInstances) {
 		HashMap<VisualNode, VisualInstance> contractedNodes = new HashMap<>();
 
 		for (VisualInstance visualInstance : visualInstances) {
@@ -227,7 +225,7 @@ public class VisualOONetwork extends VisualNetwork {
 	 * @return the instance in the position given
 	 */
 	public VisualInstance getInstanceInPosition(java.awt.geom.Point2D.Double position, Graphics2D g) {
-		VisualInstance instance = null;
+        VisualInstance instance;
 		VisualInstance instanceFound = null;
 		Iterator<VisualInstance> iterator = visualInstances.values().iterator();
 		while ((instanceFound == null) && iterator.hasNext()) {
@@ -248,8 +246,8 @@ public class VisualOONetwork extends VisualNetwork {
 	 * element, else returns null.
 	 */
 	@Override public VisualElement getElementInPosition(Point2D.Double position, Graphics2D g) {
-
-		VisualElement elementSelected = null;
+        
+        VisualElement elementSelected;
 
 		if ((elementSelected = super.getElementInPosition(position, g)) == null) {
 			if ((elementSelected = getReferenceLinkInPosition(position, g)) == null) {
@@ -285,31 +283,38 @@ public class VisualOONetwork extends VisualNetwork {
 	@Override protected void setSelectedElement(VisualElement element, boolean selected) {
 
 		if (selected != element.isSelected()) {
-			if (element instanceof VisualNode) {
-				if (selected) {
-					selectedNodes.add((VisualNode) element);
-				} else {
-					selectedNodes.remove(element);
-				}
-			} else if (element instanceof VisualLink) {
-				if (selected) {
-					selectedLinks.add((VisualLink) element);
-				} else {
-					selectedLinks.remove(element);
-				}
-			} else if (element instanceof VisualInstance) {
-				if (selected) {
-					selectedInstances.add((VisualInstance) element);
-				} else {
-					selectedInstances.remove(element);
-				}
-			} else if (element instanceof VisualReferenceLink) {
-				if (selected) {
-					selectedReferenceLinks.add((VisualReferenceLink) element);
-				} else {
-					selectedReferenceLinks.remove(element);
-				}
-			}
+            switch (element) {
+                case VisualNode visualNode -> {
+                    if (selected) {
+                        selectedNodes.add(visualNode);
+                    } else {
+                        selectedNodes.remove(element);
+                    }
+                }
+                case VisualLink visualLink -> {
+                    if (selected) {
+                        selectedLinks.add(visualLink);
+                    } else {
+                        selectedLinks.remove(element);
+                    }
+                }
+                case VisualInstance visualInstance -> {
+                    if (selected) {
+                        selectedInstances.add(visualInstance);
+                    } else {
+                        selectedInstances.remove(element);
+                    }
+                }
+                case VisualReferenceLink visualReferenceLink -> {
+                    if (selected) {
+                        selectedReferenceLinks.add(visualReferenceLink);
+                    } else {
+                        selectedReferenceLinks.remove(element);
+                    }
+                }
+                default -> {
+                }
+            }
 			notifyObjectsSelected();
 			element.setSelected(selected);
 		}
@@ -508,9 +513,9 @@ public class VisualOONetwork extends VisualNetwork {
 	 *
 	 */
 	@Override public void addToSelection(java.awt.geom.Point2D.Double cursorPosition, Graphics2D g) {
-		VisualNode node = null;
-		VisualLink link = null;
-		VisualInstance instance = null;
+        VisualNode node;
+        VisualLink link;
+        VisualInstance instance;
 
 		if ((instance = getInstanceInPosition(cursorPosition, g)) != null) {
 			setSelectedInstance(instance, !instance.isSelected());
@@ -529,7 +534,7 @@ public class VisualOONetwork extends VisualNetwork {
 	 * @return element in the position given, null if none
 	 */
 	@Override public VisualElement selectElementInPosition(java.awt.geom.Point2D.Double cursorPosition, Graphics2D g) {
-		VisualElement selectedElement = null;
+        VisualElement selectedElement;
 		if ((selectedElement = getReferenceLinkInPosition(cursorPosition, g)) != null) {
 			setSelectedAllObjects(false);
 			setSelectedElement(selectedElement, true);
@@ -549,9 +554,9 @@ public class VisualOONetwork extends VisualNetwork {
 	 * @param g
 	 */
 	@Override public void startLinkCreation(java.awt.geom.Point2D.Double cursorPosition, Graphics2D g) {
-		VisualInstance instance = null;
-
-		VisualNode node = null;
+        VisualInstance instance;
+        
+        VisualNode node;
 
 		if ((node = whatNodeInPosition(cursorPosition, g)) != null) {
 			newLink = new VisualArrow(node.getPosition(), cursorPosition);
@@ -597,8 +602,8 @@ public class VisualOONetwork extends VisualNetwork {
 
 	@Override public PNEdit finishLinkCreation(java.awt.geom.Point2D.Double point, Graphics2D g) {
 		PNEdit linkEdit = null;
-		VisualInstance newInstanceLinkDestination = null;
-		VisualNode newLinkDestination = null;
+        VisualInstance newInstanceLinkDestination;
+        VisualNode newLinkDestination;
 
 		if ((newInstanceLinkDestination = getInstanceInPosition(point, g)) != null && newInstanceLinkSource != null) {
 			newLink = null;

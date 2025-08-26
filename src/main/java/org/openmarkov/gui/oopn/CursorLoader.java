@@ -90,11 +90,10 @@ public class CursorLoader {
 			Toolkit tk = java.awt.Toolkit.getDefaultToolkit();
 			String path = CURSORS_PATH + cursorName;
 			URL resource = CursorLoader.class.getClassLoader().getResource(path);
-			Image image = null;
-			if (resource == null) {
+        if (resource == null) {
 				return null;
 			}
-        image = tk.getImage(resource);
+        Image image = tk.getImage(resource);
         if (image == null) {
             System.err.println(StringDatabase.getUniqueInstance()
                     .getFormattedString("CursorResourceNotExists.Text.Label", CURSORS_PATH + cursorName));

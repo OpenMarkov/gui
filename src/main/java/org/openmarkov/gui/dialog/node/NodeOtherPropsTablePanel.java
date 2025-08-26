@@ -51,7 +51,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	/**
 	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
-	private boolean newNode = false;
+    private boolean newNode;
 
 	/**
 	 * constructor without construction parameters
@@ -165,7 +165,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	 */
 	private PrefixedOtherPropertiesTablePanel getOtherPropertiesTablePanel() {
 		if (otherPropertiesTablePanel == null) {
-			String columnNames[] = new String[] { stringDatabase.getString(
+            String[] columnNames = new String[]{stringDatabase.getString(
 					"NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn.Label"),
 					stringDatabase.getString(
 							"NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyNameColumn.Label"),

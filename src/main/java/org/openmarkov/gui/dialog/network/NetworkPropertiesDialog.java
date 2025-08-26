@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.dialog.network;
 
-import org.openmarkov.core.exception.CannotNormalizeNullVectorException;
-import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.oopn.OOPNet;
@@ -18,7 +16,6 @@ import org.openmarkov.gui.util.PropertyNames;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 /**
  * Dialog box to set the options of a network.
@@ -255,7 +252,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
             probNet.setShowCommentWhenOpening(getNetworkDefinitionPanel().getShowComment());
             probNet.getPNESupport().closeParenthesis();
         }
-        return getNetworkDefinitionPanel().checkName();
+        return NetworkDefinitionPanel.checkName();
     }
     
     // ESCA-JAVA0025: allows an empty method to override another one

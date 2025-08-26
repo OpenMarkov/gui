@@ -11,6 +11,7 @@ import org.openmarkov.core.localize.LocaleChangeEvent;
 import org.openmarkov.core.localize.LocaleChangeListener;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.localize.UpdateLocalizationInComponents;
+import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasicImpl;
 
@@ -64,9 +65,18 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 * @param b             true to enable the option, false to disable.
 	 */
 	@Override public void setOptionEnabled(String actionCommand, boolean b) {
-
 		MenuToolBarBasicImpl.setOptionEnabled(getJComponentActionCommand(actionCommand), b);
 	}
+    
+    /**
+     * Enables or disabled an option identified by an action command.
+     *
+     * @param actionCommand action command that identifies the option.
+     * @param b             true to enable the option, false to disable.
+     */
+    public void setOptionEnabled(ActionCommands actionCommand, boolean b) {
+        setOptionEnabled(actionCommand.getCommandName(), b);
+    }
 
 	/**
 	 * Selects or unselects an option identified by an action command. Only

@@ -94,11 +94,13 @@ public class TemporalEvolutionTablePane extends JScrollPane {
 
         model.setColumnCount(numColumns);
         model.setNumRows(numRows);
-
+        
+        //TODO: info is just initialized, but info is never used in the function, nor it is returned.
+        // Why is it created then?
         final Object[][] info = new Object[numRows][numColumns];
 
         // Fill conditioning variables
-        int lastColumnIndex = 0;
+        int lastColumnIndex;
         for (lastColumnIndex = 0; lastColumnIndex < conditioningVariables.size(); lastColumnIndex++) {
             String columnName = conditioningVariables.get(lastColumnIndex).getName();
             table.getColumnModel().getColumn(lastColumnIndex).setHeaderValue(columnName);
@@ -148,9 +150,7 @@ public class TemporalEvolutionTablePane extends JScrollPane {
 
         // Fill data
         Double[] values = new Double[numRows];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = 0.0;
-        }
+        Arrays.fill(values, 0.0);
         for (int cycle = 0; cycle < timeSlice; ++cycle) { // column
             int columnIndex = lastColumnIndex + cycle;
             table.getColumnModel().getColumn(columnIndex).setHeaderValue(cycle);
@@ -219,7 +219,7 @@ public class TemporalEvolutionTablePane extends JScrollPane {
 
 
         //Fill headers
-        int columnIndex = 0;
+        int columnIndex;
         //First column with decision
         table.getColumnModel().getColumn(0).setHeaderValue(decisionVariable.getName());
         table.getColumnModel().getColumn(0).setCellRenderer(cellRenderer);
@@ -284,8 +284,8 @@ public class TemporalEvolutionTablePane extends JScrollPane {
     public JTable getTable() {
         return table;
     }
-
-    public class NonEditableModel extends DefaultTableModel {
+    
+    public static class NonEditableModel extends DefaultTableModel {
         @Override public boolean isCellEditable(int row, int column) {
             return false;
         }

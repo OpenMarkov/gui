@@ -39,7 +39,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 	/**
 	 * Object where all information will be saved.
 	 */
-	protected Node node = null;
+    protected Node node;
 	/**
 	 * Panel to tab the different options.
 	 */
@@ -68,7 +68,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 	/**
 	 * Specifies if the network whose additionalProperties are edited is new.
 	 */
-	private boolean newNode = false;
+    private boolean newNode;
 	/**
 	 * v
 	 */
@@ -376,7 +376,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 		if (!nodeDefinitionPanel.checkName()) {
 			return false;
 		}
-		if (!nodeDefinitionPanel.checkPurpose()) {
+        if (!NodeDefinitionPanel.checkPurpose()) {
 			return false;
 		}
 		return true;

@@ -8,6 +8,7 @@
 package org.openmarkov.gui.menutoolbar.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class MenuAssistant {
 	 * Basic menus and toolbars. Only have the options to enabled, select a set
 	 * text.
 	 */
-	protected List<MenuToolBarBasic> basicMenus = null;
+    protected List<MenuToolBarBasic> basicMenus;
 
 	/**
 	 * Constructor that registers the array of menus.
@@ -44,9 +45,7 @@ public class MenuAssistant {
 	public MenuAssistant(MenuToolBarBasic... newBasicMenus) {
 
 		basicMenus = new ArrayList<>();
-		for (MenuToolBarBasic newMenu : newBasicMenus) {
-			basicMenus.add(newMenu);
-		}
+        Collections.addAll(basicMenus, newBasicMenus);
 	}
 
 	public void addMenu(MenuToolBarBasic newBasicMenu) {
@@ -65,12 +64,23 @@ public class MenuAssistant {
 	 * @param b             true to select the option, false to unselect.
 	 */
 	public void setOptionSelected(String actionCommand, boolean b) {
-
 		for (MenuToolBarBasic menu : basicMenus) {
 			menu.setOptionSelected(actionCommand, b);
 		}
-
-	}
+    }
+    
+    /**
+     * Selects or unselects an option identified by an action command on the
+     * menus and toolbars.
+     *
+     * @param actionCommand action command that identifies the option.
+     * @param b             true to select the option, false to unselect.
+     */
+    public void setOptionSelected(ActionCommands actionCommand, boolean b) {
+        for (MenuToolBarBasic menu : basicMenus) {
+            menu.setOptionSelected(actionCommand.getCommandName(), b);
+        }
+    }
 
 	/**
 	 * Enables or disabled an option identified by an action command on the
@@ -80,12 +90,23 @@ public class MenuAssistant {
 	 * @param b             true to enable the option, false to disable.
 	 */
 	public void setOptionEnabled(String actionCommand, boolean b) {
-
 		for (MenuToolBarBasic menu : basicMenus) {
 			menu.setOptionEnabled(actionCommand, b);
 		}
-
-	}
+    }
+    
+    /**
+     * Enables or disabled an option identified by an action command on the
+     * menus and toolbars.
+     *
+     * @param actionCommand action command that identifies the option.
+     * @param b             true to enable the option, false to disable.
+     */
+    public void setOptionEnabled(ActionCommands actionCommand, boolean b) {
+        for (MenuToolBarBasic menu : basicMenus) {
+            menu.setOptionEnabled(actionCommand.getCommandName(), b);
+        }
+    }
 
 	/**
 	 * Enables or disabled a group of options on the menus and toolbars.
@@ -94,14 +115,26 @@ public class MenuAssistant {
 	 * @param b                  true to enable the options, false to disable.
 	 */
 	public void setOptionEnabled(String[] actionCommandGroup, boolean b) {
-
 		for (String actionCommand : actionCommandGroup) {
 			for (MenuToolBarBasic menu : basicMenus) {
 				menu.setOptionEnabled(actionCommand, b);
 			}
 		}
-
-	}
+    }
+    
+    /**
+     * Enables or disabled a group of options on the menus and toolbars.
+     *
+     * @param actionCommandGroup array of action command.
+     * @param b                  true to enable the options, false to disable.
+     */
+    public void setOptionEnabled(ActionCommands[] actionCommandGroup, boolean b) {
+        for (ActionCommands actionCommand : actionCommandGroup) {
+            for (MenuToolBarBasic menu : basicMenus) {
+                menu.setOptionEnabled(actionCommand.getCommandName(), b);
+            }
+        }
+    }
 
 	/**
 	 * Adds a text to the label of an option identified by an action command on

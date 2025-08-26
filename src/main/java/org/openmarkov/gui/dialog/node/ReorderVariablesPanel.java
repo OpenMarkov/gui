@@ -60,19 +60,14 @@ import java.util.List;
 	 */
 	private static Object[][] getData(Node node) {
 		Potential nodePotential = node.getPotentials().get(0);
-		List<Variable> variables;
-		//CMI
-		Potential potentialForTakingVariables;
-		if (nodePotential instanceof UnivariateDistrPotential) {
-			potentialForTakingVariables = ((UnivariateDistrPotential) nodePotential).getAugmentedTable();
-		} else if (nodePotential instanceof AugmentedTablePotential) {
-			potentialForTakingVariables = ((AugmentedTablePotential) nodePotential).getAugmentedTable();
-		} else if (nodePotential instanceof ExactDistrPotential) {
-			potentialForTakingVariables = ((ExactDistrPotential)nodePotential).getTablePotential();
-		} else {
-			potentialForTakingVariables = nodePotential;
-		}
-		variables = potentialForTakingVariables.getVariables();
+        //CMI
+        Potential potentialForTakingVariables = switch (nodePotential) {
+            case UnivariateDistrPotential univariateDistrPotential -> univariateDistrPotential.getAugmentedTable();
+            case AugmentedTablePotential augmentedTablePotential -> augmentedTablePotential.getAugmentedTable();
+            case ExactDistrPotential exactDistrPotential -> exactDistrPotential.getTablePotential();
+            case null, default -> nodePotential;
+        };
+        List<Variable> variables = potentialForTakingVariables.getVariables();
 			
 		//CMF
 		// 26/11/2014

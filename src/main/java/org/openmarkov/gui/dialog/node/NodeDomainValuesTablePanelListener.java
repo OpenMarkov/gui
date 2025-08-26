@@ -170,7 +170,8 @@ public class NodeDomainValuesTablePanelListener
 	@Override public void focusLost(FocusEvent evt) {
 		if (evt.getSource().equals(getPanel().getJFormattedTextFieldPrecision())) {
 			PrecisionEdit precisionEdit = new PrecisionEdit(getPanel().getNode(),
-					((Double) getPanel().getJFormattedTextFieldPrecision().getValue()).doubleValue());
+                                                            (Double) getPanel().getJFormattedTextFieldPrecision()
+                                                                               .getValue());
 			try {
                 ProbNet probNet = getPanel().getNode().getProbNet();
                 precisionEdit.doEdit(probNet);
@@ -219,7 +220,7 @@ public class NodeDomainValuesTablePanelListener
 							limits[i] = newLimit;
 							int j = i;
 							while (j + 1 <= limits.length - 1 && limits[j] >= limits[j + 1]) {
-								if (belongs[j] == false && belongs[j + 1] == true) {
+                                if (!belongs[j] && belongs[j + 1]) {
 									limits[j + 1] = limits[j];
 								} else {
 									if (j + 1 == limits.length - 1) {
@@ -233,7 +234,7 @@ public class NodeDomainValuesTablePanelListener
 							// previous limits
 							int k = i;
 							while (k - 1 >= 0 && limits[k] <= limits[k - 1]) {
-								if (belongs[k] == true && belongs[k - 1] == false) {
+                                if (belongs[k] && !belongs[k - 1]) {
 									limits[k - 1] = limits[k];
 								} else {
 									if (k - 1 == 0) {

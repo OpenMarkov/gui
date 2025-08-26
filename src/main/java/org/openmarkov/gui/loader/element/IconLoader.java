@@ -8,7 +8,6 @@
 package org.openmarkov.gui.loader.element;
 
 import org.openmarkov.core.exception.UnreacheableException;
-import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.ResourceNotFoundException;
 
 import javax.swing.*;

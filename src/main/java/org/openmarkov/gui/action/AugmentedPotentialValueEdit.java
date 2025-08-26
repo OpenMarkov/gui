@@ -98,7 +98,7 @@ import java.util.List;
     // Constructor
     
     /**
-     * Creates a new <code>NodePotentialEdit</code> specifying the node to be
+     * Creates a new {@code NodePotentialEdit} specifying the node to be
      * edited, the new value of the potential, the row and column where is the
      * value to be modified and a priority list for potentials updating.
      *
@@ -136,24 +136,24 @@ import java.util.List;
         this.row = row;
         this.col = col;
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
-        this.setIndexSelected(tablePotentialsPanelOperations.calculateLastEditableRow(newAugmentedTable) - row);
+        this.setIndexSelected(PotentialsTablePanelOperations.calculateLastEditableRow(newAugmentedTable) - row);
         //Set the entire column to "Complement"
         if (isAugmentedTablePotential) {
-            int firstEditableRow = tablePotentialsPanelOperations.calculateFirstEditableRow(newAugmentedTable);
-            int lastEditableRow = tablePotentialsPanelOperations.calculateLastEditableRow(newAugmentedTable);
+            int firstEditableRow = PotentialsTablePanelOperations.calculateFirstEditableRow(newAugmentedTable);
+            int lastEditableRow = PotentialsTablePanelOperations.calculateLastEditableRow(newAugmentedTable);
             
             for (int i = firstEditableRow; i <= lastEditableRow; i++) {
-                int index = tablePotentialsPanelOperations.getPotentialIndex(i, col, newAugmentedTable);
+                int index = PotentialsTablePanelOperations.getPotentialIndex(i, col, newAugmentedTable);
                 newAugmentedValues[index] = "Complement";
             }
         }
-        this.indexSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, newAugmentedTable);
+        this.indexSelected = PotentialsTablePanelOperations.getPotentialIndex(row, col, newAugmentedTable);
         newAugmentedValues[indexSelected] = newValue;
     }
     
     /**
-     * Creates a new <code>UnivariateDistrPotentialEdit</code> specifying the node to be and the new probability distribution.
-     * This is used when the distribution of <code>UnivariateDistrPotential</code> is changed.
+     * Creates a new {@code UnivariateDistrPotentialEdit} specifying the node to be and the new probability distribution.
+     * This is used when the distribution of {@code UnivariateDistrPotential} is changed.
      *
      * @param node             - the node to be edited
      * @param distributionName - the name of the distribution to be created. Represents the attribute name in ProbDensFunctionType which represents the distribution class
@@ -196,7 +196,7 @@ import java.util.List;
     /**
      * Gets the table-potential of the node
      *
-     * @return variable1 <code>Variable</code>
+     * @return variable1 {@code Variable}
      */
     public Potential getPotential() {
         return newPotential;
@@ -218,7 +218,7 @@ import java.util.List;
      * @return the position in the table
      */
     public int getRowPosition(int position) {
-        int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(newAugmentedTable);
+        int lastRow = PotentialsTablePanelOperations.calculateLastEditableRow(newAugmentedTable);
         return lastRow - position % newAugmentedTable.getDimensions()[0];
     }
     

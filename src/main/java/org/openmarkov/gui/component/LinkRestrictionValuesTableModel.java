@@ -28,10 +28,9 @@ package org.openmarkov.gui.component;
 
 		if (c == 0) {
 			return stringExample.getClass();
-		} else {
-			return integerExample.getClass();
-		}
-	}
+        }
+        return integerExample.getClass();
+    }
 
 	@Override public boolean isCellEditable(int row, int col) {
 		return false;

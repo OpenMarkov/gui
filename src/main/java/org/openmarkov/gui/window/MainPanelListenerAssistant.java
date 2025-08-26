@@ -21,8 +21,10 @@ import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.gui.configuration.LastOpenFiles;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.openmarkov.gui.dialog.*;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.gui.dialog.inference.common.InferenceOptionsDialog;
 import org.openmarkov.gui.dialog.io.DBReaderFileChooser;
@@ -89,17 +91,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * Main panel which this object helps.
      */
-    private MainPanel mainPanel = null;
-    /**
-     * last open files instance
-     */
-    private LastOpenFiles lastOpenFiles = new LastOpenFiles();
+    private MainPanel mainPanel;
     /**
      * Messages string resource.
      */
     // private StringResource stringResource;
     private List<NetworkPanel> networkPanels;
-    private StringDatabase stringDatabase = null;
+    private StringDatabase stringDatabase;
     
     /**
      * Constructor that save the references to the objects that this class
@@ -120,6 +118,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * commodity method to provide the path directory for the network file name
      *
      * @param fileName - name of the file to obtain the short name
+     *
      * @return the directory of the file
      */
     private static String getDirectoryFileName(String fileName) {
@@ -142,189 +141,111 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     @Override public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
-        if (actionCommand.equals(ActionCommands.NEW_NETWORK)) {
-            createNewNetwork();
-        } else if (actionCommand.equals(ActionCommands.OPEN_NETWORK)) {
-            openNetwork();
-        } else if (actionCommand.equals(ActionCommands.OPEN_NETWORK_URL)) {
-            openNetworkURL();
-        } else if (actionCommand.equals(ActionCommands.OPEN_LAST_1_FILE)) {
-            openNetwork(lastOpenFiles.getFileNameAt(1));
-        } else if (actionCommand.equals(ActionCommands.OPEN_LAST_2_FILE)) {
-            openNetwork(lastOpenFiles.getFileNameAt(2));
-        } else if (actionCommand.equals(ActionCommands.OPEN_LAST_3_FILE)) {
-            openNetwork(lastOpenFiles.getFileNameAt(3));
-        } else if (actionCommand.equals(ActionCommands.OPEN_LAST_4_FILE)) {
-            openNetwork(lastOpenFiles.getFileNameAt(4));
-        } else if (actionCommand.equals(ActionCommands.OPEN_LAST_5_FILE)) {
-            openNetwork(lastOpenFiles.getFileNameAt(5));
-        } else if (actionCommand.equals(ActionCommands.SAVE_NETWORK)) {
-            saveNetwork(getCurrentNetworkPanel());
-        } else if (actionCommand.equals(ActionCommands.SAVE_OPEN_NETWORK)) {
-            saveOpenNetwork(getCurrentNetworkPanel());
-        } else if (actionCommand.equals(ActionCommands.SAVEAS_NETWORK)) {
-            saveNetworkAs(getCurrentNetworkPanel());
-            // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
-            // but this is not longer the scenario
-            //mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
-        } else if (actionCommand.equals(ActionCommands.CLOSE_NETWORK)) {
-            closeCurrentNetwork();
-        } else if (actionCommand.equals(ActionCommands.LOAD_EVIDENCE)) {
-            loadEvidence(getCurrentNetworkPanel());
-        } else if (actionCommand.equals(ActionCommands.SAVE_EVIDENCE)) {
-            saveEvidence(getCurrentNetworkPanel());
-        } else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
-            getCurrentNetworkPanel().changeNetworkProperties();
-        } else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK)) {
-            expandNetwork(getCurrentNetworkPanel().getProbNet(),
-                          getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
-        } else if (actionCommand.equals(ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION)) {
-//			expandNetwork(getCurrentNetworkPanel().getProbNet(),
-//					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
-            this.getCurrentNetworkPanel().temporalEvolution();
-//		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK_CE)) {
-//			expandNetworkCE(getCurrentNetworkPanel().getProbNet(),
-//					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
-        } else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
-            closeApplication();
-        } else if (actionCommand.equals(ActionCommands.CLIPBOARD_COPY)) {
-            getCurrentNetworkPanel().exportToClipboard(false);
-            mainPanel.getMainPanelMenuAssistant().setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, true);
-        } else if (actionCommand.equals(ActionCommands.CLIPBOARD_CUT)) {
-            getCurrentNetworkPanel().exportToClipboard(true);
-            mainPanel.getMainPanelMenuAssistant().setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, true);
-        } else if (actionCommand.equals(ActionCommands.CLIPBOARD_PASTE)) {
-            getCurrentNetworkPanel().pasteFromClipboard();
-        } else if (actionCommand.equals(ActionCommands.UNDO)) {
-            undo();
-        } else if (actionCommand.equals(ActionCommands.REDO)) {
-            redo();
-        } else if (actionCommand.equals(ActionCommands.SELECT_ALL)) {
-            getCurrentNetworkPanel().selectAllObjects();
-        } else if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
-            getCurrentNetworkPanel().removeSelectedObjects();
-        } else if (actionCommand.startsWith(ActionCommands.EDITION_MODE_PREFIX)) {
-            activateEditionMode(actionCommand);
-        } else if (actionCommand.equals(ActionCommands.CHANGE_WORKING_MODE)) {
-            setNewWorkingMode();
-        } else if (actionCommand.equals(ActionCommands.CHANGE_TO_INFERENCE_MODE)) {
-            setNewWorkingMode();
-        } else if (actionCommand.equals(ActionCommands.CHANGE_TO_EDITION_MODE)) {
-            setNewWorkingMode();
-        } else if (actionCommand.equals(ActionCommands.SET_NEW_EXPANSION_THRESHOLD)) {
-            setNewExpansionThreshold((Double) e.getSource());
-        } else if (actionCommand.equals(ActionCommands.CREATE_NEW_EVIDENCE_CASE)) {
-            evidenceCasesNavigationOption("CREATE_NEW_EVIDENCE_CASE");
-        } else if (actionCommand.equals(ActionCommands.GO_TO_FIRST_EVIDENCE_CASE)) {
-            evidenceCasesNavigationOption("GO_TO_FIRST_EVIDENCE_CASE");
-        } else if (actionCommand.equals(ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE)) {
-            evidenceCasesNavigationOption("GO_TO_PREVIOUS_EVIDENCE_CASE");
-        } else if (actionCommand.equals(ActionCommands.GO_TO_NEXT_EVIDENCE_CASE)) {
-            evidenceCasesNavigationOption("GO_TO_NEXT_EVIDENCE_CASE");
-        } else if (actionCommand.equals(ActionCommands.GO_TO_LAST_EVIDENCE_CASE)) {
-            evidenceCasesNavigationOption("GO_TO_LAST_EVIDENCE_CASE");
-        } else if (actionCommand.equals(ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES)) {
-            evidenceCasesNavigationOption("CLEAR_OUT_ALL_EVIDENCE_CASES");
-        } else if (actionCommand.equals(ActionCommands.PROPAGATE_EVIDENCE)) {
-            getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant());
-        } else if (actionCommand.equals(ActionCommands.ABSORB_NODE)) {
-            this.getCurrentNetworkPanel().absorbNode();
-        } else if (actionCommand.equals(ActionCommands.ABSORB_PARENTS)) {
-            this.getCurrentNetworkPanel().absorbParents();
-        } else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
-            getCurrentNetworkPanel().changeNodeProperties();
-        } else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {
-            getCurrentNetworkPanel().changePotential();
-        } else if (actionCommand.equals(ActionCommands.DECISION_IMPOSE_POLICY)) {
-            getCurrentNetworkPanel().imposePolicyInNode();
-        } else if (actionCommand.equals(ActionCommands.DECISION_EDIT_POLICY)) {
-            getCurrentNetworkPanel().editNodePolicy();
-        } else if (actionCommand.equals(ActionCommands.DECISION_REMOVE_POLICY)) {
-            getCurrentNetworkPanel().removePolicyFromNode();
-        } else if (actionCommand.equals(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY)) {
-            getCurrentNetworkPanel().showExpectedUtilityOfNode();
-        } else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY)) {
-            getCurrentNetworkPanel().showOptimalPolicyOfNode();
-        } else if (actionCommand.equals(ActionCommands.NODE_EXPANSION)) {
-            getCurrentNetworkPanel().expandNode();
-        } else if (actionCommand.equals(ActionCommands.NODE_CONTRACTION)) {
-            getCurrentNetworkPanel().contractNode();
-        } else if (actionCommand.equals(ActionCommands.NODE_ADD_FINDING)) {
-            getCurrentNetworkPanel().addFinding();
-        } else if (actionCommand.equals(ActionCommands.NODE_REMOVE_FINDING)) {
-            getCurrentNetworkPanel().removeFinding();
-        } else if (actionCommand.equals(ActionCommands.NODE_REMOVE_ALL_FINDINGS)) {
-            getCurrentNetworkPanel().removeAllFindings();
-        } else if (actionCommand.equals(ActionCommands.BYTITLE_NODES)) {
-            activateByTitle(true);
-        } else if (actionCommand.equals(ActionCommands.BYNAME_NODES)) {
-            activateByTitle(false);
-        } else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS)) {
-            MainPanel.getUniqueInstance().getToolbarManager()
-                     .addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS + ".", ""));
-        } else if (actionCommand.equals(ActionCommands.ZOOM_IN)) {
-            incrementZoom(getCurrentPanel());
-        } else if (actionCommand.equals(ActionCommands.ZOOM_OUT)) {
-            decrementZoom(getCurrentPanel());
-        } else if (actionCommand.equals(ActionCommands.ZOOM_OTHER)) {
-            setZoom(true, getCurrentPanel(), 0);
-        } else if (ActionCommands.isZoomActionCommand(actionCommand)) {
-            setZoom(false, getCurrentPanel(), ActionCommands.getValueZoomActionCommand(actionCommand));
-        } else if (actionCommand.equals(ActionCommands.MESSAGE_WINDOW)) {
-            showMessageWindow();
-        }
-        //        else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC)) {
-        ////        	ProbNet probNet = getCurrentNetworkPanel().getProbNet();
-        ////            showCostEffectivenessResults(probNet, getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
-        //
-        //        }
-        //        else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY)) {
-        //            ProbNet probNet = getCurrentNetworkPanel().getProbNet();
-        //            showCostEffectivenessSensitivityResults(probNet,
-        //                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
-        //        }
-        else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
-            showUserConfigurationDialog();
-        } else if (actionCommand.equals(ActionCommands.PROPAGATION_OPTIONS)) {
-            setPropagationOptions();
-        } else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
-            setInferenceOptions(getCurrentNetworkPanel());
-        } else if (actionCommand.equals(ActionCommands.HELP_CHANGE_LANGUAGE)) {
-            showLanguageChangeDialog();
-        } else if (actionCommand.equals(ActionCommands.HELP_SHORTCUTS)) {
-            showShortcuts();
-        } else if (actionCommand.equals(ActionCommands.HELP_ABOUT)) {
-            showAbout();
-        } else if (actionCommand.equals(ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS)) {
-            this.getCurrentNetworkPanel().invertLinkAndUpdatePotentials();
-        } else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
-            this.getCurrentNetworkPanel().enableLinkRestriction();
-        } else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES)) {
-            this.getCurrentNetworkPanel().enableLinkRestriction();
-        } else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES)) {
-            this.getCurrentNetworkPanel().disableLinkRestriction();
-        } else if (actionCommand.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
-            this.getCurrentNetworkPanel().enableRevelationArc();
-            // TODO OOPN start
-        } else if (actionCommand.equals(ActionCommands.TEMPORAL_EVOLUTION_ACTION)) {
-            this.getCurrentNetworkPanel().temporalEvolution();
-        } else if (actionCommand.equals(ActionCommands.MARK_AS_INPUT)) {
-            this.getCurrentNetworkPanel().markSelectedAsInput();
-        } else if (actionCommand.equals(ActionCommands.EDIT_CLASS)) {
-            this.getCurrentNetworkPanel().editClass();
-        } else if (actionCommand.equals(ActionCommands.EDIT_INSTANCE_NAME)) {
-            this.getCurrentNetworkPanel().editInstanceName();
-        } else if (actionCommand.equals(ActionCommands.SET_ARITY_ONE)) {
-            this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
-        } else if (actionCommand.equals(ActionCommands.SET_ARITY_MANY)) {
-            this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
-            // TODO OOPN end
-        } else if (actionCommand.equals(ActionCommands.DECISION_TREE)) {
-            showDecisionTree(this.getCurrentNetworkPanel().getProbNet());
-        } else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY)) {
-            showOptimalStrategy(this.getCurrentNetworkPanel());
-        } else if (actionCommand.equals(ActionCommands.NEXT_SLICE_NODE)) {
-            this.getCurrentNetworkPanel().createNextSliceNode();
+        switch (ActionCommands.of(actionCommand)) {
+            case ActionCommands.NEW_NETWORK -> createNewNetwork();
+            case ActionCommands.OPEN_NETWORK -> openNetwork();
+            case ActionCommands.OPEN_NETWORK_URL -> openNetworkURL();
+            case ActionCommands.OPEN_LAST_1_FILE -> openNetwork(LastOpenFiles.getFileNameAt(1));
+            case ActionCommands.OPEN_LAST_2_FILE -> openNetwork(LastOpenFiles.getFileNameAt(2));
+            case ActionCommands.OPEN_LAST_3_FILE -> openNetwork(LastOpenFiles.getFileNameAt(3));
+            case ActionCommands.OPEN_LAST_4_FILE -> openNetwork(LastOpenFiles.getFileNameAt(4));
+            case ActionCommands.OPEN_LAST_5_FILE -> openNetwork(LastOpenFiles.getFileNameAt(5));
+            case ActionCommands.SAVE_NETWORK -> saveNetwork(getCurrentNetworkPanel());
+            case ActionCommands.SAVE_OPEN_NETWORK -> saveOpenNetwork(getCurrentNetworkPanel());
+            case ActionCommands.SAVEAS_NETWORK -> saveNetworkAs(getCurrentNetworkPanel());
+            case ActionCommands.CLOSE_NETWORK -> closeCurrentNetwork();
+            case ActionCommands.LOAD_EVIDENCE -> loadEvidence(getCurrentNetworkPanel());
+            case ActionCommands.SAVE_EVIDENCE -> saveEvidence(getCurrentNetworkPanel());
+            case ActionCommands.NETWORK_PROPERTIES -> getCurrentNetworkPanel().changeNetworkProperties();
+            case ActionCommands.EXPAND_NETWORK ->
+                    expandNetwork(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel()
+                                                                                                 .getPreResolutionEvidence());
+            case ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION, ActionCommands.TEMPORAL_EVOLUTION_ACTION ->
+                    this.getCurrentNetworkPanel().temporalEvolution();
+            //case ActionCommands.EXPAND_NETWORK_CE -> expandNetworkCE(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
+            case ActionCommands.EXIT_APPLICATION -> closeApplication();
+            case ActionCommands.CLIPBOARD_COPY -> {
+                getCurrentNetworkPanel().exportToClipboard(false);
+                mainPanel.getMainPanelMenuAssistant()
+                         .setOptionEnabled(ActionCommands.CLIPBOARD_PASTE.getCommandName(), true);
+            }
+            case ActionCommands.CLIPBOARD_CUT -> {
+                getCurrentNetworkPanel().exportToClipboard(true);
+                mainPanel.getMainPanelMenuAssistant()
+                         .setOptionEnabled(ActionCommands.CLIPBOARD_PASTE.getCommandName(), true);
+            }
+            case ActionCommands.CLIPBOARD_PASTE -> getCurrentNetworkPanel().pasteFromClipboard();
+            case ActionCommands.UNDO -> undo();
+            case ActionCommands.REDO -> redo();
+            case ActionCommands.SELECT_ALL -> getCurrentNetworkPanel().selectAllObjects();
+            case ActionCommands.OBJECT_REMOVAL -> getCurrentNetworkPanel().removeSelectedObjects();
+            case ActionCommands.EDITION_MODE_PREFIX -> activateEditionMode(actionCommand);
+            case ActionCommands.CHANGE_WORKING_MODE, ActionCommands.CHANGE_TO_INFERENCE_MODE,
+                 ActionCommands.CHANGE_TO_EDITION_MODE -> setNewWorkingMode();
+            case ActionCommands.SET_NEW_EXPANSION_THRESHOLD -> setNewExpansionThreshold((Double) e.getSource());
+            case ActionCommands.CREATE_NEW_EVIDENCE_CASE -> evidenceCasesNavigationOption("CREATE_NEW_EVIDENCE_CASE");
+            case ActionCommands.GO_TO_FIRST_EVIDENCE_CASE -> evidenceCasesNavigationOption("GO_TO_FIRST_EVIDENCE_CASE");
+            case ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE ->
+                    evidenceCasesNavigationOption("GO_TO_PREVIOUS_EVIDENCE_CASE");
+            case ActionCommands.GO_TO_NEXT_EVIDENCE_CASE -> evidenceCasesNavigationOption("GO_TO_NEXT_EVIDENCE_CASE");
+            case ActionCommands.GO_TO_LAST_EVIDENCE_CASE -> evidenceCasesNavigationOption("GO_TO_LAST_EVIDENCE_CASE");
+            case ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES ->
+                    evidenceCasesNavigationOption("CLEAR_OUT_ALL_EVIDENCE_CASES");
+            case ActionCommands.PROPAGATE_EVIDENCE ->
+                    getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant());
+            case ActionCommands.ABSORB_NODE -> this.getCurrentNetworkPanel().absorbNode();
+            case ActionCommands.ABSORB_PARENTS -> this.getCurrentNetworkPanel().absorbParents();
+            case ActionCommands.NODE_PROPERTIES -> getCurrentNetworkPanel().changeNodeProperties();
+            case ActionCommands.EDIT_POTENTIAL -> getCurrentNetworkPanel().changePotential();
+            case ActionCommands.DECISION_IMPOSE_POLICY -> getCurrentNetworkPanel().imposePolicyInNode();
+            case ActionCommands.DECISION_EDIT_POLICY -> getCurrentNetworkPanel().editNodePolicy();
+            case ActionCommands.DECISION_REMOVE_POLICY -> getCurrentNetworkPanel().removePolicyFromNode();
+            case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY -> getCurrentNetworkPanel().showExpectedUtilityOfNode();
+            case ActionCommands.DECISION_SHOW_OPTIMAL_POLICY -> getCurrentNetworkPanel().showOptimalPolicyOfNode();
+            case ActionCommands.NODE_EXPANSION -> getCurrentNetworkPanel().expandNode();
+            case ActionCommands.NODE_CONTRACTION -> getCurrentNetworkPanel().contractNode();
+            case ActionCommands.NODE_ADD_FINDING -> getCurrentNetworkPanel().addFinding();
+            case ActionCommands.NODE_REMOVE_FINDING -> getCurrentNetworkPanel().removeFinding();
+            case ActionCommands.NODE_REMOVE_ALL_FINDINGS -> getCurrentNetworkPanel().removeAllFindings();
+            case ActionCommands.BYTITLE_NODES -> activateByTitle(true);
+            case ActionCommands.BYNAME_NODES -> activateByTitle(false);
+            case ActionCommands.ZOOM_IN -> incrementZoom(getCurrentPanel());
+            case ActionCommands.ZOOM_OUT -> decrementZoom(getCurrentPanel());
+            case ActionCommands.ZOOM_OTHER -> setZoom(true, getCurrentPanel(), 0);
+            case ActionCommands.MESSAGE_WINDOW -> showMessageWindow();
+            case ActionCommands.CONFIGURATION -> showUserConfigurationDialog();
+            case ActionCommands.PROPAGATION_OPTIONS -> setPropagationOptions();
+            case ActionCommands.INFERENCE_OPTIONS -> setInferenceOptions(getCurrentNetworkPanel());
+            case ActionCommands.HELP_CHANGE_LANGUAGE -> showLanguageChangeDialog();
+            case ActionCommands.HELP_SHORTCUTS -> showShortcuts();
+            case ActionCommands.HELP_ABOUT -> showAbout();
+            case ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS ->
+                    this.getCurrentNetworkPanel().invertLinkAndUpdatePotentials();
+            case ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES, ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES ->
+                    this.getCurrentNetworkPanel().enableLinkRestriction();
+            case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES ->
+                    this.getCurrentNetworkPanel().disableLinkRestriction();
+            case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> this.getCurrentNetworkPanel().enableRevelationArc();
+            case ActionCommands.MARK_AS_INPUT -> this.getCurrentNetworkPanel().markSelectedAsInput();
+            case ActionCommands.EDIT_CLASS -> this.getCurrentNetworkPanel().editClass();
+            case ActionCommands.EDIT_INSTANCE_NAME -> this.getCurrentNetworkPanel().editInstanceName();
+            case ActionCommands.SET_ARITY_ONE -> this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
+            case ActionCommands.SET_ARITY_MANY -> this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
+            case ActionCommands.DECISION_TREE -> showDecisionTree(this.getCurrentNetworkPanel().getProbNet());
+            case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY -> showOptimalStrategy(this.getCurrentNetworkPanel());
+            case ActionCommands.NEXT_SLICE_NODE -> this.getCurrentNetworkPanel().createNextSliceNode();
+            case null, default -> {
+                if (actionCommand.startsWith(ActionCommands.EDITION_MODE_PREFIX.getCommandName())) {
+                    activateEditionMode(actionCommand);
+                } else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS.getCommandName())) {
+                    MainPanel.getUniqueInstance().getToolbarManager()
+                             .addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS.getCommandName() + ".", ""));
+                } else if (ActionCommands.isZoomActionCommand(actionCommand)) {
+                    setZoom(false, getCurrentPanel(), ActionCommands.getValueZoomActionCommand(actionCommand));
+                } else {
+                    //TODO: What to do if the command is wrong?
+                }
+            }
         }
     }
     
@@ -388,10 +309,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * closed. If the user answers 'cancel', the network can't be closed.
      *
      * @param networkPanel network panel to be checked.
+     *
      * @return true, if the network can be closed; otherwise, false.
      */
     private boolean networkCanBeClosed(NetworkPanel networkPanel) {
-        int response = 0;
+        int response;
         boolean canClose = true;
         if (networkPanel.getModified()) {
             String title = stringDatabase.getFormattedString("NetworkNotSaved.Title.Label", networkPanel.getTitle());
@@ -423,16 +345,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * This method executes when a network frame is going to be closed.
      *
      * @param contentPanel content panel of the frame that is trying to be closed.
+     *
      * @return true, if the frame that contents the panel can be closed;
      * otherwise, false.
      */
     @Override public boolean frameClosing(FrameContentPanel contentPanel) {
         contentPanel.close();
-        if (NetworkPanel.class.isAssignableFrom(contentPanel.getClass())) {
-            return networkCanBeClosed((NetworkPanel) contentPanel);
-        } else {
+        if (!NetworkPanel.class.isAssignableFrom(contentPanel.getClass())) {
             return true;
         }
+        return networkCanBeClosed((NetworkPanel) contentPanel);
     }
     
     /**
@@ -441,7 +363,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param contentPanel content panel of the frame that has been closed.
      */
     @Override public void frameClosed(FrameContentPanel contentPanel) {
-        if (networkPanels.size() == 0) {
+        if (networkPanels.isEmpty()) {
             mainPanel.setToolBarPanel(NetworkPanel.EDITION_WORKING_MODE);
             mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
         }
@@ -532,10 +454,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param networkPanel network panel which contains the network to be saved.
      * @param fileName     file where save the network.
+     *
      * @return true if the network could be saved; otherwise, false.
      */
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat) {
-        boolean result = false;
         mainPanel.getMessageWindow().getNormalMessageStream()
                  .println(stringDatabase.getString("SavingNetwork.Text.Label") + " " + fileName);
         NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidence(), fileName,
@@ -546,15 +468,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
         networkPanel.setNetworkFile(fileName);
         networkPanel.setNetworkFileFormat(fileFormat);
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
-        lastOpenFiles.setLastFileName(fileName);
-        OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
+        LastOpenFiles.setLastFileName(fileName);
+        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
                                   OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
         mainPanel.getMessageWindow().getNormalMessageStream()
                  .println(stringDatabase.getString("NetworkSaved.Text.Label"));
         mainPanel.getMainMenu().rechargeLastOpenFiles();
-        result = true;
-        
-        return result;
+        return true;
     }
     
     /**
@@ -562,12 +482,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param networkPanel
      * @param fileName     the file where the network is stored
+     *
      * @return true iff the network could be saved
      */
     
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) {
         String fileFormat = OpenMarkovPreferences
-                .get(OpenMarkovPreferences.LAST_OPENED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+                .get(OpenMarkovPreferencesKeys.LAST_OPENED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
                      FileChooser.DEFAULT_FILE_FORMAT);
         return saveNetworkActions(networkPanel, fileName, fileFormat);
     }
@@ -577,6 +498,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * then saves the network.
      *
      * @param networkPanel network panel that contains the network to be saved.
+     *
      * @return true if the network has been saved; otherwise, false.
      */
     private boolean saveNetwork(NetworkPanel networkPanel) {
@@ -623,9 +545,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
                  .println(stringDatabase.getString("NetworkBackup.Text.Label"));
     }
     
-    private String toBakExtension(String nameFile) {
+    private static String toBakExtension(String nameFile) {
         String newName;
-        int index = nameFile.lastIndexOf(".");
+        int index = nameFile.lastIndexOf('.');
         if (index > 0) {
             newName = nameFile.substring(0, index);
         } else
@@ -638,6 +560,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * save the network and then saves the network.
      *
      * @param networkPanel network panel that contains the network to be saved.
+     *
      * @return true if the network has been saved; otherwise, false.
      */
     private boolean saveNetworkAs(NetworkPanel networkPanel) {
@@ -646,11 +569,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
         fileName = requestNetworkFileToSave((fileName != null) ? fileName
                 : networkPanel.getProbNet().getName());
         */
-        String fileFormat;
         ArrayList<String> fileNameAndFormat = requestNetworkFileAndFormatToSave(
                 (fileName != null) ? fileName : networkPanel.getProbNet().getName());
         fileName = fileNameAndFormat.get(0);
-        fileFormat = fileNameAndFormat.get(1);
+        String fileFormat = fileNameAndFormat.get(1);
         if (fileName != null) {
             networkPanel.setNetworkFile(fileName);
             networkPanel.setNetworkFileFormat(fileFormat);
@@ -658,7 +580,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             
         }
         
-        return (fileName != null) ? saveNetworkActions(networkPanel, fileName, fileFormat) : false;
+        return fileName != null && saveNetworkActions(networkPanel, fileName, fileFormat);
     }
     
     
@@ -666,6 +588,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * It asks the user to choose a file by means of a save-file dialog box.
      *
      * @param suggestedFileName name of the file where the net can be saved as default.
+     *
      * @return complete path of the file, or null if the user selects cancel.
      */
     private String requestNetworkFileToSave(String suggestedFileName) {
@@ -686,6 +609,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     
     /**
      * @param suggestedFileName
+     *
      * @return a list with the absolute path of of the chosen filename and the file format chosen
      */
     private ArrayList<String> requestNetworkFileAndFormatToSave(String suggestedFileName) {
@@ -726,7 +650,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private void createNewNetwork() {
         NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(Utilities.getOwner(mainPanel));
-        if (dialogProperties.showProperties() == NetworkPropertiesDialog.OK_BUTTON) {
+        if (dialogProperties.showProperties() == OkCancelHorizontalDialog.OK_BUTTON) {
             ProbNet probNet = dialogProperties.getProbNet();
             
             // If the probNet has not the OnlyChanceNodes constraint and not has any criterion, we
@@ -754,11 +678,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * into the frame.
      *
      * @param probNet network to be painted into the frame
+     *
      * @return the network panel that is created.
      */
     public NetworkPanel createNewFrame(ProbNet probNet) {
-        NetworkPanel networkPanel = null;
-        networkPanel = new NetworkPanel(probNet, mainPanel);
+        NetworkPanel networkPanel = new NetworkPanel(probNet, mainPanel);
         mainPanel.getMdi().createNewFrame(networkPanel);
         networkPanel.setContextualMenuFactory(mainPanel.getContextualMenuFactory());
         // networkPanel.addEditionListener( mainPanel
@@ -786,11 +710,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param fileName - for the network
      */
     public void openNetwork(String fileName) {
-        if (fileName.equals("")) {
+        if (fileName.isEmpty()) {
             fileName = requestNetworkFileToOpen();
         }
-        ProbNet netReadFromFile = null;
-        NetworkPanel networkPanel = null;
+        ProbNet netReadFromFile;
+        NetworkPanel networkPanel;
         if (fileName != null) {
             try {
                 mainPanel.getMessageWindow().getNormalMessageStream()
@@ -813,14 +737,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
                 }
                 networkPanels.add(networkPanel);
-                lastOpenFiles.setLastFileName(fileName);
-                if (getDirectoryFileName(fileName) != null) {
-                    OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
-                                              OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-                    // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
-                    // but it is not longer the scenario
-                    //mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
-                }
+                LastOpenFiles.setLastFileName(fileName);
+                getDirectoryFileName(fileName);
+                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
+                                          OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+                // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
+                // but it is not longer the scenario
+                //mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
                 mainPanel.getMessageWindow().getNormalMessageStream()
                          .println(stringDatabase.getString("NetworkLoaded.Text.Label"));
                 mainPanel.getMainMenu().rechargeLastOpenFiles();
@@ -877,7 +800,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
                 }
                 networkPanels.add(networkPanel);
-                lastOpenFiles.setLastFileName(urlFile);
+                LastOpenFiles.setLastFileName(urlFile);
                 // If the file was opened from a URL, the 'save' and 'save and reopen' buttons have to be disabled
                 mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(true);
                 mainPanel.getMessageWindow().getNormalMessageStream()
@@ -926,11 +849,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private URL requestURLFileToOpen() {
         URLNetworkChooserDialog urlNetworkChooserDialog = new URLNetworkChooserDialog(Utilities.getOwner(mainPanel));
-        if (urlNetworkChooserDialog.requestNetworkURL() == SelectZoomDialog.OK_BUTTON) {
+        if (urlNetworkChooserDialog.requestNetworkURL() == OkCancelHorizontalDialog.OK_BUTTON) {
             return urlNetworkChooserDialog.getNetworkURL();
-        } else {
-            return null;
         }
+        return null;
         
     }
     
@@ -945,7 +867,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             canClose = networkCanBeClosed(getCurrentNetworkPanel());
             if (canClose) {
                 mainPanel.getMdi().closeCurrentFrame();
-                if (networkPanels.size() == 0) {
+                if (networkPanels.isEmpty()) {
                     mainPanel.setToolBarPanel(NetworkPanel.EDITION_WORKING_MODE);
                     mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
                 }
@@ -959,7 +881,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private void closeApplication() {
         boolean allClosed = true;
-        while (allClosed && networkPanels.size() > 0) {
+        while (allClosed && !networkPanels.isEmpty()) {
             allClosed = closeCurrentNetwork();
         }
         if (allClosed) {
@@ -980,7 +902,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
                                                                                     Utilities.getOwner(mainPanel), null);
         costEffectivenessDialog.getMulticriteriaPanel().setEnabled(false);
-        if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+        if (costEffectivenessDialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
             return;
         }
 //		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
@@ -994,7 +916,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         fileName = fileName + stringDatabase.getString("CostEffectiveness.ExpandNetwork.FileName") + ".pgmx";
         
         ProbNet expandedNetwork;
-        try{
+        try {
             expandedNetwork = TemporalNetOperations.expandNetwork(probNet, preResolutionEvidence, fileName);
         } catch (NotSupportedOperationException e) {
             ExceptionDialog.show(e);
@@ -1003,7 +925,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
         
         NetworkPanel networkPanel = createNewFrame(expandedNetwork);
         //If enabled "save" tries to create the .bak file and throws an exception
-        mainPanel.getMainPanelMenuAssistant().setOptionEnabled(ActionCommands.SAVE_OPEN_NETWORK, false);
+        mainPanel.getMainPanelMenuAssistant()
+                 .setOptionEnabled(ActionCommands.SAVE_OPEN_NETWORK.getCommandName(), false);
 
 //		networkPanel.setNetworkFile(fileName );
         
@@ -1109,7 +1032,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         evidence.add(0, currentNetworkPanel.getEditorPanel().getPreResolutionEvidence());
         JFileChooser fileChooser = new JFileChooser();
         File currentDirectory = new File(OpenMarkovPreferences
-                                                 .get(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+                                                 .get(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
         fileChooser.setCurrentDirectory(currentDirectory);
         String suggestedFileName = currentNetworkPanel.getTitle().replaceFirst("^*", "");
         fileChooser.setSelectedFile(new File(suggestedFileName));
@@ -1130,7 +1053,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         evidenceFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
         // Set last used evidence format as default
         String lastFileFilter = OpenMarkovPreferences
-                .get(OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+                .get(OpenMarkovPreferencesKeys.LAST_LOADED_EVIDENCE_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
                      "xls");
         evidenceFileChooser.setFileFilter(lastFileFilter);
         if ((evidenceFileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)) {
@@ -1147,7 +1070,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 for (int i = 0; i < cases.length; ++i) {
                     EvidenceCase newEvidenceCase = new EvidenceCase();
                     for (int j = 0; j < cases[i].length; ++j) {
-                        Variable variable = null;
+                        Variable variable;
                         try {
                             // Ignore missing values
                             if (!variables.get(j).getStateName(cases[i][j]).isEmpty() && !variables.get(j)
@@ -1170,10 +1093,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
                 }
                 // save format extension in preferences
-                OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT,
+                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_LOADED_EVIDENCE_FORMAT,
                                           ((FileFilterBasic) evidenceFileChooser.getFileFilter()).getFilterExtension(),
                                           OpenMarkovPreferences.OPENMARKOV_FORMATS);
-                OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
+                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY,
                                           getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
                                           OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
             } catch (IOException | ParsingSourceException | EmptyDatabaseException e) {
@@ -1209,12 +1132,12 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param undoOperation - if true, an undo must be performed; if false, a redo will be
      *                      performed.
+     *
      * @throws CannotUndoException - if undo can't be performed.
      * @throws CannotRedoException - if redo can't be performed.
      */
     private void undoRedo(boolean undoOperation) throws CannotUndoException, CannotRedoException {
-        NetworkPanel networkPanel = null;
-        networkPanel = getCurrentNetworkPanel();
+        NetworkPanel networkPanel = getCurrentNetworkPanel();
         if (undoOperation) {
             networkPanel.undo();
             networkPanel.repaint();
@@ -1230,8 +1153,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param newEditionMode new edition mode to set.
      */
     private void activateEditionMode(String newEditionMode) {
-        NetworkPanel networkPanel = null;
-        networkPanel = getCurrentNetworkPanel();
+        NetworkPanel networkPanel = getCurrentNetworkPanel();
         networkPanel.setEditionMode(newEditionMode);
         mainPanel.getMainPanelMenuAssistant().setEditionOption(newEditionMode, networkPanel.isThereDataStored());
     }
@@ -1251,7 +1173,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
                                                                        Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
             
-            if (dialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+            if (dialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
                 newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
                 performInference = false;
             }
@@ -1263,7 +1185,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
         mainPanel.setToolBarPanel(newWorkingMode);
         mainPanel.changeWorkingModeButton(newWorkingMode);
-        if (getNetworkPanels().size() > 0) {
+        if (!getNetworkPanels().isEmpty()) {
             getCurrentNetworkPanel().setWorkingMode(newWorkingMode);
         }
         getCurrentNetworkPanel().setSelectedAllObjects(false);
@@ -1307,18 +1229,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param command the Action Command corresponding to the selected option
      */
     private void evidenceCasesNavigationOption(String command) {
-        if (command.equals("CREATE_NEW_EVIDENCE_CASE")) {
-            getCurrentNetworkPanel().createNewEvidenceCase();
-        } else if (command.equals("GO_TO_FIRST_EVIDENCE_CASE")) {
-            getCurrentNetworkPanel().goToFirstEvidenceCase();
-        } else if (command.equals("GO_TO_PREVIOUS_EVIDENCE_CASE")) {
-            getCurrentNetworkPanel().goToPreviousEvidenceCase();
-        } else if (command.equals("GO_TO_NEXT_EVIDENCE_CASE")) {
-            getCurrentNetworkPanel().goToNextEvidenceCase();
-        } else if (command.equals("GO_TO_LAST_EVIDENCE_CASE")) {
-            getCurrentNetworkPanel().goToLastEvidenceCase();
-        } else if (command.equals("CLEAR_OUT_ALL_EVIDENCE_CASES")) {
-            getCurrentNetworkPanel().clearOutAllEvidenceCases();
+        switch (command) {
+            case "CREATE_NEW_EVIDENCE_CASE" -> getCurrentNetworkPanel().createNewEvidenceCase();
+            case "GO_TO_FIRST_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToFirstEvidenceCase();
+            case "GO_TO_PREVIOUS_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToPreviousEvidenceCase();
+            case "GO_TO_NEXT_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToNextEvidenceCase();
+            case "GO_TO_LAST_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToLastEvidenceCase();
+            case "CLEAR_OUT_ALL_EVIDENCE_CASES" -> getCurrentNetworkPanel().clearOutAllEvidenceCases();
         }
         mainPanel.getMainPanelMenuAssistant().updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
         mainPanel.getMainPanelMenuAssistant().updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
@@ -1350,8 +1267,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *                their titles; if false, these texts will be their name.
      */
     private void activateByTitle(boolean byTitle) {
-        NetworkPanel actualNetwork = null;
-        actualNetwork = getCurrentNetworkPanel();
+        NetworkPanel actualNetwork = getCurrentNetworkPanel();
         if (actualNetwork.getByTitle() != byTitle) {
             actualNetwork.setByTitle(byTitle);
             mainPanel.getMainPanelMenuAssistant().setByTitle(byTitle);
@@ -1397,13 +1313,12 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param value             new zoom value.
      */
     private void setZoom(boolean dialogBox, FrameContentPanel frameContentPanel, double value) {
-        double newZoom = 0.0;
         if (dialogBox) {
             requestZoomToUser(Utilities.getOwner(mainPanel), frameContentPanel);
         } else {
             frameContentPanel.setZoom(value);
         }
-        newZoom = frameContentPanel.getZoom();
+        double newZoom = frameContentPanel.getZoom();
         mainPanel.getMainPanelMenuAssistant().setZoom(newZoom);
     }
     
@@ -1413,9 +1328,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param owner window that owns the dialog box.
      */
-    public void requestZoomToUser(Window owner, FrameContentPanel frameContentPanel) {
+    public static void requestZoomToUser(Window owner, FrameContentPanel frameContentPanel) {
         SelectZoomDialog dialogZoom = new SelectZoomDialog(owner);
-        if (dialogZoom.requestZoom(frameContentPanel.getZoom()) == SelectZoomDialog.OK_BUTTON) {
+        if (dialogZoom.requestZoom(frameContentPanel.getZoom()) == OkCancelHorizontalDialog.OK_BUTTON) {
             frameContentPanel.setZoom(dialogZoom.getZoom());
         }
     }
@@ -1441,14 +1356,14 @@ public class MainPanelListenerAssistant extends WindowAdapter
         try {
             InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
                                                                                         Utilities.getOwner(mainPanel));
-            if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+            if (costEffectivenessDialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
                 return;
             } else if (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()
                     == MulticriteriaOptions.Type.UNICRITERION) {
-                // Do something for show unicriterion decision tree
+                // TODO: Do something for show unicriterion decision tree
             } else if (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()
                     == MulticriteriaOptions.Type.COST_EFFECTIVENESS) {
-                // Do something for show cost-effectiveness decision tree
+                // TODO: Do something for show cost-effectiveness decision tree
             }
             DecisionTreeWindow decisionTree = new DecisionTreeWindow(probNet);
             mainPanel.getMdi().createNewFrame(decisionTree);
@@ -1476,7 +1391,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         ProbNet probNet = networkPanel.getProbNet();
         InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
                                                                                     Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
-        if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+        if (costEffectivenessDialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
             return;
         }
         if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
@@ -1484,13 +1399,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
             try {
                 eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet, networkPanel.getEditorPanel()
                                                                                             .getPreResolutionEvidence());
-            } catch (NotEvaluableNetworkException.NotApplicableNetwork|NotEvaluableNetworkException.UnsatisfiedContraints e1) {
+            } catch (NotEvaluableNetworkException.NotApplicableNetwork |
+                     NotEvaluableNetworkException.UnsatisfiedContraints e1) {
                 JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
                                               "An error occurred when trying to show the optimal strategy: " + e1.getMessage(), "Error",
                                               JOptionPane.ERROR_MESSAGE);
             }
-            StrategyTree strategyTree = null;
-            strategyTree = eval.getUtility().strategyTrees[0];
+            StrategyTree strategyTree = eval.getUtility().strategyTrees[0];
             
             //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
             strategyTree.pruneAndGraftNode("OD");
@@ -1505,7 +1420,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
             try {
                 veOptimalStrategy = new VEOptimalIntervention(probNet,
                                                               networkPanel.getEditorPanel().getPreResolutionEvidence());
-            } catch (NotEvaluableNetworkException.NotApplicableNetwork|NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException e) {
+            } catch (NotEvaluableNetworkException.NotApplicableNetwork |
+                     NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException e) {
                 JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
                                               "An error occurred when trying to show the optimal strategy: " + e.getMessage(), "Error",
                                               JOptionPane.ERROR_MESSAGE);
@@ -1526,10 +1442,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
     }
     
     /**
-     * @param buffer    <code>StringBuffer</code>
-     * @param mainPanel <code>MainPanel</code>
+     * @param buffer    {@code StringBuffer}
+     * @param mainPanel {@code MainPanel}
      */
-    private void showTextWindow(StringBuilder buffer, MainPanel mainPanel) {
+    private static void showTextWindow(StringBuilder buffer, MainPanel mainPanel) {
         JFrame frame = new JFrame("Cost-Effectiveness analysis");
         String text = buffer.toString();
         JTextArea textArea = new JTextArea(40, getMaxCharsInALine(text));
@@ -1543,10 +1459,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
     }
     
     /**
-     * @param text <code>String</code>
-     * @return <code>int</code>
+     * @param text {@code String}
+     *
+     * @return {@code int}
      */
-    private int getMaxCharsInALine(String text) {
+    private static int getMaxCharsInALine(String text) {
         int maxLengthLine = 0;
         if (text != null) {
             int position = 0;

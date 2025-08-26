@@ -19,18 +19,7 @@ import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
-import org.openmarkov.gui.dialog.common.AugmentedTablePotentialPanel;
-import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.gui.dialog.common.ICIPotentialsTablePanel;
-import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.gui.dialog.common.PanelResizeEvent;
-import org.openmarkov.gui.dialog.common.PanelResizeEventListener;
-import org.openmarkov.gui.dialog.common.PolicyTypePanel;
-import org.openmarkov.gui.dialog.common.PotentialPanel;
-import org.openmarkov.gui.dialog.common.PotentialPanelManager;
-import org.openmarkov.gui.dialog.common.ProbabilityTablePanel;
-import org.openmarkov.gui.dialog.common.TablePotentialPanel;
-import org.openmarkov.gui.dialog.common.UnivariateDistrPotentialPanel;
+import org.openmarkov.gui.dialog.common.*;
 import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualNode;
 
@@ -52,263 +41,266 @@ import java.util.List;
  * @author mpalacios
  * @author jmendoza
  * @author ibermejo
- * @version 1.2 jlgozalo - set class to use independent panels;
  * @version 1.3 cmyago 19/06/2016 - adapted the class to the new utility treatment; minor changes
  */
 public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
-		implements ActionListener, PanelResizeEventListener {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -7344555059488539825L;
-	/**
-	 * The JComboBox object that shows all the potentials types
-	 */
-	private JComboBox<String> potentialTypeComboBox;
-	/**
-	 * The node edited
-	 */
-	private Node node;
-	/**
-	 * The panel that contains all the common option to potentials
-	 */
-	private JPanel potentialTypePanel;
-	private PolicyTypePanel pnlPolicyType;
-	/**
-	 * Label for relation type
-	 */
-	private JLabel lblPotentialType;
-	/**
-	 * Relation Type Manager
-	 */
-	private PotentialManager potentialManager;
-	/**
-	 * Panel of the graphic editor
-	 */
-	private PotentialPanel potentialPanel;
-
-	/**
-	 * Option deselected in the jComboboxRelationType
-	 */
-	private int optionPreviouslySelected = 0;
-	private String previouslySelectedPotentialType = "";
-	/**
-	 * If true, values inside the dialog will not be editable
-	 */
-	private boolean readOnly;
-	private JButton reorderVariablesButton;
-
-	//For Univariate
-	/**
-	 * The JComboBox object that shows all the potentials types
-	 */
-
-	private JComboBox<String> univariateDistrComboBox;
-	/**
-	 * Label for distribution type
-	 */
-	private JLabel lblUnivariateDistrComboBox;
-
-	/**
-	 *
-	 */
-	private JComboBox<String> univariateDistrParametrizationComboBox;
-
-	/**
-	 *
-	 */
-	private JLabel lblParametrizationComboBox;
-	/**
-	 *
-	 */
-	private String previouslySelectedDistributionName = "Exact";
-
-
-	private CommentHTMLScrollPane commentPane;
-
-	private VisualNode visualNode;
-
-	private Potential lastPotential;
-
-	private Boolean hasPolicy;
-
-	/**
-	 * Creates the dialog.
-	 */
-	public PotentialEditDialog(Window owner, Node node, boolean newElement, boolean readOnly) {
-		super(owner);
-		this.node = node;
-		this.readOnly = readOnly;
-		node.getProbNet().getPNESupport().setWithUndo(true);
-		node.getProbNet().getPNESupport().openParenthesis();
-		initialize();
-		List<Potential> potentials = node.getPotentials();
-		if (!potentials.isEmpty() && potentials.get(0).getComment() != null && !potentials.get(0).getComment()
-				.isEmpty()) {
-			commentPane.setCommentHTMLTextPaneText(potentials.get(0).getComment());
-		}
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Dimension screenSize = toolkit.getScreenSize();
-		Rectangle bounds = owner.getBounds();
-		int width = screenSize.width / 2;
-		int height = screenSize.height / 2;
-		// center point of the owner window
-		int x = bounds.x / 2 - width / 2;
-		int y = bounds.y / 2 - height / 2;
-		this.setBounds(x, y, width, height);
-		setLocationRelativeTo(null);
-		setMinimumSize(new Dimension(width, height / 2));
-		setResizable(true);
-		pack();
-	}
-
-	/**
-	 * Constructor
-	 */
-	public PotentialEditDialog(Window owner, Node node, boolean newElement) {
-		this(owner, node, newElement, false);
-	}
-
-	public PotentialEditDialog(Window owner, VisualNode visualNode, boolean newElement) {
-		this(owner, visualNode.getNode(), newElement, false);
-		this.visualNode = visualNode;
-
-	}
-
-	/**
-	 * This method configures the dialog box.
-	 */
-	private void initialize() {
-		potentialManager = new PotentialManager();
-		// Set default title
-		setTitle("NodePotentialDialog.Title.Label");
-		configureComponentsPanel();
-		pack();
-	}
-
-	/**
-	 * Sets up the panel where all components, except the buttons of the buttons
-	 * panel, will be appear.
-	 */
-	private void configureComponentsPanel() {
-		getComponentsPanel().setLayout(new BorderLayout(5, 5));
-		// getComponentsPanel().setSize(294, 29);
-		getComponentsPanel().setMaximumSize(new Dimension(180, 40));
-		getComponentsPanel().add(getPotentialTypePanel(), BorderLayout.NORTH);
-		getComponentsPanel().add(getPotentialPanel(), BorderLayout.CENTER);
-
-		// For univariate
-		if (showUnivariateDistrComboBox()) {
-			getUnivariateDistrJCombobox().setVisible(true);
-			getUnivariateDistrJCombobox().setEnabled(true);
-			getUnivariateDistrParametrizationJCombobox().setVisible(true);
-			getUnivariateDistrParametrizationJCombobox().setEnabled(true);
-		} else {
-			getUnivariateDistrJCombobox().setVisible(false);
-			getUnivariateDistrJCombobox().setEnabled(false);
-			getUnivariateDistrParametrizationJCombobox().setVisible(false);
-			getUnivariateDistrParametrizationJCombobox().setEnabled(false);
-
-		}
-
-		if (enableReorderVariableButton()) {
-			getReorderVariablesButton().setVisible(true);
-			getReorderVariablesButton().setEnabled(true);
-		} else {
-			getReorderVariablesButton().setVisible(false);
-			getReorderVariablesButton().setEnabled(false);
-		}
-		getComponentsPanel().add(getCommentPane(), BorderLayout.SOUTH);
-
-	}
-
-	/**
-	 * @return label for the type of relations or policy
-	 */
-	protected JLabel getPotentialTypeJLabel() {
-		if (lblPotentialType == null) {
-			lblPotentialType = new JLabel();
-			lblPotentialType.setName("jLabelRelationType");
-			lblPotentialType.setText("a Label");
-			lblPotentialType.setText(stringDatabase.getString("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
-		}
-		return lblPotentialType;
-	}
-
-	/**
-	 * @return ComboBox with the types of families of relation to be used
-	 */
-	protected JComboBox<String> getPotentialTypeJCombobox() {
-		if (potentialTypeComboBox == null) {
-			List<String> filteredPotentialNames = potentialManager.getFilteredPotentials(node);
-			Collections.sort(filteredPotentialNames);
+        implements ActionListener, PanelResizeEventListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7344555059488539825L;
+    /**
+     * The JComboBox object that shows all the potentials types
+     */
+    private JComboBox<String> potentialTypeComboBox;
+    /**
+     * The node edited
+     */
+    private Node node;
+    /**
+     * The panel that contains all the common option to potentials
+     */
+    private JPanel potentialTypePanel;
+    private PolicyTypePanel pnlPolicyType;
+    /**
+     * Label for relation type
+     */
+    private JLabel lblPotentialType;
+    /**
+     * Relation Type Manager
+     */
+    private PotentialManager potentialManager;
+    /**
+     * Panel of the graphic editor
+     */
+    private PotentialPanel potentialPanel;
+    
+    /**
+     * Option deselected in the jComboboxRelationType
+     */
+    private int optionPreviouslySelected = 0;
+    private String previouslySelectedPotentialType = "";
+    /**
+     * If true, values inside the dialog will not be editable
+     */
+    private boolean readOnly;
+    private JButton reorderVariablesButton;
+    
+    //For Univariate
+    /**
+     * The JComboBox object that shows all the potentials types
+     */
+    
+    private JComboBox<String> univariateDistrComboBox;
+    /**
+     * Label for distribution type
+     */
+    private JLabel lblUnivariateDistrComboBox;
+    
+    /**
+     *
+     */
+    private JComboBox<String> univariateDistrParametrizationComboBox;
+    
+    /**
+     *
+     */
+    private JLabel lblParametrizationComboBox;
+    /**
+     *
+     */
+    private String previouslySelectedDistributionName = "Exact";
+    
+    
+    private CommentHTMLScrollPane commentPane;
+    
+    private VisualNode visualNode;
+    
+    private Potential lastPotential;
+    
+    private Boolean hasPolicy;
+    
+    /**
+     * Creates the dialog.
+     */
+    public PotentialEditDialog(Window owner, Node node, boolean newElement, boolean readOnly) {
+        super(owner);
+        this.node = node;
+        this.readOnly = readOnly;
+        node.getProbNet().getPNESupport().setWithUndo(true);
+        node.getProbNet().getPNESupport().openParenthesis();
+        initialize();
+        List<Potential> potentials = node.getPotentials();
+        if (!potentials.isEmpty() && potentials.get(0).getComment() != null && !potentials.get(0).getComment()
+                                                                                          .isEmpty()) {
+            commentPane.setCommentHTMLTextPaneText(potentials.get(0).getComment());
+        }
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        Rectangle bounds = owner.getBounds();
+        int width = screenSize.width / 2;
+        int height = screenSize.height / 2;
+        // center point of the owner window
+        int x = bounds.x / 2 - width / 2;
+        int y = bounds.y / 2 - height / 2;
+        this.setBounds(x, y, width, height);
+        setLocationRelativeTo(null);
+        setMinimumSize(new Dimension(width, height / 2));
+        setResizable(true);
+        pack();
+    }
+    
+    /**
+     * Constructor
+     */
+    public PotentialEditDialog(Window owner, Node node, boolean newElement) {
+        this(owner, node, newElement, false);
+    }
+    
+    public PotentialEditDialog(Window owner, VisualNode visualNode, boolean newElement) {
+        this(owner, visualNode.getNode(), newElement, false);
+        this.visualNode = visualNode;
+        
+    }
+    
+    /**
+     * This method configures the dialog box.
+     */
+    private void initialize() {
+        potentialManager = new PotentialManager();
+        // Set default title
+        setTitle("NodePotentialDialog.Title.Label");
+        configureComponentsPanel();
+        pack();
+    }
+    
+    /**
+     * Sets up the panel where all components, except the buttons of the buttons
+     * panel, will be appear.
+     */
+    private void configureComponentsPanel() {
+        getComponentsPanel().setLayout(new BorderLayout(5, 5));
+        // getComponentsPanel().setSize(294, 29);
+        getComponentsPanel().setMaximumSize(new Dimension(180, 40));
+        getComponentsPanel().add(getPotentialTypePanel(), BorderLayout.NORTH);
+        getComponentsPanel().add(getPotentialPanel(), BorderLayout.CENTER);
+        
+        // For univariate
+        if (showUnivariateDistrComboBox()) {
+            getUnivariateDistrJCombobox().setVisible(true);
+            getUnivariateDistrJCombobox().setEnabled(true);
+            getUnivariateDistrParametrizationJCombobox().setVisible(true);
+            getUnivariateDistrParametrizationJCombobox().setEnabled(true);
+        } else {
+            getUnivariateDistrJCombobox().setVisible(false);
+            getUnivariateDistrJCombobox().setEnabled(false);
+            getUnivariateDistrParametrizationJCombobox().setVisible(false);
+            getUnivariateDistrParametrizationJCombobox().setEnabled(false);
+            
+        }
+        
+        if (enableReorderVariableButton()) {
+            getReorderVariablesButton().setVisible(true);
+            getReorderVariablesButton().setEnabled(true);
+        } else {
+            getReorderVariablesButton().setVisible(false);
+            getReorderVariablesButton().setEnabled(false);
+        }
+        getComponentsPanel().add(getCommentPane(), BorderLayout.SOUTH);
+        
+    }
+    
+    /**
+     * @return label for the type of relations or policy
+     */
+    protected JLabel getPotentialTypeJLabel() {
+        if (lblPotentialType == null) {
+            lblPotentialType = new JLabel();
+            lblPotentialType.setName("jLabelRelationType");
+            lblPotentialType.setText("a Label");
+            lblPotentialType.setText(stringDatabase.getString("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
+        }
+        return lblPotentialType;
+    }
+    
+    /**
+     * @return ComboBox with the types of families of relation to be used
+     */
+    protected JComboBox<String> getPotentialTypeJCombobox() {
+        if (potentialTypeComboBox == null) {
+            List<String> filteredPotentialNames = potentialManager.getFilteredPotentials(node);
+            Collections.sort(filteredPotentialNames);
             potentialTypeComboBox = new JComboBox<>(filteredPotentialNames.toArray(new String[0]));
-			String currentPotentialType = node.getPotentials().get(0).getClass().getAnnotation(PotentialType.class).name();
-			// Compute the number of columns of the conditional probability table
-			int tableColumns = 1;
-			for (Node parent: node.getParents()) {
-				tableColumns *= parent.getVariable().getNumStates();
-			}
-			System.out.println(tableColumns);
-			// Show small uniform potentials as table potentials. Saves clicks
-			if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
-				SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Table");
-
-				setPotentialEdit.setInitialChange();
-
+            String currentPotentialType = node.getPotentials()
+                                              .get(0)
+                                              .getClass()
+                                              .getAnnotation(PotentialType.class)
+                                              .name();
+            // Compute the number of columns of the conditional probability table
+            int tableColumns = 1;
+            for (Node parent : node.getParents()) {
+                tableColumns *= parent.getVariable().getNumStates();
             }
-			// Show small uniform potentials as 'Exact' potentials. Saves clicks
-			if (node.getNodeType() == NodeType.UTILITY && currentPotentialType.equals("Uniform") && tableColumns <= 128) {
-
-				SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Uniform");
-
-				setPotentialEdit.setInitialChange();
-
-
-			}
-
-
-			potentialTypeComboBox.setSelectedItem(currentPotentialType);
-			potentialTypeComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
-			potentialTypeComboBox.setName("jComboBoxRelationType");
-			potentialTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
-				@Override public void actionPerformed(java.awt.event.ActionEvent evt) {
-
-					potentialTypeChanged();
-				}
-			});
-
-			potentialTypeComboBox.setEnabled(!readOnly);
-		}
-		return potentialTypeComboBox;
-	}
-
-	/**
-	 * Enables or disables the potential type combo box
-	 *
-	 * @param enable To indicate if the Potential Type combobox should be enabled
-	 */
-	public void setEnabledPotentialTypeCombobox(boolean enable) {
-		getPotentialTypeJCombobox().setEnabled(enable);
-	}
-
-	/**
-	 * Gets the panel that matches the type of potential to be edited
-	 *
-	 * @return the potential panel matching the potential edited.
-	 */
-	private PotentialPanel getPotentialPanel() {
-		if (potentialPanel == null) {
-			String potentialName = (String) potentialTypeComboBox.getSelectedItem();
-			String potentialFamily = potentialManager.getPotentialsFamily(potentialName);
-			//Adaptation to deal with ExactDistrPotential too
-			if (potentialName.equals("Exact")) {
-				potentialPanel = PotentialPanelManager.getInstance()
-						.getPotentialPanel("Table", potentialManager.getPotentialsFamily("Table"), node);
-
-			} else
-				potentialPanel = PotentialPanelManager.getInstance()
-						.getPotentialPanel(potentialName, potentialFamily, node);
+            System.out.println(tableColumns);
+            // Show small uniform potentials as table potentials. Saves clicks
+            if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
+                SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Table");
+                
+                setPotentialEdit.setInitialChange();
+                
+            }
+            // Show small uniform potentials as 'Exact' potentials. Saves clicks
+            if (node.getNodeType() == NodeType.UTILITY && currentPotentialType.equals("Uniform") && tableColumns <= 128) {
+                
+                SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Uniform");
+                
+                setPotentialEdit.setInitialChange();
+                
+                
+            }
+            
+            
+            potentialTypeComboBox.setSelectedItem(currentPotentialType);
+            potentialTypeComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
+            potentialTypeComboBox.setName("jComboBoxRelationType");
+            potentialTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    
+                    potentialTypeChanged();
+                }
+            });
+            
+            potentialTypeComboBox.setEnabled(!readOnly);
+        }
+        return potentialTypeComboBox;
+    }
+    
+    /**
+     * Enables or disables the potential type combo box
+     *
+     * @param enable To indicate if the Potential Type combobox should be enabled
+     */
+    public void setEnabledPotentialTypeCombobox(boolean enable) {
+        getPotentialTypeJCombobox().setEnabled(enable);
+    }
+    
+    /**
+     * Gets the panel that matches the type of potential to be edited
+     *
+     * @return the potential panel matching the potential edited.
+     */
+    private PotentialPanel getPotentialPanel() {
+        if (potentialPanel == null) {
+            String potentialName = (String) potentialTypeComboBox.getSelectedItem();
+            String potentialFamily = potentialManager.getPotentialsFamily(potentialName);
+            //Adaptation to deal with ExactDistrPotential too
+            if (potentialName.equals("Exact")) {
+                potentialPanel = PotentialPanelManager.getInstance()
+                                                      .getPotentialPanel("Table", potentialManager.getPotentialsFamily("Table"), node);
+                
+            } else
+                potentialPanel = PotentialPanelManager.getInstance()
+                                                      .getPotentialPanel(potentialName, potentialFamily, node);
 
            
             /*
@@ -316,482 +308,474 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                                                                                      potentialFamily,
                                                                                      node);
             */
-			potentialPanel.setReadOnly(readOnly);
-			potentialPanel.suscribePanelResizeEventListener(this);
-		}
-		return potentialPanel;
-	}
-
-	@Override public void setTitle(String title) {
-		String nodeName = (node == null) ? "" : node.getName();
-		super.setTitle(stringDatabase.getString(title) + ": " + nodeName);
-	}
-
-	/**
-	 * @return An integer indicating the button clicked by the user when closing
-	 * this dialog
-	 */
-	public int requestValues() {
-		// Shows the potentials' options table
-		if (node.getNodeType() == NodeType.DECISION && node.getPolicyType() == PolicyType.OPTIMAL && readOnly) {
-			setEnabledDecisionOptions(true);
-		} else {
-			showFields(node);
-		}
-		setVisible(true);
-		return selectedButton;
-	}
-
-	/**
-	 * This method fills the content of the fields from a Node object. In
-	 * this method, when Elvira will be discontinued, the code for
-	 * discriminating discrete and discretized variables must be eliminated
-	 *
-	 * @param node object from where load the information.
-	 */
-	// TODO Remove all this
-	private void showFields(Node node) {
-		// The element order in PotentialType object are same that
-		// JComboBoxRelationType
-		previouslySelectedPotentialType = node.getPotentials().get(0).getClass().getAnnotation(PotentialType.class)
-				.name();
-		getPotentialTypeJCombobox().setSelectedItem(previouslySelectedPotentialType);
-		updatePotentialPanel();
-		// Elvira do not distinguish between DISCRETE and DISCRETIZED
-		// so here we will see if there are intervals in the states
-		if (Util.hasLimitBracketSymbols(node.getVariable().getStates()) && (
-				node.getVariable().getVariableType() == VariableType.FINITE_STATES
-		)) {
-			// really DISCRETIZED, so change the value of the VariableType
-			node.getVariable().setVariableType(VariableType.DISCRETIZED);
-		}
-		// set the nodeProperties variable in this dialog and panels
-		this.node = node;
-		// *******
-		getPotentialPanel().setData(node);
-	}
-
-	/**
-	 * @return The panel that indicates the type of the table (and perhaps the
-	 * type of policy (optimal or imposed))
-	 */
-	protected JPanel getPotentialTypePanel() {
-		if (potentialTypePanel == null) {
-			potentialTypePanel = new JPanel();
-			// jPanelRelationTableType.setBorder( new LineBorder( UIManager
-			// .getColor( "List.dropLineColor" ), 1, false ) );
-			potentialTypePanel.setLayout(new FlowLayout());
-			potentialTypePanel.setSize(294, 29);
-			potentialTypePanel.setName("potentialTypePanel");
-			potentialTypePanel.add(getPotentialTypeJLabel());
-			potentialTypePanel.add(getPotentialTypeJCombobox());
-			//For Univariate
-			potentialTypePanel.add(getUnivariateDistrTypeJLabel());
-			potentialTypePanel.add(getUnivariateDistrJCombobox());
-			potentialTypePanel.add(getParametrizationComboBoxJLabel());
-			potentialTypePanel.add(getUnivariateDistrParametrizationJCombobox());
-			potentialTypePanel.add(getReorderVariablesButton());
-			// potentialTypePanel.add( getPoliticyTypePanel() );
-			// /getPoliticyTypePanel().setVisible(false);
-			// getPotentialPanel().setEnabled(false);
-		}
-		return potentialTypePanel;
-	}
-
-	//For Univariate
-
-	/**
-	 * @return label for the type of relations or policy
-	 */
-	protected JLabel getUnivariateDistrTypeJLabel() {
-		if (lblUnivariateDistrComboBox == null) {
-			lblUnivariateDistrComboBox = new JLabel();
-			lblUnivariateDistrComboBox.setName("jLabelDistrType");
-			lblUnivariateDistrComboBox.setText("Distribution");
-			//TODO
-			//lblDistrType.setText (stringDatabase.getValuesInAString ("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
-		}
-		return lblUnivariateDistrComboBox;
-	}
-
-	private boolean showUnivariateDistrComboBox() {
-		boolean enable = false;
-		// We retrieve the necessary data from the node
-
-		if (getPotentialPanel() instanceof UnivariateDistrPotentialPanel) {
-			ProbDensFunctionManager probDensFunctionManager = ProbDensFunctionManager.getUniqueInstance();
-			List<String> distributionUnivariateNames = probDensFunctionManager.getDistributions();
-			Collections.sort(distributionUnivariateNames);
-			univariateDistrComboBox
-					.setModel(new DefaultComboBoxModel<String>(distributionUnivariateNames.toArray(new String[0])));
-			String univariateName = ((UnivariateDistrPotential) (node.getPotentials().get(0)))
-					.getProbDensFunctionUnivariateName();
-			univariateDistrComboBox.setSelectedItem(univariateName);
-			enable = true;
-		}
-		// Finally, the value of enable is returned
-		return enable;
-	}
-
-	/**
-	 * @return The univariate distribution JComboBox
-	 */
-	protected JComboBox<String> getUnivariateDistrJCombobox() {
-
-		if (univariateDistrComboBox == null) {
-
-			univariateDistrComboBox = new JComboBox<String>();
-			univariateDistrComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
-			univariateDistrComboBox.setName("jComboBoxDistr");
-			univariateDistrComboBox.addActionListener(new java.awt.event.ActionListener() {
-				@Override public void actionPerformed(java.awt.event.ActionEvent evt) {
-					String univariateName = (String) univariateDistrComboBox.getSelectedItem();
-					showUnivariateDistrParametrizationComboBox(univariateName);
-				}
-			});
-			univariateDistrComboBox.setEnabled(!readOnly);
-		}
-		return univariateDistrComboBox;
-
-	}
-
-	/**
-	 * @return The univariate distribution parametrization JComboBox
-	 */
-	protected JComboBox<String> getUnivariateDistrParametrizationJCombobox() {
-
-		if (univariateDistrParametrizationComboBox == null) {
-
-			univariateDistrParametrizationComboBox = new JComboBox<String>();
-			univariateDistrParametrizationComboBox
-					.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
-			univariateDistrParametrizationComboBox.setName("jComboBoxParametrization");
-			univariateDistrParametrizationComboBox.addActionListener(new java.awt.event.ActionListener() {
-				@Override public void actionPerformed(java.awt.event.ActionEvent evt) {
-					distributionChanged();
-				}
-			});
-			univariateDistrParametrizationComboBox.setEnabled(!readOnly);
-		}
-		return univariateDistrParametrizationComboBox;
-
-	}
-
-	protected void distributionChanged() {
-
-		String distributionUnivariateName = (String) univariateDistrComboBox.getSelectedItem();
-		String distributionParameters = (String) univariateDistrParametrizationComboBox.getSelectedItem();
-		//When we are changing the distribution the first value should be selected
-
-		String distributionName = ProbDensFunctionManager.getUniqueInstance()
-				.getDistributionName(distributionUnivariateName, distributionParameters);
-		if (!previouslySelectedDistributionName.equals(distributionName)) {
-
-			AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, distributionName);
-			try {
-				ProbNet probNet = node.getProbNet();
-				nodePotentialEdit.doEdit(probNet);
-			} catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e1) {
-				e1.printStackTrace();
-			}
-			updatePotentialPanel();
-			previouslySelectedDistributionName = distributionName;
-
-		}
-
-	}
-
-	/**
-	 * @return The parametrization ComboBox JLabel
-	 */
-	protected JLabel getParametrizationComboBoxJLabel() {
-		if (lblParametrizationComboBox == null) {
-			lblParametrizationComboBox = new JLabel();
-			lblParametrizationComboBox.setName("jLabelDistrType");
-			lblParametrizationComboBox.setText("Parametrization");
-			//TODO
-			//lblParametrizationComboBox.setText (stringDatabase.getValuesInAString ("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
-		}
-		return lblParametrizationComboBox;
-	}
-
-	/**
-	 * @return True iff it is enabled
-	 */
-	private boolean showUnivariateDistrParametrizationComboBox(String univariateName) {
-		boolean enable = false;
-		// We retrieve the necessary data from the node
-		//UNCLEAR this if is Necessary??
-		ProbDensFunctionManager probDensFunctionManager = ProbDensFunctionManager.getUniqueInstance();
-		List<String[]> parametrizationDataList = probDensFunctionManager.getParametrizations(univariateName);
-		List<String> parametrizationNames = new ArrayList<String>();
-		for (String[] parametrizationData : parametrizationDataList) {
-			parametrizationNames.add(parametrizationData[0]);
-		}
-		Collections.sort(parametrizationNames);
-		univariateDistrParametrizationComboBox
-				.setModel(new DefaultComboBoxModel<String>(parametrizationNames.toArray(new String[0])));
-		String parametrizationName;
-		if (!univariateName
-				.equals(((UnivariateDistrPotential) node.getPotentials().get(0)).getProbDensFunctionUnivariateName())) {
-			parametrizationName = parametrizationNames.get(0);
-		} else {
-			parametrizationName = ((UnivariateDistrPotential) node.getPotentials().get(0))
-					.getProbDensFunctionParametrizationName();
-		}
-
-		univariateDistrParametrizationComboBox.setSelectedItem(parametrizationName);
-		enable = true;
-		// Finally, the value of enable is returned
-		return enable;
-	}
-
-
-	/**
-	 * @return The panel that indicates the type of the table (and perhaps the
-	 * type of policy (optimal or imposed))
-	 */
-	protected JButton getReorderVariablesButton() {
-		if (reorderVariablesButton == null) {
-			reorderVariablesButton = new JButton(stringDatabase.getString("PotentialEditDialog.ReorderVariables.Text"));
-			reorderVariablesButton.setName("reorderVariablesButton");
-			// reorderVariablesButton.setVisible(false);
-			reorderVariablesButton.addActionListener(this);
-		}
-		return reorderVariablesButton;
-	}
-
-	/**
-	 * This method initializes getCommentPane
-	 *
-	 * @return a new comment HTML scroll pane.
-	 */
-	private CommentHTMLScrollPane getCommentPane() {
-
-		if (commentPane == null) {
-			commentPane = new CommentHTMLScrollPane();
-			commentPane.setName("commentPane");
-			commentPane.setPreferredSize(new Dimension(10, 30));
-		}
-		return commentPane;
-	}
-
-	/**
-	 * @return PolicyTypePanel with three radio buttons with the types of
-	 * policy: optimal, deterministic, or probabilistic
-	 */
-	protected PolicyTypePanel getPoliticyTypePanel() {
-		if (pnlPolicyType == null) {
-			pnlPolicyType = new PolicyTypePanel(this, node);
-		}
-		return pnlPolicyType;
-	}
-
-	protected void potentialTypeChanged() {
-		String potentialType = (String) potentialTypeComboBox.getSelectedItem();
-		lastPotential = node.getPotentials().get(0);
-		if (node.getNodeType() == NodeType.DECISION)
-			hasPolicy = ((VisualDecisionNode)visualNode).isHasPolicy();
-		if (!previouslySelectedPotentialType.equals(potentialType)) {
-			SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, potentialType,lastPotential,hasPolicy,(VisualDecisionNode)visualNode);
-			setPotentialEdit.setPotential();
-
-			updatePotentialPanel();
-			previouslySelectedPotentialType = potentialType;
-			optionPreviouslySelected = potentialTypeComboBox.getSelectedIndex();
-			getComponentsPanel().add(getPotentialPanel(), BorderLayout.CENTER);
-			getComponentsPanel().updateUI();
-			getComponentsPanel().repaint();
-			this.repaint();
-			this.pack();
-
-		}
-	}
-
-	/**
-	 * This method carries out the actions when the user presses the OK button
-	 * before hiding the dialog.
-	 *
-	 * @return true if all the fields are correct.
-	 */
-	@Override protected boolean doOkClickBeforeHide() {
-		if (getPotentialPanel() instanceof TablePotentialPanel) {
-			((TablePotentialPanel) getPotentialPanel()).getValuesTable().stopCellEditing();
-		}
-		if (getPotentialPanel() instanceof ICIPotentialsTablePanel) {
-			((ICIPotentialsTablePanel) getPotentialPanel()).getICIValuesTable().stopCellEditing();
-		}
-		getPotentialPanel().saveChanges();
-		if (commentPane.isChanged()) {
-			// check if the comment is empty
-			String comment = commentPane.isEmpty() ? "" : commentPane.getCommentText();
-			node.getPotentials().get(0).setComment(comment);
-		}
-
-		SetPotentialEdit setPotentialEdit = null;
-		if(node.getNodeType() == NodeType.DECISION){
-			setPotentialEdit = new SetPotentialEdit(node,lastPotential, node.getPotential(),hasPolicy,(VisualDecisionNode)visualNode);
-		}else{
-			setPotentialEdit = new SetPotentialEdit(node,lastPotential,node.getPotential());
-		}
-
-
-		try {
-			ProbNet probNet = node.getProbNet();
-			setPotentialEdit.doEdit(probNet);
-		} catch (DoEditException.ConstraintViolated e){
-			e.printStackTrace();
-		}
-		node.finalizePotentialEdition();
-
-		node.getProbNet().getPNESupport().closeParenthesis();
-		return true;
-	}
-
-	@Override protected void doCancelClickBeforeHide() {
-		getPotentialPanel().close();
-		node.getProbNet().getPNESupport().closeParenthesis();
-	}
-
-	/**
-	 * Update potential panel
-	 */
-	public void updatePotentialPanel() {
-		getComponentsPanel().remove(getPotentialPanel());
-		potentialPanel.close();
-		potentialPanel = null;
-		// For Univariate
-		if (showUnivariateDistrComboBox()) {
-			getUnivariateDistrTypeJLabel().setVisible(true);
-			getUnivariateDistrJCombobox().setVisible(true);
-			getUnivariateDistrJCombobox().setEnabled(true);
-			getParametrizationComboBoxJLabel().setVisible(true);
-			getUnivariateDistrParametrizationJCombobox().setVisible(true);
-			getUnivariateDistrParametrizationJCombobox().setEnabled(true);
-		} else {
-			getUnivariateDistrTypeJLabel().setVisible(false);
-			getUnivariateDistrJCombobox().setVisible(false);
-			getUnivariateDistrJCombobox().setEnabled(false);
-
-			getParametrizationComboBoxJLabel().setVisible(false);
-			getUnivariateDistrParametrizationJCombobox().setVisible(false);
-			getUnivariateDistrParametrizationJCombobox().setEnabled(false);
-
-		}
-
-		if (enableReorderVariableButton()) {
-			getReorderVariablesButton().setVisible(true);
-			getReorderVariablesButton().setEnabled(true);
-		} else {
-			getReorderVariablesButton().setVisible(false);
-			getReorderVariablesButton().setEnabled(false);
-		}
-
-		getComponentsPanel().add(getPotentialPanel(), BorderLayout.CENTER);
-		getComponentsPanel().updateUI();
-		getComponentsPanel().repaint();
-		this.repaint();
-		this.pack();
-	}
-
-	/**
-	 * Shows and activates the options related to decision policy
-	 *
-	 * @param show To indicate whether the options have to be shown and enabled or not
-	 */
-	private void setEnabledDecisionOptions(boolean show) {
-		if (show) {
-			switch (node.getPolicyType()) {
-			case OPTIMAL:
-				getPotentialTypeJCombobox().setEnabled(false);
-				break;
-			case DETERMINISTIC:
-				getPotentialTypeJCombobox().setEnabled(false);
-				break;
-			case PROBABILISTIC:
-				Potential potential = node.getPotentials().get(0);
-				// TODO definir el comportamiento para los demás tipos de potenciales
-				if (potential instanceof UniformPotential || potential instanceof TablePotential) {
-					getPotentialTypeJCombobox()
-							.setSelectedItem(potential.getClass().getAnnotation(PotentialType.class).name());
-					// getJComboBoxRelationType().setEnabled(false);
-				}
-				break;
-			}
-		}
-		getPoliticyTypePanel().setEnabledDecisionOptions(show);
-	}
-
-	public void revertPotentialTypeChange() {
-		getPotentialTypeJCombobox().setSelectedIndex(optionPreviouslySelected);
-	}
-
-	/**
-	 * @return the readOnly
-	 */
-	public boolean isReadOnly() {
-		return readOnly;
-	}
-
-	@Override public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(reorderVariablesButton)) {
-			actionPerformedReorderVariables();
-		}
-	}
-
-	protected void actionPerformedReorderVariables() {
-		ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, node);
-		if (reorderVariablesDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
-			List<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel().getVariables();
-			PotentialPanel potentialPanelForAction = getPotentialPanel();
-			Potential nodePotential = node.getPotentials().get(0);
-			if (potentialPanelForAction instanceof UnivariateDistrPotentialPanel
-					|| potentialPanelForAction instanceof AugmentedTablePotentialPanel
-					|| potentialPanelForAction instanceof TablePotentialPanel) {
-				Potential potential = nodePotential.reorder(newVariables);
-				SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
-				try {
-					ProbNet probNet = node.getProbNet();
-					potentialEdit.doEdit(probNet);
-				} catch (DoEditException.ConstraintViolated e) {
-					e.printStackTrace();
-				}
-				updatePotentialPanel();
-
-			} else if (potentialPanelForAction instanceof ICIPotentialsTablePanel) {
-				SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(node, newVariables);
-				try {
-					ProbNet probNet = node.getProbNet();
-					setPotentialVariables.doEdit(probNet);
-				} catch (DoEditException.ConstraintViolated e) {
-					e.printStackTrace();
-				}
-				updatePotentialPanel();
-			}
-		}
-	}
-
-	@Override public void panelSizeChanged(PanelResizeEvent event) {
-		pack();
-		repaint();
-	}
-
-	/**
-	 * This method computes if reorderVariableButton should be enabled
-	 *
-	 * @return true if the ReorderVariableButton should be enabled
-	 */
-	private boolean enableReorderVariableButton() {
-		boolean enable = false;
-		// We retrieve the necessary data from the node
-		Potential potential = node.getPotentials().get(0);
-		int numPotentialVariables = potential.getNumVariables();
-
-		if ((numPotentialVariables > 2) && getPotentialPanel() instanceof ProbabilityTablePanel) {
-			enable = true;
-		}
-		// Finally, the value of enable is returned
-		return enable;
-	}
-
+            potentialPanel.setReadOnly(readOnly);
+            potentialPanel.suscribePanelResizeEventListener(this);
+        }
+        return potentialPanel;
+    }
+    
+    @Override public void setTitle(String title) {
+        String nodeName = (node == null) ? "" : node.getName();
+        super.setTitle(stringDatabase.getString(title) + ": " + nodeName);
+    }
+    
+    /**
+     * @return An integer indicating the button clicked by the user when closing
+     * this dialog
+     */
+    public int requestValues() {
+        // Shows the potentials' options table
+        if (node.getNodeType() == NodeType.DECISION && node.getPolicyType() == PolicyType.OPTIMAL && readOnly) {
+            setEnabledDecisionOptions(true);
+        } else {
+            showFields(node);
+        }
+        setVisible(true);
+        return selectedButton;
+    }
+    
+    /**
+     * This method fills the content of the fields from a Node object. In
+     * this method, when Elvira will be discontinued, the code for
+     * discriminating discrete and discretized variables must be eliminated
+     *
+     * @param node object from where load the information.
+     */
+    // TODO Remove all this
+    private void showFields(Node node) {
+        // The element order in PotentialType object are same that
+        // JComboBoxRelationType
+        previouslySelectedPotentialType = node.getPotentials().get(0).getClass().getAnnotation(PotentialType.class)
+                                              .name();
+        getPotentialTypeJCombobox().setSelectedItem(previouslySelectedPotentialType);
+        updatePotentialPanel();
+        // Elvira do not distinguish between DISCRETE and DISCRETIZED
+        // so here we will see if there are intervals in the states
+        if (Util.hasLimitBracketSymbols(node.getVariable().getStates()) && (
+                node.getVariable().getVariableType() == VariableType.FINITE_STATES
+        )) {
+            // really DISCRETIZED, so change the value of the VariableType
+            node.getVariable().setVariableType(VariableType.DISCRETIZED);
+        }
+        // set the nodeProperties variable in this dialog and panels
+        this.node = node;
+        // *******
+        getPotentialPanel().setData(node);
+    }
+    
+    /**
+     * @return The panel that indicates the type of the table (and perhaps the
+     * type of policy (optimal or imposed))
+     */
+    protected JPanel getPotentialTypePanel() {
+        if (potentialTypePanel == null) {
+            potentialTypePanel = new JPanel();
+            // jPanelRelationTableType.setBorder( new LineBorder( UIManager
+            // .getColor( "List.dropLineColor" ), 1, false ) );
+            potentialTypePanel.setLayout(new FlowLayout());
+            potentialTypePanel.setSize(294, 29);
+            potentialTypePanel.setName("potentialTypePanel");
+            potentialTypePanel.add(getPotentialTypeJLabel());
+            potentialTypePanel.add(getPotentialTypeJCombobox());
+            //For Univariate
+            potentialTypePanel.add(getUnivariateDistrTypeJLabel());
+            potentialTypePanel.add(getUnivariateDistrJCombobox());
+            potentialTypePanel.add(getParametrizationComboBoxJLabel());
+            potentialTypePanel.add(getUnivariateDistrParametrizationJCombobox());
+            potentialTypePanel.add(getReorderVariablesButton());
+            // potentialTypePanel.add( getPoliticyTypePanel() );
+            // /getPoliticyTypePanel().setVisible(false);
+            // getPotentialPanel().setEnabled(false);
+        }
+        return potentialTypePanel;
+    }
+    
+    //For Univariate
+    
+    /**
+     * @return label for the type of relations or policy
+     */
+    protected JLabel getUnivariateDistrTypeJLabel() {
+        if (lblUnivariateDistrComboBox == null) {
+            lblUnivariateDistrComboBox = new JLabel();
+            lblUnivariateDistrComboBox.setName("jLabelDistrType");
+            lblUnivariateDistrComboBox.setText("Distribution");
+            //TODO
+            //lblDistrType.setText (stringDatabase.getValuesInAString ("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
+        }
+        return lblUnivariateDistrComboBox;
+    }
+    
+    private boolean showUnivariateDistrComboBox() {
+        boolean enable = false;
+        // We retrieve the necessary data from the node
+        
+        if (getPotentialPanel() instanceof UnivariateDistrPotentialPanel) {
+            ProbDensFunctionManager probDensFunctionManager = ProbDensFunctionManager.getUniqueInstance();
+            List<String> distributionUnivariateNames = probDensFunctionManager.getDistributions();
+            Collections.sort(distributionUnivariateNames);
+            univariateDistrComboBox
+                    .setModel(new DefaultComboBoxModel<String>(distributionUnivariateNames.toArray(new String[0])));
+            String univariateName = ((UnivariateDistrPotential) (node.getPotentials().get(0)))
+                    .getProbDensFunctionUnivariateName();
+            univariateDistrComboBox.setSelectedItem(univariateName);
+            enable = true;
+        }
+        // Finally, the value of enable is returned
+        return enable;
+    }
+    
+    /**
+     * @return The univariate distribution JComboBox
+     */
+    protected JComboBox<String> getUnivariateDistrJCombobox() {
+        
+        if (univariateDistrComboBox == null) {
+            
+            univariateDistrComboBox = new JComboBox<String>();
+            univariateDistrComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
+            univariateDistrComboBox.setName("jComboBoxDistr");
+            univariateDistrComboBox.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    String univariateName = (String) univariateDistrComboBox.getSelectedItem();
+                    showUnivariateDistrParametrizationComboBox(univariateName);
+                }
+            });
+            univariateDistrComboBox.setEnabled(!readOnly);
+        }
+        return univariateDistrComboBox;
+        
+    }
+    
+    /**
+     * @return The univariate distribution parametrization JComboBox
+     */
+    protected JComboBox<String> getUnivariateDistrParametrizationJCombobox() {
+        
+        if (univariateDistrParametrizationComboBox == null) {
+            
+            univariateDistrParametrizationComboBox = new JComboBox<String>();
+            univariateDistrParametrizationComboBox
+                    .setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
+            univariateDistrParametrizationComboBox.setName("jComboBoxParametrization");
+            univariateDistrParametrizationComboBox.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    distributionChanged();
+                }
+            });
+            univariateDistrParametrizationComboBox.setEnabled(!readOnly);
+        }
+        return univariateDistrParametrizationComboBox;
+        
+    }
+    
+    protected void distributionChanged() {
+        
+        String distributionUnivariateName = (String) univariateDistrComboBox.getSelectedItem();
+        String distributionParameters = (String) univariateDistrParametrizationComboBox.getSelectedItem();
+        //When we are changing the distribution the first value should be selected
+        
+        String distributionName = ProbDensFunctionManager.getUniqueInstance()
+                                                         .getDistributionName(distributionUnivariateName, distributionParameters);
+        if (!previouslySelectedDistributionName.equals(distributionName)) {
+            
+            AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, distributionName);
+            try {
+                ProbNet probNet = node.getProbNet();
+                nodePotentialEdit.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e1) {
+                e1.printStackTrace();
+            }
+            updatePotentialPanel();
+            previouslySelectedDistributionName = distributionName;
+            
+        }
+        
+    }
+    
+    /**
+     * @return The parametrization ComboBox JLabel
+     */
+    protected JLabel getParametrizationComboBoxJLabel() {
+        if (lblParametrizationComboBox == null) {
+            lblParametrizationComboBox = new JLabel();
+            lblParametrizationComboBox.setName("jLabelDistrType");
+            lblParametrizationComboBox.setText("Parametrization");
+            //TODO
+            //lblParametrizationComboBox.setText (stringDatabase.getValuesInAString ("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
+        }
+        return lblParametrizationComboBox;
+    }
+    
+    /**
+     * @return True iff it is enabled
+     */
+    private boolean showUnivariateDistrParametrizationComboBox(String univariateName) {
+        // We retrieve the necessary data from the node
+        //UNCLEAR this if is Necessary??
+        ProbDensFunctionManager probDensFunctionManager = ProbDensFunctionManager.getUniqueInstance();
+        List<String[]> parametrizationDataList = probDensFunctionManager.getParametrizations(univariateName);
+        List<String> parametrizationNames = new ArrayList<String>();
+        for (String[] parametrizationData : parametrizationDataList) {
+            parametrizationNames.add(parametrizationData[0]);
+        }
+        Collections.sort(parametrizationNames);
+        univariateDistrParametrizationComboBox
+                .setModel(new DefaultComboBoxModel<String>(parametrizationNames.toArray(new String[0])));
+        String parametrizationName;
+        if (!univariateName
+                .equals(((UnivariateDistrPotential) node.getPotentials().get(0)).getProbDensFunctionUnivariateName())) {
+            parametrizationName = parametrizationNames.get(0);
+        } else {
+            parametrizationName = ((UnivariateDistrPotential) node.getPotentials().get(0))
+                    .getProbDensFunctionParametrizationName();
+        }
+        
+        univariateDistrParametrizationComboBox.setSelectedItem(parametrizationName);
+        return true;
+    }
+    
+    
+    /**
+     * @return The panel that indicates the type of the table (and perhaps the
+     * type of policy (optimal or imposed))
+     */
+    protected JButton getReorderVariablesButton() {
+        if (reorderVariablesButton == null) {
+            reorderVariablesButton = new JButton(stringDatabase.getString("PotentialEditDialog.ReorderVariables.Text"));
+            reorderVariablesButton.setName("reorderVariablesButton");
+            // reorderVariablesButton.setVisible(false);
+            reorderVariablesButton.addActionListener(this);
+        }
+        return reorderVariablesButton;
+    }
+    
+    /**
+     * This method initializes getCommentPane
+     *
+     * @return a new comment HTML scroll pane.
+     */
+    private CommentHTMLScrollPane getCommentPane() {
+        
+        if (commentPane == null) {
+            commentPane = new CommentHTMLScrollPane();
+            commentPane.setName("commentPane");
+            commentPane.setPreferredSize(new Dimension(10, 30));
+        }
+        return commentPane;
+    }
+    
+    /**
+     * @return PolicyTypePanel with three radio buttons with the types of
+     * policy: optimal, deterministic, or probabilistic
+     */
+    protected PolicyTypePanel getPoliticyTypePanel() {
+        if (pnlPolicyType == null) {
+            pnlPolicyType = new PolicyTypePanel(this, node);
+        }
+        return pnlPolicyType;
+    }
+    
+    protected void potentialTypeChanged() {
+        String potentialType = (String) potentialTypeComboBox.getSelectedItem();
+        lastPotential = node.getPotentials().get(0);
+        if (node.getNodeType() == NodeType.DECISION)
+            hasPolicy = ((VisualDecisionNode) visualNode).isHasPolicy();
+        if (!previouslySelectedPotentialType.equals(potentialType)) {
+            SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, potentialType, lastPotential, hasPolicy, (VisualDecisionNode) visualNode);
+            setPotentialEdit.setPotential();
+            
+            updatePotentialPanel();
+            previouslySelectedPotentialType = potentialType;
+            optionPreviouslySelected = potentialTypeComboBox.getSelectedIndex();
+            getComponentsPanel().add(getPotentialPanel(), BorderLayout.CENTER);
+            getComponentsPanel().updateUI();
+            getComponentsPanel().repaint();
+            this.repaint();
+            this.pack();
+            
+        }
+    }
+    
+    /**
+     * This method carries out the actions when the user presses the OK button
+     * before hiding the dialog.
+     *
+     * @return true if all the fields are correct.
+     */
+    @Override protected boolean doOkClickBeforeHide() {
+        if (getPotentialPanel() instanceof TablePotentialPanel) {
+            ((TablePotentialPanel) getPotentialPanel()).getValuesTable().stopCellEditing();
+        }
+        if (getPotentialPanel() instanceof ICIPotentialsTablePanel) {
+            ((ICIPotentialsTablePanel) getPotentialPanel()).getICIValuesTable().stopCellEditing();
+        }
+        getPotentialPanel().saveChanges();
+        if (commentPane.isChanged()) {
+            // check if the comment is empty
+            String comment = commentPane.isEmpty() ? "" : commentPane.getCommentText();
+            node.getPotentials().get(0).setComment(comment);
+        }
+        
+        SetPotentialEdit setPotentialEdit;
+        if (node.getNodeType() == NodeType.DECISION) {
+            setPotentialEdit = new SetPotentialEdit(node, lastPotential, node.getPotential(), hasPolicy, (VisualDecisionNode) visualNode);
+        } else {
+            setPotentialEdit = new SetPotentialEdit(node, lastPotential, node.getPotential());
+        }
+        
+        
+        try {
+            ProbNet probNet = node.getProbNet();
+            setPotentialEdit.doEdit(probNet);
+        } catch (DoEditException.ConstraintViolated e) {
+            e.printStackTrace();
+        }
+        node.finalizePotentialEdition();
+        
+        node.getProbNet().getPNESupport().closeParenthesis();
+        return true;
+    }
+    
+    @Override protected void doCancelClickBeforeHide() {
+        getPotentialPanel().close();
+        node.getProbNet().getPNESupport().closeParenthesis();
+    }
+    
+    /**
+     * Update potential panel
+     */
+    public void updatePotentialPanel() {
+        getComponentsPanel().remove(getPotentialPanel());
+        potentialPanel.close();
+        potentialPanel = null;
+        // For Univariate
+        if (showUnivariateDistrComboBox()) {
+            getUnivariateDistrTypeJLabel().setVisible(true);
+            getUnivariateDistrJCombobox().setVisible(true);
+            getUnivariateDistrJCombobox().setEnabled(true);
+            getParametrizationComboBoxJLabel().setVisible(true);
+            getUnivariateDistrParametrizationJCombobox().setVisible(true);
+            getUnivariateDistrParametrizationJCombobox().setEnabled(true);
+        } else {
+            getUnivariateDistrTypeJLabel().setVisible(false);
+            getUnivariateDistrJCombobox().setVisible(false);
+            getUnivariateDistrJCombobox().setEnabled(false);
+            
+            getParametrizationComboBoxJLabel().setVisible(false);
+            getUnivariateDistrParametrizationJCombobox().setVisible(false);
+            getUnivariateDistrParametrizationJCombobox().setEnabled(false);
+            
+        }
+        
+        if (enableReorderVariableButton()) {
+            getReorderVariablesButton().setVisible(true);
+            getReorderVariablesButton().setEnabled(true);
+        } else {
+            getReorderVariablesButton().setVisible(false);
+            getReorderVariablesButton().setEnabled(false);
+        }
+        
+        getComponentsPanel().add(getPotentialPanel(), BorderLayout.CENTER);
+        getComponentsPanel().updateUI();
+        getComponentsPanel().repaint();
+        this.repaint();
+        this.pack();
+    }
+    
+    /**
+     * Shows and activates the options related to decision policy
+     *
+     * @param show To indicate whether the options have to be shown and enabled or not
+     */
+    private void setEnabledDecisionOptions(boolean show) {
+        if (show) {
+            switch (node.getPolicyType()) {
+                case OPTIMAL, DETERMINISTIC:
+                    getPotentialTypeJCombobox().setEnabled(false);
+                    break;
+                case PROBABILISTIC:
+                    Potential potential = node.getPotentials().get(0);
+                    // TODO definir el comportamiento para los demás tipos de potenciales
+                    if (potential instanceof UniformPotential || potential instanceof TablePotential) {
+                        getPotentialTypeJCombobox()
+                                .setSelectedItem(potential.getClass().getAnnotation(PotentialType.class).name());
+                        // getJComboBoxRelationType().setEnabled(false);
+                    }
+                    break;
+            }
+        }
+        getPoliticyTypePanel().setEnabledDecisionOptions(show);
+    }
+    
+    public void revertPotentialTypeChange() {
+        getPotentialTypeJCombobox().setSelectedIndex(optionPreviouslySelected);
+    }
+    
+    /**
+     * @return the readOnly
+     */
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+    
+    @Override public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals(reorderVariablesButton)) {
+            actionPerformedReorderVariables();
+        }
+    }
+    
+    protected void actionPerformedReorderVariables() {
+        ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, node);
+        if (reorderVariablesDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
+            List<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel().getVariables();
+            PotentialPanel potentialPanelForAction = getPotentialPanel();
+            Potential nodePotential = node.getPotentials().get(0);
+            if (potentialPanelForAction instanceof TablePotentialPanel) {
+                Potential potential = nodePotential.reorder(newVariables);
+                SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
+                try {
+                    ProbNet probNet = node.getProbNet();
+                    potentialEdit.doEdit(probNet);
+                } catch (DoEditException.ConstraintViolated e) {
+                    e.printStackTrace();
+                }
+                updatePotentialPanel();
+                
+            } else if (potentialPanelForAction instanceof ICIPotentialsTablePanel) {
+                SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(node, newVariables);
+                try {
+                    ProbNet probNet = node.getProbNet();
+                    setPotentialVariables.doEdit(probNet);
+                } catch (DoEditException.ConstraintViolated e) {
+                    e.printStackTrace();
+                }
+                updatePotentialPanel();
+            }
+        }
+    }
+    
+    @Override public void panelSizeChanged(PanelResizeEvent event) {
+        pack();
+        repaint();
+    }
+    
+    /**
+     * This method computes if reorderVariableButton should be enabled
+     *
+     * @return true if the ReorderVariableButton should be enabled
+     */
+    private boolean enableReorderVariableButton() {
+        boolean enable = false;
+        // We retrieve the necessary data from the node
+        Potential potential = node.getPotentials().get(0);
+        int numPotentialVariables = potential.getNumVariables();
+        
+        if ((numPotentialVariables > 2) && getPotentialPanel() instanceof ProbabilityTablePanel) {
+            enable = true;
+        }
+        // Finally, the value of enable is returned
+        return enable;
+    }
+    
 }

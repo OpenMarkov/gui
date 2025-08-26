@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.io.format.annotation.FormatManager;
+import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
@@ -41,8 +42,7 @@ import java.util.List;
 				formatManager.getWriters();
 		List<String> extensionList = new ArrayList<String>();
 		// for (String item : parsersListForFilters.keySet ())
-		List<String> descriptions = new ArrayList<>();
-		descriptions.addAll(parsersListForFilters.keySet());
+        List<String> descriptions = new ArrayList<>(parsersListForFilters.keySet());
 		Collections.sort(descriptions);
 		for (String item : descriptions)
 		{
@@ -55,7 +55,7 @@ import java.util.List;
 
 		}
 		File currentDirectory = new File(OpenMarkovPreferences
-				.get(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+                                                 .get(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
 		setCurrentDirectory(currentDirectory);
         /*
         setFileFilter (OpenMarkovPreferences.get (OpenMarkovPreferences.LAST_OPENED_FORMAT,
@@ -67,8 +67,8 @@ import java.util.List;
 			setFileFilter("OpenMarkov");
 		} else {
 			setFileFilter(OpenMarkovPreferences
-					.get(OpenMarkovPreferences.LAST_SAVED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
-							FileChooser.DEFAULT_FILE_FORMAT));
+                                  .get(OpenMarkovPreferencesKeys.LAST_SAVED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+                                       FileChooser.DEFAULT_FILE_FORMAT));
 		}
 	}
 
@@ -79,42 +79,36 @@ import java.util.List;
 	@Override public int showOpenDialog(Component parent) {
 		int result = super.showOpenDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
-					OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
+                                      OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
 			try {
-				OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPENED_FORMAT, getPgmxFileFormat(),
-						OpenMarkovPreferences.OPENMARKOV_FORMATS);
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-
-				e.printStackTrace();
-			} catch (IOException e) {
-
+                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPENED_FORMAT, getPgmxFileFormat(),
+                                          OpenMarkovPreferences.OPENMARKOV_FORMATS);
+            } catch (ParserConfigurationException | IOException | SAXException e) {
 				e.printStackTrace();
 			}
-		}
+        }
 		return result;
 	}
 
 	@Override public int showSaveDialog(Component parent) {
 		int result = super.showSaveDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
-					OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
+                                      OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
-
-			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_SAVED_FORMAT,
-					((FileFilterAll) getFileFilter()).getFileDescription(), OpenMarkovPreferences.OPENMARKOV_FORMATS);
+            
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_SAVED_FORMAT,
+                                      ((FileFilterAll) getFileFilter()).getFileDescription(), OpenMarkovPreferences.OPENMARKOV_FORMATS);
 
 
 		}

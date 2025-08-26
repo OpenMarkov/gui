@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.exception.DoEditException;
@@ -18,7 +17,6 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.ConditionalGaussianPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.util.Utilities;
 
@@ -71,8 +69,8 @@ import java.awt.event.ActionListener;
 	private void editMeanPotential() {
 		PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), meanDummyNode,
 				false, isReadOnly());
-		if (potentialEditDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
-			// Do nothing?
+        if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
+            // TODO: Do nothing?
 		} else {
 			meanDummyNode.getProbNet().getPNESupport().undoAndDelete();
 		}
@@ -81,8 +79,8 @@ import java.awt.event.ActionListener;
 	private void editVariancePotential() {
 		PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), varianceDummyNode,
 				false, isReadOnly());
-		if (potentialEditDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
-			// Do nothing?
+        if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
+            // TODO: Do nothing?
 		} else {
 			varianceDummyNode.getProbNet().getPNESupport().undoAndDelete();
 		}

@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -59,7 +60,7 @@ public abstract class FileChooser extends JFileChooser {
 	 * to fix the bug in JFileChooser to display text in different languages the
 	 * text of the components must be set explicitly
 	 */
-	private void setTextsInLocale() {
+    private static void setTextsInLocale() {
 
 		StringDatabase stringDb = StringDatabase.getUniqueInstance();
 
@@ -121,8 +122,8 @@ public abstract class FileChooser extends JFileChooser {
 		}
 		// In case there is an outdated value in the register
 		if (!isSet) {
-			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPENED_FORMAT, FileChooser.DEFAULT_FILE_FORMAT,
-					OpenMarkovPreferences.OPENMARKOV_FORMATS);
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPENED_FORMAT, FileChooser.DEFAULT_FILE_FORMAT,
+                                      OpenMarkovPreferences.OPENMARKOV_FORMATS);
 			description = FileChooser.DEFAULT_FILE_FORMAT;
 			for (FileFilter filter : getChoosableFileFilters()) {
 				if (filter instanceof FileFilterAll && ((FileFilterAll) filter).getFileDescription()
@@ -151,7 +152,7 @@ public abstract class FileChooser extends JFileChooser {
 		String version = doc.getDocumentElement().getAttribute("formatVersion");
 		//Removing the last digit of the version
 		version = version.substring(0, version.lastIndexOf('.'));
-		return "OpenMarkov.".concat(version);
+        return "OpenMarkov." + version;
 
 	}
 }

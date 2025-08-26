@@ -29,7 +29,7 @@ public class OpenMarkovLogoIcon {
 	/**
 	 * OpenMarkovLogoIcon unique instance. Used in singleton pattern.
 	 */
-	private static OpenMarkovLogoIcon instance = null;
+    private static final OpenMarkovLogoIcon INSTANCE = new OpenMarkovLogoIcon();
 
 	/**
 	 * default constructor
@@ -44,11 +44,7 @@ public class OpenMarkovLogoIcon {
 	 * @return OpenMarkovLogoIcon single instance (singleton pattern)
 	 */
 	public static OpenMarkovLogoIcon getUniqueInstance() {
-
-		if (instance == null) {
-			instance = new OpenMarkovLogoIcon();
-		}
-		return instance;
+        return INSTANCE;
 	}
 
 	/**
@@ -90,7 +86,7 @@ public class OpenMarkovLogoIcon {
 	 *
 	 * @return the icon for 16 points
 	 */
-	public ImageIcon getOpenMarkovLogoIcon16() {
+    public static ImageIcon getOpenMarkovLogoIcon16() {
 
 		return new IconLoader().load(IconLoader.OPENMARKOV_LOGO_ICON_16);
 	}
@@ -100,7 +96,7 @@ public class OpenMarkovLogoIcon {
 	 *
 	 * @return the icon for 32 points
 	 */
-	public ImageIcon getOpenMarkovLogoIcon32() {
+    public static ImageIcon getOpenMarkovLogoIcon32() {
 
 		return new IconLoader().load(IconLoader.OPENMARKOV_LOGO_ICON_32);
 	}
@@ -110,7 +106,7 @@ public class OpenMarkovLogoIcon {
 	 *
 	 * @return the icon for 64 points
 	 */
-	public ImageIcon getOpenMarkovLogoIcon64() {
+    public static ImageIcon getOpenMarkovLogoIcon64() {
 
 		return new IconLoader().load(IconLoader.OPENMARKOV_LOGO_ICON_64);
 	}

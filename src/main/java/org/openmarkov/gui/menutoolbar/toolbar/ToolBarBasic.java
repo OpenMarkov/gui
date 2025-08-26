@@ -65,7 +65,7 @@ public abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic 
         
         setFloatable(false);
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        setOrientation(JToolBar.HORIZONTAL);
+        setOrientation(SwingConstants.HORIZONTAL);
         setRollover(false);
     }
     

@@ -22,7 +22,7 @@ public class PotentialPanelManager {
     /**
      * Singleton instance
      */
-    private static PotentialPanelManager instance = null;
+    private static final PotentialPanelManager INSTANCE = new PotentialPanelManager();
     
     private HashMap<String, Class<? extends PotentialPanel>> potentialPanelClasses;
     
@@ -31,17 +31,14 @@ public class PotentialPanelManager {
      */
     private PotentialPanelManager() {
         this.potentialPanelClasses = new HashMap<>();
-        this.findAllPotentials().forEach(plugin -> {
+        PotentialPanelManager.findAllPotentials().forEach(plugin -> {
             PotentialPanelPlugin lAnnotation = plugin.getAnnotation(PotentialPanelPlugin.class);
             this.potentialPanelClasses.put(lAnnotation.potentialType(), plugin);
         });
     }
     
     public static PotentialPanelManager getInstance() {
-        if (instance == null) {
-            instance = new PotentialPanelManager();
-        }
-        return instance;
+        return INSTANCE;
     }
     
     /**
@@ -105,7 +102,7 @@ public class PotentialPanelManager {
      *
      * @return a list of learning algorithms.
      */
-    private final @NotNull Stream<Class<PotentialPanel>> findAllPotentials() {
+    private static @NotNull Stream<Class<PotentialPanel>> findAllPotentials() {
         return PluginSearch.init()
                            .annotatedWith(PotentialPanelPlugin.class)
                            .childrenOf(PotentialPanel.class)

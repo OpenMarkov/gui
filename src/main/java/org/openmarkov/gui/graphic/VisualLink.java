@@ -10,6 +10,7 @@ package org.openmarkov.gui.graphic;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -26,25 +27,25 @@ public class VisualLink extends VisualArrow {
 	 * Color of the border when the node is alwaysObserved.
 	 */
 	private static final Color REVELATION_ARC_COLOR = OpenMarkovPreferences
-			.getColor(OpenMarkovPreferences.REVELATION_ARC_VARIABLE, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					new Color(128, 0, 0));
+            .getColor(OpenMarkovPreferencesKeys.REVELATION_ARC_VARIABLE, OpenMarkovPreferences.OPENMARKOV_COLORS,
+                      new Color(128, 0, 0));
 
 	/**
 	 * Object that has the information (included visual information) of the
 	 * destination node.
 	 */
-	private VisualNode destination = null;
+    private VisualNode destination;
 
 	/**
 	 * Object that has the information (included visual information) of the
 	 * source node.
 	 */
-	private VisualNode source = null;
+    private VisualNode source;
 
 	/**
 	 * Object that has the link information.
 	 */
-	private Link<Node> link = null;
+    private Link<Node> link;
 
 	/**
 	 * Creates a new visual link from a link.

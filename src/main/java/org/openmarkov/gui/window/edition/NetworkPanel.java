@@ -70,7 +70,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	/**
 	 * Application main
 	 */
-	private MainPanel mainPanel = null;
+    private MainPanel mainPanel;
 	/**
 	 * Name of the file where the network is saved (updated or not).
 	 */
@@ -657,8 +657,8 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	@Override public void undoableEditHappened(UndoableEditEvent arg0) {
-		if (!arg0.getEdit().getClass().equals(OpenParenthesisEdit.class) &&
-				!arg0.getEdit().getClass().equals(CloseParenthesisEdit.class) ) {
+        if (arg0.getEdit().getClass() != OpenParenthesisEdit.class &&
+                arg0.getEdit().getClass() != CloseParenthesisEdit.class) {
 			setModified(true);
 		}
 	}
@@ -669,12 +669,8 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	@Override public void undoEditHappened(UndoableEditEvent event) {
-
-		if (((PNESupport) event.getSource()).getCanUndo()){
-			setModified(true);
-		}else{
-			setModified(false);
-		}
+        
+        setModified(((PNESupport) event.getSource()).getCanUndo());
 
 		repaint();
 	}

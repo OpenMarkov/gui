@@ -66,7 +66,7 @@ public class UncertaintyContextualMenu extends ContextualMenu {
 
 		if (assignMenuItem == null) {
 			assignMenuItem = new LocalizedMenuItem(MenuItemNames.UNCERTAINTY_ASSIGN_MENUITEM,
-					ActionCommands.UNCERTAINTY_ASSIGN);
+                                                   ActionCommands.UNCERTAINTY_ASSIGN.getCommandName());
 			assignMenuItem.addActionListener(listener);
 		}
 
@@ -83,7 +83,7 @@ public class UncertaintyContextualMenu extends ContextualMenu {
 
 		if (editMenuItem == null) {
 			editMenuItem = new LocalizedMenuItem(MenuItemNames.UNCERTAINTY_EDIT_MENUITEM,
-					ActionCommands.UNCERTAINTY_EDIT);
+                                                 ActionCommands.UNCERTAINTY_EDIT.getCommandName());
 			editMenuItem.addActionListener(listener);
 		}
 
@@ -99,7 +99,7 @@ public class UncertaintyContextualMenu extends ContextualMenu {
 
 		if (removeMenuItem == null) {
 			removeMenuItem = new LocalizedMenuItem(MenuItemNames.UNCERTAINTY_REMOVE_MENUITEM,
-					ActionCommands.UNCERTAINTY_REMOVE);
+                                                   ActionCommands.UNCERTAINTY_REMOVE.getCommandName());
 			removeMenuItem.addActionListener(listener);
 		}
 
@@ -114,22 +114,13 @@ public class UncertaintyContextualMenu extends ContextualMenu {
 	 * @return a components identified by the action command.
 	 */
 	@Override public JComponent getJComponentActionCommand(String actionCommand) {
-
-		JComponent component = null;
-
-        switch (actionCommand) {
-            case ActionCommands.UNCERTAINTY_ASSIGN:
-                component = assignMenuItem;
-                break;
-            case ActionCommands.UNCERTAINTY_EDIT:
-                component = editMenuItem;
-                break;
-            case ActionCommands.UNCERTAINTY_REMOVE:
-                component = removeMenuItem;
-                break;
-        }
-
-		return component;
+        JComponent component = switch (ActionCommands.of(actionCommand)) {
+            case ActionCommands.UNCERTAINTY_ASSIGN -> assignMenuItem;
+            case ActionCommands.UNCERTAINTY_EDIT -> editMenuItem;
+            case ActionCommands.UNCERTAINTY_REMOVE -> removeMenuItem;
+            case null, default -> null;
+        };
+        return component;
 
 	}
 

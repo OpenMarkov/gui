@@ -30,7 +30,7 @@ public class ImageLoader {
      * @return a reference to the image resource.
      * @throws MissingResourceException if the resource doesn't exist.
      */
-    public ImageIcon load(String imageName) throws MissingResourceException {
+    public static ImageIcon load(String imageName) throws MissingResourceException {
         return new ImageIcon(ImageLoader.class.getResource(imageName));
     }
     

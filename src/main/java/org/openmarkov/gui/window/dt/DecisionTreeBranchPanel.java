@@ -11,10 +11,6 @@ import org.openmarkov.core.dt.DecisionTreeBranch;
 import org.openmarkov.core.dt.DecisionTreeNode;
 import org.openmarkov.core.model.network.NodeType;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-
 @SuppressWarnings("serial") public class DecisionTreeBranchPanel extends DecisionTreeElementPanel {
 	private DecisionTreeBranch treeBranch;
 

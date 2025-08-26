@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <code>MoveNodeEdi</code> is a simple edit that allows to modify the position
+ * {@code MoveNodeEdi} is a simple edit that allows to modify the position
  * of a group of nodes
  *
  * @author Miguel Palacios
@@ -50,7 +50,7 @@ public class MoveNodeEdit extends SimplePNEdit {
 	protected Logger logger;
 
 	/**
-	 * Creates a new <code>MoveNodeEdit</code> with the nodes, and new X, Y
+     * Creates a new {@code MoveNodeEdit} with the nodes, and new X, Y
 	 * coordinates.
 	 *
 	 * @param movedNodes the nodes that will be edited, with their new
@@ -66,7 +66,7 @@ public class MoveNodeEdit extends SimplePNEdit {
 	}
 
 	@Override public void doEdit() {
-		Node node = null;
+        Node node;
 		int i = 0;
 		for (String name : namesNode) {
             node = probNet.getNode(name);
@@ -85,7 +85,7 @@ public class MoveNodeEdit extends SimplePNEdit {
 	@Override public void undo() {
 		super.undo();
 		int i = 0;
-		Node node = null;
+        Node node;
 		for (String name : namesNode) {
             node = probNet.getNode(name);
             node.setCoordinateX(lastPositions.get(i).getX());

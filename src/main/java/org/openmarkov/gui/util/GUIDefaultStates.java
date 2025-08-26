@@ -12,6 +12,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.localize.StringDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * This class is used to encapsulate the default states of the nodes and their
@@ -34,9 +35,8 @@ public class GUIDefaultStates extends DefaultStates {
 		String newKey = "defaultStates." + element + ".Text";
 		if (StringDatabase.getUniqueInstance().getString(newKey).equals(StringDatabase.surrondAsUnknown(newKey)))
 			return element;
-		else
-			return StringDatabase.getUniqueInstance().getString(newKey);
-		// } catch (MissingResourceException e) {
+        return StringDatabase.getUniqueInstance().getString(newKey);
+        // } catch (MissingResourceException e) {
 		// return element;
 		// }
 	}
@@ -50,7 +50,7 @@ public class GUIDefaultStates extends DefaultStates {
 	 * @return a string formed by the language-dependent strings of the states.
 	 */
 	public static String getString(String[] elements) {
-		int i = 0;
+        int i;
 		int l = elements.length;
 		String result = "";
 		if ((l == 0) || ((l == 1) && elements[0].equals("nonamed"))) {
@@ -75,7 +75,7 @@ public class GUIDefaultStates extends DefaultStates {
 	 * the actual language.
 	 */
 	public static String[] getStrings(State[] elements) {
-		int i = 0;
+        int i;
 		int l = elements.length;
 		String[] result = new String[l];
 		for (i = 0; i < l; i++) {
@@ -94,22 +94,17 @@ public class GUIDefaultStates extends DefaultStates {
 	 */
 	public static String getStringLanguageDependent(String languageDependentString) {
 		boolean found = false;
-		int i1 = 0;
-		int i2 = 0;
-		int l1 = 0;
-		int l2 = 0;
-		ArrayList<String> elements = null;
+        int i2;
+        int length2;
+        ArrayList<String> elements;
 		String result = null;
-		if (list == null) {
-			DefaultStates.fillList();
-		}
-		i1 = 0;
-		l1 = list.size();
-		while (!found && (i1 < l1)) {
-			elements = list.get(i1);
+        int i1 = 0;
+        int length1 = LIST.size();
+        while (!found && (i1 < length1)) {
+            elements = LIST.get(i1);
 			i2 = 0;
-			l2 = elements.size();
-			while (!found && (i2 < l2)) {
+            length2 = elements.size();
+            while (!found && (i2 < length2)) {
 				if (languageDependentString.equals(getString(elements.get(i2)))) {
 					result = elements.get(i2);
 					found = true;
@@ -131,7 +126,7 @@ public class GUIDefaultStates extends DefaultStates {
 	 * correct or the string that is passed as parameter.
 	 */
 	public static String[] getStringsLanguageDependent(String[] languageDependentStrings) {
-		int i = 0;
+        int i;
 		int l = languageDependentStrings.length;
 		String[] elements = new String[l];
 		for (i = 0; i < l; i++) {
@@ -148,17 +143,12 @@ public class GUIDefaultStates extends DefaultStates {
 	 * different states separated by dashes.
 	 */
 	public static String[] getListStrings() {
-		String[] strings = null;
-		int i = 0;
-		int l = 0;
-		ArrayList<String> states = null;
-		if (list == null) {
-			fillList();
-		}
-		l = list.size();
-		strings = new String[l];
-		for (i = 0; i < l; i++) {
-			states = list.get(i);
+        int i;
+        ArrayList<String> states;
+        int length = LIST.size();
+        String[] strings = new String[length];
+        for (i = 0; i < length; i++) {
+            states = LIST.get(i);
 			strings[i] = getString(states.toArray(new String[states.size()]));
 		}
 		return strings;
@@ -177,20 +167,14 @@ public class GUIDefaultStates extends DefaultStates {
 	 */
 	public static int getIndexLanguageDependent(String[] elements) {
 		ArrayList<String> statesAsList = new ArrayList<String>();
-		ArrayList<String> languageStrings = null;
+        ArrayList<String> languageStrings;
 		int i = 0;
-		int l = 0;
-		boolean found = false;
-		if (list == null) {
-			fillList();
-		}
-		for (String state : elements) {
-			statesAsList.add(state);
-		}
-		l = list.size();
-		while (!found && (i < l)) {
+        boolean found = false;
+        Collections.addAll(statesAsList, elements);
+        int length = LIST.size();
+        while (!found && (i < length)) {
 			languageStrings = new ArrayList<String>();
-			for (String languageString : list.get(i)) {
+            for (String languageString : LIST.get(i)) {
 				languageStrings.add(getString(languageString));
 			}
 			if (languageStrings.equals(statesAsList)) {

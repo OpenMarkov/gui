@@ -202,19 +202,19 @@ import java.awt.event.ActionListener;
 			}
 		}
 	}
-
-	private class CovarianceTableModel extends DefaultTableModel {
+    
+    private static class CovarianceTableModel extends DefaultTableModel {
 
 		@Override public boolean isCellEditable(int row, int column) {
-			return row > 0 && column > 0 && row >= column;
+            return column > 0 && row >= column;
 		}
 
 		@Override public Class<?> getColumnClass(int columnIndex) {
 			return (columnIndex == 0) ? String.class : Double.class;
 		}
 	}
-
-	private class CovarianceTableCellRenderer extends DefaultTableCellRenderer {
+    
+    private static class CovarianceTableCellRenderer extends DefaultTableCellRenderer {
 		@Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 				boolean hasFocus, int row, int column) {
 			Color backgroundColor = Color.WHITE;

@@ -100,10 +100,8 @@ public abstract class VisualElement {
 	 * @return true if the point is inside the shape; otherwise, false.
 	 */
 	public boolean pointInsideShape(Point2D.Double point, Graphics2D g) {
-
 		Shape shape = getShape(g);
-
-		return (shape != null) ? shape.contains(point) : false;
+        return shape != null && shape.contains(point);
 	}
 
 	/**
@@ -116,10 +114,10 @@ public abstract class VisualElement {
 	 * @param font         the Font in which the text must be written.
 	 * @param g            graphics object where to paint the text.
 	 */
-	protected String adjustText(String text, double maxWidth, int endingLength, Font font, Graphics2D g) {
+    protected static String adjustText(String text, double maxWidth, int endingLength, Font font, Graphics2D g) {
 		g.setFont(font);
 		FontMetrics fontMeter = new JPanel().getFontMetrics(font);
-		String endText = "";
+        String endText;
 		int textLenght = text.length();
 		if ((fontMeter.getStringBounds(text, g).getWidth()) >= maxWidth) {
 			endText = "..." + text.substring(textLenght - endingLength, textLenght);

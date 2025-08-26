@@ -125,7 +125,7 @@ import java.util.List;
 			String covariate = tableModel.getValueAt(row, 0).toString();
 			boolean isMandatory = false;
 			String[] mandatoryCovariates = (potential instanceof WeibullHazardPotential) ?
-					WeibullHazardPotential.getMandatoryCovariates() :
+                    GLMPotential.getMandatoryCovariates() :
 					GLMPotential.getMandatoryCovariates();
 			for (String mandatoryCovariate : mandatoryCovariates) {
 				isMandatory |= mandatoryCovariate.equals(covariate);
@@ -134,8 +134,8 @@ import java.util.List;
 			setEnabledAddValue(!isMandatory);
 		}
 	}
-
-	private class CoefficientTableCellRenderer extends DefaultTableCellRenderer {
+    
+    private static class CoefficientTableCellRenderer extends DefaultTableCellRenderer {
 		@Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 				boolean hasFocus, int row, int column) {
 			Color backgroundColor = Color.WHITE;
@@ -154,9 +154,7 @@ import java.util.List;
 				int selectedRow = valuesTable.getSelectedRow();
 				String covariate = tableModel.getValueAt(selectedRow, 0).toString();
 				boolean isMandatory = false;
-				String[] mandatoryCovariates = (potential instanceof WeibullHazardPotential) ?
-						WeibullHazardPotential.getMandatoryCovariates() :
-						GLMPotential.getMandatoryCovariates();
+                String[] mandatoryCovariates = GLMPotential.getMandatoryCovariates();
 				for (String mandatoryCovariate : mandatoryCovariates) {
 					isMandatory |= mandatoryCovariate.equals(covariate);
 				}

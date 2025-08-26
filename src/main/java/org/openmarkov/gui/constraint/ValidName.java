@@ -46,14 +46,15 @@ public class ValidName extends PNConstraint {
 	 */
 	public boolean checkName(String newName, String currentName, ProbNet probNet) {
 		// boolean result = true;
-		if ((newName == null) || newName.equals("")) {
+        if ((newName == null) || newName.isEmpty()) {
 			message = "NodeNameEmpty.Text.Label";
 			return false;
-		} else if (!currentName.equals(newName) && existNode(newName.toUpperCase(), probNet)) {
-			message = "ConstraintViolated.ValidName.Exists";
-			return false;
-		}
-		/*
+        }
+        if (!currentName.equals(newName) && existNode(newName.toUpperCase(), probNet)) {
+            message = "ConstraintViolated.ValidName.Exists";
+            return false;
+        }
+        /*
 		 * if (!result) { jTextFieldNodeName.requestFocus(); return false; }
 		 */
 		return true;
@@ -65,7 +66,7 @@ public class ValidName extends PNConstraint {
 	 * @param name name of the node to search.
 	 * @return true if the node exists; otherwise, false.
 	 */
-	public boolean existNode(String name, ProbNet probNet) {
+    public static boolean existNode(String name, ProbNet probNet) {
         probNet.getNode(name);
         return true;
     }

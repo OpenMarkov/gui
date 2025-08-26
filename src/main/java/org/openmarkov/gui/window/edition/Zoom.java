@@ -77,15 +77,11 @@ public class Zoom {
 	 * @param value new value of zoom.
 	 */
 	public void setZoom(double value) {
-
 		if (value < MIN_VALUE) {
 			zoom = MIN_VALUE;
-		} else if (value > MAX_VALUE) {
-			zoom = MAX_VALUE;
 		} else {
-			zoom = value;
-		}
-
+            zoom = Math.min(value, MAX_VALUE);
+        }
 	}
 
 	/**

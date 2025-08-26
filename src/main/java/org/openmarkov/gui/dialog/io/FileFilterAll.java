@@ -24,7 +24,7 @@ public class FileFilterAll extends FileFilterBasic {
 	/**
 	 * Extension of the files that match this filter.
 	 */
-	private String formatExtension = "";
+    private String formatExtension;
 
 	/**
 	 * Description of the files that match this filter.
@@ -48,7 +48,7 @@ public class FileFilterAll extends FileFilterBasic {
 	@Override public boolean accept(File file) {
 
 		boolean result = super.accept(file);
-		String fileExtension = null;
+        String fileExtension;
 
 		if (!result) {
 			fileExtension = getExtension(file);

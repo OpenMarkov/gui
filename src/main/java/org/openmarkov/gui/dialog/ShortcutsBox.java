@@ -167,7 +167,7 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 	/* Adding the same component (by reference) two times to different swing components (or the same) renders the first
 		an empty component. To avoid that the object should be constructed on addition. But a font can't be added to
 		a JLabel constructed on the fly, so this factory function is needed: */
-	private JLabel buildNoteLabel(String content) {
+    private static JLabel buildNoteLabel(String content) {
 		Font noteFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
 		JLabel note = new JLabel(content);
 		note.setFont(noteFont);

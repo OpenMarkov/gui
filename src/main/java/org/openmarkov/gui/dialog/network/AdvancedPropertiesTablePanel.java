@@ -25,8 +25,8 @@ import java.util.List;
 
 @SuppressWarnings("serial") public class AdvancedPropertiesTablePanel extends KeyTablePanel
 		implements TableModelListener, PNUndoableEditListener {
-
-	protected Object dataTable[][];
+    
+    protected Object[][] dataTable;
 	private String keyPrefix;
 	private AdvancedPropertiesTableModel advancedPropertiestableModel;
 	/**
@@ -97,14 +97,14 @@ import java.util.List;
 	 * @return a data object with one more column that contains the keys.
 	 */
 	protected Object[][] fillDataKeys(Object[][] oldData) {
-
-		Object[][] newData = null;
-		int i1 = 0; // aux int
-		int i2 = 0; // aux int
-		int l1 = 0; // num of rows
-		int l2 = 0; // num of columns
-
-		l1 = oldData.length;
+        
+        Object[][] newData;
+        int i1; // aux int
+        int i2; // aux int
+        int l2; // num of columns
+        
+        // num of rows
+        int l1 = oldData.length;
 		if (l1 > 0) {
 			l2 = oldData[0].length + 1;
 			newData = new Object[l1][l2];
@@ -132,34 +132,32 @@ import java.util.List;
 	}
 
 	protected void setDataFromAdvancedProperties(List<StringWithProperties> advancedProperties) {
-		if (advancedProperties != null) {
-			Object[][] tableData = new Object[advancedProperties.size()][1];
-
+        Object[][] tableData;
+        if (advancedProperties == null) {
+            tableData = new Object[0][0];
+        } else {
+            tableData = new Object[advancedProperties.size()][1];
 			for (int i = 0; i < advancedProperties.size(); i++) {
 				tableData[i][0] = advancedProperties.get(i).getString();
 			}
-			setData(tableData);
-		} else if (advancedProperties == null) {
-			Object[][] tableData = new Object[0][0];
-			setData(tableData);
-		}
-	}
+        }
+        setData(tableData);
+    }
 
 	protected void setDataFromCriteria(List<Criterion> criteria) {
-		if (criteria != null) {
-			Object[][] tableData = new Object[criteria.size()][2];
-
+        Object[][] tableData;
+        if (criteria != null) {
+            tableData = new Object[criteria.size()][2];
 			for (int i = 0; i < criteria.size(); i++) {
 				tableData[i][0] = criteria.get(i).getCriterionName();
 				tableData[i][1] = criteria.get(i).getCriterionUnit();
 			}
-			setData(tableData);
-		} else if (criteria == null) {
-			Object[][] tableData = new Object[0][0];
-			setData(tableData);
-		}
-
-	}
+        } else {
+            tableData = new Object[0][0];
+        }
+        setData(tableData);
+        
+    }
 
 	@Override public void undoableEditHappened(UndoableEditEvent arg0) {
 		// TODO Auto-generated method stub

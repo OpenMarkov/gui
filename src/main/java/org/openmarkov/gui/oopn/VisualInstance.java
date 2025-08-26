@@ -313,12 +313,10 @@ public class VisualInstance extends VisualElement {
 		Point2D.Double circleTRCenter = new Point2D.Double(right - radius, top + radius);
 		Point2D.Double circleBLCenter = new Point2D.Double(left + radius, bottom - radius);
 		Point2D.Double circleBRCenter = new Point2D.Double(right - radius, bottom - radius);
-		Point2D.Double point;
-		Point2D.Double[] points;
-
-		// try to find the cut point in the upper horizontal segment of the
+        
+        // try to find the cut point in the upper horizontal segment of the
 		// round rectangle
-		point = segment.cutPoint(new Segment(topLeftH, topRightH));
+        Point2D.Double point = segment.cutPoint(new Segment(topLeftH, topRightH));
 		if (point != null) {
 			return point;
 		}
@@ -342,7 +340,7 @@ public class VisualInstance extends VisualElement {
 		}
 		// try to find the cut point in the upper left corner of the round
 		// rectangle
-		points = segment.cutPoint(circleTLCenter, radius);
+        Point2D.Double[] points = segment.cutPoint(circleTLCenter, radius);
 		if (points != null) {
 			for (int i = 0; i < points.length; i++) {
 				if ((points[i].getX() < circleTLCenter.getX()) && (points[i].getY() < circleTLCenter.getY())) {
@@ -400,7 +398,7 @@ public class VisualInstance extends VisualElement {
 		List<VisualNode> visualNodes = new ArrayList<VisualNode>(this.visualNodes);
 		if (recursive) {
 			for (VisualInstance visualSubInstance : visualSubInstances.values()) {
-				visualNodes.addAll(visualSubInstance.getVisualNodes(recursive));
+                visualNodes.addAll(visualSubInstance.getVisualNodes(true));
 			}
 		}
 		return visualNodes;
@@ -413,7 +411,7 @@ public class VisualInstance extends VisualElement {
 	 * @return the parameter in the position given
 	 */
 	public VisualInstance getParameterInPosition(Point2D.Double position, Graphics2D g) {
-		VisualInstance instance = null;
+        VisualInstance instance;
 		VisualInstance instanceFound = null;
 
 		Iterator<VisualInstance> iterator = visualSubInstances.values().iterator();

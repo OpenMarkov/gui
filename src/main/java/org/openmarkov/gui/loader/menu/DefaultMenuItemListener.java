@@ -32,9 +32,8 @@ public class DefaultMenuItemListener implements ActionListener, ItemListener {
 	@Override public void itemStateChanged(ItemEvent e) {
 
 		Object oSource = e.getSource();
-		if (oSource instanceof JMenuItem) {
-			JMenuItem mi = (JMenuItem) oSource;
-			MenuItemHandler mih = MenuHandlersTable.getUniqueInstance().menuitemhandlerFind(mi);
+        if (oSource instanceof JMenuItem mi) {
+            MenuItemHandler mih = MenuHandlersTable.menuitemhandlerFind(mi);
 			if (mih != null) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					mih.itemSelected(mi, e, mi.getActionCommand());
@@ -52,9 +51,8 @@ public class DefaultMenuItemListener implements ActionListener, ItemListener {
 	@Override public void actionPerformed(ActionEvent e) {
 
 		Object oSource = e.getSource();
-		if (oSource instanceof JMenuItem) {
-			JMenuItem mi = (JMenuItem) oSource;
-			MenuItemHandler mih = MenuHandlersTable.getUniqueInstance().menuitemhandlerFind(mi);
+        if (oSource instanceof JMenuItem mi) {
+            MenuItemHandler mih = MenuHandlersTable.menuitemhandlerFind(mi);
 			if (mih != null) {
 				mih.itemActivated(mi, e, mi.getActionCommand());
 			}

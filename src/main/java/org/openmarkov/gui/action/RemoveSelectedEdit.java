@@ -84,9 +84,8 @@ import java.util.List;
 	 * @return a list that is the result of an union operation of two lists of
 	 * links.
 	 */
-	private List<VisualLink> union(List<VisualLink> list1, List<VisualLink> list2) {
-		List<VisualLink> result = new ArrayList<VisualLink>();
-		result.addAll(list1);
+    private static List<VisualLink> union(List<VisualLink> list1, List<VisualLink> list2) {
+        List<VisualLink> result = new ArrayList<VisualLink>(list1);
 		for (VisualLink o : list2) {
 			if (!result.contains(o)) {
 				result.add(o);

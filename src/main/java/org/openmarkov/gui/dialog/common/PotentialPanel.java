@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({Node.class}))
+@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor(Node.class))
 @SuppressWarnings("serial") public abstract class PotentialPanel extends JPanel {
 	private List<PanelResizeEventListener> listeners;
 	/**

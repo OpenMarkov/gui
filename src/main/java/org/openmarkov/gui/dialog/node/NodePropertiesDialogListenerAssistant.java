@@ -18,9 +18,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 public class NodePropertiesDialogListenerAssistant implements ActionListener, ItemListener {
-	private NodePropertiesDialog dialog = null;
-	private NodeDefinitionPanel definitionPanel = null;
-	private Node properties = null;
+    private NodePropertiesDialog dialog;
+    private NodeDefinitionPanel definitionPanel;
+    private Node properties;
 
 	/**
 	 * constructor
@@ -86,7 +86,7 @@ public class NodePropertiesDialogListenerAssistant implements ActionListener, It
 	public boolean checkName() {
 		String name = definitionPanel.getJTextFieldNodeName().getText();
 		boolean result = true;
-		if ((name == null) || name.equals("")) {
+        if ((name == null) || name.isEmpty()) {
 			JOptionPane.showMessageDialog(definitionPanel,
 					StringDatabase.getUniqueInstance().getString("NodeNameEmpty.Text.Label"),
 					StringDatabase.getUniqueInstance().getString("NodeNameEmpty.Title.Label"),
@@ -112,7 +112,7 @@ public class NodePropertiesDialogListenerAssistant implements ActionListener, It
 	 *
 	 * @return true, if the purpose field isn't empty; otherwise, false.
 	 */
-	public boolean checkPurpose() {
+    public static boolean checkPurpose() {
 		return true;
 	}
 }

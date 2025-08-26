@@ -77,7 +77,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 		int stateIndex2 = numStates2 - row;
 		State state1 = node1.getVariable().getStates()[stateIndex1];
 		State state2 = node2.getVariable().getStates()[stateIndex2];
-		link.setCompatibilityValue(state1, state2, this.newValue.intValue());
+        link.setCompatibilityValue(state1, state2, this.newValue);
 		newTable = ((TablePotential) link.getRestrictionsPotential()).values.clone();
 
 	}
@@ -140,9 +140,10 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 		boolean hasRestriction = false;
 
 		for (int i = 0; i < table.length && !hasRestriction; i++) {
-			if (table[i] == 0) {
-				hasRestriction = true;
-			}
+            if (table[i] == 0) {
+                hasRestriction = true;
+                break;
+            }
 		}
 		if (!hasRestriction) {
 			tablePotential = null;

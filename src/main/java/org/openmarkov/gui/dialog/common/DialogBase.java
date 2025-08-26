@@ -43,8 +43,8 @@ public class DialogBase extends JDialog {
 	public DialogBase(Window owner) {
 
 		super(owner);
-
-		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setName("DialogBase");
 		addWindowListener(new WindowAdapter() {
 

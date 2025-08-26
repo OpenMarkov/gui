@@ -24,11 +24,11 @@ public class UpdateLocalizationInComponents {
      */
     public static void allComponentsUpdateSetText(Container c) {
         StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-        String temp = "";
+        String temp;
         Component[] listComponents = c.getComponents();
         for (Component item : listComponents) {
             if (item instanceof JButton) {
-                if (!((JButton) item).getText().equals("")) {
+                if (!((JButton) item).getText().isEmpty()) {
                     temp = item.getName() + ".Text.Label";
                     ((JButton) item).setText(stringDatabase.getString(temp));
                 }
@@ -71,11 +71,11 @@ public class UpdateLocalizationInComponents {
                 ((ZoomComboBox) item).setSelectedItem(temp);
             } else if (item instanceof Container) {
                 allComponentsUpdateSetText((Container) item);
-            } else {
-                // do nothing for non registered objects as
-                // those objects must implement the listener.
-                // if required this method can be expanded
             }
+            // do nothing for non registered objects as
+            // those objects must implement the listener.
+            // if required this method can be expanded
+            
         } // end-for
         if (c instanceof JMenu) {
             temp = c.getName() + ".Label";
@@ -97,8 +97,6 @@ public class UpdateLocalizationInComponents {
                     item.setText(stringDatabase.getString(temp));
                     temp = item.getName() + ".Mnemonic";
                     item.setMnemonic(stringDatabase.getString(temp).charAt(0));
-                } else {
-                    // only JSeparators are entering here!!!!
                 }
             }
         }

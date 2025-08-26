@@ -29,100 +29,99 @@ import java.util.ArrayList;
  * manipulation of the Link restriction potential.
  **/
 @SuppressWarnings("serial") public class LinkRestrictionValuesTable extends ValuesTable
-		implements PNUndoableEditListener {
-	/***
-	 * Constant value to describe compatibility of a position of the link
-	 * restriction potential.
-	 */
-	private final String COMPATIBILITY_VALUE = "1";
-	/***
-	 * Constant value to describe incompatibility of a position of the link
-	 * restriction potential.
-	 */
-	private final String INCOMPATIBILITY_VALUE = "0";
-	/****
-	 * The link with the link restriction.
-	 **/
-	private Link<Node> link;
-	/****
-	 * The parent node of the link
-	 */
-	private Node node1;
-	/****
-	 * The child node of the link
-	 */
-	private Node node2;
-	/***
-	 * The ProbNet containing the link.
-	 */
-	private ProbNet net;
-
-	public LinkRestrictionValuesTable(Link<Node> link, ValuesTableModel tableModel, final boolean modifiable) {
-		super(tableModel, modifiable);
-		this.link = link;
-		node1 = link.getNode1();
-		node2 = link.getNode2();
-		net = node1.getProbNet();
-	}
-
-	/**
-	 * This method checks the value to modify in the table and sets the new
-	 * value.
-	 ***/
-	@Override public void setValueAt(Object newValue, int row, int col) {
-		if (newValue != null) {
-			Integer newNumericValue;
-			try {
-				newNumericValue = (Integer) newValue;
-				if (!newNumericValue.equals(Integer.valueOf(INCOMPATIBILITY_VALUE)) && !newNumericValue
-						.equals(Integer.valueOf(COMPATIBILITY_VALUE))) {
-					newValue = Integer.parseInt(INCOMPATIBILITY_VALUE);
-				}
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-			LinkRestrictionPotentialValueEdit linkPotentialEdit = new LinkRestrictionPotentialValueEdit(link,
-					(Integer) newValue, row, col);
-			try {
+        implements PNUndoableEditListener {
+    /***
+     * Constant value to describe compatibility of a position of the link
+     * restriction potential.
+     */
+    private static final int COMPATIBILITY_VALUE = 1;
+    /***
+     * Constant value to describe incompatibility of a position of the link
+     * restriction potential.
+     */
+    private static final int INCOMPATIBILITY_VALUE = 0;
+    /****
+     * The link with the link restriction.
+     **/
+    private Link<Node> link;
+    /****
+     * The parent node of the link
+     */
+    private Node node1;
+    /****
+     * The child node of the link
+     */
+    private Node node2;
+    /***
+     * The ProbNet containing the link.
+     */
+    private ProbNet net;
+    
+    public LinkRestrictionValuesTable(Link<Node> link, ValuesTableModel tableModel, final boolean modifiable) {
+        super(tableModel, modifiable);
+        this.link = link;
+        node1 = link.getNode1();
+        node2 = link.getNode2();
+        net = node1.getProbNet();
+    }
+    
+    /**
+     * This method checks the value to modify in the table and sets the new
+     * value.
+     ***/
+    @Override public void setValueAt(Object newValue, int row, int col) {
+        if (newValue != null) {
+            Integer newNumericValue;
+            try {
+                newNumericValue = (Integer) newValue;
+                if (!newNumericValue.equals(INCOMPATIBILITY_VALUE) && !newNumericValue.equals(COMPATIBILITY_VALUE)) {
+                    newValue = INCOMPATIBILITY_VALUE;
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
+                                              StringDatabase.getUniqueInstance()
+                                                            .getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+            }
+            LinkRestrictionPotentialValueEdit linkPotentialEdit = new LinkRestrictionPotentialValueEdit(link,
+                                                                                                        (Integer) newValue, row, col);
+            try {
                 linkPotentialEdit.doEdit(net);
                 super.getModel().setValueAt(newValue, row, col);
-				int variable1Index = col - 1;
-				int variable2Index = node2.getVariable().getNumStates() - row;
-				if ((Integer) newValue == 0) {
-					if (!node2.getPotentials().isEmpty() && node2.getPotentials().get(0) instanceof TablePotential) {
-						Potential potential = LinkRestrictionPotentialOperations
-								.updatePotentialByAddLinkRestriction(node2,
-										(TablePotential) link.getRestrictionsPotential(), variable1Index,
-										variable2Index);
-						ArrayList<Potential> potentials = new ArrayList<Potential>();
-						potentials.add(potential);
-						node2.setPotentials(potentials);
-					}
-				}
-			} catch (DoEditException.ConstraintViolated e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-		}
-	}
-
-	@Override public void undoableEditHappened(UndoableEditEvent event) {
-		UndoableEdit unEdit = event.getEdit();
-		if (unEdit instanceof LinkRestrictionPotentialValueEdit) {
-			if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit) {
-				LinkRestrictionPotentialValueEdit edit = (LinkRestrictionPotentialValueEdit) event.getEdit();
-				super.getModel().setValueAt(edit.getNewValue(), edit.getRowPosition(), edit.getColumnPosition());
-			}
-		}
-	}
-
-	@Override public void undoEditHappened(UndoableEditEvent event) {
-		if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit) {
-			LinkRestrictionPotentialValueEdit edit = (LinkRestrictionPotentialValueEdit) event.getEdit();
-			super.getModel().setValueAt(edit.getNewValue(), edit.getRowPosition(), edit.getColumnPosition());
-		}
-	}
+                int variable1Index = col - 1;
+                int variable2Index = node2.getVariable().getNumStates() - row;
+                if ((Integer) newValue == 0) {
+                    if (!node2.getPotentials().isEmpty() && node2.getPotentials().get(0) instanceof TablePotential) {
+                        Potential potential = LinkRestrictionPotentialOperations
+                                .updatePotentialByAddLinkRestriction(node2,
+                                                                     (TablePotential) link.getRestrictionsPotential(), variable1Index,
+                                                                     variable2Index);
+                        ArrayList<Potential> potentials = new ArrayList<Potential>();
+                        potentials.add(potential);
+                        node2.setPotentials(potentials);
+                    }
+                }
+            } catch (DoEditException.ConstraintViolated e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
+                                              StringDatabase.getUniqueInstance()
+                                                            .getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    @Override public void undoableEditHappened(UndoableEditEvent event) {
+        UndoableEdit unEdit = event.getEdit();
+        if (unEdit instanceof LinkRestrictionPotentialValueEdit) {
+            if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit edit) {
+                super.getModel().setValueAt(edit.getNewValue(), edit.getRowPosition(), edit.getColumnPosition());
+            }
+        }
+    }
+    
+    @Override public void undoEditHappened(UndoableEditEvent event) {
+        if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit edit) {
+            super.getModel().setValueAt(edit.getNewValue(), edit.getRowPosition(), edit.getColumnPosition());
+        }
+    }
 }

@@ -499,7 +499,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * @return the usingGeneralPotential
      */
     public boolean isUsingGeneralPotential() {
-        return (indexPotential == 0 ? true : false);
+        return (indexPotential == 0);
     }
     
     /**
@@ -577,7 +577,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
             this.setRowSorter(null);
         } else {
             int lastRow = getModel().getRowCount() - 1 - 1;
-            lastRow = (lastRow < 0 ? 0 : lastRow);
+            lastRow = (Math.max(lastRow, 0));
             LinkedList<RowFilter<Object, Object>> list = new LinkedList<RowFilter<Object, Object>>();
             list.add(RowFilter.notFilter(RowFilter.regexFilter((String) getModel().getValueAt(lastRow, 0), 0)));
             list.add(RowFilter.notFilter(RowFilter.regexFilter(getVariable().getName(), 0)));
@@ -594,10 +594,10 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * <p>
      * revised--&gt; not changed
      */
-    protected String getRegExp(String name) {
-        int cont1 = name.indexOf("[");
+    protected static String getRegExp(String name) {
+        int cont1 = name.indexOf('[');
         String s1 = name.substring(0, cont1);
-        int cont2 = name.indexOf("]");
+        int cont2 = name.indexOf(']');
         String s2 = name.substring(cont1, cont2);
         String s3 = name.substring(cont2);
         return s1 + "\\" + s2 + "\\" + s3;
@@ -610,7 +610,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * @return the regular expression of the name of node. This method returns
      * the same name but substituting '(' and ')' by '\\(' and '\\)'
      */
-    protected String getRegExpParenthesis(String name) {
+    protected static String getRegExpParenthesis(String name) {
         if (name.contains("(")) {
             name = name.replace("(", "\\(");
         }
@@ -687,10 +687,9 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * @param edit
      */
     private void uncertainValuesEditHappened(UncertainValuesEdit edit) {
-        boolean isChance;
         int row;
         int positionInValues;
-        isChance = edit.isChanceVariable();
+        boolean isChance = edit.isChanceVariable();
         List<Variable> varsPotential = tablePotential.getVariables();
         int numVarsPotential = varsPotential.size();
         int numParents = numVarsPotential - (isChance ? 1 : 0);
@@ -720,7 +719,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * @param edit - context for changing the
      */
     public void tablePotentialValueEditHappened(TablePotentialValueEdit edit) {
-        int position = 0;
+        int position;
         TablePotential editPotential = edit.getPotential();
         if (!edit.getExactDistrPotential()) {
             priorityList = edit.getPriorityList();
@@ -750,8 +749,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      *
      */
     @Override public void undoEditHappened(UndoableEditEvent event) {
-        if (event.getEdit() instanceof TablePotentialValueEdit) {
-            TablePotentialValueEdit edit = (TablePotentialValueEdit) event.getEdit();
+        if (event.getEdit() instanceof TablePotentialValueEdit edit) {
             TablePotential editPotential = edit.getPotential();
             if (!edit.getExactDistrPotential()) {
                 priorityList = edit.getPriorityList();
@@ -795,32 +793,22 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
     private void selectAll(EventObject e) {
         // Returns the component that is handling the editing session.
         final Component editor = getEditorComponent();
-        if (editor == null || !(editor instanceof JTextComponent))
+        if (!(editor instanceof JTextComponent))
             return;
-        if (e == null) {
-            ((JTextComponent) editor).selectAll();
-            return;
-        }
-        // Typing in the cell was used to activate the editor
-        if (e instanceof KeyEvent && isSelectAllForKeyEvent) {
-            ((JTextComponent) editor).selectAll();
-            return;
-        }
-        // F2 was used to activate the editor
-        if (e instanceof ActionEvent && isSelectAllForActionEvent) {
-            ((JTextComponent) editor).selectAll();
-            return;
-        }
-        // A mouse click was used to activate the editor.
-        // Generally this is a double click and the second mouse click is
-        // passed to the editor which would remove the text selection unless
-        // we use the invokeLater()
-        if (e instanceof MouseEvent && isSelectAllForMouseEvent) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override public void run() {
-                    ((JTextComponent) editor).selectAll();
-                }
-            });
+        switch (e) {
+            case null -> ((JTextComponent) editor).selectAll();
+            // Typing in the cell was used to activate the editor
+            case KeyEvent keyEvent when isSelectAllForKeyEvent -> ((JTextComponent) editor).selectAll();
+            // F2 was used to activate the editor
+            case ActionEvent actionEvent when isSelectAllForActionEvent -> ((JTextComponent) editor).selectAll();
+            // A mouse click was used to activate the editor.
+            // Generally this is a double click and the second mouse click is
+            // passed to the editor which would remove the text selection unless
+            // we use the invokeLater()
+            case MouseEvent mouseEvent when isSelectAllForMouseEvent ->
+                    SwingUtilities.invokeLater(() -> ((JTextComponent) editor).selectAll());
+            default -> {
+            }
         }
     }
     

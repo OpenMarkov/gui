@@ -82,7 +82,7 @@ public class MainPanel extends JPanel {
 	/**
 	 * The frame where this panel belongs to.
 	 */
-	private JFrame mainFrame = null;
+    private JFrame mainFrame;
 
 	private ToolbarManager toolbarManager;
 
@@ -106,27 +106,22 @@ public class MainPanel extends JPanel {
 	 * Singleton pattern
 	 *
 	 * @param parentFrame is the parent Frame for this Main Panel
-	 * @return mainPanel. <code>MainPanel</code>
+     * @return mainPanel. {@code MainPanel}
 	 */
 	public static MainPanel getUniqueInstance(JFrame parentFrame) {
-
 		if (MAIN_PANEL == null) {
 			new MainPanel(parentFrame);
 		}
-
 		return MAIN_PANEL;
-
 	}
 
 	/**
 	 * Singleton pattern
 	 *
-	 * @return mainPanel. <code>MainPanel</code>
+     * @return mainPanel. {@code MainPanel}
 	 */
 	public static MainPanel getUniqueInstance() {
-
-		return getUniqueInstance(null);
-
+        return MAIN_PANEL;
 	}
 
 	/**
@@ -163,12 +158,11 @@ public class MainPanel extends JPanel {
 	 * JApplet.
 	 */
 	@Override public void addNotify() {
-
-		Component container = null;
-		JFrame frame = null;
+        
+        JFrame frame;
 
 		super.addNotify();
-		container = getTopLevelAncestor();
+        Component container = getTopLevelAncestor();
 		if (container != null) {
 			if (container instanceof JFrame) {
 				frame = (JFrame) container;

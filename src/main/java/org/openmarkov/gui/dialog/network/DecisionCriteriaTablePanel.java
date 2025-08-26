@@ -13,7 +13,7 @@ import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.dialog.node.StandardDomainsDialog;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -175,12 +175,11 @@ import java.util.List;
 
 	@Override protected void actionPerformedUpValue() {
 		int selectedRow = valuesTable.getSelectedRow();
-		Object swapName = null, swapUnit = null;
-		swapName = dataTable[selectedRow][0];
+        Object swapName = dataTable[selectedRow][0];
 		dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
 		dataTable[selectedRow - 1][0] = swapName;
-
-		swapUnit = dataTable[selectedRow][1];
+        
+        Object swapUnit = dataTable[selectedRow][1];
 		dataTable[selectedRow][1] = dataTable[selectedRow - 1][1];
 		dataTable[selectedRow - 1][1] = swapUnit;
 
@@ -212,12 +211,11 @@ import java.util.List;
 
 	@Override protected void actionPerformedDownValue() {
 		int selectedRow = valuesTable.getSelectedRow();
-		Object swapName = null, swapUnit = null;
-		swapName = dataTable[selectedRow][0];
+        Object swapName = dataTable[selectedRow][0];
 		dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];
 		dataTable[selectedRow + 1][0] = swapName;
-
-		swapUnit = dataTable[selectedRow][1];
+        
+        Object swapUnit = dataTable[selectedRow][1];
 		dataTable[selectedRow][1] = dataTable[selectedRow + 1][1];
 		dataTable[selectedRow + 1][1] = swapUnit;
 
@@ -305,8 +303,8 @@ import java.util.List;
 
 				@Override public void actionPerformed(ActionEvent e) {
 					StandardCriteriaDialog dialog = new StandardCriteriaDialog(owner, probNet);
-
-					if (dialog.requestValues() == StandardDomainsDialog.OK_BUTTON) {
+                    
+                    if (dialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
 						setDataFromCriteria(probNet.getDecisionCriteria());
 					}
 

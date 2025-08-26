@@ -22,7 +22,7 @@ public class SplashScreenLoader {
 	/**
 	 * the logo file
 	 */
-	private final String logoFile = "/images/OpenMarkovSplash.jpg";
+    private static final String logoFile = "/images/OpenMarkovSplash.jpg";
 	private SplashScreen splash;
 
 	/**

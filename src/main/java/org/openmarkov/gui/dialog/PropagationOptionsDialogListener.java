@@ -25,15 +25,15 @@ public class PropagationOptionsDialogListener implements ActionListener {
 	/**
 	 * The Dialog to which this listener is associated
 	 */
-	PropagationOptionsDialog automaticPropagationOptionsDialog = null;
+    PropagationOptionsDialog automaticPropagationOptionsDialog;
 	/**
 	 * The editor panel that called the associated dialog.
 	 */
-	EditorPanel editorPanel = null;
+    EditorPanel editorPanel;
 	/**
 	 * The inference tool bar associated to the panel.
 	 */
-	InferenceToolBar inferenceToolBar = null;
+    InferenceToolBar inferenceToolBar;
 
 	/**
 	 * constructor
@@ -60,7 +60,7 @@ public class PropagationOptionsDialogListener implements ActionListener {
 				editorPanel.setPropagationActive(true);
 				if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
 					for (int caseIndex = 0; caseIndex < editorPanel.getNumberOfCases(); caseIndex++) {
-						if (editorPanel.getEvidenceCasesCompilationState(caseIndex) == false) {
+                        if (!editorPanel.getEvidenceCasesCompilationState(caseIndex)) {
 
 							editorPanel.doPropagation(editorPanel.getEvidenceCase(caseIndex), caseIndex);
 							editorPanel.updateAllVisualStates("", caseIndex);

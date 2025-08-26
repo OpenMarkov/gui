@@ -22,12 +22,12 @@ public class MovedNodeInfo {
 	/**
 	 * Node whose position must be undone and redone.
 	 */
-	private Node nodeWrapper = null;
+    private Node nodeWrapper;
 
 	/**
 	 * Original position of the node before it has been moved.
 	 */
-	private Point2D.Double diffPosition = null;
+    private Point2D.Double diffPosition;
 
 	/**
 	 * Constructor. Only saves the information.
