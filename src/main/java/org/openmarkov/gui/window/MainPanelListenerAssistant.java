@@ -150,6 +150,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.OPEN_LAST_3_FILE -> openNetwork(LastOpenFiles.getFileNameAt(3));
             case ActionCommands.OPEN_LAST_4_FILE -> openNetwork(LastOpenFiles.getFileNameAt(4));
             case ActionCommands.OPEN_LAST_5_FILE -> openNetwork(LastOpenFiles.getFileNameAt(5));
+            case ActionCommands.OPEN_LAST_6_FILE -> openNetwork(LastOpenFiles.getFileNameAt(6));
+            case ActionCommands.OPEN_LAST_7_FILE -> openNetwork(LastOpenFiles.getFileNameAt(7));
+            case ActionCommands.OPEN_LAST_8_FILE -> openNetwork(LastOpenFiles.getFileNameAt(8));
+            case ActionCommands.OPEN_LAST_9_FILE -> openNetwork(LastOpenFiles.getFileNameAt(9));
             case ActionCommands.SAVE_NETWORK -> saveNetwork(getCurrentNetworkPanel());
             case ActionCommands.SAVE_OPEN_NETWORK -> saveOpenNetwork(getCurrentNetworkPanel());
             case ActionCommands.SAVEAS_NETWORK -> saveNetworkAs(getCurrentNetworkPanel());
@@ -469,7 +473,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         networkPanel.setNetworkFileFormat(fileFormat);
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
         LastOpenFiles.setLastFileName(fileName);
-        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
+        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_SAVED_DIRECTORY, getDirectoryFileName(fileName),
                                   OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
         mainPanel.getMessageWindow().getNormalMessageStream()
                  .println(stringDatabase.getString("NetworkSaved.Text.Label"));
@@ -488,7 +492,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) {
         String fileFormat = OpenMarkovPreferences
-                .get(OpenMarkovPreferencesKeys.LAST_OPENED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+                .get(OpenMarkovPreferencesKeys.LATEST_NETWORK_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
                      FileChooser.DEFAULT_FILE_FORMAT);
         return saveNetworkActions(networkPanel, fileName, fileFormat);
     }
@@ -739,7 +743,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 networkPanels.add(networkPanel);
                 LastOpenFiles.setLastFileName(fileName);
                 getDirectoryFileName(fileName);
-                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
+                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
                                           OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
                 // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
                 // but it is not longer the scenario
@@ -1032,7 +1036,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         evidence.add(0, currentNetworkPanel.getEditorPanel().getPreResolutionEvidence());
         JFileChooser fileChooser = new JFileChooser();
         File currentDirectory = new File(OpenMarkovPreferences
-                                                 .get(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+                                                 .get(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
         fileChooser.setCurrentDirectory(currentDirectory);
         String suggestedFileName = currentNetworkPanel.getTitle().replaceFirst("^*", "");
         fileChooser.setSelectedFile(new File(suggestedFileName));
@@ -1053,7 +1057,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         evidenceFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
         // Set last used evidence format as default
         String lastFileFilter = OpenMarkovPreferences
-                .get(OpenMarkovPreferencesKeys.LAST_LOADED_EVIDENCE_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+                .get(OpenMarkovPreferencesKeys.LATEST_LOADED_EVIDENCE_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
                      "xls");
         evidenceFileChooser.setFileFilter(lastFileFilter);
         if ((evidenceFileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)) {
@@ -1093,10 +1097,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
                 }
                 // save format extension in preferences
-                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_LOADED_EVIDENCE_FORMAT,
+                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_LOADED_EVIDENCE_FORMAT,
                                           ((FileFilterBasic) evidenceFileChooser.getFileFilter()).getFilterExtension(),
                                           OpenMarkovPreferences.OPENMARKOV_FORMATS);
-                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY,
+                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY,
                                           getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
                                           OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
             } catch (IOException | ParsingSourceException | EmptyDatabaseException e) {

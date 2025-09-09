@@ -39,6 +39,14 @@ public enum ActionCommands {
     OPEN_LAST_4_FILE("OpenLastRecentNetwork4"),
     /** Action invoked when the user wants to open a network. */
     OPEN_LAST_5_FILE("OpenLastRecentNetwork5"),
+    /** Action invoked when the user wants to open a network. */
+    OPEN_LAST_6_FILE("OpenLastRecentNetwork6"),
+    /** Action invoked when the user wants to open a network. */
+    OPEN_LAST_7_FILE("OpenLastRecentNetwork7"),
+    /** Action invoked when the user wants to open a network. */
+    OPEN_LAST_8_FILE("OpenLastRecentNetwork8"),
+    /** Action invoked when the user wants to open a network. */
+    OPEN_LAST_9_FILE("OpenLastRecentNetwork9"),
     /** Action invoked when the user wants to save a network. */
     SAVE_NETWORK("SaveNetwork"),
     /** Action invoked when the user wants to save and open newly the same network. */

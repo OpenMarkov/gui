@@ -122,7 +122,7 @@ public abstract class FileChooser extends JFileChooser {
 		}
 		// In case there is an outdated value in the register
 		if (!isSet) {
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPENED_FORMAT, FileChooser.DEFAULT_FILE_FORMAT,
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_NETWORK_FORMAT, FileChooser.DEFAULT_FILE_FORMAT,
                                       OpenMarkovPreferences.OPENMARKOV_FORMATS);
 			description = FileChooser.DEFAULT_FILE_FORMAT;
 			for (FileFilter filter : getChoosableFileFilters()) {

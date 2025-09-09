@@ -54,9 +54,7 @@ import java.util.List;
 			addChoosableFileFilter(new FileFilterAll(itemExtension, item));
 
 		}
-		File currentDirectory = new File(OpenMarkovPreferences
-                                                 .get(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
-		setCurrentDirectory(currentDirectory);
+		File currentDirectory = null;
         /*
         setFileFilter (OpenMarkovPreferences.get (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                                   OpenMarkovPreferences.OPENMARKOV_FORMATS, "pgmx"));
@@ -64,13 +62,17 @@ import java.util.List;
 		//UNCLEAR Where is set pgmx? By default LAST_OPENED_FORMAT=pgmx
 
 		if (isOpening) {
-			setFileFilter("OpenMarkov");
+            currentDirectory = new File(OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+            setFileFilter("OpenMarkov");
 		} else {
-			setFileFilter(OpenMarkovPreferences
-                                  .get(OpenMarkovPreferencesKeys.LAST_SAVED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+            currentDirectory = new File(OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_SAVED_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+            setFileFilter(OpenMarkovPreferences
+                                  .get(OpenMarkovPreferencesKeys.LATEST_SAVED_NETWORK_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
                                        FileChooser.DEFAULT_FILE_FORMAT));
 		}
-	}
+
+        setCurrentDirectory(currentDirectory);
+    }
 
 	public NetworkFileChooser() {
 		this(false, true);
@@ -79,7 +81,7 @@ import java.util.List;
 	@Override public int showOpenDialog(Component parent) {
 		int result = super.showOpenDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
                                       OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
@@ -87,7 +89,7 @@ import java.util.List;
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
 			try {
-                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPENED_FORMAT, getPgmxFileFormat(),
+                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_NETWORK_FORMAT, getPgmxFileFormat(),
                                           OpenMarkovPreferences.OPENMARKOV_FORMATS);
             } catch (ParserConfigurationException | IOException | SAXException e) {
 				e.printStackTrace();
@@ -99,7 +101,7 @@ import java.util.List;
 	@Override public int showSaveDialog(Component parent) {
 		int result = super.showSaveDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
                                       OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
@@ -107,7 +109,7 @@ import java.util.List;
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
             
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_SAVED_FORMAT,
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_SAVED_NETWORK_FORMAT,
                                       ((FileFilterAll) getFileFilter()).getFileDescription(), OpenMarkovPreferences.OPENMARKOV_FORMATS);
 
 

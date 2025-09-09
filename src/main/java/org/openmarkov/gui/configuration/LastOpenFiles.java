@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.configuration;
 
-import static org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys.LAST_OPEN_FILE;
-
 /**
  * Utility class to store the last open files
  *
@@ -21,7 +19,7 @@ public class LastOpenFiles {
 	 * maximum number of last open files per OPENMARKOV session
 	 */
 	// TODO to be configured by an external configuration file
-	public static final int MAX_LAST_OPEN_FILES = 5;
+	public static final int MAX_LAST_OPEN_FILES = 9;
 
 	/**
 	 * retrieves the name of the file that is located in the position index
@@ -31,7 +29,7 @@ public class LastOpenFiles {
 	 */
     public static String getFileNameAt(int index) {
         
-        return OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LAST_OPEN_FILE + index, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "");
+        return OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + index, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "");
 	}
 
 	/**
@@ -40,7 +38,7 @@ public class LastOpenFiles {
 	 */
     public static void setFileNameAt(String fileName, int index) {
         
-        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE + index, fileName, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + index, fileName, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
 	}
 
 	/**
@@ -65,12 +63,12 @@ public class LastOpenFiles {
 			index = (index == -1 ? lastIndex : index);
 			for (int i = index; i > 1; i--) {
 				aux = i - 1;
-                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE + i, OpenMarkovPreferences
-                                                  .get(OpenMarkovPreferencesKeys.LAST_OPEN_FILE + aux, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, ""),
+                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + i, OpenMarkovPreferences
+                                                  .get(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + aux, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, ""),
                                           OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
 			}
 		}
-        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE + 1, fileName, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + 1, fileName, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
 	}
 
 	/**
@@ -86,7 +84,7 @@ public class LastOpenFiles {
 
 		for (index = 1; index <= MAX_LAST_OPEN_FILES; index++) {
 			if (fileName.equals(OpenMarkovPreferences
-                                        .get(OpenMarkovPreferencesKeys.LAST_OPEN_FILE + index, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, ""))) {
+                                        .get(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + index, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, ""))) {
 				result = index;
 				break;
 			}
@@ -100,7 +98,7 @@ public class LastOpenFiles {
     public static boolean existLastOpenFiles() {
 
 		boolean result = false;
-        String fileName = OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LAST_OPEN_FILE + 1, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "");
+        String fileName = OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + 1, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "");
         if (!fileName.isEmpty()) {
 			result = true;
 		}
@@ -116,7 +114,7 @@ public class LastOpenFiles {
         int index;
 
 		for (index = 1; index < MAX_LAST_OPEN_FILES; index++) {
-            if (OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LAST_OPEN_FILE + index, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "")
+            if (OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + index, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "")
                                      .isEmpty()) {
 				index--; // the last one is the previous index
 				break;

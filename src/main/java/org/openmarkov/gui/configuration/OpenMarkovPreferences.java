@@ -237,12 +237,16 @@ public class OpenMarkovPreferences {
      * set default directories
      */
     public static void setDefaultDirectories() {
-        set(OpenMarkovPreferencesKeys.LAST_OPEN_DIRECTORY, "", OPENMARKOV_DIRECTORIES);
-        set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE_1, "", OPENMARKOV_DIRECTORIES);
-        set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE_2, "", OPENMARKOV_DIRECTORIES);
-        set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE_3, "", OPENMARKOV_DIRECTORIES);
-        set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE_4, "", OPENMARKOV_DIRECTORIES);
-        set(OpenMarkovPreferencesKeys.LAST_OPEN_FILE_5, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE_1, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE_2, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE_3, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE_4, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE_5, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE_6, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE_7, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE_8, "", OPENMARKOV_DIRECTORIES);
+        set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE_9, "", OPENMARKOV_DIRECTORIES);
         // set( STRING_RESOURCES_PATH, "openmarkov/gui/localize/",
         // OPENMARKOV_LANGUAGES );
         set(OpenMarkovPreferencesKeys.STRING_LANGUAGES_PATH, "localize", OPENMARKOV_LANGUAGES);

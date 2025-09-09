@@ -17,18 +17,23 @@ package org.openmarkov.gui.configuration;
 public interface OpenMarkovPreferencesKeys {
 
 	// access
-    String LAST_CONNECTION = "last connection";
-	String LAST_USER_CONNECTED = "last user connected";
+    String LATEST_CONNECTION = "latest connection";
+	String LATEST_USER_CONNECTED = "latest user connected";
 
 	// directories
     String INITIALIZED = "initialized";
-	String LAST_OPEN_DIRECTORY = "last open directory";
-	String LAST_OPEN_FILE = "last open file ";
-	String LAST_OPEN_FILE_1 = "last open file 1";
-	String LAST_OPEN_FILE_2 = "last open file 2";
-	String LAST_OPEN_FILE_3 = "last open file 3";
-	String LAST_OPEN_FILE_4 = "last open file 4";
-	String LAST_OPEN_FILE_5 = "last open file 5";
+	String LATEST_OPEN_DIRECTORY = "latest open directory";
+    String LATEST_SAVED_DIRECTORY = "latest saved directory";
+	String LATEST_OPEN_FILE = "latest open file ";
+	String LATEST_OPEN_FILE_1 = "latest open file 1";
+	String LATEST_OPEN_FILE_2 = "latest open file 2";
+	String LATEST_OPEN_FILE_3 = "latest open file 3";
+	String LATEST_OPEN_FILE_4 = "latest open file 4";
+	String LATEST_OPEN_FILE_5 = "latest open file 5";
+    String LATEST_OPEN_FILE_6 = "latest open file 6";
+    String LATEST_OPEN_FILE_7 = "latest open file 7";
+    String LATEST_OPEN_FILE_8 = "latest open file 8";
+    String LATEST_OPEN_FILE_9 = "latest open file 9";
 	String STRING_LANGUAGES_PATH = "languages directory path";
 
 	// positions
@@ -65,13 +70,13 @@ public interface OpenMarkovPreferencesKeys {
     String PREFERENCE_LANGUAGE = "user prefered language";
 
 	// parsers & writers
-    String LAST_OPENED_FORMAT = "last opened format";
-	String LAST_SAVED_FORMAT = "last saved format";
-	String LAST_LOADED_EVIDENCE_FORMAT = "last loaded evidence format";
+    String LATEST_NETWORK_FORMAT = "latest network format";
+	String LATEST_SAVED_NETWORK_FORMAT = "latest saved network format";
+	String LATEST_LOADED_EVIDENCE_FORMAT = "latest loaded evidence format";
 
     // databases
-    String LAST_OPEN_DB_DIRECTORY = "last open db directory";
-    String LAST_SAVED_DB_FORMAT = "last saved db format";
-    String LAST_SAVED_DB_DIRECTORY = "last open db directory";
+    String LATEST_OPEN_DATASET_DIRECTORY = "latest open dataset directory";
+    String LATEST_SAVED_DATASET_FORMAT = "latest saved dataset format";
+    String LATEST_SAVED_DATASET_DIRECTORY = "latest saved dataset directory";
 
 }

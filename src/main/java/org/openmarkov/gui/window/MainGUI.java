@@ -118,9 +118,9 @@ import java.awt.*;
 	private static void doReadPreferences() {
 		OpenMarkovPreferences.ensurePreferenceAreInitialized();
 		OpenMarkovPreferences
-				.set(OpenMarkovPreferencesKeys.LAST_CONNECTION, Double.toString(System.currentTimeMillis()),
+				.set(OpenMarkovPreferencesKeys.LATEST_CONNECTION, Double.toString(System.currentTimeMillis()),
                      OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
-		OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_USER_CONNECTED, System.getProperty("user.name"),
+		OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_USER_CONNECTED, System.getProperty("user.name"),
                                   OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
 	}
 

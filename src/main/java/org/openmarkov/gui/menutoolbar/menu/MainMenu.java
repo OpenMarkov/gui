@@ -643,6 +643,18 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
                     case 5:
                         item.setActionCommand(ActionCommands.OPEN_LAST_5_FILE.getCommandName());
                         break;
+                    case 6:
+                        item.setActionCommand(ActionCommands.OPEN_LAST_6_FILE.getCommandName());
+                        break;
+                    case 7:
+                        item.setActionCommand(ActionCommands.OPEN_LAST_7_FILE.getCommandName());
+                        break;
+                    case 8:
+                        item.setActionCommand(ActionCommands.OPEN_LAST_8_FILE.getCommandName());
+                        break;
+                    case 9:
+                        item.setActionCommand(ActionCommands.OPEN_LAST_9_FILE.getCommandName());
+                        break;
                     default:
                     
                 }

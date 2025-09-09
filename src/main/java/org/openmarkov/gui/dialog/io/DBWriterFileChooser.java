@@ -20,10 +20,10 @@ import java.util.HashMap;
 			addChoosableFileFilter(new FileFilterAll(extension, writersInfo.get(extension)));
 		}
         setFileFilter(OpenMarkovPreferences
-                              .get(OpenMarkovPreferencesKeys.LAST_SAVED_DB_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+                              .get(OpenMarkovPreferencesKeys.LATEST_SAVED_DATASET_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
                                    FileChooser.DEFAULT_FILE_FORMAT));
         File currentDirectory = new File(OpenMarkovPreferences
-                                                 .get(OpenMarkovPreferencesKeys.LAST_SAVED_DB_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+                                                 .get(OpenMarkovPreferencesKeys.LATEST_SAVED_DATASET_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
         setCurrentDirectory(currentDirectory);
 	}
 

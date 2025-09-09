@@ -20,14 +20,14 @@ import java.io.File;
 	public DBFileChooser(boolean acceptAllFiles) {
 		super(acceptAllFiles);
 		File currentDirectory = new File(OpenMarkovPreferences
-                                                 .get(OpenMarkovPreferencesKeys.LAST_OPEN_DB_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+                                                 .get(OpenMarkovPreferencesKeys.LATEST_OPEN_DATASET_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
 		setCurrentDirectory(currentDirectory);
 	}
 
 	@Override public int showOpenDialog(Component parent) {
 		int result = super.showOpenDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_OPEN_DB_DIRECTORY, getSelectedFile().getAbsolutePath(),
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DATASET_DIRECTORY, getSelectedFile().getAbsolutePath(),
                                       OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
 		}
 		return result;
@@ -36,9 +36,9 @@ import java.io.File;
 	@Override public int showSaveDialog(Component parent) {
 		int result = super.showSaveDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_SAVED_DB_FORMAT, ((FileFilterAll) getFileFilter()).getFileDescription(),
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_SAVED_DATASET_FORMAT, ((FileFilterAll) getFileFilter()).getFileDescription(),
                                       OpenMarkovPreferences.OPENMARKOV_FORMATS);
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_SAVED_DB_DIRECTORY, ((FileFilterAll) getFileFilter()).getFileDescription(),
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_SAVED_DATASET_DIRECTORY, ((FileFilterAll) getFileFilter()).getFileDescription(),
                                       OpenMarkovPreferences.OPENMARKOV_FORMATS);
 		}
 		return result;
