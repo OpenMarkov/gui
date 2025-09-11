@@ -287,7 +287,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 //When pressing "Cancel" in progressMonitor
             } catch (@SuppressWarnings("OverlyBroadCatchBlock")
             NonProjectablePotentialException | NotEvaluableNetworkException |
-            IncompatibleEvidenceException | CannotNormalizeNullVectorException e) {
+            IncompatibleEvidenceException | CannotNormalizePotentialException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), stringDatabase.getString("ExceptionGeneric.Title.Label"),
                                               JOptionPane.ERROR_MESSAGE);
@@ -515,18 +515,19 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 TablePotential upfrontTablePotential = upfrontEvolutionByCriterion.get(criterionName);
                 int numVariables = upfrontTablePotential.getNumVariables();
                 switch (numVariables) {
-                    case 0:
+                    case 0 -> {
                         xySeriesUpfront.add(0, upfrontTablePotential.values[0]);
-                        break;
-                    case 1:
+                    }
+                    case 1 -> {
                         int decisionStateIndex = upfrontTablePotential.getVariables()
                                                                       .get(0)
                                                                       .getStateIndex(decisionState);
                         xySeriesUpfront.add(0, upfrontTablePotential.getValue(upfrontTablePotential.getVariables(), new int[]{decisionStateIndex}));
-                        break;
-                    default:
-                        throw new UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable(upfrontTablePotential);
+                    }
+                    default ->
+                            throw new UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable(upfrontTablePotential);
                 }
+                
                 
                 for (int slice = 0; slice <= numSlices; slice++) {
                     TablePotential tablePotential = temporalEvolutionByCriterion.get(criterionName).get(slice);
@@ -536,17 +537,17 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                     double valueDiscount;
                     numVariables = tablePotential.getNumVariables();
                     switch (numVariables) {
-                        case 0:
+                        case 0 -> {
                             value = tablePotential.values[0];
                             valueDiscount = tablePotentialDiscount.values[0];
-                            break;
-                        case 1:
+                        }
+                        case 1 -> {
                             int decisionStateIndex = tablePotential.getVariables().get(0).getStateIndex(decisionState);
                             value = tablePotential.getValue(tablePotential.getVariables(), new int[]{decisionStateIndex});
                             valueDiscount = tablePotentialDiscount.getValue(tablePotential.getVariables(), new int[]{decisionStateIndex});
-                            break;
-                        default:
-                            throw new UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable(tablePotential);
+                        }
+                        default ->
+                                throw new UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable(tablePotential);
                     }//if it is greater than two -->exception
                     xySeries.add(slice, value);
                     xySeriesDiscount.add(slice, valueDiscount);
@@ -716,7 +717,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                     datasheet.put(temporalVariable, table);
                 } catch (@SuppressWarnings("OverlyBroadCatchBlock")
                 NonProjectablePotentialException | NotEvaluableNetworkException |
-                IncompatibleEvidenceException | IOException | CannotNormalizeNullVectorException e) {
+                IncompatibleEvidenceException | IOException | CannotNormalizePotentialException e) {
                     e.printStackTrace();
                 }
             }

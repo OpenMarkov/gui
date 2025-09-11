@@ -9,7 +9,7 @@ package org.openmarkov.gui.loader;
 
 import org.junit.jupiter.api.*;
 
-import org.openmarkov.core.test.TestSpeed;
+import org.openmarkov.core.testTags.TestSpeed;
 import org.openmarkov.gui.loader.element.IconLoader;
 
 import javax.swing.*;

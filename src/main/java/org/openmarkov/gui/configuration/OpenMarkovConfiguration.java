@@ -128,10 +128,7 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 
 	private void readConfiguration() {
 		HashMap<String, Configuration> configurationsCollection = createConfigurationObjects();
-		ObjectInputStream ois = null;
-		try {
-            FileInputStream fis = new FileInputStream(CONFIGURATION_FILE_NAME);
-			ois = new ObjectInputStream(fis);
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CONFIGURATION_FILE_NAME))) {
             OPEN_MARKOV_CONFIGURATION = (OpenMarkovConfiguration) ois.readObject();
 			if (configurations == null) {
 				generateDefaultConfiguration(configurationsCollection);
@@ -144,12 +141,6 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 			ExceptionDialog.show(e);
 		} catch (ClassNotFoundException e) {
 			logger.info(e);
-		} finally {
-			try {
-				ois.close();
-			} catch (IOException e) {
-				ExceptionDialog.show(e);
-			}
 		}
 	}
 

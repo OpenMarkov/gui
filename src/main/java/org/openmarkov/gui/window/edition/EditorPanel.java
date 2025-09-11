@@ -673,17 +673,15 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
             e.printStackTrace();
         }
-        
         repaint();
-        
     }
     
     private Node getSelectedNode() {
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
-        if (selectedNodes.size() == 1) { // Always happens
-            return selectedNodes.get(0).getNode();
+        if (selectedNodes.size() != 1) { // This never happens
+            throw new UnreacheableException(new NoSelectedNodeException(visualNetwork));
         }
-        throw new UnreacheableException(new NoSelectedNodeException(visualNetwork));
+        return selectedNodes.get(0).getNode();
     }
     
     /**
@@ -1181,8 +1179,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 if (node.isPreResolutionFinding() && preResolutionEvidence.getFinding(variable) != null) {
                     RemoveFindingEdit removeFindingEdit = new RemoveFindingEdit(node.getNode(), preResolutionEvidence, (VisualChanceNode) node, variable);
                     try {
-                        ProbNet probNet1 = node.getNode().getProbNet();
-                        removeFindingEdit.doEdit(probNet1);
+                        removeFindingEdit.doEdit(node.getNode().getProbNet());
                     } catch (DoEditException.ConstraintViolated e) {
                         throw new UnreacheableException(e);
                     }
@@ -1750,7 +1747,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             updateNodesFindingState(evidenceCase);
             paintInferenceResults(caseNumber, individualProbabilities, evidenceCase);
             propagationSucceded = true;
-        } catch (IncompatibleEvidenceException | CannotNormalizeNullVectorException e) {
+        } catch (IncompatibleEvidenceException | CannotNormalizePotentialException e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(this), "Incompatible evidence", "Error",
                                           JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();

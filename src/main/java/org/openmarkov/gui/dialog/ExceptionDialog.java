@@ -1,19 +1,17 @@
 package org.openmarkov.gui.dialog;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.IOpenMarkovException;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.core.logging.OpenMarkovLogger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
- * Allows to display exception details in a dialog box with a method called {@link ExceptionDialog#show(Exception)}.
+ * Allows to display exception details in a dialog box with a method called {@link ExceptionDialog#show(Throwable)}.
  *
  * @author jrico
  */
@@ -75,8 +73,8 @@ public class ExceptionDialog {
     /**
      * Gets a title and a message for an {@link Exception}. This is different for different exception classes:
      * <ul>
-     *   <li>If the class extends {@link OpenMarkovException}, the title and message will come from
-     *   {@code OpenMarkovException#getExceptionTitle()} and {@code OpenMarkovException#getExceptionMessage()}.</li>
+     *   <li>If the class extends {@link IOpenMarkovException}, the title and message will come from
+     *   {@code IOpenMarkovException#getExceptionTitle()} and {@code IOpenMarkovException#getExceptionMessage()}.</li>
      *   <li>If the exception is in a bundle file, it will take the title and message from the
      *   {@link StringDatabase#getUniqueInstance()}</li>
      *   <li>In any other case, the title is the localization of the key {@code "UnlocalizedJavaException.title"} and the
@@ -89,18 +87,21 @@ public class ExceptionDialog {
      * @return a title and a message representing the exception.
      */
     private static TitleAndMessage getTitleAndMessage(Throwable throwable) {
-        if (throwable instanceof OpenMarkovException openMarkovException) {
+        if (throwable instanceof IOpenMarkovException openMarkovException) {
+            /*
             try {
-                var getExceptionTitle = OpenMarkovException.class.getDeclaredMethod("getExceptionTitle");
+                var getExceptionTitle = IOpenMarkovException.class.getDeclaredMethod("getExceptionTitle");
                 getExceptionTitle.setAccessible(true);
                 String title = (String) getExceptionTitle.invoke(openMarkovException);
-                var getExceptionMessage = OpenMarkovException.class.getDeclaredMethod("getExceptionMessage");
+                var getExceptionMessage = IOpenMarkovException.class.getDeclaredMethod("getExceptionMessage");
                 getExceptionMessage.setAccessible(true);
                 String message = (String) getExceptionMessage.invoke(openMarkovException);
                 return new TitleAndMessage(title, message);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
                 throw new UnreacheableException(ex);
             }
+             */
+            return new TitleAndMessage(openMarkovException.getExceptionTitle(), openMarkovException.getExceptionMessage());
         }
         @Nullable Class<Exception> exceptionClass = (Class<Exception>) throwable.getClass();
         while (exceptionClass != null) {
@@ -135,9 +136,9 @@ public class ExceptionDialog {
     }
     
     /**
-     * Represents a title and a message of an {@link OpenMarkovException}.
+     * Represents a title and a message of an {@link IOpenMarkovException}.
      */
-    private record TitleAndMessage(String title, String message) {
+    private record TitleAndMessage(@Nullable String title, @Nullable String message) {
     }
     
 }

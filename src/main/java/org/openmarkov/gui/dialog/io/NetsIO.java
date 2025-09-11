@@ -16,6 +16,7 @@ import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.gui.dialog.ExceptionDialog;
+import org.openmarkov.io.probmodel.writer.PGMXWriter_0_2;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,7 +45,9 @@ public class NetsIO {
      * information.
      *
      * @param fileName file where the network is saved.
+     *
      * @return an ProbNetInfo object with the information of the network.
+     *
      * @throws Exception if the file doesn't exist or the file format isn't correct.
      */
     public static ProbNetInfo openNetworkFile(String fileName) throws IOException, ParserConfigurationException, SAXException, org.openmarkov.core.exception.ParserException {
@@ -135,27 +138,31 @@ public class NetsIO {
         try {
             probNetWriter.writeProbNet(fileName, network, evidence);
             /*
-             * if (fileExtension.contentEquals("elv")) {
-             * //ElviraWriter.getUniqueInstance().writeProbNet(fileName,
-             * network); } else if (fileExtension.contentEquals("xml")) {
-             * //XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
-             * } else if (fileExtension.contentEquals("pgmx")) {
-             * PGMXWriter0_2.getUniqueInstance().writeProbNet(fileName, network); }
-             * else if (fileExtension.contentEquals("bif")) {
-             * //HuginWriter.getUniqueInstance().writeProbNet(fileName,
-             * network); } else { throw new
-             * NotRecognisedNetworkFileExtensionException(fileName); } } catch
-             * (IOException ex) { throw new
-             * CanNotWriteNetworkToFileException(fileName); }
-             */
-        } catch (WriterException.UnknownNetworkType e) {
+            if (fileExtension.contentEquals("elv")) {
+                //ElviraWriter.getUniqueInstance().writeProbNet(fileName, network);
+            } else if (fileExtension.contentEquals("xml")) {
+                //XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
+            } else if (fileExtension.contentEquals("pgmx")) {
+                PGMXWriter_0_2.getUniqueInstance().writeProbNet(fileName, network);
+            } else if (fileExtension.contentEquals("bif")) {
+                //HuginWriter.getUniqueInstance().writeProbNet(fileName,network);
+            } else {
+                throw new NotRecognisedNetworkFileExtensionException(fileName);
+            }
+            */
+        } 
+        /*catch
+        (IOException ex) {
+            throw new CanNotWriteNetworkToFileException(fileName);
+            
+        }*/ catch (WriterException.UnknownNetworkType e) {
             if (fileExtension.equals("elv")) {
                 new File(fileName).delete();
                 fileName = network.getNetworkType().toString().toLowerCase().replaceAll("_", " ");
             }
-            ExceptionDialog.show("Could not save network "+fileName+":", e);
+            ExceptionDialog.show("Could not save network " + fileName + ":", e);
         } catch (WriterException e) {
-            ExceptionDialog.show("Could not save network: "+fileName+":", e);
+            ExceptionDialog.show("Could not save network: " + fileName + ":", e);
         }
     }
     
@@ -206,7 +213,9 @@ public class NetsIO {
      *
      * @param url The full url of the file to be opened file where the network
      *            is saved.
+     *
      * @return an ProbNetInfo object with the information of the network.
+     *
      * @throws Exception if the file doesn't exist or the file format isn't correct.
      */
     public static ProbNetInfo openNetworkURL(URL url) throws SAXException, IOException, ParserConfigurationException, org.openmarkov.core.exception.ParserException {

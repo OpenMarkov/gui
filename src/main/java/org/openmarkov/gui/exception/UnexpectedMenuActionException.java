@@ -1,11 +1,16 @@
 package org.openmarkov.gui.exception;
 
-import org.openmarkov.core.exception.BundledOpenMarkovException;
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
 
-public class UnexpectedMenuActionException extends BundledOpenMarkovException {
+//TODO: This should probably be a UnrecheableException instead of being wrapped on it when used.
+public class UnexpectedMenuActionException extends Exception implements IBundledOpenMarkovException {
     public UnexpectedMenuActionException(String actionCommand) {
         this.actionCommand = actionCommand;
     }
     
     public final String actionCommand;
+    
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
 }

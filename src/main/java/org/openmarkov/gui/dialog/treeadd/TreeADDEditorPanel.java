@@ -341,90 +341,91 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     @Override public void actionPerformed(ActionEvent ae) {
         String actionComand = ae.getActionCommand();
         TreePath path = jTree.getPathForLocation(xx, yy);
-        if (path != null) {
-            Object node = path.getLastPathComponent();
-            switch (actionComand) {
-                case ActionCommands.ADD_SUBTREE -> {
-                    if (node instanceof Potential) {
-                        path = path.getParentPath();
-                        node = path.getLastPathComponent();
-                    }
-                    // node must be a branch
-                    addSubtree(ae, (TreeADDBranch) node, path);
+        if (path == null) {
+            return;
+        }
+        Object node = path.getLastPathComponent();
+        switch (actionComand) {
+            case ActionCommands.ADD_SUBTREE -> {
+                if (node instanceof Potential) {
+                    path = path.getParentPath();
+                    node = path.getLastPathComponent();
                 }
-                case ActionCommands.EDIT_POTENTIAL -> {
-                    if (node instanceof Potential) {
-                        path = path.getParentPath();
-                        node = path.getLastPathComponent();
-                    }
-                    // node must be a branch
-                    editPotential(ae, (TreeADDBranch) node, path);
-                }
-                case ActionCommands.CHANGE_ROOT_VARIABLE ->
-                    // node must be a TreeADDPotential
-                        changeRootVariable(ae, (TreeADDPotential) node, path);
-                case ActionCommands.JOIN_BRANCHES -> {
-                    if (node instanceof Potential) {
-                        path = path.getParentPath();
-                        node = path.getLastPathComponent();
-                    }
-                    // node must be a branch
-                    associateStates(ae, (TreeADDBranch) node, path);
-                }
-                case ActionCommands.REMOVE_SUBTREE -> {
-                    if (node instanceof Potential) {
-                        path = path.getParentPath();
-                        node = path.getLastPathComponent();
-                    }
-                    // node must be a branch
-                    removeSubtree(ae, (TreeADDBranch) node, path);
-                }
-                case ActionCommands.ADD_VARIABLES -> {
-                    if (node instanceof Potential) {
-                        path = path.getParentPath();
-                        node = path.getLastPathComponent();
-                    }
-                    // node must be a branch
-                    addVariablesToPotential(ae, (TreeADDBranch) node, path);
-                }
-                case ActionCommands.REMOVE_STATES -> {
-                    if (node instanceof Potential) {
-                        path = path.getParentPath();
-                        node = path.getLastPathComponent();
-                    }
-                    // node must be a branch
-                    dissociateStates(ae, (TreeADDBranch) node, path);
-                }
-                case ActionCommands.REMOVE_VARIABLES -> {
-                    if (node instanceof Potential) {
-                        path = path.getParentPath();
-                        node = path.getLastPathComponent();
-                    }
-                    // node must be a branch
-                    removeVariablesFromPotential(ae, (TreeADDBranch) node, path);
-                }
-                case ActionCommands.SPLIT_INTERVAL -> {
-                    if (node instanceof Potential) {
-                        path = path.getParentPath();
-                        node = path.getLastPathComponent();
-                    }
-                    // node must be a branch
-                    splitInterval(ae, (TreeADDBranch) node, path);
-                }
-                case ActionCommands.CHANGE_INTERVAL -> {
-                    if (node instanceof Potential) {
-                        path = path.getParentPath();
-                        node = path.getLastPathComponent();
-                    }
-                    // node must be a branch
-                    changeInterval(ae, (TreeADDBranch) node, path);
-                }
-                case ActionCommands.SET_LABEL -> setLabel(ae, (TreeADDBranch) node, path);
-                case ActionCommands.REMOVE_LABEL -> removeLabel(ae, (TreeADDBranch) node, path);
-                case ActionCommands.SET_REFERENCE -> setReference(ae, (TreeADDBranch) node, path);
-                case ActionCommands.REMOVE_REFERENCE -> removeReference(ae, (TreeADDBranch) node, path);
-                default -> throw new UnreacheableException(new UnexpectedMenuActionException(actionComand));
+                // node must be a branch
+                addSubtree(ae, (TreeADDBranch) node, path);
             }
+            case ActionCommands.EDIT_POTENTIAL -> {
+                if (node instanceof Potential) {
+                    path = path.getParentPath();
+                    node = path.getLastPathComponent();
+                }
+                // node must be a branch
+                editPotential(ae, (TreeADDBranch) node, path);
+            }
+            case ActionCommands.CHANGE_ROOT_VARIABLE ->
+                // node must be a TreeADDPotential
+                    changeRootVariable(ae, (TreeADDPotential) node, path);
+            case ActionCommands.JOIN_BRANCHES -> {
+                if (node instanceof Potential) {
+                    path = path.getParentPath();
+                    node = path.getLastPathComponent();
+                }
+                // node must be a branch
+                associateStates(ae, (TreeADDBranch) node, path);
+            }
+            case ActionCommands.REMOVE_SUBTREE -> {
+                if (node instanceof Potential) {
+                    path = path.getParentPath();
+                    node = path.getLastPathComponent();
+                }
+                // node must be a branch
+                removeSubtree(ae, (TreeADDBranch) node, path);
+            }
+            case ActionCommands.ADD_VARIABLES -> {
+                if (node instanceof Potential) {
+                    path = path.getParentPath();
+                    node = path.getLastPathComponent();
+                }
+                // node must be a branch
+                addVariablesToPotential(ae, (TreeADDBranch) node, path);
+            }
+            case ActionCommands.REMOVE_STATES -> {
+                if (node instanceof Potential) {
+                    path = path.getParentPath();
+                    node = path.getLastPathComponent();
+                }
+                // node must be a branch
+                dissociateStates(ae, (TreeADDBranch) node, path);
+            }
+            case ActionCommands.REMOVE_VARIABLES -> {
+                if (node instanceof Potential) {
+                    path = path.getParentPath();
+                    node = path.getLastPathComponent();
+                }
+                // node must be a branch
+                removeVariablesFromPotential(ae, (TreeADDBranch) node, path);
+            }
+            case ActionCommands.SPLIT_INTERVAL -> {
+                if (node instanceof Potential) {
+                    path = path.getParentPath();
+                    node = path.getLastPathComponent();
+                }
+                // node must be a branch
+                splitInterval(ae, (TreeADDBranch) node, path);
+            }
+            case ActionCommands.CHANGE_INTERVAL -> {
+                if (node instanceof Potential) {
+                    path = path.getParentPath();
+                    node = path.getLastPathComponent();
+                }
+                // node must be a branch
+                changeInterval(ae, (TreeADDBranch) node, path);
+            }
+            case ActionCommands.SET_LABEL -> setLabel(ae, (TreeADDBranch) node, path);
+            case ActionCommands.REMOVE_LABEL -> removeLabel(ae, (TreeADDBranch) node, path);
+            case ActionCommands.SET_REFERENCE -> setReference(ae, (TreeADDBranch) node, path);
+            case ActionCommands.REMOVE_REFERENCE -> removeReference(ae, (TreeADDBranch) node, path);
+            default -> throw new UnreacheableException(new UnexpectedMenuActionException(actionComand));
         }
     }
     
