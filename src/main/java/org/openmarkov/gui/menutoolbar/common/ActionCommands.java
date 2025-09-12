@@ -9,6 +9,7 @@ package org.openmarkov.gui.menutoolbar.common;
 
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.gui.window.MainPanel;
+import org.openmarkov.java.enumUtils.EnumUtils;
 
 import java.util.HashMap;
 
@@ -345,4 +346,7 @@ public enum ActionCommands {
         return ZOOM_PREFIX.commandName + (int) Math.round(zoom * 100);
     }
     
+    @Override public String toString() {
+        return this.commandName;
+    }
 }
