@@ -65,7 +65,6 @@ import java.util.List;
             currentDirectory = new File(OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
             setFileFilter("OpenMarkov");
 		} else {
-            currentDirectory = new File(OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_SAVED_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
             setFileFilter(OpenMarkovPreferences
                                   .get(OpenMarkovPreferencesKeys.LATEST_SAVED_NETWORK_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
                                        FileChooser.DEFAULT_FILE_FORMAT));

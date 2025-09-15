@@ -621,6 +621,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         String title = stringDatabase.getString("SaveNetwork.Title.Label");
         fileChooser.setDialogTitle(title);
         fileChooser.setSelectedFile(new File(suggestedFileName));
+        fileChooser.setCurrentDirectory(new File(OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_SAVED_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, ".")));
         ArrayList<String> fileNameAndFormat = new ArrayList<String>();
         String filename = null;
         String fileFormat = null;
