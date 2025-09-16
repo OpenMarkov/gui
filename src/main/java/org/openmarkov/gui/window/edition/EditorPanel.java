@@ -21,6 +21,7 @@ import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.gui.action.PasteEdit;
+import org.openmarkov.gui.action.RemoveLinkRestrictionEdit;
 import org.openmarkov.gui.action.RemoveSelectedEdit;
 import org.openmarkov.gui.dialog.ExceptionDialog;
 import org.openmarkov.gui.dialog.PropagationOptionsDialog;
@@ -2267,19 +2268,13 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * Resets the link restriction potential of a link
      */
     public void disableLinkRestriction() {
-        List<VisualLink> links = visualNetwork.getSelectedLinks();
-        if (!links.isEmpty()) {
-            Link<Node> link = links.get(0).getLink();
-            link.setRestrictionsPotential(null);
-            /*
-            27/10/2014
-            Solving issue #165
-            https://bitbucket.org/cisiad/org.openmarkov.issues/issue/165/when-a-restriction-is-removed-the-network
-            The next three lines mark the network as changed and modify the network panel status
-             */
-            setNetworkChangedWithOutEdit(true);
-            repaint();
+        RemoveLinkRestrictionEdit removeLinkRestrictionEdit = new RemoveLinkRestrictionEdit(visualNetwork);
+        try {
+            removeLinkRestrictionEdit.doEdit(probNet);
+        } catch (DoEditException.ConstraintViolated e) {
+            throw new RuntimeException(e);
         }
+        repaint();
     }
     
     /***
