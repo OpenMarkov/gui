@@ -8,6 +8,7 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
@@ -55,21 +56,13 @@ import java.util.List;
 	 * @param node : node whose first potential is a TablePotential or a TableDeltaPotential
 	 * @author carmenyago : adaptation to TableDeltaPotential
 	 */
-	public UnivariateDistrPotentialPanel(Node node) {
+    public UnivariateDistrPotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException {
 		super();
 
 		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
 
-		// If there is no potential
-		
-		
-		if(node.getPotentials().isEmpty()){
-			JOptionPane.showMessageDialog(this, "There are no potentials");
-			return;
-		}
-		
 		this.node = node;
-		potential = node.getPotentials().get(0);
+        potential = node.getFirstPotential();
 		//The list of variables of the UnivariateDistrPotential
 		potentialVariables = potential.getVariables();
 		tablePotential = ((UnivariateDistrPotential) potential).getDistributionTable();
@@ -117,8 +110,8 @@ import java.util.List;
 
 		return tableModel;
 	}
-
-	@Override public void setData() {
+    
+    @Override public void setData() throws ThereIsNoPotentialsInNodeException {
 
 		// true
 		hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(node);
@@ -265,7 +258,7 @@ import java.util.List;
 	 * @author carmenyago
 	 */
 	@Override protected EvidenceCase getConfiguration(int col)
-            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
 
 		List<Variable> parents = variables.subList(1, potential.getNumVariables());
 
@@ -300,21 +293,6 @@ import java.util.List;
 			j++;
 		}
 		return evidence;
-	}
-
-	/**
-	 * This method gets the Evidence Case from the selected column
-	 *
-	 * @return Evidence case
-	 */
-	@Override public EvidenceCase getEvidenceCaseFromSelectedColumn() {
-		EvidenceCase evi = null;
-		try {
-			evi = getConfiguration(selectedColumn);
-		} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-			e.printStackTrace();
-		}
-		return evi;
 	}
 
 	/**

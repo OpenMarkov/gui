@@ -370,7 +370,7 @@
             <Label value="Sensitivity analysis"/>
         </CostEffectivenessSensitivity>
         <CostEffectiveness>
-            <Label value="Cost effectiveness analysis"/>
+            <Label value="Cost-effectiveness analysis"/>
         </CostEffectiveness>
         <SensitivityAnalysis>
             <Label value="Sensitivity analysis"/>

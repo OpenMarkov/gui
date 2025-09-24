@@ -8,12 +8,14 @@
 package org.openmarkov.gui.window;
 
 import org.apache.commons.io.FilenameUtils;
+import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
+import org.openmarkov.core.io.exception.NoWriterForExtensionException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.StrategyTree;
@@ -37,7 +39,12 @@ import org.openmarkov.gui.dialog.io.URLNetworkChooserDialog;
 import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.exception.NotEnoughtMemoryException;
+import org.openmarkov.gui.exception.PreResolutionNodeInInferenceException;
+import org.openmarkov.gui.exception.ThereIsNoNextEvidenceCaseException;
+import org.openmarkov.gui.exception.ThereIsNoPreviousEvidenceCaseException;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
+import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.util.PropertyNames;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.dt.DecisionTreeWindow;
@@ -65,9 +72,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
 //TODO: remove just because reference to cost-effectiveness was removed
 //import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
 
@@ -141,21 +152,92 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     @Override public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
-        switch (ActionCommands.of(actionCommand)) {
+        ActionCommands actionCommandConstant = ActionCommands.of(actionCommand);
+        if (actionCommandConstant == null) {
+            return;
+            //throw new UnrecoverableException(new InvalidArgumentException(actionCommand, "it is not registered as a valid action command."));
+        }
+        switch (actionCommandConstant) {
             case ActionCommands.NEW_NETWORK -> createNewNetwork();
-            case ActionCommands.OPEN_NETWORK -> openNetwork();
+            case ActionCommands.OPEN_NETWORK -> {
+                try {
+                    openNetwork();
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnreacheableException(ex);
+                }
+            }
             case ActionCommands.OPEN_NETWORK_URL -> openNetworkURL();
-            case ActionCommands.OPEN_LAST_1_FILE -> openNetwork(LastOpenFiles.getFileNameAt(1));
-            case ActionCommands.OPEN_LAST_2_FILE -> openNetwork(LastOpenFiles.getFileNameAt(2));
-            case ActionCommands.OPEN_LAST_3_FILE -> openNetwork(LastOpenFiles.getFileNameAt(3));
-            case ActionCommands.OPEN_LAST_4_FILE -> openNetwork(LastOpenFiles.getFileNameAt(4));
-            case ActionCommands.OPEN_LAST_5_FILE -> openNetwork(LastOpenFiles.getFileNameAt(5));
-            case ActionCommands.OPEN_LAST_6_FILE -> openNetwork(LastOpenFiles.getFileNameAt(6));
-            case ActionCommands.OPEN_LAST_7_FILE -> openNetwork(LastOpenFiles.getFileNameAt(7));
-            case ActionCommands.OPEN_LAST_8_FILE -> openNetwork(LastOpenFiles.getFileNameAt(8));
-            case ActionCommands.OPEN_LAST_9_FILE -> openNetwork(LastOpenFiles.getFileNameAt(9));
+            case ActionCommands.OPEN_LAST_1_FILE -> {
+                try {
+                    openNetwork(LastOpenFiles.getFileNameAt(1));
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.OPEN_LAST_2_FILE -> {
+                try {
+                    openNetwork(LastOpenFiles.getFileNameAt(2));
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.OPEN_LAST_3_FILE -> {
+                try {
+                    openNetwork(LastOpenFiles.getFileNameAt(3));
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.OPEN_LAST_4_FILE -> {
+                try {
+                    openNetwork(LastOpenFiles.getFileNameAt(4));
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.OPEN_LAST_5_FILE -> {
+                try {
+                    openNetwork(LastOpenFiles.getFileNameAt(5));
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.OPEN_LAST_6_FILE -> {
+                try {
+                    openNetwork(LastOpenFiles.getFileNameAt(6));
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.OPEN_LAST_7_FILE -> {
+                try {
+                    openNetwork(LastOpenFiles.getFileNameAt(7));
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.OPEN_LAST_8_FILE -> {
+                try {
+                    openNetwork(LastOpenFiles.getFileNameAt(8));
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.OPEN_LAST_9_FILE -> {
+                try {
+                    openNetwork(LastOpenFiles.getFileNameAt(9));
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.SAVE_NETWORK -> saveNetwork(getCurrentNetworkPanel());
-            case ActionCommands.SAVE_OPEN_NETWORK -> saveOpenNetwork(getCurrentNetworkPanel());
+            case ActionCommands.SAVE_OPEN_NETWORK -> {
+                try {
+                    saveOpenNetwork(getCurrentNetworkPanel());
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.SAVEAS_NETWORK -> saveNetworkAs(getCurrentNetworkPanel());
             case ActionCommands.CLOSE_NETWORK -> closeCurrentNetwork();
             case ActionCommands.LOAD_EVIDENCE -> loadEvidence(getCurrentNetworkPanel());
@@ -178,53 +260,187 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 mainPanel.getMainPanelMenuAssistant()
                          .setOptionEnabled(ActionCommands.CLIPBOARD_PASTE.getCommandName(), true);
             }
-            case ActionCommands.CLIPBOARD_PASTE -> getCurrentNetworkPanel().pasteFromClipboard();
+            case ActionCommands.CLIPBOARD_PASTE -> {
+                try {
+                    getCurrentNetworkPanel().pasteFromClipboard();
+                } catch (DoEditException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.UNDO -> undo();
             case ActionCommands.REDO -> redo();
             case ActionCommands.SELECT_ALL -> getCurrentNetworkPanel().selectAllObjects();
             case ActionCommands.OBJECT_REMOVAL -> getCurrentNetworkPanel().removeSelectedObjects();
             case ActionCommands.EDITION_MODE_PREFIX -> activateEditionMode(actionCommand);
             case ActionCommands.CHANGE_WORKING_MODE, ActionCommands.CHANGE_TO_INFERENCE_MODE,
-                 ActionCommands.CHANGE_TO_EDITION_MODE -> setNewWorkingMode();
+                 ActionCommands.CHANGE_TO_EDITION_MODE -> {
+                try {
+                    setNewWorkingMode();
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.SET_NEW_EXPANSION_THRESHOLD -> setNewExpansionThreshold((Double) e.getSource());
-            case ActionCommands.CREATE_NEW_EVIDENCE_CASE -> evidenceCasesNavigationOption("CREATE_NEW_EVIDENCE_CASE");
-            case ActionCommands.GO_TO_FIRST_EVIDENCE_CASE -> evidenceCasesNavigationOption("GO_TO_FIRST_EVIDENCE_CASE");
-            case ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE ->
+            case ActionCommands.CREATE_NEW_EVIDENCE_CASE -> {
+                try {
+                    evidenceCasesNavigationOption("CREATE_NEW_EVIDENCE_CASE");
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.GO_TO_FIRST_EVIDENCE_CASE -> {
+                try {
+                    evidenceCasesNavigationOption("GO_TO_FIRST_EVIDENCE_CASE");
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE -> {
+                try {
                     evidenceCasesNavigationOption("GO_TO_PREVIOUS_EVIDENCE_CASE");
-            case ActionCommands.GO_TO_NEXT_EVIDENCE_CASE -> evidenceCasesNavigationOption("GO_TO_NEXT_EVIDENCE_CASE");
-            case ActionCommands.GO_TO_LAST_EVIDENCE_CASE -> evidenceCasesNavigationOption("GO_TO_LAST_EVIDENCE_CASE");
-            case ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES ->
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.GO_TO_NEXT_EVIDENCE_CASE -> {
+                try {
+                    evidenceCasesNavigationOption("GO_TO_NEXT_EVIDENCE_CASE");
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.GO_TO_LAST_EVIDENCE_CASE -> {
+                try {
+                    evidenceCasesNavigationOption("GO_TO_LAST_EVIDENCE_CASE");
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES -> {
+                try {
                     evidenceCasesNavigationOption("CLEAR_OUT_ALL_EVIDENCE_CASES");
-            case ActionCommands.PROPAGATE_EVIDENCE ->
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.PROPAGATE_EVIDENCE -> {
+                try {
                     getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant());
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.ABSORB_NODE -> this.getCurrentNetworkPanel().absorbNode();
             case ActionCommands.ABSORB_PARENTS -> this.getCurrentNetworkPanel().absorbParents();
-            case ActionCommands.NODE_PROPERTIES -> getCurrentNetworkPanel().changeNodeProperties();
-            case ActionCommands.EDIT_POTENTIAL -> getCurrentNetworkPanel().changePotential();
-            case ActionCommands.DECISION_IMPOSE_POLICY -> getCurrentNetworkPanel().imposePolicyInNode();
-            case ActionCommands.DECISION_EDIT_POLICY -> getCurrentNetworkPanel().editNodePolicy();
+            case ActionCommands.NODE_PROPERTIES -> {
+                try {
+                    getCurrentNetworkPanel().changeNodeProperties();
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.EDIT_POTENTIAL -> {
+                try {
+                    getCurrentNetworkPanel().changePotential();
+                } catch (ThereIsNoPotentialsInNodeException | IncompatibleEvidenceException |
+                         NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         CannotNormalizePotentialException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.DECISION_IMPOSE_POLICY -> {
+                try {
+                    getCurrentNetworkPanel().imposePolicyInNode();
+                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                         ThereIsNoPotentialsInNodeException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.DECISION_EDIT_POLICY -> {
+                try {
+                    getCurrentNetworkPanel().editNodePolicy();
+                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                         ThereIsNoPotentialsInNodeException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.DECISION_REMOVE_POLICY -> getCurrentNetworkPanel().removePolicyFromNode();
-            case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY -> getCurrentNetworkPanel().showExpectedUtilityOfNode();
-            case ActionCommands.DECISION_SHOW_OPTIMAL_POLICY -> getCurrentNetworkPanel().showOptimalPolicyOfNode();
+            case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY -> {
+                try {
+                    getCurrentNetworkPanel().showExpectedUtilityOfNode();
+                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                         NonProjectablePotentialException | NotEvaluableNetworkException.NotApplicableNetwork |
+                         NotEvaluableNetworkException.UnsatisfiedContraints | ThereIsNoPotentialsInNodeException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.DECISION_SHOW_OPTIMAL_POLICY -> {
+                try {
+                    getCurrentNetworkPanel().showOptimalPolicyOfNode();
+                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                         NonProjectablePotentialException | NotEvaluableNetworkException.NotApplicableNetwork |
+                         NotEvaluableNetworkException.UnsatisfiedContraints | ThereIsNoPotentialsInNodeException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.NODE_EXPANSION -> getCurrentNetworkPanel().expandNode();
             case ActionCommands.NODE_CONTRACTION -> getCurrentNetworkPanel().contractNode();
             case ActionCommands.NODE_ADD_FINDING -> getCurrentNetworkPanel().addFinding();
-            case ActionCommands.NODE_REMOVE_FINDING -> getCurrentNetworkPanel().removeFinding();
-            case ActionCommands.NODE_REMOVE_ALL_FINDINGS -> getCurrentNetworkPanel().removeAllFindings();
+            case ActionCommands.NODE_REMOVE_FINDING -> {
+                try {
+                    getCurrentNetworkPanel().removeFinding();
+                } catch (PreResolutionNodeInInferenceException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.NODE_REMOVE_ALL_FINDINGS -> {
+                try {
+                    getCurrentNetworkPanel().removeAllFindings();
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.BYTITLE_NODES -> activateByTitle(true);
             case ActionCommands.BYNAME_NODES -> activateByTitle(false);
             case ActionCommands.ZOOM_IN -> incrementZoom(getCurrentPanel());
             case ActionCommands.ZOOM_OUT -> decrementZoom(getCurrentPanel());
             case ActionCommands.ZOOM_OTHER -> setZoom(true, getCurrentPanel(), 0);
             case ActionCommands.MESSAGE_WINDOW -> showMessageWindow();
-            case ActionCommands.CONFIGURATION -> showUserConfigurationDialog();
+            case ActionCommands.CONFIGURATION -> {
+                try {
+                    showUserConfigurationDialog();
+                } catch (BackingStoreException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.PROPAGATION_OPTIONS -> setPropagationOptions();
             case ActionCommands.INFERENCE_OPTIONS -> setInferenceOptions(getCurrentNetworkPanel());
             case ActionCommands.HELP_CHANGE_LANGUAGE -> showLanguageChangeDialog();
             case ActionCommands.HELP_SHORTCUTS -> showShortcuts();
             case ActionCommands.HELP_ABOUT -> showAbout();
-            case ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS ->
+            case ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS -> {
+                try {
                     this.getCurrentNetworkPanel().invertLinkAndUpdatePotentials();
+                } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES, ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES ->
                     this.getCurrentNetworkPanel().enableLinkRestriction();
             case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES ->
@@ -232,13 +448,51 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> this.getCurrentNetworkPanel().enableRevelationArc();
             case ActionCommands.MARK_AS_INPUT -> this.getCurrentNetworkPanel().markSelectedAsInput();
             case ActionCommands.EDIT_CLASS -> this.getCurrentNetworkPanel().editClass();
-            case ActionCommands.EDIT_INSTANCE_NAME -> this.getCurrentNetworkPanel().editInstanceName();
+            case ActionCommands.EDIT_INSTANCE_NAME -> {
+                try {
+                    this.getCurrentNetworkPanel().editInstanceName();
+                } catch (DoEditException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.SET_ARITY_ONE -> this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
             case ActionCommands.SET_ARITY_MANY -> this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
             case ActionCommands.DECISION_TREE -> showDecisionTree(this.getCurrentNetworkPanel().getProbNet());
             case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY -> showOptimalStrategy(this.getCurrentNetworkPanel());
-            case ActionCommands.NEXT_SLICE_NODE -> this.getCurrentNetworkPanel().createNextSliceNode();
-            case null, default -> {
+            case ActionCommands.NEXT_SLICE_NODE -> {
+                try {
+                    this.getCurrentNetworkPanel().createNextSliceNode();
+                } catch (DoEditException.ConstraintViolated ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC -> {
+                ToolPlugin cePlugin;
+                try {
+                    cePlugin = (ToolPlugin) Class.forName("org.openmarkov.costEffectiveness.CostEffectivenessPlugin")
+                                                 .getDeclaredConstructor().newInstance();
+                } catch (InstantiationException | ClassNotFoundException | IllegalAccessException |
+                         NoSuchMethodException | InvocationTargetException ex) {
+                    throw new UnreacheableException(ex);
+                }
+                try {
+                    cePlugin.showDialog(MainPanel.getUniqueInstance().getMainFrame());
+                } catch (Exception ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.CHANCE_CREATION, ActionCommands.UNCERTAINTY_REMOVE, ActionCommands.UNCERTAINTY_EDIT,
+                 ActionCommands.UNCERTAINTY_ASSIGN, ActionCommands.TEMPORAL_OPTIONS,
+                 ActionCommands.SENSITIVITY_ANALYSIS, ActionCommands.SENSITIVITY_ANALYSIS_PROBABILISTIC,
+                 ActionCommands.SENSITIVITY_ANALYSIS_DETERMINISTIC, ActionCommands.COST_EFFECTIVENESS_SENSITIVITY,
+                 ActionCommands.LEARNING,
+                 ActionCommands.VIEW_TOOLBARS, ActionCommands.LINK_PROPERTIES, ActionCommands.TEST,
+                 ActionCommands.TREE_SAVE_GRAPHVIZ, ActionCommands.TREE_SHOW_CEP, ActionCommands.TREE_OPEN_NETWORK,
+                 ActionCommands.TREE_EXPAND_ALL, ActionCommands.TREE_EXPAND_NEXT, ActionCommands.SET_ARITY,
+                 ActionCommands.INSTANCE_CREATION, ActionCommands.LINK_CREATION, ActionCommands.UTILITY_CREATION,
+                 ActionCommands.DECISION_CREATION, ActionCommands.LOG, ActionCommands.CHANGE_ACTIVE_CLASS,
+                 ActionCommands.ZOOM_PREFIX, ActionCommands.NODES, ActionCommands.ZOOM,
+                 ActionCommands.OBJECT_SELECTION -> {
                 if (actionCommand.startsWith(ActionCommands.EDITION_MODE_PREFIX.getCommandName())) {
                     activateEditionMode(actionCommand);
                 } else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS.getCommandName())) {
@@ -246,8 +500,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
                              .addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS.getCommandName() + ".", ""));
                 } else if (ActionCommands.isZoomActionCommand(actionCommand)) {
                     setZoom(false, getCurrentPanel(), ActionCommands.getValueZoomActionCommand(actionCommand));
-                } else {
-                    //TODO: What to do if the command is wrong?
+                } else if (e.getSource() instanceof JButton source) {
+                    var listeners = source.getActionListeners();
+                    //
+                    //throw new UnrecoverableException(new InvalidArgumentException(actionCommand, "it has not tied action"));
                 }
             }
         }
@@ -265,8 +521,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return a UserConfiguration dialog
      */
-    private PreferencesDialog showUserConfigurationDialog() {
-        return new PreferencesDialog(mainPanel.getMainFrame());
+    private void showUserConfigurationDialog() throws BackingStoreException {
+        new PreferencesDialog(mainPanel.getMainFrame()).setVisible(true);
     }
     
     /**
@@ -368,7 +624,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     @Override public void frameClosed(FrameContentPanel contentPanel) {
         if (networkPanels.isEmpty()) {
-            mainPanel.setToolBarPanel(NetworkPanel.EDITION_WORKING_MODE);
+            mainPanel.setToolBarPanel(NetworkPanel.WorkingMode.EDITION);
             mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
         }
     }
@@ -519,7 +775,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param networkPanel network panel that contains the network to be saved.
      */
-    private void saveOpenNetwork(NetworkPanel networkPanel) {
+    private void saveOpenNetwork(NetworkPanel networkPanel) throws ParserException, IOException, ParserConfigurationException, SAXException {
         String fileName = networkPanel.getNetworkFile();
         if (fileName != null) {
             createBackUpNetworkFile(fileName, toBakExtension(networkPanel.getNetworkFile()));
@@ -703,7 +959,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * Open a network.
      */
-    private void openNetwork() {
+    private void openNetwork() throws ParserException, IOException, ParserConfigurationException, SAXException {
         openNetwork("");
     }
     
@@ -714,63 +970,59 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param fileName - for the network
      */
-    public void openNetwork(String fileName) {
+    public void openNetwork(String fileName) throws ParserException, IOException, ParserConfigurationException, SAXException {
         if (fileName.isEmpty()) {
             fileName = requestNetworkFileToOpen();
         }
+        if (fileName == null) return;
         ProbNet netReadFromFile;
         NetworkPanel networkPanel;
-        if (fileName != null) {
-            try {
-                mainPanel.getMessageWindow().getNormalMessageStream()
-                         .println(stringDatabase.getString("LoadingNetwork.Text.Label") + " " + fileName);
-                //TODO Performance issue here on first call
-                ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
-                netReadFromFile = probNetInfo.getProbNet();
-                netReadFromFile.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
-                netReadFromFile.getPNESupport().setWithUndo(true);
-                netReadFromFile.setName(new File(fileName).getName());
-                //TODO Performance issue here on first call
-                var now = java.time.Instant.now();
-                networkPanel = createNewFrame(netReadFromFile);
-                System.out.println("Total: " + java.time.Duration.between(now, java.time.Instant.now()));
-                networkPanel.setNetworkFile(fileName);
-                List<EvidenceCase> evidence = probNetInfo.getEvidence();
-                if (evidence != null && !evidence.isEmpty()) {
-                    EvidenceCase preResolutionEvidence = evidence.get(0);
-                    evidence.remove(0);
-                    networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
-                }
-                networkPanels.add(networkPanel);
-                LastOpenFiles.setLastFileName(fileName);
-                getDirectoryFileName(fileName);
-                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
-                                          OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-                // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
-                // but it is not longer the scenario
-                //mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
-                mainPanel.getMessageWindow().getNormalMessageStream()
-                         .println(stringDatabase.getString("NetworkLoaded.Text.Label"));
-                mainPanel.getMainMenu().rechargeLastOpenFiles();
-                
-                if (netReadFromFile.getShowCommentWhenOpening()) {
-                    CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane();
-                    
-                    commentHTMLScrollPaneNetworkComment.setEditable(false);
-                    commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(netReadFromFile.getComment());
-                    commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension(500, 300));
-                    JOptionPane networkMessagePane = new JOptionPane(commentHTMLScrollPaneNetworkComment,
-                                                                     JOptionPane.INFORMATION_MESSAGE);
-                    JDialog networkMessageDialog = networkMessagePane.createDialog(Utilities.getOwner(mainPanel),
-                                                                                   stringDatabase.getString("NetworkCommentWindow.Title.Label"));
-                    networkMessageDialog.setResizable(true);
-                    networkMessageDialog.setMinimumSize(new Dimension(500, 300));
-                    networkMessageDialog.setVisible(true);
-                }
-            } catch (IOException | ParserConfigurationException | SAXException | ParserException e) {
-                ExceptionDialog.show(e);
-            }
+        mainPanel.getMessageWindow().getNormalMessageStream()
+                 .println(stringDatabase.getString("LoadingNetwork.Text.Label") + " " + fileName);
+        //TODO Performance issue here on first call
+        ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
+        netReadFromFile = probNetInfo.getProbNet();
+        netReadFromFile.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
+        netReadFromFile.getPNESupport().setWithUndo(true);
+        netReadFromFile.setName(new File(fileName).getName());
+        //TODO Performance issue here on first call
+        var now = Instant.now();
+        networkPanel = createNewFrame(netReadFromFile);
+        System.out.println("Total: " + Duration.between(now, Instant.now()));
+        networkPanel.setNetworkFile(fileName);
+        List<EvidenceCase> evidence = probNetInfo.getEvidence();
+        if (evidence != null && !evidence.isEmpty()) {
+            EvidenceCase preResolutionEvidence = evidence.get(0);
+            evidence.remove(0);
+            networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
         }
+        networkPanels.add(networkPanel);
+        LastOpenFiles.setLastFileName(fileName);
+        getDirectoryFileName(fileName);
+        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
+                                  OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+        // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
+        // but it is not longer the scenario
+        //mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
+        mainPanel.getMessageWindow().getNormalMessageStream()
+                 .println(stringDatabase.getString("NetworkLoaded.Text.Label"));
+        mainPanel.getMainMenu().rechargeLastOpenFiles();
+        
+        if (netReadFromFile.getShowCommentWhenOpening()) {
+            CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane();
+            
+            commentHTMLScrollPaneNetworkComment.setEditable(false);
+            commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(netReadFromFile.getComment());
+            commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension(500, 300));
+            JOptionPane networkMessagePane = new JOptionPane(commentHTMLScrollPaneNetworkComment,
+                                                             JOptionPane.INFORMATION_MESSAGE);
+            JDialog networkMessageDialog = networkMessagePane.createDialog(Utilities.getOwner(mainPanel),
+                                                                           stringDatabase.getString("NetworkCommentWindow.Title.Label"));
+            networkMessageDialog.setResizable(true);
+            networkMessageDialog.setMinimumSize(new Dimension(500, 300));
+            networkMessageDialog.setVisible(true);
+        }
+        
     }
     
     public void openNetwork(ProbNet probNet) {
@@ -867,15 +1119,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return true if the network has been closed; otherwise, false.
      */
     private boolean closeCurrentNetwork() {
-        boolean canClose = true;
-        if (getCurrentNetworkPanel() != null) {
-            canClose = networkCanBeClosed(getCurrentNetworkPanel());
-            if (canClose) {
-                mainPanel.getMdi().closeCurrentFrame();
-                if (networkPanels.isEmpty()) {
-                    mainPanel.setToolBarPanel(NetworkPanel.EDITION_WORKING_MODE);
-                    mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
-                }
+        if (getCurrentNetworkPanel() == null) {
+            return true;
+        }
+        boolean canClose = networkCanBeClosed(getCurrentNetworkPanel());
+        if (canClose) {
+            mainPanel.getMdi().closeCurrentFrame();
+            if (networkPanels.isEmpty()) {
+                mainPanel.setToolBarPanel(NetworkPanel.WorkingMode.EDITION);
+                mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
             }
         }
         return canClose;
@@ -1065,8 +1317,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
             // load the selected file
             System.out.println("Load evidence file " + evidenceFileChooser.getSelectedFile().getAbsolutePath());
             CaseDatabaseManager caseDbManager = new CaseDatabaseManager();
-            CaseDatabaseReader caseDbReader = caseDbManager
-                    .getReader(FilenameUtils.getExtension(evidenceFileChooser.getSelectedFile().getName()));
+            CaseDatabaseReader caseDbReader;
+            try {
+                caseDbReader = caseDbManager
+                        .getReader(FilenameUtils.getExtension(evidenceFileChooser.getSelectedFile().getName()));
+            } catch (NoWriterForExtensionException e) {
+                throw new UnrecoverableException(e);
+            }
             ProbNet currentNet = currentNetworkPanel.getProbNet();
             try {
                 CaseDatabase caseDatabase = caseDbReader.load(evidenceFileChooser.getSelectedFile().getAbsolutePath());
@@ -1104,7 +1361,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY,
                                           getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
                                           OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-            } catch (IOException | ParsingSourceException | EmptyDatabaseException e) {
+            } catch (IOException | ParsingSourceException | EmptyDatabaseException | NotEvaluableNetworkException |
+                     NonProjectablePotentialException | NotEnoughtMemoryException | IncompatibleEvidenceException |
+                     CannotNormalizePotentialException e) {
                 ExceptionDialog.show("Evidence could not be loaded: ", e);
             }
         }
@@ -1167,26 +1426,28 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * This method establishes the network working mode (edition or inference),
      * by setting the opposite to the current one.
      */
-    private void setNewWorkingMode() {
-        int currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
-        int newWorkingMode;
+    private void setNewWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+        NetworkPanel.WorkingMode currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
+        NetworkPanel.WorkingMode newWorkingMode = null;
         boolean performInference = true;
-        if (currentWorkingMode == NetworkPanel.EDITION_WORKING_MODE) {
-            newWorkingMode = NetworkPanel.INFERENCE_WORKING_MODE;
-            
-            // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
-            InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
-                                                                       Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
-            
-            if (dialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
-                newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
-                performInference = false;
+        switch (currentWorkingMode) {
+            case EDITION -> {
+                newWorkingMode = NetworkPanel.WorkingMode.INFERENCE;
+                
+                // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
+                InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
+                                                                           Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+                
+                if (dialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
+                    newWorkingMode = NetworkPanel.WorkingMode.EDITION;
+                    performInference = false;
+                }
+                // Set as launched
+                //getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
             }
-            // Set as launched
-            //getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
-            
-        } else {
-            newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
+            case INFERENCE -> {
+                newWorkingMode = NetworkPanel.WorkingMode.EDITION;
+            }
         }
         mainPanel.setToolBarPanel(newWorkingMode);
         mainPanel.changeWorkingModeButton(newWorkingMode);
@@ -1196,22 +1457,28 @@ public class MainPanelListenerAssistant extends WindowAdapter
         getCurrentNetworkPanel().setSelectedAllObjects(false);
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(getCurrentNetworkPanel());
         
-        if (performInference) {
-            if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
-                
-                getCurrentNetworkPanel().updateIndividualProbabilitiesAndUtilities();
-                mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
-            } else {
-                // getCurrentNetworkPanel().removeAllFindings(); //Suppressed the elimination of findings on returning to Edition Mode
-                //TODO: has the following piece of code sense with the task scenario?
-                //TODO: review inferenceAlgorithm variable in EditorPanel, specially in removeNodeEvidenceInAllCases
-                //if (getCurrentNetworkPanel().getInferenceAlgorithm() != null) {
-                //    getCurrentNetworkPanel().setInferenceAlgorithm(null);
-                //}
+        try {
+            if (performInference) {
+                switch (newWorkingMode) {
+                    case EDITION -> {
+                        // getCurrentNetworkPanel().removeAllFindings(); //Suppressed the elimination of findings on returning to Edition Mode
+                        //TODO: has the following piece of code sense with the task scenario?
+                        //TODO: review inferenceAlgorithm variable in EditorPanel, specially in removeNodeEvidenceInAllCases
+                        //if (getCurrentNetworkPanel().getInferenceAlgorithm() != null) {
+                        //    getCurrentNetworkPanel().setInferenceAlgorithm(null);
+                        //}
+                    }
+                    case INFERENCE -> {
+                        getCurrentNetworkPanel().updateIndividualProbabilitiesAndUtilities();
+                        mainPanel.getInferenceToolBar()
+                                 .setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
+                    }
+                }
             }
+        } finally {
+            getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
+            mainPanel.adaptToolBarSize();
         }
-        getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
-        mainPanel.adaptToolBarSize();
     }
     
     /**
@@ -1223,8 +1490,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
         getCurrentNetworkPanel().setExpansionThreshold(newValue);
         getCurrentNetworkPanel().setSelectedAllNodes(false);
         mainPanel.getMainPanelMenuAssistant()
-                 .updateOptionsNewWorkingMode(NetworkPanel.INFERENCE_WORKING_MODE, getCurrentNetworkPanel());
-        getCurrentNetworkPanel().updateNodesExpansionState(NetworkPanel.INFERENCE_WORKING_MODE);
+                 .updateOptionsNewWorkingMode(NetworkPanel.WorkingMode.INFERENCE, getCurrentNetworkPanel());
+        getCurrentNetworkPanel().updateNodesExpansionState(NetworkPanel.WorkingMode.INFERENCE);
     }
     
     /**
@@ -1233,7 +1500,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param command the Action Command corresponding to the selected option
      */
-    private void evidenceCasesNavigationOption(String command) {
+    private void evidenceCasesNavigationOption(String command) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException, ThereIsNoPreviousEvidenceCaseException {
         switch (command) {
             case "CREATE_NEW_EVIDENCE_CASE" -> getCurrentNetworkPanel().createNewEvidenceCase();
             case "GO_TO_FIRST_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToFirstEvidenceCase();
@@ -1406,9 +1673,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                                                             .getPreResolutionEvidence());
             } catch (NotEvaluableNetworkException.NotApplicableNetwork |
                      NotEvaluableNetworkException.UnsatisfiedContraints e1) {
-                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-                                              "An error occurred when trying to show the optimal strategy: " + e1.getMessage(), "Error",
-                                              JOptionPane.ERROR_MESSAGE);
+                throw new UnrecoverableException(e1);
             }
             StrategyTree strategyTree = eval.getUtility().strategyTrees[0];
             
@@ -1427,9 +1692,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                               networkPanel.getEditorPanel().getPreResolutionEvidence());
             } catch (NotEvaluableNetworkException.NotApplicableNetwork |
                      NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException e) {
-                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-                                              "An error occurred when trying to show the optimal strategy: " + e.getMessage(), "Error",
-                                              JOptionPane.ERROR_MESSAGE);
+                throw new UnrecoverableException(e);
             }
             
             try {
@@ -1438,9 +1701,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                                                         probNet, veOptimalStrategy);
                 optimalStrategyDialog.setVisible(true);
             } catch (NonProjectablePotentialException e) {
-                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-                                              "An error occurred when trying to show the optimal strategy", "Error",
-                                              JOptionPane.ERROR_MESSAGE);
+                throw new UnrecoverableException(e);
             }
         }
         

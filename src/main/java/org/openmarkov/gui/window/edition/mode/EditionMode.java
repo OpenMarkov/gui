@@ -34,10 +34,10 @@ public abstract class EditionMode {
 		this.visualNetwork = editorPanel.getVisualNetwork();
 		this.probNet = probNet;
 	}
-
-	public abstract void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g);
-
-	public abstract void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g);
+    
+    public abstract void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) throws Exception;
+    
+    public abstract void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g) throws Exception;
 
 	public abstract void mouseDragged(MouseEvent e, Point2D.Double position, double diffX, double diffY, Graphics2D g);
 }

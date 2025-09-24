@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.component.ValuesTable;
 
@@ -25,8 +27,8 @@ import javax.swing.*;
 	 * Indicates if the data of the table is modifiable.
 	 */
 	private boolean modifiable;
-
-	public CPTablePanel(Node node) {
+    
+    public CPTablePanel(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
 		super(node);
 		modifiable = false;
 	}

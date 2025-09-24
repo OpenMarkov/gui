@@ -58,12 +58,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	public NodeParentsPanel(Node node) {// , ElementObservable notifier) {
 		this(false);// , notifier);
 		this.node = node;
-		try {
 			initialize();
-		} catch (Throwable e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, e.getMessage(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
-		}
 	}
 
 	/**

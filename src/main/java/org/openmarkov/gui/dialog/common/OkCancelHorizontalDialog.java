@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 import org.openmarkov.gui.loader.element.IconLoader;
 import org.openmarkov.core.localize.StringDatabase;
 
@@ -110,15 +112,16 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 			jButtonOK.setIcon(iconLoader.load(IconLoader.ICON_ACCEPT_ENABLED));
 			jButtonOK.setText(stringDatabase.getString("OKCancelHorizontalDialog.jButtonOK.Text"));
 			jButtonOK.setMnemonic(stringDatabase.getString("OKCancelHorizontalDialog.jButtonOK.Mnemonic").charAt(0));
-			jButtonOK.addActionListener(new ActionListener() {
-
-				@Override public void actionPerformed(ActionEvent e) {
-					if (doOkClickBeforeHide()) {
-						selectedButton = OK_BUTTON;
-						dispose();
-					}
-				}
-			});
+            jButtonOK.addActionListener(e -> {
+                try {
+                    if (doOkClickBeforeHide()) {
+                        selectedButton = OK_BUTTON;
+                        dispose();
+                    }
+                } catch (Exception ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            });
 		}
 		return jButtonOK;
 	}
@@ -171,8 +174,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 *
 	 * @return true if the dialog box can be closed.
 	 */
-	protected boolean doOkClickBeforeHide() {
-
+    protected boolean doOkClickBeforeHide() throws Exception {
 		return true;
 	}
 

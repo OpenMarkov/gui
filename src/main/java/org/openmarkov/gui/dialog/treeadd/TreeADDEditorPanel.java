@@ -7,7 +7,8 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.annotation.ToCheck;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
@@ -23,9 +24,7 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
-import org.openmarkov.gui.exception.UnexpectedMenuActionException;
-import org.openmarkov.gui.exception.WrongClassException;
-import org.openmarkov.gui.exception.WrongRoleException;
+import org.openmarkov.gui.exception.*;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.Utilities;
@@ -360,7 +359,12 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                     node = path.getLastPathComponent();
                 }
                 // node must be a branch
-                editPotential(ae, (TreeADDBranch) node, path);
+                try {
+                    editPotential(ae, (TreeADDBranch) node, path);
+                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                         ThereIsNoPotentialsInNodeException e) {
+                    throw new UnrecoverableException(e);
+                }
             }
             case ActionCommands.CHANGE_ROOT_VARIABLE ->
                 // node must be a TreeADDPotential
@@ -395,7 +399,11 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                     node = path.getLastPathComponent();
                 }
                 // node must be a branch
-                dissociateStates(ae, (TreeADDBranch) node, path);
+                try {
+                    dissociateStates(ae, (TreeADDBranch) node, path);
+                } catch (RemovingAllStatesIsNotAllowedException e) {
+                    throw new UnrecoverableException(e);
+                }
             }
             case ActionCommands.REMOVE_VARIABLES -> {
                 if (node instanceof Potential) {
@@ -411,7 +419,11 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                     node = path.getLastPathComponent();
                 }
                 // node must be a branch
-                splitInterval(ae, (TreeADDBranch) node, path);
+                try {
+                    splitInterval(ae, (TreeADDBranch) node, path);
+                } catch (InvalidLimitInTreeADDException | TriedToSplitInvervalOutsideBoundsException e) {
+                    throw new UnrecoverableException(e);
+                }
             }
             case ActionCommands.CHANGE_INTERVAL -> {
                 if (node instanceof Potential) {
@@ -419,7 +431,11 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                     node = path.getLastPathComponent();
                 }
                 // node must be a branch
-                changeInterval(ae, (TreeADDBranch) node, path);
+                try {
+                    changeInterval(ae, (TreeADDBranch) node, path);
+                } catch (InvalidArgumentException | ChangeDomainOfTreeADDIsNotAllowedException e) {
+                    throw new UnrecoverableException(e);
+                }
             }
             case ActionCommands.SET_LABEL -> setLabel(ae, (TreeADDBranch) node, path);
             case ActionCommands.REMOVE_LABEL -> removeLabel(ae, (TreeADDBranch) node, path);
@@ -429,7 +445,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         }
     }
     
-    private void changeInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) {
+    private void changeInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) throws InvalidArgumentException, ChangeDomainOfTreeADDIsNotAllowedException {
         
         TreePath parentPath = path.getParentPath();
         TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
@@ -445,163 +461,180 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         boolean isRightClosed = branch.getRootVariable().getPartitionedInterval().isRightClosed();
         boolean minBelongsToLeftDomain = !isLeftClosed;
         boolean maxBelongsToLeftDomain = isRightClosed;
-        if (dialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
-            ChangeIntervalPanel panel = dialog.getChangeIntervalPanel();
-            Double lowerBound = Double.parseDouble(panel.getMin().getText());
-            Double upperBound = Double.parseDouble(panel.getMax().getText());
-            JComboBox<String> minLimit = panel.minBelongsToLeft();// ( or [
-            if (minLimit.getSelectedItem() == "(") {
-                minBelongsToLeft = true;
-            } else if (minLimit.getSelectedItem() == "[") {
-                minBelongsToLeft = false;
-            }
-            JComboBox<String> maxLimit = panel.maxBelongsToLeft();// ) or ]
-            if (maxLimit.getSelectedItem() == ")") {
-                maxBelongsToLeft = false;
-            } else if (maxLimit.getSelectedItem() == "]") {
-                maxBelongsToLeft = true;
-            }
-            List<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
-            int branchIndex = 0;
-            for (int i = 0; i < parentBranches.size(); i++) {
-                if (parentBranches.get(i).equals(branch)) {
-                    branchIndex = i;
-                }
-            }
-            // limit situations
-            if (!(lowerBound >= minDomainLimit && lowerBound <= branch.getUpperBound().getLimit()) || !(
-                    upperBound.floatValue() >= branch.getLowerBound().getLimit() && upperBound <= maxDomainLimit
-            )) {
-                JOptionPane.showMessageDialog(this.getParent(), "Not permited values");
-            } else if (upperBound.floatValue() > maxDomainLimit || lowerBound.floatValue() < minDomainLimit) {
-                JOptionPane
-                        .showMessageDialog(this.getParent(), stringDatabase.getString("TreeADD.DomainChangeWarning"));
-            } else if (upperBound == maxDomainLimit && !maxBelongsToLeftDomain && maxBelongsToLeft) {
-                JOptionPane
-                        .showMessageDialog(this.getParent(), stringDatabase.getString("TreeADD.DomainChangeWarning"));
-            } else if (lowerBound == minDomainLimit && minBelongsToLeftDomain && !minBelongsToLeft) {
-                JOptionPane
-                        .showMessageDialog(this.getParent(), stringDatabase.getString("TreeADD.DomainChangeWarning"));
-            } else {
-                // max limit
-                if (!(
-                        upperBound == branch.getUpperBound().getLimit() && maxBelongsToLeft == branch.getUpperBound()
-                                                                                                     .belongsToLeft()
-                )) {
-                    List<TreeADDBranch> followingBranches = new ArrayList<TreeADDBranch>();
-                    parentBranches.get(branchIndex).setUpperBound(new Threshold(upperBound, maxBelongsToLeft));
-                    if (branchIndex != parentBranches.size()) {
-                        // branch selected to change interval is not the last
-                        // one
-                        for (int i = branchIndex + 1; i < parentBranches.size(); i++) {
-                            followingBranches.add(parentBranches.get(i));
-                        }
-                        for (int i = 0; i < followingBranches.size(); i++) {
-                            if (upperBound.equals(followingBranches.get(i).getUpperBound().getLimit())
-                                    && maxBelongsToLeft == followingBranches.get(i).getUpperBound().belongsToLeft()) {
-                                for (int j = branchIndex + 1; j <= i + branchIndex + 1; j++) {
-                                    parentBranches.remove(branchIndex + 1);
-                                }
-                                break;
-                            } else if (upperBound.equals(followingBranches.get(i).getUpperBound().getLimit())
-                                    && !followingBranches.get(i).getUpperBound().belongsToLeft() && maxBelongsToLeft) {
-                                for (int j = branchIndex + 1; j <= i + branchIndex + 1; j++) {
-                                    parentBranches.remove(branchIndex + 1);
-                                }
-                                // Change the next
-                                if (i + branchIndex + 1 <= parentBranches.size()) {
-                                    parentBranches.get(branchIndex + 1).getLowerBound().setBelongsToLeft(true);
-                                }
-                                break;
-                            } else if (upperBound.equals(followingBranches.get(i).getUpperBound().getLimit())
-                                    && followingBranches.get(i).getUpperBound().belongsToLeft() && !maxBelongsToLeft) {
-                                for (int j = branchIndex + 1; j <= i + branchIndex; j++) {
-                                    parentBranches.remove(branchIndex + 1);
-                                }
-                                // Change the next
-                                if (i + branchIndex + 1 <= parentBranches.size()) {
-                                    parentBranches.get(branchIndex + 1).setLowerBound(new Threshold(upperBound, false));
-                                }
-                                break;
-                            } else if (upperBound.floatValue() < followingBranches.get(i).getUpperBound().getLimit()) {
-                                for (int j = branchIndex + 1; j <= i + branchIndex; j++) {
-                                    parentBranches.remove(branchIndex + 1);
-                                }
-                                parentBranches.get(branchIndex + 1)
-                                              .setLowerBound(new Threshold(upperBound, maxBelongsToLeft));
-                                break;
-                            }
-                        }
-                    }
-                }
-                // min limit
-                if (!(
-                        lowerBound.floatValue() == branch.getLowerBound().getLimit() && minBelongsToLeft == branch
-                                .getLowerBound().belongsToLeft()
-                )) {
-                    ArrayList<TreeADDBranch> previousBranches = new ArrayList<TreeADDBranch>();
-                    parentBranches.get(branchIndex).setLowerBound(new Threshold(lowerBound, minBelongsToLeft));
-                    if (branchIndex != 0) {// branch selected to change
-                        // interval is not the first
-                        // one
-                        for (int i = branchIndex - 1; i >= 0; i--) {
-                            previousBranches.add(parentBranches.get(i));
-                        }
-                    }
-                    ArrayList<TreeADDBranch> aux = new ArrayList<TreeADDBranch>();
-                    int initialParentSize = parentBranches.size();
-                    for (int i = parentBranches.size() - 1; i >= 0; i--) {
-                        aux.add(parentBranches.get(i));
-                    }
-                    int auxIndex = parentBranches.size() - 1 - branchIndex;
-                    for (int i = 0; i < previousBranches.size(); i++) {
-                        if (lowerBound.equals(previousBranches.get(i).getLowerBound().getLimit())
-                                && minBelongsToLeft == previousBranches.get(i).getLowerBound().belongsToLeft()) {
-                            for (int j = auxIndex + 1; j <= i + (auxIndex + 1); j++) {
-                                aux.remove(auxIndex + 1);
-                            }
-                            break;
-                        } else if (lowerBound.equals(previousBranches.get(i).getLowerBound().getLimit())
-                                && !previousBranches.get(i).getLowerBound().belongsToLeft() && minBelongsToLeft) {
-                            for (int j = auxIndex + 1; j <= i + (auxIndex + 1); j++) {
-                                aux.remove(auxIndex + 1);
-                            }
-                            // Change the next
-                            if (i + auxIndex + 1 <= parentBranches.size()) {
-                                aux.get(auxIndex + 1).getUpperBound().setBelongsToLeft(true);
-                            }
-                            break;
-                        } else if (lowerBound.equals(previousBranches.get(i).getLowerBound().getLimit())
-                                && previousBranches.get(i).getLowerBound().belongsToLeft() && !minBelongsToLeft) {
-                            for (int j = auxIndex + 1; j <= i + (auxIndex + 1); j++) {
-                                aux.remove(auxIndex + 1);
-                            }
-                            // Change the next
-                            if (i + auxIndex + 1 <= parentBranches.size()) {
-                                aux.get(auxIndex + 1).getUpperBound().setBelongsToLeft(false);
-                            }
-                            break;
-                        } else if (lowerBound > previousBranches.get(i).getLowerBound().getLimit()) {
-                            for (int j = auxIndex + 1; j <= i + auxIndex; j++) {
-                                aux.remove(auxIndex + 1);
-                            }
-                            aux.get(auxIndex + 1).setUpperBound(new Threshold(lowerBound, minBelongsToLeft));
-                            break;
-                        }
-                    }
-                    for (int i = aux.size() - 1; i >= 0; i--) {
-                        parentBranches.set(i, aux.get(aux.size() - 1 - i));
-                    }
-                    for (int i = aux.size(); i < initialParentSize; i++) {
-                        parentBranches.remove(aux.size());
-                    }
-                }
-                model.notifyTreeStructureChanged(parentPath);
-            }
-            for (int i = 0; i < jTree.getRowCount(); i++) {
-                jTree.expandRow(i);
+        if (dialog.requestValues() != OkCancelHorizontalDialog.OK_BUTTON) {
+            return;
+        }
+        ChangeIntervalPanel panel = dialog.getChangeIntervalPanel();
+        Double lowerBound = Double.parseDouble(panel.getMin().getText());
+        Double upperBound = Double.parseDouble(panel.getMax().getText());
+        JComboBox<String> minLimit = panel.minBelongsToLeft();// ( or [
+        if (minLimit.getSelectedItem() == "(") {
+            minBelongsToLeft = true;
+        } else if (minLimit.getSelectedItem() == "[") {
+            minBelongsToLeft = false;
+        }
+        JComboBox<String> maxLimit = panel.maxBelongsToLeft();// ) or ]
+        if (maxLimit.getSelectedItem() == ")") {
+            maxBelongsToLeft = false;
+        } else if (maxLimit.getSelectedItem() == "]") {
+            maxBelongsToLeft = true;
+        }
+        List<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
+        int branchIndex = 0;
+        for (int i = 0; i < parentBranches.size(); i++) {
+            if (parentBranches.get(i).equals(branch)) {
+                branchIndex = i;
             }
         }
+        
+        
+        // limit situations
+        if (lowerBound < minDomainLimit) {
+            throw new InvalidArgumentException(lowerBound, "lower bound", "must be bigger or equal to the lower bound of the domain (" + minDomainLimit + ")");
+        }
+        if (upperBound > maxDomainLimit) {
+            throw new InvalidArgumentException(upperBound, "upper bound", "must be less or equal to the upper bound of the domain (" + maxDomainLimit + ")");
+        }
+        if (lowerBound > branch.getUpperBound().getLimit()) {
+            throw new InvalidArgumentException(lowerBound, "lower bound", "must be less or equal to the upper bound of the branch's upper bound (" + branch.getUpperBound()
+                                                                                                                                                           .getLimit() + ")");
+        }
+        if (upperBound < branch.getLowerBound().getLimit()) {
+            throw new InvalidArgumentException(lowerBound, "upper bound", "must be bigger or equal to the upper bound of the branch's lower bound (" + branch.getLowerBound()
+                                                                                                                                                             .getLimit() + ")");
+        }
+        boolean triesToChangeDomain =
+                upperBound.floatValue() > maxDomainLimit
+                        || lowerBound.floatValue() < minDomainLimit
+                        || (upperBound == maxDomainLimit && !maxBelongsToLeftDomain && maxBelongsToLeft)
+                        || (lowerBound == minDomainLimit && minBelongsToLeftDomain && !minBelongsToLeft);
+        if (triesToChangeDomain) {
+            throw new ChangeDomainOfTreeADDIsNotAllowedException();
+        }
+        
+        // max limit
+        if (!(
+                upperBound == branch.getUpperBound().getLimit() && maxBelongsToLeft == branch.getUpperBound()
+                                                                                             .belongsToLeft()
+        )) {
+            List<TreeADDBranch> followingBranches = new ArrayList<TreeADDBranch>();
+            parentBranches.get(branchIndex).setUpperBound(new Threshold(upperBound, maxBelongsToLeft));
+            if (branchIndex != parentBranches.size()) {
+                // branch selected to change interval is not the last
+                // one
+                for (int i = branchIndex + 1; i < parentBranches.size(); i++) {
+                    followingBranches.add(parentBranches.get(i));
+                }
+                for (int i = 0; i < followingBranches.size(); i++) {
+                    if (upperBound.equals(followingBranches.get(i).getUpperBound().getLimit())
+                            && maxBelongsToLeft == followingBranches.get(i).getUpperBound().belongsToLeft()) {
+                        for (int j = branchIndex + 1; j <= i + branchIndex + 1; j++) {
+                            parentBranches.remove(branchIndex + 1);
+                        }
+                        break;
+                    } else if (upperBound.equals(followingBranches.get(i).getUpperBound().getLimit())
+                            && !followingBranches.get(i).getUpperBound().belongsToLeft() && maxBelongsToLeft) {
+                        for (int j = branchIndex + 1; j <= i + branchIndex + 1; j++) {
+                            parentBranches.remove(branchIndex + 1);
+                        }
+                        // Change the next
+                        if (i + branchIndex + 1 <= parentBranches.size()) {
+                            parentBranches.get(branchIndex + 1).getLowerBound().setBelongsToLeft(true);
+                        }
+                        break;
+                    } else if (upperBound.equals(followingBranches.get(i).getUpperBound().getLimit())
+                            && followingBranches.get(i).getUpperBound().belongsToLeft() && !maxBelongsToLeft) {
+                        for (int j = branchIndex + 1; j <= i + branchIndex; j++) {
+                            parentBranches.remove(branchIndex + 1);
+                        }
+                        // Change the next
+                        if (i + branchIndex + 1 <= parentBranches.size()) {
+                            parentBranches.get(branchIndex + 1).setLowerBound(new Threshold(upperBound, false));
+                        }
+                        break;
+                    } else if (upperBound.floatValue() < followingBranches.get(i).getUpperBound().getLimit()) {
+                        for (int j = branchIndex + 1; j <= i + branchIndex; j++) {
+                            parentBranches.remove(branchIndex + 1);
+                        }
+                        parentBranches.get(branchIndex + 1)
+                                      .setLowerBound(new Threshold(upperBound, maxBelongsToLeft));
+                        break;
+                    }
+                }
+            }
+        }
+        // min limit
+        if (!(
+                lowerBound.floatValue() == branch.getLowerBound().getLimit() && minBelongsToLeft == branch
+                        .getLowerBound().belongsToLeft()
+        )) {
+            ArrayList<TreeADDBranch> previousBranches = new ArrayList<TreeADDBranch>();
+            parentBranches.get(branchIndex).setLowerBound(new Threshold(lowerBound, minBelongsToLeft));
+            if (branchIndex != 0) {// branch selected to change
+                // interval is not the first
+                // one
+                for (int i = branchIndex - 1; i >= 0; i--) {
+                    previousBranches.add(parentBranches.get(i));
+                }
+            }
+            ArrayList<TreeADDBranch> aux = new ArrayList<TreeADDBranch>();
+            int initialParentSize = parentBranches.size();
+            for (int i = parentBranches.size() - 1; i >= 0; i--) {
+                aux.add(parentBranches.get(i));
+            }
+            int auxIndex = parentBranches.size() - 1 - branchIndex;
+            for (int i = 0; i < previousBranches.size(); i++) {
+                if (lowerBound.equals(previousBranches.get(i).getLowerBound().getLimit())
+                        && minBelongsToLeft == previousBranches.get(i).getLowerBound().belongsToLeft()) {
+                    for (int j = auxIndex + 1; j <= i + (auxIndex + 1); j++) {
+                        aux.remove(auxIndex + 1);
+                    }
+                    break;
+                } else if (lowerBound.equals(previousBranches.get(i).getLowerBound().getLimit())
+                        && !previousBranches.get(i).getLowerBound().belongsToLeft() && minBelongsToLeft) {
+                    for (int j = auxIndex + 1; j <= i + (auxIndex + 1); j++) {
+                        aux.remove(auxIndex + 1);
+                    }
+                    // Change the next
+                    if (i + auxIndex + 1 <= parentBranches.size()) {
+                        aux.get(auxIndex + 1).getUpperBound().setBelongsToLeft(true);
+                    }
+                    break;
+                } else if (lowerBound.equals(previousBranches.get(i).getLowerBound().getLimit())
+                        && previousBranches.get(i).getLowerBound().belongsToLeft() && !minBelongsToLeft) {
+                    for (int j = auxIndex + 1; j <= i + (auxIndex + 1); j++) {
+                        aux.remove(auxIndex + 1);
+                    }
+                    // Change the next
+                    if (i + auxIndex + 1 <= parentBranches.size()) {
+                        aux.get(auxIndex + 1).getUpperBound().setBelongsToLeft(false);
+                    }
+                    break;
+                } else if (lowerBound > previousBranches.get(i).getLowerBound().getLimit()) {
+                    for (int j = auxIndex + 1; j <= i + auxIndex; j++) {
+                        aux.remove(auxIndex + 1);
+                    }
+                    aux.get(auxIndex + 1).setUpperBound(new Threshold(lowerBound, minBelongsToLeft));
+                    break;
+                }
+            }
+            for (int i = aux.size() - 1; i >= 0; i--) {
+                parentBranches.set(i, aux.get(aux.size() - 1 - i));
+            }
+            for (int i = aux.size(); i < initialParentSize; i++) {
+                parentBranches.remove(aux.size());
+            }
+        }
+        model.notifyTreeStructureChanged(parentPath);
+        for (int i = 0; i < jTree.getRowCount(); i++) {
+            jTree.expandRow(i);
+        }
+    }
+    
+    private enum SplitSide {
+        LEFT_SIDE_OF_FIRST,
+        RIGHT_SIDE_OF_SECOND,
+        IN_BETWEEN_FIRST_AND_SECOND,
     }
     
     /**
@@ -611,114 +644,98 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * @param branch
      * @param path
      */
-    private void splitInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) {
+    private void splitInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) throws InvalidLimitInTreeADDException, TriedToSplitInvervalOutsideBoundsException {
         TreePath parentPath = path.getParentPath();
         TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
         SplitIntervalDialog dialog = new SplitIntervalDialog(Utilities.getOwner(this));
         TreeADDModel model = (TreeADDModel) jTree.getModel();
-        if (dialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
-            boolean belongsToLeft = false;
-            SplitIntervalPanel panel = dialog.getJPanelSplitInterval();
-            if (panel.belongsToLeft().isSelected()) {
-                belongsToLeft = true;
-            } else if (panel.belongsToRight().isSelected()) {
-                belongsToLeft = false;
-            }
-            float introducedLimit = Float.parseFloat(panel.getLimit().getText());
-            Threshold minFirstInterval = branch.getLowerBound();
-            Threshold maxSecondInterval = branch.getUpperBound();
-            List<Variable> potentialVariables = new ArrayList<Variable>();
-            if (parentTreeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
-                potentialVariables.add(parentTreeADD.getVariables().get(0));
-            }
-            List<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
-            List<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
-            // Top variable domain
-            double minDomainLimit = parentTreeADD.getRootVariable().getPartitionedInterval().getMin();
-            double maxDomainLimit = parentTreeADD.getRootVariable().getPartitionedInterval().getMax();
-            boolean isLeftClosed = branch.getRootVariable().getPartitionedInterval().isLeftClosed(); // true
-            // ->
-            // [)
-            boolean isRightClosed = branch.getRootVariable().getPartitionedInterval().isRightClosed();
-            boolean minBelongsToLeftDomain = !isLeftClosed;
-            boolean maxBelongsToLeftDomain = isRightClosed;
-            if (minDomainLimit == minFirstInterval.getLimit() && introducedLimit == minFirstInterval
-                    .getLimit() && minBelongsToLeftDomain && belongsToLeft) {
-                JOptionPane.showMessageDialog(this.getParent(), "Be careful, you are trying to change variable domain");
-            } else if (maxDomainLimit == maxSecondInterval.getLimit()
-                    && introducedLimit == maxSecondInterval.getLimit() && !maxBelongsToLeftDomain
-                    && !belongsToLeft) {
-                JOptionPane.showMessageDialog(this.getParent(), "Be careful, you are trying to change variable domain");
-            } else if (minFirstInterval.getLimit() == introducedLimit && minFirstInterval.belongsToLeft()
-                    && belongsToLeft) {
-                JOptionPane.showMessageDialog(this.getParent(), "This is not a valid action");
-            } else if (minFirstInterval.getLimit() == introducedLimit && !minFirstInterval.belongsToLeft()
-                    && !belongsToLeft) {
-                JOptionPane.showMessageDialog(this.getParent(), "This is not a valid action");
-            } else if (maxSecondInterval.getLimit() == introducedLimit && !maxSecondInterval
-                    .belongsToLeft() && !belongsToLeft) {
-                JOptionPane.showMessageDialog(this.getParent(), "This is not a valid action");
-            } else if (maxSecondInterval.getLimit() == introducedLimit && maxSecondInterval.belongsToLeft()
-                    && belongsToLeft) {
-                JOptionPane.showMessageDialog(this.getParent(), "This is not a valid action");
-            } else if (minFirstInterval.getLimit() == introducedLimit && !minFirstInterval.belongsToLeft()
-                    && belongsToLeft) {
-                TreeADDBranch newBranch = new TreeADDBranch(minFirstInterval,
-                                                            new Threshold(minFirstInterval.getLimit(), true), branch.getRootVariable(),
-                                                            branch.getPotential().copy(), branch.getParentVariables());
+        if (dialog.requestValues() != OkCancelHorizontalDialog.OK_BUTTON) {
+            return;
+        }
+        boolean belongsToLeft = false;
+        SplitIntervalPanel panel = dialog.getJPanelSplitInterval();
+        if (panel.belongsToLeft().isSelected()) {
+            belongsToLeft = true;
+        } else if (panel.belongsToRight().isSelected()) {
+            belongsToLeft = false;
+        }
+        float introducedLimit = Float.parseFloat(panel.getLimit().getText());
+        Threshold minFirstInterval = branch.getLowerBound();
+        Threshold maxSecondInterval = branch.getUpperBound();
+        List<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
+        List<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
+        // Top variable domain
+        double minDomainLimit = parentTreeADD.getRootVariable().getPartitionedInterval().getMin();
+        double maxDomainLimit = parentTreeADD.getRootVariable().getPartitionedInterval().getMax();
+        boolean isLeftClosed = branch.getRootVariable().getPartitionedInterval().isLeftClosed(); // true
+        // ->
+        // [)
+        boolean isRightClosed = branch.getRootVariable().getPartitionedInterval().isRightClosed();
+        boolean minBelongsToLeftDomain = !isLeftClosed;
+        boolean maxBelongsToLeftDomain = isRightClosed;
+        if (minFirstInterval.getLimit() == introducedLimit && minFirstInterval.belongsToLeft() == belongsToLeft) {
+            throw new InvalidLimitInTreeADDException(minFirstInterval, introducedLimit);
+        }
+        if (maxSecondInterval.getLimit() == introducedLimit && maxSecondInterval.belongsToLeft() == belongsToLeft) {
+            throw new InvalidLimitInTreeADDException(maxSecondInterval, introducedLimit);
+        }
+        SplitSide splitSide;
+        if (minFirstInterval.getLimit() == introducedLimit && !minFirstInterval.belongsToLeft() && belongsToLeft) {
+            splitSide = SplitSide.LEFT_SIDE_OF_FIRST;
+        } else if (maxSecondInterval.getLimit() == introducedLimit && maxSecondInterval.belongsToLeft() && !belongsToLeft) {
+            splitSide = SplitSide.RIGHT_SIDE_OF_SECOND;
+        } else if (minFirstInterval.isBelow(introducedLimit) && maxSecondInterval.isAbove(introducedLimit)) {
+            splitSide = SplitSide.IN_BETWEEN_FIRST_AND_SECOND;
+        } else {
+            throw new TriedToSplitInvervalOutsideBoundsException();
+        }
+        boolean isChangingVariableDomain = (minDomainLimit == minFirstInterval.getLimit() && introducedLimit == minFirstInterval
+                .getLimit() && minBelongsToLeftDomain && belongsToLeft) || (maxDomainLimit == maxSecondInterval.getLimit()
+                && introducedLimit == maxSecondInterval.getLimit() && !maxBelongsToLeftDomain
+                && !belongsToLeft);
+        TreeADDBranch leftBranchToAdd = null;
+        TreeADDBranch rightBranchToAdd = null;
+        switch (splitSide) {
+            case LEFT_SIDE_OF_FIRST -> {
                 minFirstInterval.setBelongsToLeft(true);
-                for (TreeADDBranch parentBranch : parentBranches) {
-                    if (branch == parentBranch) {
-                        newBranches.add(newBranch);
-                        newBranches.add(branch);
-                    } else {
-                        newBranches.add(parentBranch);
-                    }
-                }
-                parentTreeADD.setBranches(newBranches);
-                model.notifyTreeStructureChanged(parentPath);
-            } else if (maxSecondInterval.getLimit() == introducedLimit && maxSecondInterval.belongsToLeft()
-                    && !belongsToLeft) {
+                leftBranchToAdd = new TreeADDBranch(minFirstInterval,
+                                                    new Threshold(minFirstInterval.getLimit(), true), branch.getRootVariable(),
+                                                    branch.getPotential().copy(), branch.getParentVariables());
+                rightBranchToAdd = branch;
+            }
+            case RIGHT_SIDE_OF_SECOND -> {
                 maxSecondInterval.setBelongsToLeft(false);
-                TreeADDBranch newBranch = new TreeADDBranch(new Threshold(maxSecondInterval.getLimit(), false),
-                                                            new Threshold(maxSecondInterval.getLimit(), true), branch.getRootVariable(),
-                                                            branch.getPotential().copy(), branch.getParentVariables());
-                for (TreeADDBranch parentBranch : parentBranches) {
-                    if (branch == parentBranch) {
-                        newBranches.add(branch);
-                        newBranches.add(newBranch);
-                    } else {
-                        newBranches.add(parentBranch);
-                    }
-                }
-                parentTreeADD.setBranches(newBranches);
-                model.notifyTreeStructureChanged(parentPath);
-            } else if (minFirstInterval.isBelow(introducedLimit) && maxSecondInterval.isAbove(introducedLimit)) {
+                leftBranchToAdd = branch;
+                rightBranchToAdd = new TreeADDBranch(new Threshold(maxSecondInterval.getLimit(), false),
+                                                     new Threshold(maxSecondInterval.getLimit(), true), branch.getRootVariable(),
+                                                     branch.getPotential().copy(), branch.getParentVariables());
+            }
+            case IN_BETWEEN_FIRST_AND_SECOND -> {
                 Threshold maxFirstInterval = new Threshold(introducedLimit, belongsToLeft);
                 Threshold minSecondInterval = new Threshold(introducedLimit, belongsToLeft);
-                TreeADDBranch firstBranch = new TreeADDBranch(minFirstInterval, maxFirstInterval,
-                                                              branch.getRootVariable(), branch.getPotential()
-                                                                                              .copy(), branch.getParentVariables());
-                TreeADDBranch secondBranch = new TreeADDBranch(minSecondInterval, maxSecondInterval,
-                                                               branch.getRootVariable(), branch.getPotential()
-                                                                                               .copy(), branch.getParentVariables());
-                for (TreeADDBranch parentBranch : parentBranches) {
-                    if (branch == parentBranch) {
-                        newBranches.add(firstBranch);
-                        newBranches.add(secondBranch);
-                    } else {
-                        newBranches.add(parentBranch);
-                    }
-                }
-                parentTreeADD.setBranches(newBranches);
-                model.notifyTreeStructureChanged(parentPath);
-            } else {// a message to indicate that is not a permitted value
-                JOptionPane.showMessageDialog(this.getParent(),
-                                              "Introduced value does not belong to the interval selected");
+                leftBranchToAdd = new TreeADDBranch(minFirstInterval, maxFirstInterval,
+                                                    branch.getRootVariable(), branch.getPotential()
+                                                                                    .copy(), branch.getParentVariables());
+                rightBranchToAdd = new TreeADDBranch(minSecondInterval, maxSecondInterval,
+                                                     branch.getRootVariable(), branch.getPotential()
+                                                                                     .copy(), branch.getParentVariables());
             }
-            for (int i = 0; i < jTree.getRowCount(); i++) {
-                jTree.expandRow(i);
+        }
+        for (TreeADDBranch parentBranch : parentBranches) {
+            if (branch == parentBranch) {
+                newBranches.add(leftBranchToAdd);
+                newBranches.add(rightBranchToAdd);
+            } else {
+                newBranches.add(parentBranch);
             }
+        }
+        parentTreeADD.setBranches(newBranches);
+        model.notifyTreeStructureChanged(parentPath);
+        for (int i = 0; i < jTree.getRowCount(); i++) {
+            jTree.expandRow(i);
+        }
+        if (isChangingVariableDomain) {
+            JOptionPane.showMessageDialog(this.getParent(), "Be careful, you changed variable domain");
         }
     }
     
@@ -833,47 +850,48 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * @param branch
      * @param path
      */
-    private void dissociateStates(ActionEvent ae, TreeADDBranch branch, TreePath path) {
+    private void dissociateStates(ActionEvent ae, TreeADDBranch branch, TreePath path) throws RemovingAllStatesIsNotAllowedException {
         if (!(branch instanceof TreeADDBranch)) {
             throw new UnreacheableException(new WrongClassException(TreeADDBranch.class, branch == null ? null : branch.getClass()));
         }
         TreeADDPotential parentTreeADD = (TreeADDPotential) path.getParentPath().getLastPathComponent();
         RemoveStatesDialog dialog = new RemoveStatesDialog(Utilities.getOwner(this), branch, parentTreeADD);
         TreeADDModel model = (TreeADDModel) jTree.getModel();
-        if (dialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
-            List<JCheckBox> checkBoxes = ((RemoveStatesCheckBoxPanel) dialog.getJPanelRemoveStates()).getCheckBoxes();
-            List<State> statesToEliminate = new ArrayList<State>();
-            for (JCheckBox checkBox : checkBoxes) {
-                if (checkBox.isSelected()) {
-                    String stateName = checkBox.getText();
-                    for (State state : parentTreeADD.getRootVariable().getStates()) {
-                        if (state.getName().equals(stateName)) {
-                            statesToEliminate.add(state);
-                        }
+        if (dialog.requestValues() != OkCancelHorizontalDialog.OK_BUTTON) {
+            return;
+        }
+        List<JCheckBox> checkBoxes = ((RemoveStatesCheckBoxPanel) dialog.getJPanelRemoveStates()).getCheckBoxes();
+        List<State> statesToEliminate = new ArrayList<State>();
+        for (JCheckBox checkBox : checkBoxes) {
+            if (checkBox.isSelected()) {
+                String stateName = checkBox.getText();
+                for (State state : parentTreeADD.getRootVariable().getStates()) {
+                    if (state.getName().equals(stateName)) {
+                        statesToEliminate.add(state);
                     }
                 }
             }
-            // Check if all checkboxes has been selected, it is an inconsistency
-            if (checkBoxes.size() == statesToEliminate.size()) {
-                JOptionPane.showMessageDialog(this.getParent(),
-                                              "You have selected all states to remove, you must leave at least one in each branch");
-            } else {
-                List<TreeADDBranch> newTreeADDBranches = new ArrayList<TreeADDBranch>();
-                for (TreeADDBranch treeParentBranch : parentTreeADD.getBranches()) {
-                    List<State> states = treeParentBranch.getBranchStates();
-                    if (!branch.getBranchStates().containsAll(states)) {
-                        newTreeADDBranches.add(treeParentBranch);
-                    }
-                }
-                // Updating branches
-                List<State> branchStates = branch.getBranchStates();
-                for (State state : statesToEliminate) {
-                    branchStates.remove(state);
-                }
-                branch.setStates(branchStates);
-                List<Variable> variables = new ArrayList<Variable>();
-                //parentTreeADD is TreeADDPotential.There is not utilityVariable any more
-                //
+        }
+        // Check if all checkboxes has been selected, it is an inconsistency
+        if (checkBoxes.size() == statesToEliminate.size()) {
+            throw new RemovingAllStatesIsNotAllowedException(parentTreeADD);
+        }
+        List<TreeADDBranch> newTreeADDBranches = new ArrayList<TreeADDBranch>();
+        for (TreeADDBranch treeParentBranch : parentTreeADD.getBranches()) {
+            List<State> states = treeParentBranch.getBranchStates();
+            if (!branch.getBranchStates().containsAll(states)) {
+                newTreeADDBranches.add(treeParentBranch);
+            }
+        }
+        // Updating branches
+        List<State> branchStates = branch.getBranchStates();
+        for (State state : statesToEliminate) {
+            branchStates.remove(state);
+        }
+        branch.setStates(branchStates);
+        List<Variable> variables = new ArrayList<Variable>();
+        //parentTreeADD is TreeADDPotential.There is not utilityVariable any more
+        //
                 /*
                 if (parentTreeADD.isUtility()) {
                     variables.add(parentTreeADD.getUtilityVariable());
@@ -881,25 +899,23 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                     variables.add(parentTreeADD.getVariables().get(0));
                 }
                 */
-                
-                if ((parentTreeADD.isAdditive()) || (
-                        parentTreeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY
-                )) {
-                    variables.add(parentTreeADD.getVariables().get(0));
-                }
-                //
-                TreeADDBranch newBranch = new TreeADDBranch(statesToEliminate, branch.getRootVariable(),
-                                                            branch.getPotential().copy(), branch.getParentVariables());
-                newTreeADDBranches.add(branch);
-                newTreeADDBranches.add(newBranch);
-                // Updating tree
-                parentTreeADD.setBranches(newTreeADDBranches);
-                model.notifyTreeStructureChanged(path.getParentPath());
-                jTree.expandPath(path.getParentPath());
-                for (int i = 0; i < jTree.getRowCount(); i++) {
-                    jTree.expandRow(i);
-                }
-            }
+        
+        if ((parentTreeADD.isAdditive()) || (
+                parentTreeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY
+        )) {
+            variables.add(parentTreeADD.getVariables().get(0));
+        }
+        //
+        TreeADDBranch newBranch = new TreeADDBranch(statesToEliminate, branch.getRootVariable(),
+                                                    branch.getPotential().copy(), branch.getParentVariables());
+        newTreeADDBranches.add(branch);
+        newTreeADDBranches.add(newBranch);
+        // Updating tree
+        parentTreeADD.setBranches(newTreeADDBranches);
+        model.notifyTreeStructureChanged(path.getParentPath());
+        jTree.expandPath(path.getParentPath());
+        for (int i = 0; i < jTree.getRowCount(); i++) {
+            jTree.expandRow(i);
         }
     }
     
@@ -1187,7 +1203,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * @param branch
      * @param path
      */
-    private void editPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) {
+    private void editPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         TreePath parentPath = path.getParentPath();
         TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
         Potential potential = branch.getPotential();

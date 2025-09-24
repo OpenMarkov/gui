@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.graphic;
 
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.Node;
 
 import javax.swing.*;
@@ -22,7 +23,7 @@ import java.awt.geom.Point2D;
  * @version 1.2 asaez - The class is defined as abstract
  * Some new constants, attributes and methods are defined
  */
-public abstract class VisualNode extends VisualElement {
+public abstract class VisualNode extends VisualElement implements ClassLocalizable {
     
     /**
      * Font type Helvetica, bold, size 15.

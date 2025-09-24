@@ -89,13 +89,7 @@ public class ICIOptionsPanel extends JPanel {
 	public ICIOptionsPanel(Node node) {
 		this(true);// , notifier );
 		this.listener = new ICIOptionListenerAssistant(this);
-		try {
 			initialize();
-		} catch (Throwable e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-					StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-		}
 	}
 
 	/**

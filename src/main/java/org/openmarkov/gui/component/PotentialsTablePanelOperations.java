@@ -12,6 +12,7 @@ package org.openmarkov.gui.component;
 
 //import java.util.ArrayList;
 
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -27,7 +28,7 @@ import javax.swing.*;
  * @author marias
  * @version 2.0 cmyago - 27/05/2016
  */
-public class PotentialsTablePanelOperations implements TableMethods {
+public class PotentialsTablePanelOperations {
 
 	/**
 	 * calculate the first editable Row of the table, based upon the number of parents for the node.
@@ -35,7 +36,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 *
 	 * @param node - node with contains the potentials
 	 */
-	@Override public int calculateFirstEditableRow(Node node) {
+    public int calculateFirstEditableRow(Node node) {
 		return node.getPotentials().stream().findFirst().map(p -> p.getNumVariables()-1).orElse(0);
 	}
 
@@ -45,16 +46,12 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 * <p>
 	 * @param node node who "owns" the table
 	 */
-	@Override public int calculateLastEditableRow(Node node) {
-		if(node.getPotentials().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "There are no potentials");
-			return 0;
-		}
-		Potential potential = node.getPotentials().get(0);
+    public int calculateLastEditableRow(Node node) throws ThereIsNoPotentialsInNodeException {
+        Potential potential = node.getFirstPotential();
         if (PotentialsTablePanelOperations.getIsExactDistrPotential(potential)) {
 			return potential.getNumVariables() - 1;
 		}
-        return node.getPotentials().get(0).getNumVariables() - 1 + node.getVariable().getStates().length - 1;
+        return node.getFirstPotential().getNumVariables() - 1 + node.getVariable().getStates().length - 1;
     }
 	
 	/**
@@ -67,12 +64,8 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		return (potential instanceof ExactDistrPotential);
 		// potential.getClass().getName().equals("org.openmarkov.core.model.network.potential.ExactDistrPotential");
 	}
-
-	@Override public int getPotentialIndex(int row, int column, Node node) {
-		if (node.getPotentials().isEmpty()){
-			JOptionPane.showMessageDialog(null, "There are no potentials");
-			return 0;
-		}
+    
+    public int getPotentialIndex(int row, int column, Node node) throws ThereIsNoPotentialsInNodeException {
 		// First of all we get the start index of the column
 		int potentialIndex = getPotentialStartIndexOfColumn(column, node);
 		// We get the last editable row in the JTable
@@ -156,18 +149,12 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 * @param node   - the node with the potential
 	 * @return index of the potential.
 	 */
-    public static int getPotentialStartIndexOfColumn(int column, Node node) {
+    public static int getPotentialStartIndexOfColumn(int column, Node node) throws ThereIsNoPotentialsInNodeException {
 		/*
 		 * This code is here and in getPotentialIndex because this method is used not only in  getPotentialIndex
 		 * but in org.openmarkov.gui.action.TablePotentialValueEdit
 		 */
-		
-		if (node.getPotentials().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "There are no potentials");
-			return 0;
-		}
-
-		Potential potential = node.getPotentials().get(0);
+        Potential potential = node.getFirstPotential();
         TablePotential tablePotential;
 
 		if (getIsExactDistrPotential(potential))

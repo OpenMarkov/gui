@@ -8,6 +8,7 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -68,20 +69,12 @@ import java.util.List;
 	 *
 	 * @param node : node whose first potential is a AugmentedTablePotential
 	 */
-	public AugmentedTablePotentialPanel(Node node) {
+    public AugmentedTablePotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException {
 		super();
-
 		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
-
-		// If there is no potential
-		if (node.getPotentials().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "There are no potentials");
-			return;
-		}
-		
 		this.node = node;
 		// This panel displays the first potential of the node
-		potential = node.getPotentials().get(0);
+        potential = node.getFirstPotential();
 		//The table associated to tablePotential
 		tablePotential = ((AugmentedTablePotential) potential).getAugmentedTable();
 
@@ -148,7 +141,7 @@ import java.util.List;
 	 *
 	 * @author carmenyago
 	 */
-	@Override public void setData() {
+    @Override public void setData() throws ThereIsNoPotentialsInNodeException {
 
 		// true
 		hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(node);
@@ -294,21 +287,6 @@ import java.util.List;
 		}
 		setPosition(numPositions);
 		return numPositions;
-	}
-
-	/**
-	 * This method gets the Evidence Case from the selected column
-	 *
-	 * @return Evidence case
-	 */
-	@Override public EvidenceCase getEvidenceCaseFromSelectedColumn() {
-		EvidenceCase evi = null;
-		try {
-			evi = getConfiguration(selectedColumn);
-		} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-			e.printStackTrace();
-		}
-		return evi;
 	}
 
 	/**

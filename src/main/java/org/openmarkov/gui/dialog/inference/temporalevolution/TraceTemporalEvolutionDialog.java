@@ -224,17 +224,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     //end
     
     //15/11/2022  constructors reworked
-    private TraceTemporalEvolutionDialog(Window owner, ProbNet probNet, Variable decisionSelected) {
+    private TraceTemporalEvolutionDialog(Window owner, ProbNet probNet, Variable decisionSelected) throws NotAllNodesHavePoliciesException {
         super(owner);
         this.originalProbNet = probNet;
         //10/11/2022 error message when there is more than one node without policy
-        try {
-            MIDTemporalEvolution.checkDecision(this.originalProbNet, this.originalProbNet.getNode(decisionSelected));
-        } catch (NotAllNodesHavePoliciesException e) {
-            JOptionPane.showMessageDialog(owner, stringDatabase.getString("DecisionWithoutPolicyWarning.Text.Label"), stringDatabase.getString("WarningWindow.Title.Label"),
-                                          JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+        MIDTemporalEvolution.checkDecision(this.originalProbNet, this.originalProbNet.getNode(decisionSelected));
         //end
         this.numSlices = originalProbNet.getInferenceOptions().getTemporalOptions().getHorizon();
         conditioningVariables = new ArrayList<>();
@@ -262,7 +256,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @param evidence         MID current evidence
      * @param decisionSelected conditioning decision for which temporal evolution by criterion is displayed
      */
-    public TraceTemporalEvolutionDialog(Window owner, Node node, EvidenceCase evidence, Variable decisionSelected) {
+    public TraceTemporalEvolutionDialog(Window owner, Node node, EvidenceCase evidence, Variable decisionSelected) throws NotAllNodesHavePoliciesException {
         this(owner, node.getProbNet(), decisionSelected);
         this.isUtility = node.getNodeType() == NodeType.UTILITY;
         progressMonitor.setMaximum(numSlices);
@@ -282,15 +276,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 }
                 // end
                 initialize(owner);
-                
+            } catch (NotEvaluableNetworkException | IncompatibleEvidenceException | CannotNormalizePotentialException |
+                     NonProjectablePotentialException e) {
+                throw new UnrecoverableException(e);
             } catch (IndexOutOfBoundsException ignore) {
                 //When pressing "Cancel" in progressMonitor
-            } catch (@SuppressWarnings("OverlyBroadCatchBlock")
-            NonProjectablePotentialException | NotEvaluableNetworkException |
-            IncompatibleEvidenceException | CannotNormalizePotentialException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), stringDatabase.getString("ExceptionGeneric.Title.Label"),
-                                              JOptionPane.ERROR_MESSAGE);
             }
         });
         evaluationThread.start();
@@ -307,7 +297,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @param evidence         MID current evidence
      * @param decisionSelected conditioning decision for which temporal evolution by criterion is displayed
      */
-    public TraceTemporalEvolutionDialog(Window owner, ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) {
+    public TraceTemporalEvolutionDialog(Window owner, ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) throws NotAllNodesHavePoliciesException {
         this(owner, probNet, decisionSelected);
         this.isByCriterion = true;
         this.isUtility = true;
@@ -361,10 +351,10 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 initialize(owner);
             } catch (IndexOutOfBoundsException ignore) {
                 //When pressing "Cancel" in progressMonitor
-            } catch (NotEvaluableNetworkException | IncompatibleEvidenceException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), stringDatabase.getString("ExceptionGeneric.Title.Label"),
-                                              JOptionPane.ERROR_MESSAGE);
+            } catch (NotEvaluableNetworkException.NotApplicableNetwork |
+                     NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException |
+                     NotEvaluableNetworkException.VariableIsNotTemporal e) {
+                throw new UnrecoverableException(e);
             }
         });
         evaluationThread.start();
@@ -880,9 +870,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         JButton jButtonSaveReport = new JButton();
         jButtonSaveReport.setName("jButtonSaveReport");
         jButtonSaveReport.setText(stringDatabase.getString("Dialog.SaveReport.Label"));
-        jButtonSaveReport.addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) {
+        jButtonSaveReport.addActionListener(e -> {
+            try {
                 saveReport();
+            } catch (IOException ex) {
+                throw new UnrecoverableException(ex);
             }
         });
         buttonsPanel.add(jButtonSaveReport);
@@ -1363,7 +1355,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     
     
     /**
-     * Sum a list of series to obtain a new serie
+     * Sum a list of series to get a new series
      *
      * @param arraySeries
      *
@@ -1695,9 +1687,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     /**
      * Allows to save a file with the excel or the png of the information showed in the screem
      */
-    private void saveReport() {
+    private void saveReport() throws IOException {
         Preferences prefs = Preferences.userRoot().node(getClass().getSimpleName());
-        
         JFileChooser fileChooser = new JFileChooser(prefs.get("LAST_FOLDER_TEMPEVO", new File(".").getAbsolutePath()));
         String netName = FilenameUtils.getBaseName(expandedNetwork.getName());
         if (tabbedPane.getSelectedIndex() == 0) {
@@ -1707,44 +1698,31 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             fileChooser.setSelectedFile(
                     new File(netName + "-" + variableOfInterest.getBaseName() + "-temporal_evolution.xlsx"));
         }
-        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            String filename = fileChooser.getSelectedFile().getAbsolutePath();
-            
-            if (fileChooser.getSelectedFile().exists()) {
-                int result = JOptionPane.showConfirmDialog(this,
-                                                           stringDatabase.getString("OverwriteFile.Text.Label"),
-                                                           stringDatabase.getString("OverwriteFile.Title.Label"),
-                                                           JOptionPane.YES_NO_OPTION);
-                if (result != JOptionPane.YES_OPTION) {
-                    return;
-                }
+        if (fileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        String filename = fileChooser.getSelectedFile().getAbsolutePath();
+        if (fileChooser.getSelectedFile().exists()) {
+            int result = JOptionPane.showConfirmDialog(this,
+                                                       stringDatabase.getString("OverwriteFile.Text.Label"),
+                                                       stringDatabase.getString("OverwriteFile.Title.Label"),
+                                                       JOptionPane.YES_NO_OPTION);
+            if (result != JOptionPane.YES_OPTION) {
+                return;
             }
-            
-            prefs.put("LAST_FOLDER_TEMPEVO", fileChooser.getSelectedFile().getParent());
-            
-            if (tabbedPane.getSelectedIndex() == 0) {
-                try {
-                    
-                    // Shows the default subtitles, save the png and then hide again the default subtitles
-                    for (int i = 0; i < chart.getSubtitleCount(); i++) {
-                        chart.getSubtitle(0).setVisible(true);
-                    }
-                    ChartUtils.saveChartAsPNG(new File(filename), chart, 1024, 768);
-                    for (int i = 0; i < chart.getSubtitleCount(); i++) {
-                        chart.getSubtitle(0).setVisible(false);
-                    }
-                } catch (IOException e) {
-                    // TODO - Translate
-                    JOptionPane.showMessageDialog(this, "Error when trying to generate report in " + filename);
-                }
-            } else {
-                try {
-                    createExcel(filename);
-                } catch (IOException e) {
-                    // TODO - Translate
-                    JOptionPane.showMessageDialog(this, "Error when trying to generate report in " + filename);
-                }
-            }
+        }
+        prefs.put("LAST_FOLDER_TEMPEVO", fileChooser.getSelectedFile().getParent());
+        if (tabbedPane.getSelectedIndex() != 0) {
+            createExcel(filename);
+            return;
+        }
+        // Shows the default subtitles, save the png and then hide again the default subtitles
+        for (int i = 0; i < chart.getSubtitleCount(); i++) {
+            chart.getSubtitle(0).setVisible(true);
+        }
+        ChartUtils.saveChartAsPNG(new File(filename), chart, 1024, 768);
+        for (int i = 0; i < chart.getSubtitleCount(); i++) {
+            chart.getSubtitle(0).setVisible(false);
         }
     }
     

@@ -10,12 +10,14 @@ package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.gui.action.ICITablePotentialValueEdit;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.exception.MismatchedValueException;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
@@ -23,129 +25,127 @@ import javax.swing.undo.UndoableEdit;
 import java.util.ListIterator;
 
 @SuppressWarnings("serial") public class ICIValuesTable extends ValuesTable implements PNUndoableEditListener {
-	/**
-	 * Define the last column of the table that was modified
-	 */
-	private int lastCol = -1;
-
-	public ICIValuesTable(Node node, ValuesTableModel tableModel, final boolean modifiable) {
-		super(node, tableModel, modifiable);
-	}
-
-	/**
-	 * set the number of columns in the table for canonical models adding one
-	 * column per parent state and adding one more for the id column (hidden)
-	 *
-	 * @param properties - node properties
-	 * @return the number of columns in the table
-	 */
-	public static int howManyCanonicalColumns(Node properties) {
+    /**
+     * Define the last column of the table that was modified
+     */
+    private int lastCol = -1;
+    
+    public ICIValuesTable(Node node, ValuesTableModel tableModel, final boolean modifiable) {
+        super(node, tableModel, modifiable);
+    }
+    
+    /**
+     * set the number of columns in the table for canonical models adding one
+     * column per parent state and adding one more for the id column (hidden)
+     *
+     * @param properties - node properties
+     *
+     * @return the number of columns in the table
+     */
+    public static int howManyCanonicalColumns(Node properties) {
         int numColumns;
-		if (properties.getParents() != null) {
-			int aux = 1;// first column for child states
-			for (Node parent : properties.getParents()) {
-				State[] parentStates = parent.getVariable().getStates();
-				aux += parentStates.length;
-			}
-			numColumns = aux + 1; // last column for the leak potential
-		} else {
-			numColumns = 1;
-		}
-		// numColumns = FIRST_EDITABLE_COLUMN + numColumns;
-		return numColumns;
-	}
-
-	public static int toPositionOnJtable(int index, int col, int numOfStates, int numOfParents) {
-		return numOfParents - 1 + numOfStates + (numOfStates * (col - 1)) - index;
-	}
-
-	/**
-	 * check the value to modify in the table and sets
-	 */
-	@Override public void setValueAt(Object newValue, int row, int col) {
-		Object oldValue = getValueAt(row, col);
-		// TODO Verificar si la ubicación del siguiente código es adecuada
-		if (((Double) newValue).isNaN()) {
-			newValue = oldValue;
-			JOptionPane.showMessageDialog(this.getParent(), "Introduced value is not a number");
-		} else if (((Double) newValue) < 0) {
-			newValue = oldValue;
-			JOptionPane.showMessageDialog(this.getParent(), "Introduced value can not be negative");
-		}
-		if (!oldValue.equals(newValue)) {
-			if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION) {
-				if (lastCol != col) {
-					priorityList.clear();
-					lastCol = col;
-				}
-				ICITablePotentialValueEdit nodePotentialEdit = new ICITablePotentialValueEdit(node, (Double) newValue,
-						row, col, priorityList);
-				try {
-                    ProbNet probNet1 = node.getProbNet();
-                    nodePotentialEdit.doEdit(probNet1);
-                } catch (DoEditException.ConstraintViolated e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-							StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		} // else it is not required to update values
-	}
-
-	@Override public void undoableEditHappened(UndoableEditEvent arg0) {
+        if (properties.getParents() != null) {
+            int aux = 1;// first column for child states
+            for (Node parent : properties.getParents()) {
+                State[] parentStates = parent.getVariable().getStates();
+                aux += parentStates.length;
+            }
+            numColumns = aux + 1; // last column for the leak potential
+        } else {
+            numColumns = 1;
+        }
+        // numColumns = FIRST_EDITABLE_COLUMN + numColumns;
+        return numColumns;
+    }
+    
+    public static int toPositionOnJtable(int index, int col, int numOfStates, int numOfParents) {
+        return numOfParents - 1 + numOfStates + (numOfStates * (col - 1)) - index;
+    }
+    
+    /**
+     * check the value to modify in the table and sets
+     */
+    @Override public void setValueAt(Object newValue, int row, int col) {
+        Object oldValue = getValueAt(row, col);
+        // TODO Verificar si la ubicación del siguiente código es adecuada
+        if (((Double) newValue).isNaN() || ((Double) newValue) < 0) {
+            newValue = oldValue;
+            throw new UnrecoverableException(new MismatchedValueException("a positive number", newValue));
+        }
+        if (oldValue.equals(newValue)) {
+            return;
+        }
+        if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION) {
+            if (lastCol != col) {
+                priorityList.clear();
+                lastCol = col;
+            }
+            ICITablePotentialValueEdit nodePotentialEdit =
+                    new ICITablePotentialValueEdit(node, (Double) newValue, row, col, priorityList);
+            
+            ProbNet probNet1 = node.getProbNet();
+            try {
+                nodePotentialEdit.doEdit(probNet1);
+            } catch (DoEditException.ConstraintViolated e) {
+                throw new UnrecoverableException(e);
+            }
+        }
+        
+    }
+    
+    @Override public void undoableEditHappened(UndoableEditEvent arg0) {
         int priorityListPosition;
-		UndoableEdit edit = arg0.getEdit();
-		if (edit instanceof ICITablePotentialValueEdit) {
-			ICITablePotentialValueEdit iciEdit = (ICITablePotentialValueEdit) arg0.getEdit();
-			priorityList = iciEdit.getPriorityList();
-			if (!iciEdit.getLeakyFlag()) {// noisy parameters
-				double[] noisyPotential = iciEdit.getNewNoisyValues();
-				ListIterator<Integer> listIterator = priorityList.listIterator();
+        UndoableEdit edit = arg0.getEdit();
+        if (edit instanceof ICITablePotentialValueEdit) {
+            ICITablePotentialValueEdit iciEdit = (ICITablePotentialValueEdit) arg0.getEdit();
+            priorityList = iciEdit.getPriorityList();
+            if (!iciEdit.getLeakyFlag()) {// noisy parameters
+                double[] noisyPotential = iciEdit.getNewNoisyValues();
+                ListIterator<Integer> listIterator = priorityList.listIterator();
                 while (listIterator.hasNext()) {
                     priorityListPosition = listIterator.next();
-					super.getModel().setValueAt(noisyPotential[priorityListPosition],
-							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
-				}
-			} else {// leaky parametes
-				double[] leakyPotential = iciEdit.getNewLeakyValues();
-				ListIterator<Integer> listIterator = priorityList.listIterator();
+                    super.getModel().setValueAt(noisyPotential[priorityListPosition],
+                                                iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
+                }
+            } else {// leaky parametes
+                double[] leakyPotential = iciEdit.getNewLeakyValues();
+                ListIterator<Integer> listIterator = priorityList.listIterator();
                 while (listIterator.hasNext()) {
                     priorityListPosition = listIterator.next();
-					super.getModel().setValueAt(leakyPotential[priorityListPosition],
-							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
-				}
-			}
-		}
-	}
-
-	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override public void undoEditHappened(UndoableEditEvent event) {
+                    super.getModel().setValueAt(leakyPotential[priorityListPosition],
+                                                iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
+                }
+            }
+        }
+    }
+    
+    @Override public void undoableEditWillHappen(UndoableEditEvent event) {
+        // TODO Auto-generated method stub
+    }
+    
+    @Override public void undoEditHappened(UndoableEditEvent event) {
         int priorityListPosition;
-		UndoableEdit edit = event.getEdit();
+        UndoableEdit edit = event.getEdit();
         if (edit instanceof ICITablePotentialValueEdit iciEdit) {
             priorityList = iciEdit.getPriorityList();
-			if (!iciEdit.getLeakyFlag()) {// noisy parameters
-				double[] lastNoisyPotential = iciEdit.getLastNoisyValues();
-				ListIterator<Integer> listIterator = priorityList.listIterator();
+            if (!iciEdit.getLeakyFlag()) {// noisy parameters
+                double[] lastNoisyPotential = iciEdit.getLastNoisyValues();
+                ListIterator<Integer> listIterator = priorityList.listIterator();
                 while (listIterator.hasNext()) {
                     priorityListPosition = listIterator.next();
-					super.getModel().setValueAt(lastNoisyPotential[priorityListPosition],
-							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
-				}
-			} else {// leaky parametes
-				double[] lastLeakyPotential = iciEdit.getLastNoisyValues();
-				ListIterator<Integer> listIterator = priorityList.listIterator();
+                    super.getModel().setValueAt(lastNoisyPotential[priorityListPosition],
+                                                iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
+                }
+            } else {// leaky parametes
+                double[] lastLeakyPotential = iciEdit.getLastNoisyValues();
+                ListIterator<Integer> listIterator = priorityList.listIterator();
                 while (listIterator.hasNext()) {
                     priorityListPosition = listIterator.next();
-					super.getModel().setValueAt(lastLeakyPotential[priorityListPosition],
-							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
-				}
-			}
-			super.getModel().setValueAt(iciEdit.getNewValue(), iciEdit.getRowPosition(), iciEdit.getColumnPosition());
-		}
-	}
+                    super.getModel().setValueAt(lastLeakyPotential[priorityListPosition],
+                                                iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
+                }
+            }
+            super.getModel().setValueAt(iciEdit.getNewValue(), iciEdit.getRowPosition(), iciEdit.getColumnPosition());
+        }
+    }
 }

@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.dialog.node;
 
+import org.openmarkov.core.annotation.ToCheck;
+import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -29,6 +31,7 @@ import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.exception.FamilyDistributionRuleBrokenException;
 import org.openmarkov.gui.loader.element.IconLoader;
 import org.openmarkov.core.localize.StringDatabase;
 
@@ -107,14 +110,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         distributionsTablePane.setPreferredSize(new Dimension(300, 100));
         distributionsPanel.setPreferredSize(new Dimension(350, 150));
         componentsPanel.add(distributionsPanel);
-        try {
-            initialize();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
-                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-        }
-        
+        initialize();
         Point parentLocation = owner.getLocation();
         Dimension parentSize = owner.getSize();
         int x = (int) (parentLocation.getX() + parentSize.getWidth() / 2 - getSize().getWidth() / 2);
@@ -159,14 +155,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         distributionsTablePane.setPreferredSize(new Dimension(300, 100));
         distributionsPanel.setPreferredSize(new Dimension(350, 150));
         componentsPanel.add(distributionsPanel);
-        try {
-            initialize();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
-                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-        }
-        
+        initialize();
         Point parentLocation = owner.getLocation();
         Dimension parentSize = owner.getSize();
         int x = (int) (parentLocation.getX() + parentSize.getWidth() / 2 - getSize().getWidth() / 2);
@@ -266,6 +255,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     /**
      * @param uncertainValues
      * @param types
+     *
      * @return The indexes of uncertain values
      */
     private static int[] getIndexesUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
@@ -409,6 +399,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     /**
      * @param projectedPotential Table potential which has no uncertain values. Its values are
      *                           used for creating the uncertain values
+     *
      * @return An array of uncertain values
      */
     private static UncertainValue[] createExactUncertainValuesFromDouble(TablePotential projectedPotential) {
@@ -459,28 +450,20 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      *
      * @return true if the dialog box can be closed.
      */
-    @Override protected boolean doOkClickBeforeHide() {
+    @Override
+    protected boolean doOkClickBeforeHide() throws FamilyDistributionRuleBrokenException.Rule2Broken, FamilyDistributionRuleBrokenException.Rule3Broken, FamilyDistributionRuleBrokenException.Rule1Broken, InvalidArgumentException {
         TableCellEditor currentEditor = distributionTable.getCellEditor();
-        
         if (currentEditor != null) {
             currentEditor.stopCellEditing();
         }
-        
         List<UncertainValue> uncertainValues = readDataFromTable();
-        boolean verify = verifyLocalConstraintsUncertainty(uncertainValues);
-        if (verify) {
-            if (isChanceVariable) {
-                if (!verifyGlobalConstraintUncertainty(uncertainValues)) {
-                    // System.out.println("Distribution "+typeDistrib+" does not verify the constraints associated to its domain.");
-                    verify = false;
-                }
-            }
+        verifyLocalConstraintsUncertainty(uncertainValues);
+        if (isChanceVariable) {
+            verifyGlobalConstraintUncertainty(uncertainValues);
         }
-        if (verify) {
-            uncertainColumn = reverse(uncertainValues);
-            valuesColumn = calculateReferenceValues();
-        }
-        return verify;
+        uncertainColumn = reverse(uncertainValues);
+        valuesColumn = calculateReferenceValues();
+        return true;
     }
     
     private static List<UncertainValue> reverse(List<UncertainValue> list) {
@@ -495,26 +478,23 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         return calculateReferenceValues(uncertainColumn);
     }
     
-    private boolean verifyLocalConstraintsUncertainty(List<UncertainValue> uncertainvalues) {
-        boolean comply = true;
+    private void verifyLocalConstraintsUncertainty(List<UncertainValue> uncertainvalues) throws InvalidArgumentException {
         // Verify individual constraints for each Uncertain Value
-        for (int i = 0; i < uncertainvalues.size() && comply; i++) {
+        for (int i = 0; i < uncertainvalues.size(); i++) {
+            @ToCheck(reasonKind = ToCheck.ReasonKind.USER_EXPERIENCE,
+                    reasonDescription = "The exception thrown here should tell which distribution and uncertain value failed")
             UncertainValue uncertainValue = uncertainvalues.get(i);
+            /*
             String distributionName = uncertainValue.getProbDensFunction().getClass()
                                                     .getAnnotation(ProbDensFunctionType.class).name();
-            
-            if (!uncertainValue.verifyParametersDomain(isChanceVariable)) {
-                String message = "Distribution " + distributionName
-                        + " does not comply with the constraints associated to its domain.";
-                JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-                comply = false;
-            }
-            
+            */
+            uncertainValue.verifyParametersDomain(isChanceVariable);
         }
-        return comply;
     }
     
-    private static boolean verifyGlobalConstraintUncertainty(List<UncertainValue> uncertainValues) {
+    private static boolean verifyGlobalConstraintUncertainty(List<UncertainValue> uncertainValues) throws FamilyDistributionRuleBrokenException.Rule3Broken, FamilyDistributionRuleBrokenException.Rule2Broken, FamilyDistributionRuleBrokenException.Rule1Broken {
+        @ToCheck(reasonKind = ToCheck.ReasonKind.CODE_QUALITY,
+                reasonDescription = "Rules verified are 1, 2 and 3, but the method doVerifyRule4 is never used")
         FamilyDistribution family = new FamilyDistribution(uncertainValues);
         return (doVerifyRule1(family) && doVerifyRule2(family) && doVerifyRule3(family));
     }
@@ -526,8 +506,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      * • the sum of the maxima of all the distributions (different from Complement)
      * cannot be greater than 1.
      */
-    private static boolean doVerifyRule1(FamilyDistribution family) {
-        boolean verify;
+    private static boolean doVerifyRule1(FamilyDistribution family) throws FamilyDistributionRuleBrokenException.Rule1Broken {
         List<UncertainValue> exactRangeOrUncertain;
         List<Class<? extends ProbDensFunction>> rangeOrTriangTypes = new ArrayList<>();
         rangeOrTriangTypes.add(RangeFunction.class);
@@ -542,66 +521,14 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
             int numComplement = getUncertainValuesOfClass(uncertainFamily, ComplementFunction.class).size();
             exactRangeOrUncertain = new ArrayList<UncertainValue>(rangeOrTriangUncertain);
             exactRangeOrUncertain.addAll(exactUncertain);
-            verify = ((numComplement > 0) && (sizeExact + sizeRangeOrTriang + numComplement == totalSizeFamily)) && (
+            boolean verify = ((numComplement > 0) && (sizeExact + sizeRangeOrTriang + numComplement == totalSizeFamily)) && (
                     Tools.sum(new FamilyDistribution(exactRangeOrUncertain).getMaximum()) <= 1.0
             );
-        } else {
-            verify = true;
-        }
-        if (!verify) {
-            String message = """
-                    Following rule has been broken.
-                    If one of the distributions is Exact with v != 0, Range, or Triangular, then:
-                        · all the others must be either Exact, Range, Triangular, or Complement;
-                        · at least one of the others must be Complement;
-                        · the sum of the maxima of all the distributions (different from Complement) cannot be greater than 1;""";
-            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return verify;
-    }
-    
-    @SuppressWarnings("unused") private static boolean doVerifyRule4(FamilyDistribution family) {
-        List<UncertainValue> uncertainFamily = family.getFamily();
-        int totalSizeFamily = uncertainFamily.size();
-        List<UncertainValue> compUncertain = getUncertainValuesOfClass(uncertainFamily, ComplementFunction.class);
-        boolean verify = (totalSizeFamily != compUncertain.size());
-        if (!verify) {
-            String message = "Rule 4 of the specification of sensitivity analysis in ProbModelXML has been violated. Please, check the distributions and its parameters.";
-            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return verify;
-    }
-    
-    private static boolean doVerifyRule3(FamilyDistribution family) {
-        boolean verify;
-        List<UncertainValue> uncertainFamily = family.getFamily();
-        int totalSizeFamily = uncertainFamily.size();
-        List<UncertainValue> dirUncertain = getUncertainValuesOfClass(uncertainFamily, DirichletFunction.class);
-        int numDirichlet = dirUncertain.size();
-        if (numDirichlet > 0) {
-            if (numDirichlet > 1) {
-                List<UncertainValue> exactUncertain = getUncertainValuesOfClass(uncertainFamily, ExactFunction.class);
-                int numExact = exactUncertain.size();
-                verify = (
-                        (numExact + numDirichlet == totalSizeFamily) && areAllZero(
-                                new FamilyDistribution(exactUncertain).getMean())
-                );
-            } else {
-                verify = false;
+            if (!verify) {
+                throw new FamilyDistributionRuleBrokenException.Rule1Broken(family);
             }
-        } else {
-            verify = true;
         }
-        if (!verify) {
-            String message = """
-            Following rule has been broken.
-            If one of the distributions is a Dirichlet, then:
-                · all the others must be Exact with v = 0 or Dirichlet.
-                · at least one of the others must also be a Dirichlet.
-            """;
-            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return verify;
+        return true;
     }
     
     /*
@@ -609,38 +536,68 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      * • all the others must be Exact, with v = 0, or Complement;
      * • at least one of the others must be Complement.
      */
-    private static boolean doVerifyRule2(FamilyDistribution family) {
-        boolean verify;
+    private static boolean doVerifyRule2(FamilyDistribution family) throws FamilyDistributionRuleBrokenException.Rule2Broken {
         List<UncertainValue> uncertainFamily = family.getFamily();
         int totalSizeFamily = uncertainFamily.size();
         List<UncertainValue> betaUncertain = getUncertainValuesOfClass(uncertainFamily, BetaFunction.class);
-        int numBeta = betaUncertain.size();
-        if (numBeta > 0) {
-            if (numBeta == 1) {
+        switch (betaUncertain.size()) {
+            case 0 -> {
+            }
+            case 1 -> {
                 List<UncertainValue> exactUncertain = getUncertainValuesOfClass(uncertainFamily, ExactFunction.class);
-                List<UncertainValue> compUncertain = getUncertainValuesOfClass(uncertainFamily,
-                                                                               ComplementFunction.class);
+                List<UncertainValue> compUncertain = getUncertainValuesOfClass(uncertainFamily, ComplementFunction.class);
                 int numExact = exactUncertain.size();
                 int numComp = compUncertain.size();
-                verify = (
+                boolean verify = (
                         (numExact + numComp + 1 == totalSizeFamily) && areAllZero(
                                 new FamilyDistribution(exactUncertain).getMean()) && (numComp >= 1)
                 );
-            } else {
-                verify = false;
+                if (!verify) {
+                    throw new FamilyDistributionRuleBrokenException.Rule2Broken(family);
+                }
             }
-        } else {
-            verify = true;
+            default -> {
+                throw new FamilyDistributionRuleBrokenException.Rule2Broken(family);
+            }
         }
+        return true;
+    }
+    
+    private static boolean doVerifyRule3(FamilyDistribution family) throws FamilyDistributionRuleBrokenException.Rule3Broken {
+        List<UncertainValue> uncertainFamily = family.getFamily();
+        int totalSizeFamily = uncertainFamily.size();
+        List<UncertainValue> dirUncertain = getUncertainValuesOfClass(uncertainFamily, DirichletFunction.class);
+        int numDirichlet = dirUncertain.size();
+        switch (numDirichlet) {
+            case 0 -> {
+            }
+            case 1 -> {
+                List<UncertainValue> exactUncertain = getUncertainValuesOfClass(uncertainFamily, ExactFunction.class);
+                int numExact = exactUncertain.size();
+                boolean verify = (
+                        (numExact + numDirichlet == totalSizeFamily) && areAllZero(
+                                new FamilyDistribution(exactUncertain).getMean())
+                );
+                if (!verify) {
+                    throw new FamilyDistributionRuleBrokenException.Rule3Broken(family);
+                }
+            }
+            default -> {
+                throw new FamilyDistributionRuleBrokenException.Rule3Broken(family);
+            }
+        }
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private static void doVerifyRule4(FamilyDistribution family) throws FamilyDistributionRuleBrokenException.Rule4Broken {
+        List<UncertainValue> uncertainFamily = family.getFamily();
+        int totalSizeFamily = uncertainFamily.size();
+        List<UncertainValue> compUncertain = getUncertainValuesOfClass(uncertainFamily, ComplementFunction.class);
+        boolean verify = (totalSizeFamily != compUncertain.size());
         if (!verify) {
-            String message = """
-                    Following rule has been broken.
-                    If one of the distributions is a Beta, then:
-                        · all the others must be Exact with v = 0 or Complement
-                        · at least one of the others must be Complement.""";
-            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+            throw new FamilyDistributionRuleBrokenException.Rule4Broken(family);
         }
-        return verify;
     }
     
     private static boolean areAllZero(double[] x) {
@@ -770,8 +727,9 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         
         private static final long serialVersionUID = 1L;
         
-        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-                                                                 int row, int column) {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                       int row, int column) {
             setBackground((row == 1) ? Color.gray : Color.white);
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }

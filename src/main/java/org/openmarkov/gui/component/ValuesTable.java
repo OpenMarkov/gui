@@ -13,6 +13,9 @@ package org.openmarkov.gui.component;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
+import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -23,6 +26,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.action.TablePotentialValueEdit;
 import org.openmarkov.gui.dialog.common.KeyTable;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.exception.MismatchedValueException;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
@@ -251,6 +255,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * This method returns the dataModified variable. If dataModified doesn't exist it is created
      *
      * @return dataModified
+     *
      * @see #dataModified
      * revised--&gt; not changed
      */
@@ -267,6 +272,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * This method initialises all the cells of dataModified to the boolean value given by isModified
      *
      * @param isModified - initial value for the cells is dataModified
+     *
      * @see #dataModified
      * revised--&gt; not changed
      */
@@ -323,6 +329,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * listener notifications from the new data model.
      *
      * @param newDataModel the new data source for this table.
+     *
      * @throws IllegalArgumentException if newModel is null.
      *                                  <p>
      *                                  revised--&gt;not changed
@@ -379,16 +386,17 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
         
         Object oldValue = getValueAt(row, col);
         // The new value has to be transformed to double
-        if (!castValue(newValue))
+        if (!castValue(newValue)) {
             newValue = oldValue;
+        }
         
         // Not clear if I have to use equals
-        if (oldValue.equals(newValue))
+        if (oldValue.equals(newValue)) {
             return;
+        }
         // When is tablePotential, the value cannot be negative
         if (((Double) newValue) < 0 && !isExactDistrPotential) {
-            newValue = oldValue;
-            JOptionPane.showMessageDialog(this.getParent(), "Introduced value cannot be negative");
+            throw new UnrecoverableException(new MismatchedValueException("a positive number", newValue));
         }
         //if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION)
         if (!isExactDistrPotential) {
@@ -401,15 +409,17 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
         
         // Chance, decision and utility
         
-        TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(node, (Double) newValue, row, col,
-                                                                                priorityList, getTableModel().getNotEditablePositions());
         try {
+            TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(node, (Double) newValue, row, col,
+                                                                                    priorityList, getTableModel().getNotEditablePositions());
+            
             nodePotentialEdit.doEdit(probNet);
         } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+            throw new UnrecoverableException(e);
+        } catch (ThereIsNoPotentialsInNodeException e) {
+            throw new UnreacheableException(e);
         }
+        
         // UNCLEAR Should it be here?
         // Sets the value in case of ExactDistrPotential
         if (isExactDistrPotential)
@@ -433,17 +443,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
         if (newValue instanceof Double)
             return true;
         return false;
-    }
-    
-    /**
-     * show a error window message to the user with a specific msg
-     *
-     * @param msg - the error message to show to user
-     *            revised--&gt;not changed
-     */
-    protected void showNodePotentialTableErrorMsg(String msg) {
-        JOptionPane.showMessageDialog(this, stringDatabase.getString(msg + ".Text"),
-                                      stringDatabase.getString(msg + ".Title"), JOptionPane.ERROR_MESSAGE);
     }
     
     /**
@@ -590,6 +589,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * Gets the regular expression for the temporal node
      *
      * @param name the name of the node
+     *
      * @return the regular expression of the name of node. It returns namenode\\[number\\]
      * <p>
      * revised--&gt; not changed
@@ -607,6 +607,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * Gets the regular expression for node names with parenthesis
      *
      * @param name the name of the node
+     *
      * @return the regular expression of the name of node. This method returns
      * the same name but substituting '(' and ')' by '\\(' and '\\)'
      */

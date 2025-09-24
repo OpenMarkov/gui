@@ -10,6 +10,7 @@ package org.openmarkov.gui.dialog.common;
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.TemporalNetOperations;
@@ -37,68 +38,69 @@ import java.util.List;
  * @version 1.0 jmendoza
  */
 public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelListener {
-
-	/**
-	 * Static field for serializable class.
-	 */
-	private static final long serialVersionUID = 8550762264755243008L;
-
-	/**
-	 * Key prefix.
-	 */
+    
+    /**
+     * Static field for serializable class.
+     */
+    private static final long serialVersionUID = 8550762264755243008L;
+    
+    /**
+     * Key prefix.
+     */
     private String keyPrefix;
-
-	private Node node;
-
-	private boolean renameAction = true;
-
-	/*
-	 * this a default constructor with no construction parameters
-	 */
-	public PrefixedKeyTablePanel() {
-
-		keyPrefix = "";
-		initialize();
-		getValuesTable().getModel().addTableModelListener(this);
-	}
-
-	/**
-	 * This is the default constructor
-	 *
-	 * @param newColumns   array of texts that appear in the header of the columns.
-	 * @param noKeyData    content of the cells except the first column.
-	 * @param newKeyPrefix prefix of the keys of each row that appear in the first
-	 *                     column.
-	 */
-	public PrefixedKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
-			boolean firstColumnHidden) {// , ElementObservable notifier) {
-		super(newColumns, new Object[0][0], true, true);// , notifier);
-		keyPrefix = newKeyPrefix;
-		initialize();
-		getValuesTable().getModel().addTableModelListener(this);
-		getValuesTable().setFirstColumnHidden(firstColumnHidden);
-		setData(noKeyData);
-	}
-
-	public PrefixedKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
-			boolean firstColumnHidden, Node node) {
-		super(newColumns, new Object[0][0], true, true);// , notifier);
-		this.node = node;
-		keyPrefix = newKeyPrefix;
-		initialize();
-		getValuesTable().setFirstColumnHidden(firstColumnHidden);
-		setData(noKeyData);
-	}
-
-	/**
-	 * This method takes a data object and creates a new column that content a
-	 * row key. This key begins with the key prefix following a number that
-	 * starts at 0.
-	 *
-	 * @param oldData data to add a key column.
-	 * @return a data object with one more column that contains the keys.
-	 */
-	private Object[][] fillDataKeys(Object[][] oldData) {
+    
+    private Node node;
+    
+    private boolean renameAction = true;
+    
+    /*
+     * this a default constructor with no construction parameters
+     */
+    public PrefixedKeyTablePanel() {
+        
+        keyPrefix = "";
+        initialize();
+        getValuesTable().getModel().addTableModelListener(this);
+    }
+    
+    /**
+     * This is the default constructor
+     *
+     * @param newColumns   array of texts that appear in the header of the columns.
+     * @param noKeyData    content of the cells except the first column.
+     * @param newKeyPrefix prefix of the keys of each row that appear in the first
+     *                     column.
+     */
+    public PrefixedKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
+                                 boolean firstColumnHidden) {// , ElementObservable notifier) {
+        super(newColumns, new Object[0][0], true, true);// , notifier);
+        keyPrefix = newKeyPrefix;
+        initialize();
+        getValuesTable().getModel().addTableModelListener(this);
+        getValuesTable().setFirstColumnHidden(firstColumnHidden);
+        setData(noKeyData);
+    }
+    
+    public PrefixedKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
+                                 boolean firstColumnHidden, Node node) {
+        super(newColumns, new Object[0][0], true, true);// , notifier);
+        this.node = node;
+        keyPrefix = newKeyPrefix;
+        initialize();
+        getValuesTable().setFirstColumnHidden(firstColumnHidden);
+        setData(noKeyData);
+    }
+    
+    /**
+     * This method takes a data object and creates a new column that content a
+     * row key. This key begins with the key prefix following a number that
+     * starts at 0.
+     *
+     * @param oldData data to add a key column.
+     *
+     * @return a data object with one more column that contains the keys.
+     */
+    private Object[][] fillDataKeys(Object[][] oldData) {
         
         Object[][] newData;
         int i1;
@@ -106,285 +108,235 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
         int l2;
         
         int l1 = oldData.length;
-		if (l1 > 0) {
-			l2 = oldData[0].length + 1;
-			newData = new Object[l1][l2];
-			for (i1 = 0; i1 < l1; i1++) {
-				newData[i1][0] = getKeyString(i1);
-				for (i2 = 1; i2 < l2; i2++) {
-					newData[i1][i2] = oldData[i1][i2 - 1];
-				}
-			}
-
-			return newData;
-		}
-
-		return new Object[0][0];
-
-	}
-
-	/**
-	 * Returns a key represented by an index.
-	 *
-	 * @param index index of the key which will be returned
-	 * @return the string that content the key.
-	 */
-	private String getKeyString(int index) {
-
-		return keyPrefix + index;
-
-	}
-
-	/**
-	 * Invoked when the button 'add' is pressed.
-	 */
-	@Override protected void actionPerformedAddValue() {
-		// TODO warning esto afecta a la tabla de propiedades adicionales
-		String option = JOptionPane.showInputDialog(this, stringDatabase.getString("AddState.Message"),
-				stringDatabase.getString("AddState.Title"), JOptionPane.QUESTION_MESSAGE);
-
-		if (option != null) {
+        if (l1 > 0) {
+            l2 = oldData[0].length + 1;
+            newData = new Object[l1][l2];
+            for (i1 = 0; i1 < l1; i1++) {
+                newData[i1][0] = getKeyString(i1);
+                for (i2 = 1; i2 < l2; i2++) {
+                    newData[i1][i2] = oldData[i1][i2 - 1];
+                }
+            }
             
-            int newIndex = valuesTable.getRowCount();
-
-			NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.ADD, newIndex, option);
-
-			try {
-                ProbNet probNet = node.getProbNet();
-                nodeStateEdit.doEdit(probNet);
-                // @ 2014/11/18. Issue 145.
-				// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-				// Propagation of the domain in related variables in temporal models
-				propagateNodeStateEditRelatedVariables(StateAction.ADD, newIndex, option);
-				//
-				renameAction = false;
-				tableModel.insertRow(0, new Object[] { getKeyString(newIndex), option });
-				valuesTable.getSelectionModel().setSelectionInterval(0, 0);
-				renameAction = false;
-
-			} catch (DoEditException.ConstraintViolated e) {
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-
-				// jTextFieldNodeName.setText( this.nodeProperties.getName() );
-				// jTextFieldNodeName.requestFocus();
-
-			}
-
-		}
-	}
-
-	/**
-	 * Invoked when the button 'remove' is pressed.
-	 */
-	@Override protected void actionPerformedRemoveValue() {
-
-		int selectedRow = valuesTable.getSelectedRow();
+            return newData;
+        }
+        
+        return new Object[0][0];
+        
+    }
+    
+    /**
+     * Returns a key represented by an index.
+     *
+     * @param index index of the key which will be returned
+     *
+     * @return the string that content the key.
+     */
+    private String getKeyString(int index) {
+        
+        return keyPrefix + index;
+        
+    }
+    
+    /**
+     * Invoked when the button 'add' is pressed.
+     */
+    @Override protected void actionPerformedAddValue() throws DoEditException.ConstraintViolated {
+        // TODO warning esto afecta a la tabla de propiedades adicionales
+        String option = JOptionPane.showInputDialog(this, stringDatabase.getString("AddState.Message"),
+                                                    stringDatabase.getString("AddState.Title"), JOptionPane.QUESTION_MESSAGE);
+        if (option == null) {
+            return;
+        }
+        int newIndex = valuesTable.getRowCount();
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.ADD, newIndex, option);
+        ProbNet probNet = node.getProbNet();
+        nodeStateEdit.doEdit(probNet);
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        propagateNodeStateEditRelatedVariables(StateAction.ADD, newIndex, option);
+        //
+        renameAction = false;
+        tableModel.insertRow(0, new Object[]{getKeyString(newIndex), option});
+        valuesTable.getSelectionModel().setSelectionInterval(0, 0);
+        renameAction = false;
+    }
+    
+    /**
+     * Invoked when the button 'remove' is pressed.
+     */
+    @Override protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
+        int selectedRow = valuesTable.getSelectedRow();
         int rowCount;
-
-		NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.REMOVE, selectedRow, "");
-
-		try {
-            ProbNet probNet = node.getProbNet();
-            nodeStateEdit.doEdit(probNet);
-            // @ 2014/11/18. Issue 145.
-			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-			// Propagation of the domain in related variables in temporal models
-			propagateNodeStateEditRelatedVariables(StateAction.REMOVE, selectedRow, "");
-			//
-			cancelCellEditing();
-			renameAction = false;
-			tableModel.removeRow(selectedRow);
-			rowCount = valuesTable.getRowCount();
-			if (rowCount > 0) {
-				if (selectedRow < rowCount) {
-					valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
-					while (selectedRow < rowCount) {
-						renameAction = false;
-						tableModel.setValueAt(getKeyString(selectedRow), selectedRow, 0);
-						selectedRow++;
-					}
-				} else {
-					valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-				}
-			}
-
-			renameAction = false;
-		} catch (DoEditException.ConstraintViolated e) {
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-
-			// jTextFieldNodeName.setText( this.nodeProperties.getName() );
-			// jTextFieldNodeName.requestFocus();
-			// e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Invoked when the button 'up' is pressed.
-	 */
-	@Override protected void actionPerformedUpValue() {
-
-		int selectedRow = valuesTable.getSelectedRow();
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.REMOVE, selectedRow, "");
+        ProbNet probNet = node.getProbNet();
+        nodeStateEdit.doEdit(probNet);
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        propagateNodeStateEditRelatedVariables(StateAction.REMOVE, selectedRow, "");
+        //
+        cancelCellEditing();
+        renameAction = false;
+        tableModel.removeRow(selectedRow);
+        rowCount = valuesTable.getRowCount();
+        if (rowCount > 0) {
+            if (selectedRow < rowCount) {
+                valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
+                while (selectedRow < rowCount) {
+                    renameAction = false;
+                    tableModel.setValueAt(getKeyString(selectedRow), selectedRow, 0);
+                    selectedRow++;
+                }
+            } else {
+                valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+            }
+        }
+        renameAction = false;
+    }
+    
+    /**
+     * Invoked when the button 'up' is pressed.
+     */
+    @Override protected void actionPerformedUpValue() throws DoEditException.ConstraintViolated {
+        int selectedRow = valuesTable.getSelectedRow();
         Object swap;
-
-		NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
-
-		try {
-            ProbNet probNet = node.getProbNet();
-            nodeStateEdit.doEdit(probNet);
-            // @ 2014/11/18. Issue 145.
-			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-			// Propagation of the domain in related variables in temporal models
-			propagateNodeStateEditRelatedVariables(StateAction.UP, selectedRow, "");
-			//
-			stopCellEditing();
-			swap = valuesTable.getValueAt(selectedRow, 1);
-			renameAction = false;
-			valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
-			renameAction = false;
-			valuesTable.setValueAt(swap, selectedRow - 1, 1);
-			valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-			renameAction = false;
-
-		} catch (DoEditException.ConstraintViolated e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	/**
-	 * Invoked when the button 'down' is pressed.
-	 */
-	@Override protected void actionPerformedDownValue() {
-
-		int selectedRow = valuesTable.getSelectedRow();
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
+        ProbNet probNet = node.getProbNet();
+        nodeStateEdit.doEdit(probNet);
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        propagateNodeStateEditRelatedVariables(StateAction.UP, selectedRow, "");
+        //
+        stopCellEditing();
+        swap = valuesTable.getValueAt(selectedRow, 1);
+        renameAction = false;
+        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
+        renameAction = false;
+        valuesTable.setValueAt(swap, selectedRow - 1, 1);
+        valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+        renameAction = false;
+    }
+    
+    /**
+     * Invoked when the button 'down' is pressed.
+     */
+    @Override protected void actionPerformedDownValue() throws DoEditException.ConstraintViolated {
+        int selectedRow = valuesTable.getSelectedRow();
         Object swap;
-
-		NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
-
-		try {
-            ProbNet probNet = node.getProbNet();
-            nodeStateEdit.doEdit(probNet);
-            // @ 2014/11/18. Issue 145.
-			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-			// Propagation of the domain in related variables in temporal models
-			propagateNodeStateEditRelatedVariables(StateAction.DOWN, selectedRow, "");
-			//
-			stopCellEditing();
-			swap = valuesTable.getValueAt(selectedRow, 1);
-			renameAction = false;
-			valuesTable.setValueAt(valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
-			renameAction = false;
-			valuesTable.setValueAt(swap, selectedRow + 1, 1);
-			valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
-			renameAction = false;
-
-		} catch (DoEditException.ConstraintViolated e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	/**
-	 * Returns the content of the table except the first column. This column
-	 * contains the keys generated automatically by this class and is only used
-	 * to display it not to manage it.
-	 *
-	 * @return the content of the table except the first column.
-	 */
-	@Override public Object[][] getData() {
-
-		Object[][] content = super.getData();
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
+        ProbNet probNet = node.getProbNet();
+        nodeStateEdit.doEdit(probNet);
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        propagateNodeStateEditRelatedVariables(StateAction.DOWN, selectedRow, "");
+        //
+        stopCellEditing();
+        swap = valuesTable.getValueAt(selectedRow, 1);
+        renameAction = false;
+        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
+        renameAction = false;
+        valuesTable.setValueAt(swap, selectedRow + 1, 1);
+        valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
+        renameAction = false;
+    }
+    
+    /**
+     * Returns the content of the table except the first column. This column
+     * contains the keys generated automatically by this class and is only used
+     * to display it not to manage it.
+     *
+     * @return the content of the table except the first column.
+     */
+    @Override public Object[][] getData() {
+        
+        Object[][] content = super.getData();
         Object[][] result;
-		int rowCount = content.length;
+        int rowCount = content.length;
         int columnCount;
         int i;
         int j;
-
-		if (rowCount > 0) {
-			columnCount = content[0].length;
-			result = new Object[rowCount][columnCount - 1];
-			for (i = 0; i < rowCount; i++) {
-				for (j = 1; j < columnCount; j++) {
-					result[i][j - 1] = content[i][j];
-				}
-			}
-		} else {
-			result = new Object[0][0];
-		}
-
-		return result;
-
-	}
-
-	/**
-	 * Sets a new table model with new data.
-	 *
-	 * @param newData new data for the table without the key column.
-	 */
-	@Override public void setData(Object[][] newData) {
-
-		data = fillDataKeys(newData);
-		tableModel = null;
-		valuesTable.setModel(getTableModel());
-		tableModel.addTableModelListener(this);
-
-	}
-
-	@Override public void tableChanged(TableModelEvent e) {
-		int row = e.getLastRow();
-
-		if (e.getType() != TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT && renameAction) {
-			Object value = ((DefaultTableModel) e.getSource()).getValueAt(row, e.getColumn());
-			String newName = value.toString();
-
-			NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.RENAME, row, newName);
-			try {
-                ProbNet probNet = node.getProbNet();
+        
+        if (rowCount > 0) {
+            columnCount = content[0].length;
+            result = new Object[rowCount][columnCount - 1];
+            for (i = 0; i < rowCount; i++) {
+                for (j = 1; j < columnCount; j++) {
+                    result[i][j - 1] = content[i][j];
+                }
+            }
+        } else {
+            result = new Object[0][0];
+        }
+        
+        return result;
+        
+    }
+    
+    /**
+     * Sets a new table model with new data.
+     *
+     * @param newData new data for the table without the key column.
+     */
+    @Override public void setData(Object[][] newData) {
+        
+        data = fillDataKeys(newData);
+        tableModel = null;
+        valuesTable.setModel(getTableModel());
+        tableModel.addTableModelListener(this);
+        
+    }
+    
+    @Override public void tableChanged(TableModelEvent e) {
+        int row = e.getLastRow();
+        
+        if (e.getType() != TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT && renameAction) {
+            Object value = ((DefaultTableModel) e.getSource()).getValueAt(row, e.getColumn());
+            String newName = value.toString();
+            
+            NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.RENAME, row, newName);
+            ProbNet probNet = node.getProbNet();
+            try {
                 nodeStateEdit.doEdit(probNet);
-                // @ 2014/11/18. Issue 145.
-				// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-				// Propagation of the domain in related variables in temporal models
-				propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
-				//
-			} // valuesTable.getSelectionModel().setSelectionInterval(row,
-            // e.getColumn());
-            catch (DoEditException.ConstraintViolated e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-		}
-		renameAction = true;
-	}
-
-	// @ 2014/11/18. Issue 145.
-	// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-	// Propagation of the domain in related variables in temporal models
-	private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) {
-		// First we get the nodes in the same time slide as the node currently being edited
-		List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
-		// We create a variable to store the edit of the related node
-		NodeStateEdit nodeStateEdit;
-		try {
-			// We iterate the related nodes, if any
-			if (nodeRelatedNodes != null) {
+            } catch (DoEditException.ConstraintViolated ex) {
+                throw new UnrecoverableException(ex);
+            }
+            // @ 2014/11/18. Issue 145.
+            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+            // Propagation of the domain in related variables in temporal models
+            propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
+            //
+        }
+        renameAction = true;
+    }
+    
+    // @ 2014/11/18. Issue 145.
+    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+    // Propagation of the domain in related variables in temporal models
+    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) {
+        // First we get the nodes in the same time slide as the node currently being edited
+        List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
+        // We create a variable to store the edit of the related node
+        NodeStateEdit nodeStateEdit;
+        try {
+            // We iterate the related nodes, if any
+            if (nodeRelatedNodes != null) {
                 if (!nodeRelatedNodes.isEmpty()) {
-					for (Node relatedNode : nodeRelatedNodes) {
-						// we create the edit for the realted node
-						nodeStateEdit = new NodeStateEdit(relatedNode, stateAction, selectedRow, option);
-						// and we perform the edit
+                    for (Node relatedNode : nodeRelatedNodes) {
+                        // we create the edit for the realted node
+                        nodeStateEdit = new NodeStateEdit(relatedNode, stateAction, selectedRow, option);
+                        // and we perform the edit
                         ProbNet probNet = relatedNode.getProbNet();
                         nodeStateEdit.doEdit(probNet);
                     }
-				}
-			}
-		} catch (DoEditException.ConstraintViolated e) {
-			e.printStackTrace();
-		}
-	}
-
+                }
+            }
+        } catch (DoEditException.ConstraintViolated e) {
+            e.printStackTrace();
+        }
+    }
+    
 }

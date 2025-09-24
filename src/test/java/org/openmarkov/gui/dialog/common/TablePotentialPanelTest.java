@@ -10,6 +10,8 @@ package org.openmarkov.gui.dialog.common;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
@@ -30,8 +32,8 @@ import java.util.Arrays;
 public class TablePotentialPanelTest extends TablePotentialPanel {
 
 	private static ProbNet probNet;
-
-	public TablePotentialPanelTest() {
+    
+    public TablePotentialPanelTest() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
 		super(probNet.getNode("E"));
 	}
 
@@ -88,8 +90,9 @@ public class TablePotentialPanelTest extends TablePotentialPanel {
 	@Test public void testNumberOfColumns() {
 		assertTrue(this.columns.length == 17);
 	}
-
-	@Test public void testGetEvidenceCaseFromSelectedColumn() {
+    
+    @Test
+    public void testGetEvidenceCaseFromSelectedColumn() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
 		this.selectedColumn = 3;
 		EvidenceCase ec = this.getEvidenceCaseFromSelectedColumn();
 		String i = null;
@@ -108,8 +111,9 @@ public class TablePotentialPanelTest extends TablePotentialPanel {
 			}
 		}
 	}
-
-	@Test public void testGetEvidenceCaseFromSelectedColumn2() {
+    
+    @Test
+    public void testGetEvidenceCaseFromSelectedColumn2() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
 		this.selectedColumn = 9;
 		EvidenceCase ec = this.getEvidenceCaseFromSelectedColumn();
 

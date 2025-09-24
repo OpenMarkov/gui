@@ -232,7 +232,7 @@ public class VisualDecisionNode extends VisualNode implements VisualDecisionNode
 
 		if (preResolutionFinding) {
 			g.setPaint(BACKGROUND_PRE_FINDING_COLOR);
-		} else if (postResolutionFinding && (visualNetwork.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
+        } else if (postResolutionFinding && (visualNetwork.getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE)) {
 			g.setPaint(BACKGROUND_POST_FINDING_COLOR);
 		} else {
 			if (hasPolicy) {

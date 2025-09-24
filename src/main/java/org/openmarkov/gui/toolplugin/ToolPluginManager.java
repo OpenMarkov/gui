@@ -9,6 +9,7 @@ package org.openmarkov.gui.toolplugin;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.plugin.PluginSearch;
 
@@ -88,13 +89,8 @@ public final class ToolPluginManager {
         return PluginSearch.init().childrenOf(ToolPlugin.class).stream();
     }
     
-    /**
-     * Finds all classes in the project annotated with {@link ToolPlugin}.
-     *
-     * @return A list of classes representing tool plugins.
-     */
-    public List<JMenuItem> getMenuItems() {
-        return this.plugins.stream().map(ToolPluginManager::toolPluginToMenuItem).toList();
+    public List<ToolPlugin> getAllToolPlugins() {
+        return this.plugins;
     }
     
     /**
@@ -107,11 +103,16 @@ public final class ToolPluginManager {
      * @param toolPlugin the plugin to represent via a {@link JMenuItem}.
      * @return a JMenuItem to represent this ToolPlugin
      */
-    private static @NotNull JMenuItem toolPluginToMenuItem(ToolPlugin toolPlugin) {
+    public static @NotNull JMenuItem toolPluginToMenuItem(ToolPlugin toolPlugin) {
         JMenuItem menuItem = new JMenuItem();
         menuItem.setAction(new AbstractAction() {
             @Override public void actionPerformed(ActionEvent e) {
-                toolPlugin.showDialog(MainPanel.getUniqueInstance().getMainFrame());
+                try {
+                    toolPlugin.showDialog(MainPanel.getUniqueInstance().getMainFrame());
+                } catch (Exception ex) {
+                    UnrecoverableException unrecoverableException = new UnrecoverableException(ex);
+                    throw unrecoverableException;
+                }
             }
         });
         menuItem.setName(toolPlugin.getClass().getSimpleName());

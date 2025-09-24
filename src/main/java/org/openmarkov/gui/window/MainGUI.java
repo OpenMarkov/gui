@@ -7,13 +7,17 @@
 
 package org.openmarkov.gui.window;
 
+import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.openmarkov.gui.dialog.SplashScreenLoader;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
+import org.xml.sax.SAXException;
 
 import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * This class constructs the main GUI in a frame with a splash screen during the
@@ -157,7 +161,7 @@ import java.awt.*;
 	 *
 	 * @param fileName
 	 */
-	public void openNetwork(String fileName) {
+    public void openNetwork(String fileName) throws ParserException, IOException, ParserConfigurationException, SAXException {
 		mainPanel.openNetwork(fileName);
 	}
 

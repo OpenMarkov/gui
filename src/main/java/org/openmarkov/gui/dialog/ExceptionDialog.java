@@ -66,7 +66,6 @@ public class ExceptionDialog {
         if (message != null) {
             message = message.replace("\\n", "\n");
         }
-        OpenMarkovLogger.LOGGER.error("", throwable);
         JOptionPane.showMessageDialog(frame, message, title, JOptionPane.ERROR_MESSAGE);
     }
     

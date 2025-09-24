@@ -68,16 +68,15 @@ public class OpenMarkovPreferences {
      *
      * @param key          - the key to get the preference
      * @param defaultValue - a default value to set if no key is found
+     *
      * @return the string value of the preference
      */
     public static String get(String key, Preferences preferences, String defaultValue) {
-        String result = "";
         try {
-            result = preferences.get(key, defaultValue);
+            return preferences.get(key, defaultValue);
         } catch (NullPointerException | IllegalStateException | IllegalArgumentException ex) {
-            ExceptionDialog.show(new MissingPreferenceException(key));
+            return defaultValue;
         }
-        return result;
     }
     
     /**
@@ -86,16 +85,15 @@ public class OpenMarkovPreferences {
      * @param key            - the key to get the preference
      * @param preferences    - the preferences node to look for
      * @param defaultBoolean - a default value to set if no key is found
+     *
      * @return the boolean value of the preference
      */
     public static boolean getBoolean(String key, Preferences preferences, boolean defaultBoolean) {
-        boolean result = false;
         try {
-            result = preferences.getBoolean(key, defaultBoolean);
+            return preferences.getBoolean(key, defaultBoolean);
         } catch (NullPointerException | IllegalStateException | IllegalArgumentException ex) {
-            ExceptionDialog.show(new MissingPreferenceException(key));
+            return defaultBoolean;
         }
-        return result;
     }
     
     /**
@@ -104,22 +102,15 @@ public class OpenMarkovPreferences {
      * @param key            - the key to get the preference
      * @param preferences    - the preferences node to look for
      * @param defaultInteger - a default value to set if no key is found
+     *
      * @return the integer value of the preference
      */
     public static int getInteger(String key, Preferences preferences, int defaultInteger) {
-        int result = 0;
         try {
-            result = preferences.getInt(key, defaultInteger);
+            return preferences.getInt(key, defaultInteger);
         } catch (NullPointerException | IllegalStateException | IllegalArgumentException ex) {
-            
-            System.out.println("wrong access to " + key);
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance()
-                                                              .getString(ex.getMessage() + "wrong access to " + key),
-                                          StringDatabase.getUniqueInstance()
-                                                        .getString(ex.getMessage() + "wrong access to " + key), JOptionPane.ERROR_MESSAGE);
+            return defaultInteger;
         }
-        return result;
     }
     
     /**
@@ -128,23 +119,19 @@ public class OpenMarkovPreferences {
      * @param key          - the key to get the preference
      * @param preferences  - the preferences node to look for
      * @param defaultColor - a default value to set if no key is found
+     *
      * @return the Color value of the preference
      */
     public static Color getColor(String key, Preferences preferences, Color defaultColor) {
-        Color result = defaultColor;
-        int redParam;
-        int greenParam;
-        int blueParam;
         try {
             Preferences child = preferences.node(key);
-            redParam = child.getInt("RED", defaultColor.getRed());
-            greenParam = child.getInt("GREEN", defaultColor.getGreen());
-            blueParam = child.getInt("BLUE", defaultColor.getBlue());
-            result = new Color(redParam, greenParam, blueParam);
+            int redParam = child.getInt("RED", defaultColor.getRed());
+            int greenParam = child.getInt("GREEN", defaultColor.getGreen());
+            int blueParam = child.getInt("BLUE", defaultColor.getBlue());
+            return new Color(redParam, greenParam, blueParam);
         } catch (NullPointerException | IllegalStateException | IllegalArgumentException ex) {
-            ExceptionDialog.show(new MissingPreferenceException(key));
+            return defaultColor;
         }
-        return result;
     }
     
     /**
@@ -158,8 +145,7 @@ public class OpenMarkovPreferences {
         try {
             preferences.put(key, value);
             preferences.sync();
-        } catch (BackingStoreException ex) {
-            ExceptionDialog.show(new CannotSavePreferenceException(key, value));
+        } catch (BackingStoreException ignored) {
         }
     }
     
@@ -174,8 +160,7 @@ public class OpenMarkovPreferences {
         try {
             preferences.putBoolean(key, value);
             preferences.sync();
-        } catch (BackingStoreException ex) {
-            ExceptionDialog.show(new CannotSavePreferenceException(key, value));
+        } catch (BackingStoreException ignored) {
         }
     }
     
@@ -190,8 +175,7 @@ public class OpenMarkovPreferences {
         try {
             preferences.putInt(key, value);
             preferences.sync();
-        } catch (BackingStoreException ex) {
-            ExceptionDialog.show(new CannotSavePreferenceException(key, value));
+        } catch (BackingStoreException ignored) {
         }
     }
     
@@ -210,8 +194,7 @@ public class OpenMarkovPreferences {
             child.putInt("BLUE", value.getBlue());
             child.sync();
             preferences.sync();
-        } catch (BackingStoreException ex) {
-            ExceptionDialog.show(new CannotSavePreferenceException(key, value));
+        } catch (BackingStoreException ignored) {
         }
     }
     

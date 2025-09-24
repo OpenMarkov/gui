@@ -11,12 +11,15 @@ public final class UnexpectedThrowableDialog extends BottomPanelButtonDialog {
     
     private static final float TITLE_FONT_SIZE = 14.0f;
     
-    public UnexpectedThrowableDialog(Throwable e) {
+    public UnexpectedThrowableDialog(Throwable e, OMExceptionHandler.ExceptionType exceptionType) {
         super(null);
-        this.setTitle("Unexpected error");
-        
+        this.setTitle(switch (exceptionType) {
+            case UNREACHABLE -> "Unpredicted error";
+            case EXPECTED -> "Error";
+            case RUNTIME -> "Unexpected error";
+        });
         this.getComponentsPanel().setLayout(new BoxLayout(this.getComponentsPanel(), BoxLayout.Y_AXIS));
-        JLabel titleLabel = new JLabel("An unexpected error has occurred.");
+        JLabel titleLabel = new JLabel("An " + this.getTitle().toLowerCase() + " has occurred.");
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setFont(titleLabel.getFont().deriveFont(UnexpectedThrowableDialog.TITLE_FONT_SIZE));
         this.getComponentsPanel().add(titleLabel);

@@ -68,13 +68,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	public NodeOtherPropsTablePanel(final boolean newNode) {
 		this.newNode = newNode;
 		setName("NodeOtherPropsTablePanel");
-		try {
 			initialize();
-		} catch (Throwable e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-		}
 	}
 
 	/**

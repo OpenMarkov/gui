@@ -8,7 +8,10 @@
 
 package org.openmarkov.gui.dialog.node;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -33,45 +36,50 @@ import java.util.ArrayList;
  * @author myebra
  */
 public class ICIOptionListenerAssistant implements ItemListener {
-	private static int CANONICAL = 0;
-	private static int TPC = 1;
-	/**
-	 * Identifies the radio button affected by the event.
-	 */
-	private int previousModel = -1;
-	private ICIOptionsPanel iciOptionPanel;
-	private Container parentPanel;
-	/**
-	 * original node of the ICIOptionPanel
-	 */
-	private CPTablePanel cpTablePanel;
-	private JScrollPane iciValuesTablePanel = null;
-
-	public ICIOptionListenerAssistant(ICIOptionsPanel iciOptionPanel) {
-		this.iciOptionPanel = iciOptionPanel;
-	}
-
-	public Node getNodeParentPanel() {
-		return ((ICIPotentialsTablePanel) parentPanel).getNode();
-	}
-
-	@Override public void itemStateChanged(ItemEvent e) {
-		// to identify what is the panel container it could be CPTTablePanel or
-		// ICIPotentialsTablePanel
-		this.parentPanel = iciOptionPanel.getParent();
-		if (e.getItem().equals(iciOptionPanel.getJRadioButtonTPC())) {
-			itemStateChangedTPC(e);
-		}
-		if (e.getItem().equals(iciOptionPanel.getJRadioButtonCanonical())) {
-			itemStateChangedCanonical(e);
-		}
-	}
-
-	private void itemStateChangedCanonical(ItemEvent e) {
-		if (e.getStateChange() == ItemEvent.DESELECTED) {
-			// has been deselected canonical
-			previousModel = CANONICAL;
-		}
+    private static int CANONICAL = 0;
+    private static int TPC = 1;
+    /**
+     * Identifies the radio button affected by the event.
+     */
+    private int previousModel = -1;
+    private ICIOptionsPanel iciOptionPanel;
+    private Container parentPanel;
+    /**
+     * original node of the ICIOptionPanel
+     */
+    private CPTablePanel cpTablePanel;
+    private JScrollPane iciValuesTablePanel = null;
+    
+    public ICIOptionListenerAssistant(ICIOptionsPanel iciOptionPanel) {
+        this.iciOptionPanel = iciOptionPanel;
+    }
+    
+    public Node getNodeParentPanel() {
+        return ((ICIPotentialsTablePanel) parentPanel).getNode();
+    }
+    
+    @Override public void itemStateChanged(ItemEvent e) {
+        // to identify what is the panel container it could be CPTTablePanel or
+        // ICIPotentialsTablePanel
+        this.parentPanel = iciOptionPanel.getParent();
+        if (e.getItem().equals(iciOptionPanel.getJRadioButtonTPC())) {
+            try {
+                itemStateChangedTPC(e);
+            } catch (NonProjectablePotentialException | IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                     ThereIsNoPotentialsInNodeException ex) {
+                throw new UnrecoverableException(ex);
+            }
+        }
+        if (e.getItem().equals(iciOptionPanel.getJRadioButtonCanonical())) {
+            itemStateChangedCanonical(e);
+        }
+    }
+    
+    private void itemStateChangedCanonical(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.DESELECTED) {
+            // has been deselected canonical
+            previousModel = CANONICAL;
+        }
         if (previousModel == TPC) {
             // tpc --&gt; Canonical
             for (Component component : parentPanel.getComponents()) {
@@ -88,47 +96,39 @@ public class ICIOptionListenerAssistant implements ItemListener {
             parentPanel.repaint();
         }
     }
-
-	private void itemStateChangedTPC(ItemEvent e) {
-		if (e.getStateChange() == ItemEvent.DESELECTED) {
-			// has been deselected tpc
-			previousModel = TPC;
-		} else if (e.getStateChange() == ItemEvent.SELECTED) {
-		}
-		if (previousModel == CANONICAL) { // Canonical --&gt; tpc
-			// show TPC do not allow edit
-			// Copy of the parents panel node
-			Node iciNode = new Node(((ICIPotentialsTablePanel) parentPanel).getNode());
-			ICIPotential iciPotential = (ICIPotential) iciNode.getPotentials().get(0);
-			TablePotential tablePotential;
-			try {
-                tablePotential = iciPotential.getCPT();
-				ArrayList<Potential> potentials = new ArrayList<Potential>();
-				potentials.add(tablePotential);
-				iciNode.setPotentials(potentials);
-			} catch (NonProjectablePotentialException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e1.getMessage()),
-						StringDatabase.getUniqueInstance().getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-			this.cpTablePanel = new CPTablePanel(iciNode);
-			JScrollPane cptValuesTablePanel = cpTablePanel.getValuesTableScrollPane();
-			ICIPotentialsTablePanel iciPotentialTablePanel = (ICIPotentialsTablePanel) parentPanel;
-			this.iciValuesTablePanel = iciPotentialTablePanel.getValuesTableScrollPane();
-			for (Component component : parentPanel.getComponents()) {
-				if (component instanceof ICIOptionsPanel) {
-					continue;
-				}
-				component.setVisible(false);
-			}
-			parentPanel.repaint();
-			parentPanel.validate();
-			parentPanel.add(cptValuesTablePanel, BorderLayout.CENTER);
-			parentPanel.repaint();
-			parentPanel.validate();
-		} else if (previousModel == TPC) {
-			// do nothing
-		}
-	}
+    
+    private void itemStateChangedTPC(ItemEvent e) throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+        if (e.getStateChange() == ItemEvent.DESELECTED) {
+            // has been deselected tpc
+            previousModel = TPC;
+        } else if (e.getStateChange() == ItemEvent.SELECTED) {
+        }
+        if (previousModel == CANONICAL) { // Canonical --&gt; tpc
+            // show TPC do not allow edit
+            // Copy of the parents panel node
+            Node iciNode = new Node(((ICIPotentialsTablePanel) parentPanel).getNode());
+            ICIPotential iciPotential = (ICIPotential) iciNode.getPotentials().get(0);
+            TablePotential tablePotential = iciPotential.getCPT();
+            ArrayList<Potential> potentials = new ArrayList<Potential>();
+            potentials.add(tablePotential);
+            iciNode.setPotentials(potentials);
+            this.cpTablePanel = new CPTablePanel(iciNode);
+            JScrollPane cptValuesTablePanel = cpTablePanel.getValuesTableScrollPane();
+            ICIPotentialsTablePanel iciPotentialTablePanel = (ICIPotentialsTablePanel) parentPanel;
+            this.iciValuesTablePanel = iciPotentialTablePanel.getValuesTableScrollPane();
+            for (Component component : parentPanel.getComponents()) {
+                if (component instanceof ICIOptionsPanel) {
+                    continue;
+                }
+                component.setVisible(false);
+            }
+            parentPanel.repaint();
+            parentPanel.validate();
+            parentPanel.add(cptValuesTablePanel, BorderLayout.CENTER);
+            parentPanel.repaint();
+            parentPanel.validate();
+        } else if (previousModel == TPC) {
+            // do nothing
+        }
+    }
 }

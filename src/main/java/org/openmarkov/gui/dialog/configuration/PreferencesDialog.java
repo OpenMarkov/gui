@@ -12,6 +12,7 @@ package org.openmarkov.gui.dialog.configuration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.localize.StringDatabase;
 
@@ -78,7 +79,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      *
      * @param owner owner JFrame
      */
-    public PreferencesDialog(JFrame owner) {
+    public PreferencesDialog(JFrame owner) throws BackingStoreException {
         this(owner, "OPENMARKOV User Preferences", OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES, true/*
          * ,
          * OpenMarkovPreferences
@@ -95,7 +96,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * @param owner owner JFrame
      * @param title title of dialog
      */
-    public PreferencesDialog(JFrame owner, String title) {
+    public PreferencesDialog(JFrame owner, String title) throws BackingStoreException {
         this(owner, title, OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES, true/*
          * ,
          * OpenMarkovPreferences
@@ -121,7 +122,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * ,
      * boolean
      * showSystemPrefs
-     */) {
+     */) throws BackingStoreException {
         super(owner);
         setTitle(title);
         setChooser();
@@ -136,7 +137,6 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         createSplitPane();
         createButtonPanel();
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        this.setVisible(true);
         this.logger = LogManager.getLogger(PreferencesDialog.class);
     }
     
@@ -151,7 +151,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * systemObj,
      * boolean
      * showSystemPrefs
-     */) {
+     */) throws BackingStoreException {
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Preferences");
         /*
          * if (showSystemPrefs) { rootNode.add(createSystemRootNode(systemObj));
@@ -169,82 +169,32 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         jTreePreferences.addTreeSelectionListener(new PrefTreeSelectionListener());
     }
     
-    private MutableTreeNode createSystemRootNode(Object obj) {
-        try {
-            PreferenceTreeNode systemRoot;
-            if (obj == null) {
-                systemRoot = new PreferenceTreeNode(Preferences.systemRoot());
-            } else {
-                systemRoot = new PreferenceTreeNode(Preferences.systemRoot().node(obj.toString()));
-            }
-            return systemRoot;
-        } catch (BackingStoreException e) {
-            e.printStackTrace();
-            JOptionPane
-                    .showMessageDialog(null, stringDatabase.getString("No System Root Preferences!" + e.getMessage()),
-                                       stringDatabase.getString("No System Root Preferences!" + e.getMessage()),
-                                       JOptionPane.ERROR_MESSAGE);
-            return new DefaultMutableTreeNode("No System Root Preferences!");
+    private MutableTreeNode createSystemRootNode(Object obj) throws BackingStoreException {
+        if (obj == null) {
+            return new PreferenceTreeNode(Preferences.systemRoot());
         }
+        return new PreferenceTreeNode(Preferences.systemRoot().node(obj.toString()));
     }
     
-    private MutableTreeNode createUserRootNode(Object obj) {
-        try {
-            PreferenceTreeNode userRoot;
-            if (obj == null) {
-                userRoot = new PreferenceTreeNode(Preferences.userRoot());
-            } else {
-                userRoot = new PreferenceTreeNode(Preferences.userRoot().node((String) obj));
-            }
-            return userRoot;
-        } catch (BackingStoreException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, stringDatabase.getString("No User Root Preferences!" + e.getMessage()),
-                                          stringDatabase.getString("No User Root Preferences!" + e.getMessage()), JOptionPane.ERROR_MESSAGE);
-            return new DefaultMutableTreeNode("No User Root Preferences!");
+    private MutableTreeNode createUserRootNode(Object obj) throws BackingStoreException {
+        if (obj == null) {
+            return new PreferenceTreeNode(Preferences.userRoot());
         }
+        return new PreferenceTreeNode(Preferences.userRoot().node((String) obj));
     }
     
-    private MutableTreeNode createSystemNodeForPackage(Object obj) {
-        try {
-            PreferenceTreeNode systemRoot;
-            if (obj == null) {
-                systemRoot = new PreferenceTreeNode(Preferences.systemRoot());
-            } else {
-                systemRoot = new PreferenceTreeNode(Preferences.systemNodeForPackage((Class<?>) obj));
-            }
-            return systemRoot;
-        } catch (BackingStoreException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, stringDatabase.getString(
-                                                  "No preferences for System Node for Package" + ((Class<?>) obj).getName() + "!" + e.getMessage()),
-                                          stringDatabase.getString(
-                                                  "No preferences for System Node for Package" + ((Class<?>) obj).getName() + "!" + e
-                                                          .getMessage()), JOptionPane.ERROR_MESSAGE);
-            return new DefaultMutableTreeNode(
-                    "No preferences for System Node for Package" + ((Class<?>) obj).getName() + "!");
+    private MutableTreeNode createSystemNodeForPackage(Object obj) throws BackingStoreException {
+        if (obj == null) {
+            return new PreferenceTreeNode(Preferences.systemRoot());
         }
+        return new PreferenceTreeNode(Preferences.systemNodeForPackage((Class<?>) obj));
     }
     
-    private MutableTreeNode createUserNodeForPackage(Object obj) {
-        try {
-            PreferenceTreeNode userRoot;
-            if (obj == null) {
-                userRoot = new PreferenceTreeNode(Preferences.userRoot());
-            } else {
-                userRoot = new PreferenceTreeNode(Preferences.userNodeForPackage((Class<?>) obj));
-            }
-            return userRoot;
-        } catch (BackingStoreException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, stringDatabase.getString(
-                                                  "No preferences for User Node for Package" + ((Class<?>) obj).getName() + "!" + e.getMessage()),
-                                          stringDatabase.getString(
-                                                  "No preferences for User Node for Package" + ((Class<?>) obj).getName() + "!" + e
-                                                          .getMessage()), JOptionPane.ERROR_MESSAGE);
-            return new DefaultMutableTreeNode(
-                    "No preferences for User Node for Package" + ((Class<?>) obj).getName() + "!");
+    private MutableTreeNode createUserNodeForPackage(Object obj) throws BackingStoreException {
+        if (obj == null) {
+            return new PreferenceTreeNode(Preferences.userRoot());
         }
+        return new PreferenceTreeNode(Preferences.userNodeForPackage((Class<?>) obj));
     }
     
     private void createSplitPane() {
@@ -338,16 +288,21 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * @param e event information.
      */
     @Override public void actionPerformed(ActionEvent e) {
-        if (e.getSource().equals(this.jButtonCancel)) {
-            actionPerformedCancel();
-        } else if (e.getSource().equals(this.jButtonExport)) {
-            actionPerformedExport();
-        } else if (e.getSource().equals(this.jButtonImport)) {
-            actionPerformedImport();
-        } else if (e.getSource().equals(this.jButtonSave)) {
-            actionPerformedSave();
-        } else if (e.getSource().equals(this.jButtonReset)) {
-            actionPerformedReset();
+        Object source = e.getSource();
+        try {
+            if (source.equals(this.jButtonCancel)) {
+                actionPerformedCancel();
+            } else if (source.equals(this.jButtonExport)) {
+                actionPerformedExport();
+            } else if (source.equals(this.jButtonImport)) {
+                actionPerformedImport();
+            } else if (source.equals(this.jButtonSave)) {
+                actionPerformedSave();
+            } else if (source.equals(this.jButtonReset)) {
+                actionPerformedReset();
+            }
+        } catch (BackingStoreException | IOException | InvalidPreferencesFormatException ex) {
+            throw new UnrecoverableException(ex);
         }
     }
     
@@ -355,7 +310,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * execute the Cancel action by doing an undo operation in the system and
      * user preferences
      */
-    protected void actionPerformedCancel() {
+    protected void actionPerformedCancel() throws BackingStoreException {
         Preferences rootPreferences = Preferences.systemRoot();
         PreferencesTableModel rootPrefTableModel = new PreferencesTableModel(rootPreferences);
         rootPrefTableModel.undo();
@@ -370,7 +325,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * execute the Save action by doing a sync in the system and user
      * preferences
      */
-    protected void actionPerformedSave() {
+    protected void actionPerformedSave() throws BackingStoreException {
         Preferences rootPreferences = Preferences.systemRoot();
         PreferencesTableModel rootPrefTableModel = new PreferencesTableModel(rootPreferences);
         rootPrefTableModel.syncSave();
@@ -384,41 +339,30 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     /**
      * execute the Cancel action
      */
-    protected void actionPerformedExport() {
+    protected void actionPerformedExport() throws BackingStoreException, IOException {
         Preferences root = Preferences.userRoot();
         Preferences node = root.node(OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES);
         System.out.println("Export selected");
-        if (chooser.showSaveDialog(PreferencesDialog.this) == JFileChooser.APPROVE_OPTION) {
-            try {
-                OutputStream out = new FileOutputStream(chooser.getSelectedFile());
-                node.exportSubtree(out);
-                out.close();
-            } catch (IOException | BackingStoreException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                              stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-            }
+        if (chooser.showSaveDialog(PreferencesDialog.this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        try (OutputStream out = new FileOutputStream(chooser.getSelectedFile())) {
+            node.exportSubtree(out);
         }
     }
     
     /**
      * execute the Cancel action
      */
-    protected void actionPerformedImport() {
+    protected void actionPerformedImport() throws IOException, InvalidPreferencesFormatException {
         System.out.println("Import selected");
         if (chooser.showOpenDialog(PreferencesDialog.this) == JFileChooser.APPROVE_OPTION) {
-            try {
-                InputStream in = new FileInputStream(chooser.getSelectedFile());
+            try (InputStream in = new FileInputStream(chooser.getSelectedFile())) {
                 Preferences.importPreferences(in);
-                in.close();
                 this.invalidate();
                 this.jTableEdition.repaint();
                 this.jTreePreferences.repaint();
                 this.repaint();
-            } catch (IOException | InvalidPreferencesFormatException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                              stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -462,9 +406,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
                 PreferenceTreeNode node = (PreferenceTreeNode) e.getPath().getLastPathComponent();
                 Preferences pref = node.getPrefObject();
                 jTableEdition.setModel(new PreferencesTableModel(pref));
-            } catch (ClassCastException ce) {
-                System.out.println("Node not PrefTreeNode!");
-                jTableEdition.setModel(new DefaultTableModel());
+            } catch (ClassCastException | BackingStoreException ex) {
+                throw new UnrecoverableException(ex);
             }
         }
     }

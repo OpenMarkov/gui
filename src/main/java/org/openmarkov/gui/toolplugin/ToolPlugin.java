@@ -56,6 +56,10 @@ public interface ToolPlugin {
         return null;
     }
     
+    @NotNull ToolPluginGroup pluginGroup();
+    
+    int priorityInGroup();
+    
     /**
      * This method is called when the user clicks on this Plugin from the {@code Tools} toolbar.
      * <p>
@@ -63,7 +67,13 @@ public interface ToolPlugin {
      *
      * @param parent The frame where the menu item the user clicks is located at.
      */
-    void showDialog(@Nullable JFrame parent);
+    void showDialog(@Nullable JFrame parent) throws Exception;
     
+    enum ToolPluginGroup {
+        ANALYSIS,
+        PROCESSING,
+        EXPORT,
+        UNCATEGORIZED;
+    }
     
 }

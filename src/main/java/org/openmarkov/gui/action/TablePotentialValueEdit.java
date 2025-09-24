@@ -11,6 +11,8 @@ import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Util;
@@ -115,10 +117,10 @@ import java.util.List;
      *                             cmyago added the new initialisation of getExactDistrPotential
      */
     public TablePotentialValueEdit(Node node, Double newValue, int row, int col, List<Integer> priorityList,
-                                   Object[][] notEditablePositions) {
+                                   Object[][] notEditablePositions) throws ThereIsNoPotentialsInNodeException {
         super(node.getProbNet());
         this.node = node;
-        Potential potential = node.getPotentials().get(0);
+        Potential potential = node.getFirstPotential();
         this.setExactDistrPotential(potential instanceof ExactDistrPotential);
         if (getExactDistrPotential()) {
             this.oldExactDistrPotential = (ExactDistrPotential) (potential);
@@ -284,8 +286,12 @@ import java.util.List;
      * @return the position in the table
      */
     public int getRowPosition(int position) {
-        int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(node);
-        return lastRow - position % tablePotential.getDimensions()[0];
+        try {
+            int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(node);
+            return lastRow - position % tablePotential.getDimensions()[0];
+        } catch (ThereIsNoPotentialsInNodeException e) {
+            throw new UnreacheableException(e);
+        }
     }
     
     /**

@@ -10,6 +10,7 @@ package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -70,43 +71,31 @@ import java.util.ArrayList;
      * value.
      ***/
     @Override public void setValueAt(Object newValue, int row, int col) {
-        if (newValue != null) {
-            Integer newNumericValue;
-            try {
-                newNumericValue = (Integer) newValue;
-                if (!newNumericValue.equals(INCOMPATIBILITY_VALUE) && !newNumericValue.equals(COMPATIBILITY_VALUE)) {
-                    newValue = INCOMPATIBILITY_VALUE;
+        if (newValue == null) return;
+        Integer newNumericValue = (Integer) newValue;
+        if (!newNumericValue.equals(INCOMPATIBILITY_VALUE) && !newNumericValue.equals(COMPATIBILITY_VALUE)) {
+            newValue = INCOMPATIBILITY_VALUE;
+        }
+        LinkRestrictionPotentialValueEdit linkPotentialEdit =
+                new LinkRestrictionPotentialValueEdit(link, (Integer) newValue, row, col);
+        try {
+            linkPotentialEdit.doEdit(net);
+            super.getModel().setValueAt(newValue, row, col);
+            int variable1Index = col - 1;
+            int variable2Index = node2.getVariable().getNumStates() - row;
+            if ((Integer) newValue == 0) {
+                if (!node2.getPotentials().isEmpty() && node2.getPotentials().get(0) instanceof TablePotential) {
+                    Potential potential = LinkRestrictionPotentialOperations
+                            .updatePotentialByAddLinkRestriction(node2,
+                                                                 (TablePotential) link.getRestrictionsPotential(), variable1Index,
+                                                                 variable2Index);
+                    ArrayList<Potential> potentials = new ArrayList<Potential>();
+                    potentials.add(potential);
+                    node2.setPotentials(potentials);
                 }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-                                              StringDatabase.getUniqueInstance()
-                                                            .getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
             }
-            LinkRestrictionPotentialValueEdit linkPotentialEdit = new LinkRestrictionPotentialValueEdit(link,
-                                                                                                        (Integer) newValue, row, col);
-            try {
-                linkPotentialEdit.doEdit(net);
-                super.getModel().setValueAt(newValue, row, col);
-                int variable1Index = col - 1;
-                int variable2Index = node2.getVariable().getNumStates() - row;
-                if ((Integer) newValue == 0) {
-                    if (!node2.getPotentials().isEmpty() && node2.getPotentials().get(0) instanceof TablePotential) {
-                        Potential potential = LinkRestrictionPotentialOperations
-                                .updatePotentialByAddLinkRestriction(node2,
-                                                                     (TablePotential) link.getRestrictionsPotential(), variable1Index,
-                                                                     variable2Index);
-                        ArrayList<Potential> potentials = new ArrayList<Potential>();
-                        potentials.add(potential);
-                        node2.setPotentials(potentials);
-                    }
-                }
-            } catch (DoEditException.ConstraintViolated e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-                                              StringDatabase.getUniqueInstance()
-                                                            .getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-            }
+        } catch (DoEditException.ConstraintViolated e) {
+            throw new UnrecoverableException(e);
         }
     }
     

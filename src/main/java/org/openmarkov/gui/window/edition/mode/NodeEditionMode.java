@@ -29,63 +29,59 @@ import java.util.HashSet;
 import java.util.List;
 
 public abstract class NodeEditionMode extends EditionMode {
-	private NodeType nodeType;
-
-	public NodeEditionMode(EditorPanel editorPanel, ProbNet probNet, NodeType nodeType) {
-		super(editorPanel, probNet);
-		this.nodeType = nodeType;
-	}
-
-	@Override public void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) {
-		if (SwingUtilities.isLeftMouseButton(e)) {
-			if (Utilities.noMouseModifiers(e)) {
-				if (visualNetwork.getElementInPosition(position, g) == null) {
-					probNet.getPNESupport().setWithUndo(true);
-					HashSet<String> existingNames = new HashSet<String>();
-					for (Node node : probNet.getNodes()) {
-						String name = node.getName();
-						if (name.contains("[")) {
-							existingNames.add(name.substring(0, name.indexOf(" [")));
-						} else {
-							existingNames.add(node.getName());
-						}
-					}
-					String nodeName = Util.getNextNodeName(nodeType, existingNames);
-                    State[] states = DefaultStates.getStatesNodeType(nodeType, probNet.getDefaultStates());
-					for (int i = 0; i < states.length; i++) {
-						states[i] = new State(GUIDefaultStates.getString(states[i].getName()));
-					}
-					Variable variable = new Variable(nodeName, states);
-					if (probNet.onlyTemporal()) {
-						// default value
-						variable.setBaseName(nodeName);
-						variable.setTimeSlice(0);
-					}
-					List<Criterion> decisionCriteria = probNet.getDecisionCriteria();
-					if (nodeType == NodeType.UTILITY && decisionCriteria != null) {
-						variable.setDecisionCriterion(decisionCriteria.get(0));
-					}
-					
-					try {
-						AddNodeEdit addNodeEdit = new AddNodeEdit(probNet, variable, nodeType, position);
-						addNodeEdit.doEdit(probNet);
-					} catch (DoEditException.ConstraintViolated e1) {
-						JOptionPane.showMessageDialog(this.editorPanel, e1.toString(), "Error creating node",
-								JOptionPane.ERROR_MESSAGE);
-					}
-					editorPanel.adjustPanelDimension();
-					editorPanel.repaint();
-				}
-			}
-		}
-	}
-
-	@Override public void mouseReleased(MouseEvent e, Point2D.Double cursorPosition, Graphics2D g) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override public void mouseDragged(MouseEvent e, Point2D.Double position, double diffX, double diffY,
-			Graphics2D g) {
-		// TODO Auto-generated method stub
-	}
+    private NodeType nodeType;
+    
+    public NodeEditionMode(EditorPanel editorPanel, ProbNet probNet, NodeType nodeType) {
+        super(editorPanel, probNet);
+        this.nodeType = nodeType;
+    }
+    
+    @Override
+    public void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException.ConstraintViolated {
+        if (!(SwingUtilities.isLeftMouseButton(e) && Utilities.noMouseModifiers(e))) {
+            return;
+        }
+        if (visualNetwork.getElementInPosition(position, g) != null) {
+            return;
+        }
+        probNet.getPNESupport().setWithUndo(true);
+        HashSet<String> existingNames = new HashSet<String>();
+        for (Node node : probNet.getNodes()) {
+            String name = node.getName();
+            if (name.contains("[")) {
+                existingNames.add(name.substring(0, name.indexOf(" [")));
+            } else {
+                existingNames.add(node.getName());
+            }
+        }
+        String nodeName = Util.getNextNodeName(nodeType, existingNames);
+        State[] states = DefaultStates.getStatesNodeType(nodeType, probNet.getDefaultStates());
+        for (int i = 0; i < states.length; i++) {
+            states[i] = new State(GUIDefaultStates.getString(states[i].getName()));
+        }
+        Variable variable = new Variable(nodeName, states);
+        if (probNet.onlyTemporal()) {
+            // default value
+            variable.setBaseName(nodeName);
+            variable.setTimeSlice(0);
+        }
+        List<Criterion> decisionCriteria = probNet.getDecisionCriteria();
+        if (nodeType == NodeType.UTILITY && decisionCriteria != null) {
+            variable.setDecisionCriterion(decisionCriteria.get(0));
+        }
+        
+        AddNodeEdit addNodeEdit = new AddNodeEdit(probNet, variable, nodeType, position);
+        addNodeEdit.doEdit(probNet);
+        editorPanel.adjustPanelDimension();
+        editorPanel.repaint();
+    }
+    
+    @Override public void mouseReleased(MouseEvent e, Point2D.Double cursorPosition, Graphics2D g) {
+        // TODO Auto-generated method stub
+    }
+    
+    @Override public void mouseDragged(MouseEvent e, Point2D.Double position, double diffX, double diffY,
+                                       Graphics2D g) {
+        // TODO Auto-generated method stub
+    }
 }

@@ -10,6 +10,7 @@ package org.openmarkov.gui.dialog.inference.common;
 import org.openmarkov.core.action.MulticriteriaEdit;
 import org.openmarkov.core.action.TemporalOptionsEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.inference.TransitionTime;
@@ -20,6 +21,7 @@ import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -945,7 +947,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         return multicriteriaOptions;
     }
     
-    @Override protected boolean doOkClickBeforeHide() {
+    @Override protected boolean doOkClickBeforeHide() throws Exception {
         selectedButton = OK_BUTTON;
         // If the is user is editing a cell, stop the edition to save the data
         if (table != null && table.getCellEditor() != null) {
@@ -965,12 +967,11 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         }
         
         if (isTemporal) {
-            int numSlices = probNet.getInferenceOptions().getTemporalOptions().getHorizon();
+            int numSlices;
             try {
                 numSlices = Integer.parseInt(numSlicesTextField.getText());
-            } catch (NumberFormatException exception) {
-                JOptionPane.showMessageDialog(null, stringDatabase.getString("NumberFormatException.Text.Label"),
-                                              stringDatabase.getString("NumberFormatException.Title.Label"), JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException e) {
+                throw new InvalidArgumentException("Slices number", numSlicesTextField.getText(), "is not a valid number, as it must be a number between " + Integer.MIN_VALUE + " and " + Integer.MAX_VALUE);
             }
             
             this.temporalOptions.setHorizon(numSlices);

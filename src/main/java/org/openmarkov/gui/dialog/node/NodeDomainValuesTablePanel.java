@@ -13,6 +13,7 @@ import org.openmarkov.core.action.NodeReplaceStatesEdit;
 import org.openmarkov.core.action.PrecisionEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.gui.component.DiscretizeTablePanel;
@@ -666,6 +667,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * Initialize the data structure for finite states variables
      *
      * @param states
+     *
      * @return The data from states
      */
     protected static Object[][] getDataFromStates(State[] states) {
@@ -686,6 +688,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * in the proper values for the columns
      *
      * @param states array of strings.
+     *
      * @return an array of arrays of objects that has the same elements.
      */
     // TODO this method must be changed when the Elvira parser will retrieve
@@ -752,6 +755,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * same elements.
      *
      * @param values array of strings.
+     *
      * @return an array of arrays of objects that has the same elements.
      */
     protected static Object[][] convertStringsToTableDiscreteFormat(State[] values) {
@@ -770,6 +774,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * same elements.
      *
      * @param values array of arrays of objects.
+     *
      * @return array of strings that has the same elements.
      */
     protected static String[] convertTableFormatToStrings(Object[][] values) {
@@ -871,32 +876,35 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 } else {
                     variableType = VariableType.NUMERIC;
                 }
+                
+                variableTypeEdit = new VariableTypeEdit(node, variableType);
+                ProbNet nodeProbNet = node.getProbNet();
                 try {
-                    variableTypeEdit = new VariableTypeEdit(node, variableType);
-                    ProbNet probNet1 = node.getProbNet();
-                    variableTypeEdit.doEdit(probNet1);
-                    // @ 2014/11/18. Issue 145.
-                    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-                    // Propagation of the domain in related variables in temporal models
-                    if (nodeRelatedNodes != null) {
-                        if (!nodeRelatedNodes.isEmpty()) {
-                            for (Node relatedNode : nodeRelatedNodes) {
-                                variableTypeEdit = new VariableTypeEdit(relatedNode, variableType);
-                                ProbNet probNet = relatedNode.getProbNet();
+                    variableTypeEdit.doEdit(nodeProbNet);
+                } catch (DoEditException.ConstraintViolated e) {
+                    throw new UnrecoverableException(e);
+                }
+                // @ 2014/11/18. Issue 145.
+                // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                // Propagation of the domain in related variables in temporal models
+                if (nodeRelatedNodes != null) {
+                    if (!nodeRelatedNodes.isEmpty()) {
+                        for (Node relatedNode : nodeRelatedNodes) {
+                            variableTypeEdit = new VariableTypeEdit(relatedNode, variableType);
+                            ProbNet probNet = relatedNode.getProbNet();
+                            try {
                                 variableTypeEdit.doEdit(probNet);
+                            } catch (DoEditException.ConstraintViolated e) {
+                                throw new UnrecoverableException(e);
                             }
                         }
                     }
-                    // @@@
-                    this.removeAll();
-                    initialize();
-                    setFieldsFromProperties(node);
-                } catch (DoEditException.ConstraintViolated e1) {
-                    JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-                                                  stringDatabase.getString("ConstraintViolated"), JOptionPane.ERROR_MESSAGE);
-                    comboBox.setSelectedIndex(optionDeselected);
-                    comboBox.requestFocus();
                 }
+                // @@@
+                this.removeAll();
+                initialize();
+                setFieldsFromProperties(node);
+                
             }
         } else if (comboBox.getName().equals("jComboBoxStatesValues")) {
             // warning mpalacios relative function to options position.
@@ -931,9 +939,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 } catch (DoEditException.ConstraintViolated e) {
                     comboBox.setSelectedIndex(optionDeselected);
                     comboBox.requestFocus();
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
-                                                  stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+                    throw new UnrecoverableException(e);
                 }
             }
             // PRECISION
@@ -958,9 +964,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                         }
                         // @@@
                     } catch (DoEditException.ConstraintViolated e1) {
-                        e1.printStackTrace();
-                        JOptionPane.showMessageDialog(null, stringDatabase.getString(e1.getMessage()),
-                                                      stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
+                        throw new UnrecoverableException(e1);
                     }
                 }
             }
@@ -1016,27 +1020,32 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
                 PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node,
                                                                                               newPartitionedInterval);
+                
+                ProbNet probNet1 = node.getProbNet();
                 try {
-                    ProbNet probNet1 = node.getProbNet();
                     partitionedIntervalEdit.doEdit(probNet1);
-                    // @ 2014/11/18. Issue 145.
-                    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-                    // Propagation of the domain in related variables in temporal models
-                    if (nodeRelatedNodes != null) {
-                        if (!nodeRelatedNodes.isEmpty()) {
-                            for (Node relatedNode : nodeRelatedNodes) {
-                                partitionedIntervalEdit = new PartitionedIntervalEdit(relatedNode,
-                                                                                      newPartitionedInterval);
-                                ProbNet probNet = relatedNode.getProbNet();
+                } catch (DoEditException.ConstraintViolated e) {
+                    throw new UnrecoverableException(e);
+                }
+                // @ 2014/11/18. Issue 145.
+                // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                // Propagation of the domain in related variables in temporal models
+                if (nodeRelatedNodes != null) {
+                    if (!nodeRelatedNodes.isEmpty()) {
+                        for (Node relatedNode : nodeRelatedNodes) {
+                            partitionedIntervalEdit = new PartitionedIntervalEdit(relatedNode,
+                                                                                  newPartitionedInterval);
+                            ProbNet probNet = relatedNode.getProbNet();
+                            try {
                                 partitionedIntervalEdit.doEdit(probNet);
+                            } catch (DoEditException.ConstraintViolated e) {
+                                throw new UnrecoverableException(e);
                             }
                         }
-                        
                     }
-                    // @@@
-                } catch (DoEditException.ConstraintViolated e) {
-                    e.printStackTrace();
+                    
                 }
+                // @@@
                 PartitionedInterval newPartitionInterval = node.getVariable().getPartitionedInterval();
                 State[] states = node.getVariable().getStates();
                 getDiscretizedStatesPanel().setDataFromPartitionedInterval(newPartitionInterval, states);
@@ -1055,57 +1064,58 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     @Override public void actionPerformed(ActionEvent arg0) {
         String actionComand = arg0.getActionCommand();
         if (actionComand.equals("StandardDomain")) {
-            actionPerformedStandardDomain(arg0);
+            try {
+                actionPerformedStandardDomain(arg0);
+            } catch (DoEditException.ConstraintViolated e) {
+                throw new UnrecoverableException(e);
+            }
         }
     }
     
-    private void actionPerformedStandardDomain(ActionEvent arg0) {
+    private void actionPerformedStandardDomain(ActionEvent arg0) throws DoEditException.ConstraintViolated {
         StandardDomainsDialog standardDomainDialog = new StandardDomainsDialog(Utilities.getOwner(this));
         // @ 2014/11/18. Issue 145.
         // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
         // Propagation of the domain in related variables in temporal models
         List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
         //
-        if (standardDomainDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
-            List<JRadioButton> radioButtons = ((StandardDomainPanel) (standardDomainDialog.getJPanelStandardDomains()))
-                    .getRadioButtons();
-            int index = 0;
-            for (int j = 0; j < radioButtons.size(); j++) {
-                if (radioButtons.get(j).isSelected()) {
-                    index = j;
-                }
-            }
-            int i = 0;
-            State[] newStates = new State[DefaultStates.getByIndex(index).length];
-            for (String str : DefaultStates.getByIndex(index)) {
-                newStates[i] = new State(GUIDefaultStates.getString(str));
-                i++;
-            }
-            NodeReplaceStatesEdit nodeReplaceStatesEdit = new NodeReplaceStatesEdit(node, newStates);
-            try {
-                ProbNet probNet1 = node.getProbNet();
-                nodeReplaceStatesEdit.doEdit(probNet1);
-                // @ 2014/11/18. Issue 145.
-                // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-                // Propagation of the domain in related variables in temporal models
-                if (nodeRelatedNodes != null) {
-                    if (!nodeRelatedNodes.isEmpty()) {
-                        for (Node relatedNode : nodeRelatedNodes) {
-                            nodeReplaceStatesEdit = new NodeReplaceStatesEdit(relatedNode, newStates);
-                            ProbNet probNet = relatedNode.getProbNet();
-                            nodeReplaceStatesEdit.doEdit(probNet);
-                        }
-                    }
-                }
-                // @@@
-                this.removeAll();
-                initialize();
-                setFieldsFromProperties(node);
-            } catch (DoEditException.ConstraintViolated e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
-                                              stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+        if (standardDomainDialog.requestValues() != OkCancelHorizontalDialog.OK_BUTTON) {
+            return;
+        }
+        List<JRadioButton> radioButtons = ((StandardDomainPanel) (standardDomainDialog.getJPanelStandardDomains()))
+                .getRadioButtons();
+        int index = 0;
+        for (int j = 0; j < radioButtons.size(); j++) {
+            if (radioButtons.get(j).isSelected()) {
+                index = j;
             }
         }
+        int i = 0;
+        State[] newStates = new State[DefaultStates.getByIndex(index).length];
+        for (String str : DefaultStates.getByIndex(index)) {
+            newStates[i] = new State(GUIDefaultStates.getString(str));
+            i++;
+        }
+        NodeReplaceStatesEdit nodeReplaceStatesEdit = new NodeReplaceStatesEdit(node, newStates);
+        
+        ProbNet nodeProbNet = node.getProbNet();
+        nodeReplaceStatesEdit.doEdit(nodeProbNet);
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        if (nodeRelatedNodes != null) {
+            if (!nodeRelatedNodes.isEmpty()) {
+                for (Node relatedNode : nodeRelatedNodes) {
+                    nodeReplaceStatesEdit = new NodeReplaceStatesEdit(relatedNode, newStates);
+                    ProbNet probNet = relatedNode.getProbNet();
+                    nodeReplaceStatesEdit.doEdit(probNet);
+                }
+            }
+        }
+        // @@@
+        this.removeAll();
+        initialize();
+        setFieldsFromProperties(node);
+        
     }
 }

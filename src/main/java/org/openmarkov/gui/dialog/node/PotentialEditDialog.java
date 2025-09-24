@@ -10,6 +10,8 @@ package org.openmarkov.gui.dialog.node;
 import org.openmarkov.core.action.SetPotentialEdit;
 import org.openmarkov.core.action.SetPotentialVariablesEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -20,6 +22,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
 import org.openmarkov.gui.dialog.common.*;
+import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualNode;
 
@@ -323,7 +326,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * @return An integer indicating the button clicked by the user when closing
      * this dialog
      */
-    public int requestValues() {
+    public int requestValues() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         // Shows the potentials' options table
         if (node.getNodeType() == NodeType.DECISION && node.getPolicyType() == PolicyType.OPTIMAL && readOnly) {
             setEnabledDecisionOptions(true);
@@ -342,10 +345,10 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * @param node object from where load the information.
      */
     // TODO Remove all this
-    private void showFields(Node node) {
+    private void showFields(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         // The element order in PotentialType object are same that
         // JComboBoxRelationType
-        previouslySelectedPotentialType = node.getPotentials().get(0).getClass().getAnnotation(PotentialType.class)
+        previouslySelectedPotentialType = node.getFirstPotential().getClass().getAnnotation(PotentialType.class)
                                               .name();
         getPotentialTypeJCombobox().setSelectedItem(previouslySelectedPotentialType);
         updatePotentialPanel();
@@ -603,7 +606,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      *
      * @return true if all the fields are correct.
      */
-    @Override protected boolean doOkClickBeforeHide() {
+    @Override
+    protected boolean doOkClickBeforeHide() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong {
         if (getPotentialPanel() instanceof TablePotentialPanel) {
             ((TablePotentialPanel) getPotentialPanel()).getValuesTable().stopCellEditing();
         }

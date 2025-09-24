@@ -9,11 +9,15 @@ package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.StateAction;
+import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.NodePartitionedIntervalEdit;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.gui.dialog.common.KeyTablePanel;
+import org.openmarkov.gui.exception.WrongIntervalException;
 import org.openmarkov.gui.loader.element.IconLoader;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.GUIDefaultStates;
@@ -296,133 +300,84 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         valuesTable.addMouseListener(this);
     }
     
+    
+    enum IntervalSide {
+        LOWER(LOWER_BOUND_VALUE_COLUMN_INDEX, LOWER_BOUND_SYMBOL_COLUMN_INDEX, "(", "[", 1),
+        UPPER(UPPER_BOUND_VALUE_COLUMN_INDEX, UPPER_BOUND_SYMBOL_COLUMN_INDEX, ")", "]", -1);
+        
+        final int valueColumnIndex;
+        final int symbolColumnIndex;
+        final String openIntervalSymbol;
+        final String closedIntervalSymbol;
+        final int relativeNextIntervalColumn;
+        
+        IntervalSide(int valueColumnIndex, int symbolColumnIndex, String openIntervalSymbol, String closedIntervalSymbol, int relativeNextIntervalColumn) {
+            this.valueColumnIndex = valueColumnIndex;
+            this.symbolColumnIndex = symbolColumnIndex;
+            this.openIntervalSymbol = openIntervalSymbol;
+            this.closedIntervalSymbol = closedIntervalSymbol;
+            this.relativeNextIntervalColumn = relativeNextIntervalColumn;
+        }
+    }
+    
+    // @ 2014/11/18. Issue 145.
+    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+    // Propagation of the domain in related variables in temporal models
+    
     /**
      * This method is used to change the interval's type in a discretize Table
      * To closed from opened To opened from closed
      */
-    private void changeLimitIntervalDiscretize(int row, int column) {
-        if (column == LOWER_BOUND_SYMBOL_COLUMN_INDEX || column == UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
-            boolean lower = false;
-            String value = (String) valuesTable.getValueAt(row, column);
-            if (column == LOWER_BOUND_SYMBOL_COLUMN_INDEX) {
-                lower = true;
-                if (value.equals("(")) {
-                    if (valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX) == INFINITY
-                            || valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX) == NEGATIVE_INFINITY) {
-                        JOptionPane.showMessageDialog(this, "Infinity can not belong to the interval");
-                    } else if (row + 1 < valuesTable.getRowCount()
-                            && valuesTable.getValueAt(row + 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX) == "["
-                            && valuesTable.getValueAt(row + 1, LOWER_BOUND_VALUE_COLUMN_INDEX) == valuesTable
-                            .getValueAt(row + 1, UPPER_BOUND_VALUE_COLUMN_INDEX)) {
-                        JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
-                    } else {
-                        valuesTable.setValueAt("[", row, column);
-                        if (row + 1 < valuesTable.getRowCount()) {
-                            valuesTable.setValueAt(")", row + 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
-                        }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node,
-                                                                                                                  StateAction.MODIFY_DELIMITER_INTERVAL, row, lower);
-                        try {
-                            ProbNet probNet = node.getProbNet();
-                            nodePartitionedIntervalEdit.doEdit(probNet);
-                            // @ 2014/11/18. Issue 145.
-                            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-                            // Propagation of the domain in related variables in temporal models
-                            propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
-                                                                                 row, lower);
-                            //
-                        } catch (DoEditException.ConstraintViolated e) {
-                            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                } else if (value.equals("[")) {
-                    if (valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX) == valuesTable
-                            .getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX)
-                            && valuesTable.getValueAt(row, UPPER_BOUND_SYMBOL_COLUMN_INDEX) == "]") {
-                        JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
-                    } else {
-                        valuesTable.setValueAt("(", row, column);
-                        if (row + 1 < valuesTable.getRowCount()) {
-                            valuesTable.setValueAt("]", row + 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
-                        }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node,
-                                                                                                                  StateAction.MODIFY_DELIMITER_INTERVAL, row, lower);
-                        try {
-                            ProbNet probNet = node.getProbNet();
-                            nodePartitionedIntervalEdit.doEdit(probNet);
-                            // @ 2014/11/18. Issue 145.
-                            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-                            // Propagation of the domain in related variables in temporal models
-                            propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
-                                                                                 row, lower);
-                            //
-                        } catch (DoEditException.ConstraintViolated e) {
-                            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                }
-            }
-            if (column == UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
-                if (value.equals(")")) {
-                    if (valuesTable.getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX) == INFINITY
-                            || valuesTable.getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX) == NEGATIVE_INFINITY) {
-                        JOptionPane.showMessageDialog(this, "Infinity can not belong to the interval");
-                    } else if (row > 0 && valuesTable.getValueAt(row - 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX) == "]"
-                            && valuesTable.getValueAt(row - 1, LOWER_BOUND_VALUE_COLUMN_INDEX) == valuesTable
-                            .getValueAt(row - 1, UPPER_BOUND_VALUE_COLUMN_INDEX)) {
-                        JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
-                    } else {
-                        valuesTable.setValueAt("]", row, column);
-                        if (row > 0) {
-                            valuesTable.setValueAt("(", row - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                        }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node,
-                                                                                                                  StateAction.MODIFY_DELIMITER_INTERVAL, row, lower);
-                        try {
-                            ProbNet probNet = node.getProbNet();
-                            nodePartitionedIntervalEdit.doEdit(probNet);
-                            // @ 2014/11/18. Issue 145.
-                            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-                            // Propagation of the domain in related variables in temporal models
-                            propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
-                                                                                 row, lower);
-                            //
-                        } catch (DoEditException.ConstraintViolated e) {
-                            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                } else if (value.equals("]")) {
-                    if (valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX) == valuesTable
-                            .getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX)
-                            && valuesTable.getValueAt(row, LOWER_BOUND_SYMBOL_COLUMN_INDEX) == "[") {
-                        JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
-                    } else {
-                        valuesTable.setValueAt(")", row, column);
-                        if (row > 0) {
-                            valuesTable.setValueAt("[", row - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                        }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node,
-                                                                                                                  StateAction.MODIFY_DELIMITER_INTERVAL, row, lower);
-                        try {
-                            ProbNet probNet = node.getProbNet();
-                            nodePartitionedIntervalEdit.doEdit(probNet);
-                            // @ 2014/11/18. Issue 145.
-                            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-                            // Propagation of the domain in related variables in temporal models
-                            propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
-                                                                                 row, lower);
-                            //
-                        } catch (DoEditException.ConstraintViolated e) {
-                            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                }
-            }
+    private void changeLimitIntervalDiscretize(int row, int column) throws DoEditException.ConstraintViolated, WrongIntervalException.InfinityInIntervalNotAllowed, WrongIntervalException.LimitsValuesAreWrong {
+        if (column != LOWER_BOUND_SYMBOL_COLUMN_INDEX && column != UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
+            return;
         }
+        String value = (String) valuesTable.getValueAt(row, column);
+        boolean lower = column == LOWER_BOUND_SYMBOL_COLUMN_INDEX;
+        IntervalSide editingLimit = lower ? IntervalSide.LOWER : IntervalSide.UPPER;
+        IntervalSide oppositeLimit = switch (editingLimit) {
+            case LOWER -> IntervalSide.UPPER;
+            case UPPER -> IntervalSide.LOWER;
+        };
+        boolean isNotFirstOrLastSideOfIntervals = switch (editingLimit) {
+            case LOWER -> row + 1 < valuesTable.getRowCount();
+            case UPPER -> row > 0;
+        };
+        
+        if (value.equals(editingLimit.openIntervalSymbol)) {
+            if (valuesTable.getValueAt(row, editingLimit.valueColumnIndex) == DiscretizeTablePanel.INFINITY
+                    || valuesTable.getValueAt(row, editingLimit.valueColumnIndex) == DiscretizeTablePanel.NEGATIVE_INFINITY) {
+                throw new WrongIntervalException.InfinityInIntervalNotAllowed();
+            }
+            if (isNotFirstOrLastSideOfIntervals
+                    && valuesTable.getValueAt(row + editingLimit.relativeNextIntervalColumn, editingLimit.symbolColumnIndex)
+                    == editingLimit.closedIntervalSymbol
+                    && valuesTable.getValueAt(row + editingLimit.relativeNextIntervalColumn, LOWER_BOUND_VALUE_COLUMN_INDEX)
+                    == valuesTable.getValueAt(row + editingLimit.relativeNextIntervalColumn, UPPER_BOUND_VALUE_COLUMN_INDEX)) {
+                throw new WrongIntervalException.LimitsValuesAreWrong();
+            }
+            valuesTable.setValueAt(editingLimit.closedIntervalSymbol, row, column);
+            if (isNotFirstOrLastSideOfIntervals) {
+                valuesTable.setValueAt(oppositeLimit.openIntervalSymbol, row + editingLimit.relativeNextIntervalColumn, editingLimit.symbolColumnIndex);
+            }
+        } else if (value.equals(editingLimit.closedIntervalSymbol)) {
+            if (valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX) == valuesTable
+                    .getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX)
+                    && valuesTable.getValueAt(row, oppositeLimit.symbolColumnIndex) == oppositeLimit.closedIntervalSymbol) {
+                throw new WrongIntervalException.LimitsValuesAreWrong();
+            }
+            valuesTable.setValueAt(editingLimit.openIntervalSymbol, row, column);
+            if (isNotFirstOrLastSideOfIntervals) {
+                valuesTable.setValueAt(oppositeLimit.closedIntervalSymbol, row + editingLimit.relativeNextIntervalColumn, oppositeLimit.symbolColumnIndex);
+            }
+        } else {
+            //There is nothing to do if the value doesn't match an interval start, that is (, [, ), or ].
+            return;
+        }
+        NodePartitionedIntervalEdit nodePartitionedIntervalEdit =
+                new NodePartitionedIntervalEdit(node, StateAction.MODIFY_DELIMITER_INTERVAL, row, lower);
+        nodePartitionedIntervalEdit.doEdit(node.getProbNet());
+        propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL, row, lower);
     }
     
     /**
@@ -841,45 +796,43 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() {
-        
-        String option = (String) JOptionPane.showInputDialog(this, stringDatabase.getString("AddState.Text"),
-                                                             stringDatabase.getString("AddState.Text"), JOptionPane.QUESTION_MESSAGE, null, //no icon
-                                                             null, //no predefined values
-                                                             node.getVariable()
-                                                                 .getNewValidName()); // preset value in field
-        
-        if (option != null) {
-            Variable variable = node.getVariable();
-            int newIndex = 0;
-            int newStateIndex = variable.getNumStates();
-            NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.ADD, newStateIndex, option);
-            try {
-                ProbNet probNet = node.getProbNet();
-                nodeStateEdit.doEdit(probNet);
-                // @ 2014/11/18. Issue 145.
-                // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-                // Propagation of the domain in related variables in temporal models
-                propagateNodeStateEditRelatedVariables(StateAction.ADD, newIndex, option);
-                //
-                if (variable.getVariableType() == VariableType.DISCRETIZED) {
-                    PartitionedInterval newPartitionedInterval = variable.getPartitionedInterval();
-                    setDataFromPartitionedInterval(newPartitionedInterval, variable.getStates());
-                } else {
-                    getTableModel().insertRow(newIndex, new Object[]{getKeyString(newIndex), option});
-                }
-                valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
-            } catch (DoEditException.ConstraintViolated e) {
-                JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                              stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-            }
+    @Override protected void actionPerformedAddValue() throws DoEditException.ConstraintViolated {
+        String option = (String) JOptionPane
+                .showInputDialog(this,
+                                 stringDatabase.getString("AddState.Text"),
+                                 stringDatabase.getString("AddState.Text"),
+                                 JOptionPane.QUESTION_MESSAGE, null, //no icon
+                                 null, //no predefined values
+                                 node.getVariable()
+                                     .getNewValidName()); // preset value in field
+        if (option == null) {
+            return;
         }
+        Variable variable = node.getVariable();
+        int newIndex = 0;
+        int newStateIndex = variable.getNumStates();
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.ADD, newStateIndex, option);
+        ProbNet probNet = node.getProbNet();
+        nodeStateEdit.doEdit(probNet);
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        propagateNodeStateEditRelatedVariables(StateAction.ADD, newIndex, option);
+        //
+        if (variable.getVariableType() == VariableType.DISCRETIZED) {
+            PartitionedInterval newPartitionedInterval = variable.getPartitionedInterval();
+            setDataFromPartitionedInterval(newPartitionedInterval, variable.getStates());
+        } else {
+            getTableModel().insertRow(newIndex, new Object[]{getKeyString(newIndex), option});
+        }
+        valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+        
     }
     
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() {
+    @Override protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
         int selectedRow = valuesTable.getSelectedRow();
         removeState(selectedRow);
     }
@@ -887,53 +840,46 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * @param selectedRow
      */
-    protected void removeState(int selectedRow) {
+    protected void removeState(int selectedRow) throws DoEditException.ConstraintViolated {
         int rowCount;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.REMOVE, selectedRow, "");
-        try {
-            ProbNet probNet = node.getProbNet();
-            nodeStateEdit.doEdit(probNet);
-            // @ 2014/11/18. Issue 145.
-            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-            // Propagation of the domain in related variables in temporal models
-            propagateNodeStateEditRelatedVariables(StateAction.REMOVE, selectedRow, "");
-            //
-            cancelCellEditing();
-            getTableModel().removeRow(selectedRow);
-            rowCount = valuesTable.getRowCount();
-            if (rowCount > 0) {
-                if (selectedRow < rowCount) {
-                    valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
-                    // update key column
-                    int auxSelectedRow = selectedRow;
-                    while (auxSelectedRow < rowCount) {
-                        getTableModel().setValueAt(getKeyString(auxSelectedRow), auxSelectedRow, 0);
-                        auxSelectedRow++;
-                    }
-                } else {
-                    valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+        ProbNet probNet = node.getProbNet();
+        nodeStateEdit.doEdit(probNet);
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        propagateNodeStateEditRelatedVariables(StateAction.REMOVE, selectedRow, "");
+        //
+        cancelCellEditing();
+        getTableModel().removeRow(selectedRow);
+        rowCount = valuesTable.getRowCount();
+        if (rowCount > 0) {
+            if (selectedRow < rowCount) {
+                valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
+                // update key column
+                int auxSelectedRow = selectedRow;
+                while (auxSelectedRow < rowCount) {
+                    getTableModel().setValueAt(getKeyString(auxSelectedRow), auxSelectedRow, 0);
+                    auxSelectedRow++;
                 }
-                // after eliminating row check the lower limit, only if the variable type is discretized of numeric
-                if (node.getVariable().getVariableType() == VariableType.DISCRETIZED
-                        || node.getVariable().getVariableType() == VariableType.NUMERIC) {
-                    if (selectedRow > 0 && selectedRow < rowCount) {
-                        Object lowerBoundSymbol = valuesTable
-                                .getValueAt(selectedRow - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                        Object nextRowUpperBoundSymbol = (lowerBoundSymbol.equals("[")) ? ")" : "]";
-                        valuesTable.setValueAt(nextRowUpperBoundSymbol, selectedRow, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
-                        Object nextRowLowerBound = valuesTable
-                                .getValueAt(selectedRow - 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
-                        valuesTable.setValueAt(nextRowLowerBound, selectedRow, UPPER_BOUND_VALUE_COLUMN_INDEX);
-                    }
+            } else {
+                valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+            }
+            // after eliminating row check the lower limit, only if the variable type is discretized of numeric
+            if (node.getVariable().getVariableType() == VariableType.DISCRETIZED
+                    || node.getVariable().getVariableType() == VariableType.NUMERIC) {
+                if (selectedRow > 0 && selectedRow < rowCount) {
+                    Object lowerBoundSymbol = valuesTable
+                            .getValueAt(selectedRow - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
+                    Object nextRowUpperBoundSymbol = (lowerBoundSymbol.equals("[")) ? ")" : "]";
+                    valuesTable.setValueAt(nextRowUpperBoundSymbol, selectedRow, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
+                    Object nextRowLowerBound = valuesTable
+                            .getValueAt(selectedRow - 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
+                    valuesTable.setValueAt(nextRowLowerBound, selectedRow, UPPER_BOUND_VALUE_COLUMN_INDEX);
                 }
             }
-        } catch (DoEditException.ConstraintViolated e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-            // jTextFieldNodeName.setText( this.nodeProperties.getName() );
-            // jTextFieldNodeName.requestFocus();
         }
+        
         // TODO if variable is numeric or discretized it is necessary also to
         // change partitioned interval values
     }
@@ -941,55 +887,47 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() {
+    @Override protected void actionPerformedUpValue() throws DoEditException.ConstraintViolated {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
-        try {
-            ProbNet probNet = node.getProbNet();
-            nodeStateEdit.doEdit(probNet);
-            // @ 2014/11/18. Issue 145.
-            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-            // Propagation of the domain in related variables in temporal models
-            propagateNodeStateEditRelatedVariables(StateAction.UP, selectedRow, "");
-            //
-            stopCellEditing();
-            cancelCellEditing();
-            swap = valuesTable.getValueAt(selectedRow, 1);
-            valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
-            valuesTable.setValueAt(swap, selectedRow - 1, 1);
-            valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-        } catch (DoEditException.ConstraintViolated e) {
-            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-        }
+        ProbNet probNet = node.getProbNet();
+        nodeStateEdit.doEdit(probNet);
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        propagateNodeStateEditRelatedVariables(StateAction.UP, selectedRow, "");
+        //
+        stopCellEditing();
+        cancelCellEditing();
+        swap = valuesTable.getValueAt(selectedRow, 1);
+        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
+        valuesTable.setValueAt(swap, selectedRow - 1, 1);
+        valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+        
     }
     
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() {
+    @Override protected void actionPerformedDownValue() throws DoEditException.ConstraintViolated {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
-        try {
-            ProbNet probNet = node.getProbNet();
-            nodeStateEdit.doEdit(probNet);
-            // @ 2014/11/18. Issue 145.
-            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-            // Propagation of the domain in related variables in temporal models
-            propagateNodeStateEditRelatedVariables(StateAction.DOWN, selectedRow, "");
-            //
-            stopCellEditing();
-            cancelCellEditing();
-            swap = valuesTable.getValueAt(selectedRow, 1);
-            valuesTable.setValueAt(valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
-            valuesTable.setValueAt(swap, selectedRow + 1, 1);
-            valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
-        } catch (DoEditException.ConstraintViolated e) {
-            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-        }
+        ProbNet probNet = node.getProbNet();
+        nodeStateEdit.doEdit(probNet);
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        propagateNodeStateEditRelatedVariables(StateAction.DOWN, selectedRow, "");
+        //
+        stopCellEditing();
+        cancelCellEditing();
+        swap = valuesTable.getValueAt(selectedRow, 1);
+        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
+        valuesTable.setValueAt(swap, selectedRow + 1, 1);
+        valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
+        
     }
     
     /**
@@ -1052,103 +990,103 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         int row = tableEvent.getLastRow();
         // We save the index of the modified state
         int indexState = node.getVariable().getNumStates() - row - 1;
-        if (tableEvent.getType() == TableModelEvent.UPDATE) {
-            Object value = ((DiscretizeTableModel) tableEvent.getSource()).getValueAt(row, column);
-            boolean lower = column == LOWER_BOUND_VALUE_COLUMN_INDEX;
-            if (value instanceof String && column == INTERVAL_NAME_COLUMN_INDEX) {
-                String newName = value.toString();
-                // We only execute the Edit if the name really changed
-                if (!newName.equals(node.getVariable().getStateName(indexState))) {
-                    NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.RENAME, row, newName);
-                    try {
-                        ProbNet probNet = node.getProbNet();
-                        nodeStateEdit.doEdit(probNet);
-                        // @ 2014/11/18. Issue 145.
-                        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
-                        // Propagation of the domain in related variables in temporal models
-                        propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
-                        //
-                    } catch (DoEditException.ConstraintViolated e) {
-                        JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                                      stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-                        // If an error occurred or a constraint is broken
-                        // we restore the old name of the edited state
-                        String oldState = node.getVariable().getStateName(indexState);
-                        valuesTable.setValueAt(oldState, row, column);
-                        
-                    }
-                }
-            }
-            if (value == INFINITY && column == UPPER_BOUND_VALUE_COLUMN_INDEX) {
-                valuesTable.setValueAt(INFINITY, row, column);
-                String upperBound = (String) valuesTable.getValueAt(row, column + 1);
-                if (upperBound.equals("]")) {
-                    valuesTable.setValueAt(")", row, column + 1);
-                }
-            } else if (value == NEGATIVE_INFINITY && column == LOWER_BOUND_VALUE_COLUMN_INDEX) {
-                valuesTable.setValueAt(NEGATIVE_INFINITY, row, column);
-                String lowerBound = (String) valuesTable.getValueAt(row, column - 1);
-                if (lowerBound.equals("[")) {
-                    valuesTable.setValueAt("(", row, column - 1);
-                }
-            } else if (value instanceof Double) {
-                Variable variable = node.getVariable();
-                double newValue = (Double) value;
-                // setting precision to the new value according with the
-                // precision value introduced by the user
-                double precision = variable.getPrecision();
-                double roundedValue = Util.roundWithPrecision(newValue, Double.toString(precision));
-                double[] currentLimits = variable.getPartitionedInterval().getLimits();
-                int numLimits = currentLimits.length;
-                boolean[] currentBelongsToLeft = variable.getPartitionedInterval().getBelongsToLeftSide();
-                int limitsIndex = (lower) ? numLimits - row - 2 : numLimits - row - 1;
-                // posterior limits
-                int i = limitsIndex;
-                currentLimits[i] = roundedValue;
-                while (i + 1 < currentLimits.length && currentLimits[i] >= currentLimits[i + 1]) {
-                    if (!currentBelongsToLeft[i] && currentBelongsToLeft[i + 1]) {
-                        currentLimits[i + 1] = currentLimits[i];
-                    } else {
-                        if (i + 1 == currentLimits.length - 1) {
-                            currentLimits[i + 1] = Double.POSITIVE_INFINITY;
-                            break;
-                        }
-                        currentLimits[i + 1] = currentLimits[i] + precision;
-                    }
-                    i++;
-                }
-                // previous limits
-                int k = limitsIndex;
-                while (k - 1 >= 0 && currentLimits[k] <= currentLimits[k - 1]) {
-                    if (currentBelongsToLeft[k] && !currentBelongsToLeft[k - 1]) {
-                        currentLimits[k - 1] = currentLimits[k];
-                    } else {
-                        if (k - 1 == 0) {
-                            currentLimits[k - 1] = Double.NEGATIVE_INFINITY;
-                            break;
-                        }
-                        currentLimits[k - 1] = currentLimits[k] - precision;
-                    }
-                    k--;
-                }
-                for (int m = 0; m < currentLimits.length; m++) {
-                    if (currentLimits[m] != Double.POSITIVE_INFINITY && currentLimits[m] != Double.NEGATIVE_INFINITY) {
-                        currentLimits[m] = Util.roundWithPrecision(currentLimits[m], Double.toString(precision));
-                    }
-                }
-                PartitionedInterval newPartitionedInterval = new PartitionedInterval(currentLimits,
-                                                                                     currentBelongsToLeft);
-                PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node,
-                                                                                              newPartitionedInterval);
+        if (tableEvent.getType() != TableModelEvent.UPDATE) {
+            return;
+        }
+        Object value = ((DiscretizeTableModel) tableEvent.getSource()).getValueAt(row, column);
+        boolean lower = column == LOWER_BOUND_VALUE_COLUMN_INDEX;
+        if (value instanceof String && column == INTERVAL_NAME_COLUMN_INDEX) {
+            String newName = value.toString();
+            // We only execute the Edit if the name really changed
+            if (!newName.equals(node.getVariable().getStateName(indexState))) {
+                NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.RENAME, row, newName);
                 try {
                     ProbNet probNet = node.getProbNet();
-                    partitionedIntervalEdit.doEdit(probNet);
+                    nodeStateEdit.doEdit(probNet);
+                    // @ 2014/11/18. Issue 145.
+                    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                    // Propagation of the domain in related variables in temporal models
+                    propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
+                    //
                 } catch (DoEditException.ConstraintViolated e) {
-                    e.printStackTrace();
+                    // If an error occurred or a constraint is broken
+                    // we restore the old name of the edited state
+                    String oldState = node.getVariable().getStateName(indexState);
+                    valuesTable.setValueAt(oldState, row, column);
+                    throw new UnrecoverableException(e);
                 }
-                setDataFromPartitionedInterval(variable.getPartitionedInterval(), variable.getStates());
             }
         }
+        if (value == INFINITY && column == UPPER_BOUND_VALUE_COLUMN_INDEX) {
+            valuesTable.setValueAt(INFINITY, row, column);
+            String upperBound = (String) valuesTable.getValueAt(row, column + 1);
+            if (upperBound.equals("]")) {
+                valuesTable.setValueAt(")", row, column + 1);
+            }
+        } else if (value == NEGATIVE_INFINITY && column == LOWER_BOUND_VALUE_COLUMN_INDEX) {
+            valuesTable.setValueAt(NEGATIVE_INFINITY, row, column);
+            String lowerBound = (String) valuesTable.getValueAt(row, column - 1);
+            if (lowerBound.equals("[")) {
+                valuesTable.setValueAt("(", row, column - 1);
+            }
+        } else if (value instanceof Double) {
+            Variable variable = node.getVariable();
+            double newValue = (Double) value;
+            // setting precision to the new value according with the
+            // precision value introduced by the user
+            double precision = variable.getPrecision();
+            double roundedValue = Util.roundWithPrecision(newValue, Double.toString(precision));
+            double[] currentLimits = variable.getPartitionedInterval().getLimits();
+            int numLimits = currentLimits.length;
+            boolean[] currentBelongsToLeft = variable.getPartitionedInterval().getBelongsToLeftSide();
+            int limitsIndex = (lower) ? numLimits - row - 2 : numLimits - row - 1;
+            // posterior limits
+            int i = limitsIndex;
+            currentLimits[i] = roundedValue;
+            while (i + 1 < currentLimits.length && currentLimits[i] >= currentLimits[i + 1]) {
+                if (!currentBelongsToLeft[i] && currentBelongsToLeft[i + 1]) {
+                    currentLimits[i + 1] = currentLimits[i];
+                } else {
+                    if (i + 1 == currentLimits.length - 1) {
+                        currentLimits[i + 1] = Double.POSITIVE_INFINITY;
+                        break;
+                    }
+                    currentLimits[i + 1] = currentLimits[i] + precision;
+                }
+                i++;
+            }
+            // previous limits
+            int k = limitsIndex;
+            while (k - 1 >= 0 && currentLimits[k] <= currentLimits[k - 1]) {
+                if (currentBelongsToLeft[k] && !currentBelongsToLeft[k - 1]) {
+                    currentLimits[k - 1] = currentLimits[k];
+                } else {
+                    if (k - 1 == 0) {
+                        currentLimits[k - 1] = Double.NEGATIVE_INFINITY;
+                        break;
+                    }
+                    currentLimits[k - 1] = currentLimits[k] - precision;
+                }
+                k--;
+            }
+            for (int m = 0; m < currentLimits.length; m++) {
+                if (currentLimits[m] != Double.POSITIVE_INFINITY && currentLimits[m] != Double.NEGATIVE_INFINITY) {
+                    currentLimits[m] = Util.roundWithPrecision(currentLimits[m], Double.toString(precision));
+                }
+            }
+            PartitionedInterval newPartitionedInterval = new PartitionedInterval(currentLimits,
+                                                                                 currentBelongsToLeft);
+            PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node,
+                                                                                          newPartitionedInterval);
+            try {
+                ProbNet probNet = node.getProbNet();
+                partitionedIntervalEdit.doEdit(probNet);
+            } catch (DoEditException.ConstraintViolated e) {
+                e.printStackTrace();
+            }
+            setDataFromPartitionedInterval(variable.getPartitionedInterval(), variable.getStates());
+        }
+        
     }
     
     public void setEnablePanelButton(boolean b) {
@@ -1171,7 +1109,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         if (variable.getVariableType() == VariableType.NUMERIC
                 || variable.getVariableType() == VariableType.DISCRETIZED) {
             if (column == LOWER_BOUND_SYMBOL_COLUMN_INDEX || column == UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
-                changeLimitIntervalDiscretize(row, column);
+                try {
+                    changeLimitIntervalDiscretize(row, column);
+                } catch (DoEditException.ConstraintViolated | WrongIntervalException.InfinityInIntervalNotAllowed |
+                         WrongIntervalException.LimitsValuesAreWrong ex) {
+                    throw new UnreacheableException(ex);
+                }
             } else if (column == LOWER_BOUND_VALUE_COLUMN_INDEX || column == UPPER_BOUND_VALUE_COLUMN_INDEX) {
                 // infinity buttons management
                 int numIntervals = variable.getPartitionedInterval().getNumSubintervals();

@@ -8,6 +8,7 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.exception.NoRowSelectedException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -165,14 +166,10 @@ public class KeyListSelectionDialog extends OkCancelHorizontalDialog {
 	 *
 	 * @return true if the dialog box must be closed; otherwise, false.
 	 */
-	@Override protected boolean doOkClickBeforeHide() {
+    @Override protected boolean doOkClickBeforeHide() throws NoRowSelectedException {
 		fillSelectedRows();
 		if (selectedRows == null) {
-			JOptionPane
-					.showMessageDialog(this, StringDatabase.getUniqueInstance().getString("NoRowsSelected.Text.Label"),
-							StringDatabase.getUniqueInstance().getString("ErrorWindow.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
-			return false;
+            throw new NoRowSelectedException();
 		}
 		return true;
 	}

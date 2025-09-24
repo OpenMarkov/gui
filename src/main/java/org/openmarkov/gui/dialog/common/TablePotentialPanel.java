@@ -10,8 +10,7 @@ package org.openmarkov.gui.dialog.common;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.action.UncertainValuesRemoveEdit;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -141,20 +140,12 @@ import java.util.List;
      * @param node : node whose first potential is a TablePotential or a TableDeltaPotential
      *             Adaptation from TableDeltaPotential
      */
-    public TablePotentialPanel(Node node) {
+    public TablePotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         super();
-        
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
-        
-        // If there is no potential
-        if (node.getPotentials().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "There are no potentials");
-            return;
-        }
-        
         this.node = node;
         // This panel displays the first potential of the node
-        potential = node.getPotentials().get(0);
+        potential = node.getFirstPotential();
         if (potential instanceof ExactDistrPotential) {
             isExactDistrPotential = true;
             tablePotential = ((ExactDistrPotential) potential).getTablePotential();
@@ -222,12 +213,9 @@ import java.util.List;
      * <p>
      * UNCLEAR--&gt; Called in PotentialEditDialog.showFields(Node)
      */
-    @Override public void setData(Node node) {
+    @Override
+    public void setData(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         this.node = node;
-        if (node.getPotentials().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "There are no potentials");
-            return;
-        }
         setData();
     }
     
@@ -251,7 +239,7 @@ import java.util.List;
      */
     // Using node sets in variable node
     // What to do with the exception
-    public void setData() {
+    public void setData() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         
         // true
         hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(node);
@@ -299,7 +287,7 @@ import java.util.List;
      * @return Boolean array that represents the columns (true = the column has
      * an uncertainty, false = the column has not an uncertainty). This array only contains the data columns
      */
-    protected boolean[] getUncertaintyInColumns() {
+    protected boolean[] getUncertaintyInColumns() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         
         int size = valuesTable.getColumnCount();
         
@@ -307,17 +295,11 @@ import java.util.List;
         boolean[] newUncertaintyInColumns = new boolean[size - 1];
         
         for (int i = 1; i < size; i++) {
-            boolean hasUncertainty = false;
-            try {
-                // Returns an evidence case with one finding for every parent variable and its state in the column
-                EvidenceCase configuration = getConfiguration(i);
-                // If the column configuration has uncertainty hasUncertainty= true
-                hasUncertainty = tablePotential.hasUncertainty(configuration);
-            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                              stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-            }
+            // Returns an evidence case with one finding for every parent variable and its state in the column
+            EvidenceCase configuration = getConfiguration(i);
+            // If the column configuration has uncertainty hasUncertainty= true
+            boolean hasUncertainty = tablePotential.hasUncertainty(configuration);
+            
             // Indicates whether this column has uncertainty or not
             newUncertaintyInColumns[i - 1] = hasUncertainty;
         }
@@ -338,7 +320,7 @@ import java.util.List;
      *
      * @return the table data to be set
      */
-    protected Object[][] convertListPotentialsToTableFormat() {
+    protected Object[][] convertListPotentialsToTableFormat() throws ThereIsNoPotentialsInNodeException {
         Object[][] values;
         
         // Empty array values[number_of_rows][number_of_colums]
@@ -371,11 +353,8 @@ import java.util.List;
      * Continuous variables have only one state
      * tableSize is always greater than 0
      */
-    protected Object[][] createEmptyTable() {
-        if (node.getPotentials().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "There are no potentials");
-            return null;
-        }
+    protected Object[][] createEmptyTable() throws ThereIsNoPotentialsInNodeException {
+        node.getFirstPotential();
         int numColumns = 1; // Variables column
         
         // First editable row coincides with the number of parents
@@ -487,6 +466,7 @@ import java.util.List;
      * Sets the data table from potential in oldValues
      *
      * @param oldValues
+     *
      * @return an array filled with the date table from tablePotential or tableDeltaPotential filled with the data values
      * from tablePotential or tableDeltaPotential in the correct positions to be displayed by ValuesTable
      */
@@ -510,7 +490,12 @@ import java.util.List;
             
             // put the values on the table
             for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {
-                int potentialIndex = tablePotentialsPanelOperations.getPotentialIndex(i, j, node);
+                int potentialIndex;
+                try {
+                    potentialIndex = tablePotentialsPanelOperations.getPotentialIndex(i, j, node);
+                } catch (ThereIsNoPotentialsInNodeException e) {
+                    throw new UnreacheableException(e);
+                }
                 double value = roundedValues[potentialIndex];
                 values[i][j] = value;
             }
@@ -543,6 +528,7 @@ import java.util.List;
      * Calculates the position on valuesTable for a state combination
      *
      * @param stateIndices - indexes of the states
+     *
      * @return an array containing the row at the first position and the column
      * at the second position.
      * revised--&gt;
@@ -584,7 +570,7 @@ import java.util.List;
      *
      *
      */
-    protected Object[][] getNotEditablePositions() {
+    protected Object[][] getNotEditablePositions() throws ThereIsNoPotentialsInNodeException {
         Object[][] notEditablePositions = createEmptyTable();
         //Bug #162 Applying restriction to utility Nodes
         //if (!isTableDeltaPotential && hasLinkRestriction){
@@ -620,10 +606,12 @@ import java.util.List;
      *
      * @param col The column selected. Never is 0 , because the column 0 is the
      *            states column
+     *
      * @return An evidence case object
+     *
      * @throws IncompatibleEvidenceException
      */
-    protected EvidenceCase getConfiguration(int col) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+    protected EvidenceCase getConfiguration(int col) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         
         List<Variable> parents = variables.subList(1, potential.getNumVariables());
         
@@ -662,20 +650,14 @@ import java.util.List;
      *
      * @return Evidence case
      */
-    public EvidenceCase getEvidenceCaseFromSelectedColumn() {
-        EvidenceCase evi = null;
-        try {
-            evi = getConfiguration(selectedColumn);
-        } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-            e.printStackTrace();
-        }
-        return evi;
+    public final EvidenceCase getEvidenceCaseFromSelectedColumn() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+        return getConfiguration(selectedColumn);
     }
     
     /**
      * Creates and shows the UncertainValuesDialog object
      */
-    public void showUncertaintyDialog() {
+    public void showUncertaintyDialog() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException.ConstraintViolated {
         // Generates the evidenceCase based on the column
         // selected on the JTable object
         evidenceCase = getEvidenceCaseFromSelectedColumn();
@@ -687,26 +669,20 @@ import java.util.List;
             uncertDialog = new UncertainValuesDialog(Utilities.getOwner(this), evidenceCase, tablePotential);
         }
         int button = uncertDialog.requestUncertainValues();
-        if (button == OkCancelHorizontalDialog.OK_BUTTON) {
-            UncertainValuesEdit uncertEdit = new UncertainValuesEdit(node, uncertDialog.getUncertainColumn(),
-                                                                     uncertDialog.getValuesColumn(), uncertDialog.getPosBase(), selectedColumn,
-                                                                     uncertDialog.isChanceVariable());
-            try {
-                ProbNet probNet = node.getProbNet();
-                uncertEdit.doEdit(probNet);
-                if (selectedColumn > 0) {
-                    (
-                            (ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)
-                    ).setMark(selectedColumn - 1);
-                    getValuesTable().repaint();
-                    this.getTableModel().setNotEditablePositions(getNotEditablePositions());
-                }
-            } catch (DoEditException.ConstraintViolated e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                              stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-            }
+        if (button != OkCancelHorizontalDialog.OK_BUTTON) {
+            return;
         }
+        UncertainValuesEdit uncertEdit = new UncertainValuesEdit(node, uncertDialog.getUncertainColumn(),
+                                                                 uncertDialog.getValuesColumn(), uncertDialog.getPosBase(), selectedColumn,
+                                                                 uncertDialog.isChanceVariable());
+        ProbNet probNet = node.getProbNet();
+        uncertEdit.doEdit(probNet);
+        if (selectedColumn > 0) {
+            ((ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)).setMark(selectedColumn - 1);
+            getValuesTable().repaint();
+            this.getTableModel().setNotEditablePositions(getNotEditablePositions());
+        }
+        
     }
     
     /**
@@ -750,6 +726,7 @@ import java.util.List;
      * This method returns the tableModel of valuesTable. If valuesTable has not a tableModel, this method creates one.
      *
      * @return the tableModel of valuesTable.
+     *
      * @see ValuesTable
      * revised--&gt;minor changes
      */
@@ -781,40 +758,43 @@ import java.util.List;
         String actionCommand = e.getActionCommand();
         if (actionCommand.equals(ActionCommands.UNCERTAINTY_ASSIGN.getCommandName()) || actionCommand
                 .equals(ActionCommands.UNCERTAINTY_EDIT.getCommandName())) {
-            showUncertaintyDialog();
+            try {
+                showUncertaintyDialog();
+            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                     ThereIsNoPotentialsInNodeException | DoEditException.ConstraintViolated ex) {
+                throw new UnrecoverableException(ex);
+            }
         } else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE.getCommandName())) {
-            removeUncertainty();
+            try {
+                removeUncertainty();
+            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                     ThereIsNoPotentialsInNodeException | DoEditException.ConstraintViolated ex) {
+                throw new UnrecoverableException(ex);
+            }
         }
     }
     
     /**
      * Method for removing the uncertain values for a certain configuration
      */
-    public void removeUncertainty() {
+    public void removeUncertainty() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException.ConstraintViolated {
         evidenceCase = getEvidenceCaseFromSelectedColumn();
         UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(node, evidenceCase);
-        try {
-            ProbNet probNet = node.getProbNet();
-            uncertEdit.doEdit(probNet);
-            if (selectedColumn > 0) {
-                (
-                        (ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)
-                ).unMark(selectedColumn - 1);
-                getValuesTable().repaint();
-                this.getTableModel().setNotEditablePositions(getNotEditablePositions());
-            }
-        } catch (DoEditException.ConstraintViolated e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+        ProbNet probNet = node.getProbNet();
+        uncertEdit.doEdit(probNet);
+        if (selectedColumn <= 0) {
+            return;
         }
+        ((ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)).unMark(selectedColumn - 1);
+        getValuesTable().repaint();
+        this.getTableModel().setNotEditablePositions(getNotEditablePositions());
     }
     
     /**
      * Method for update the options showed in the contextual menu
      * revised--&gt;not changed
      */
-    protected void updateContextualMenuOptions() {
+    protected void updateContextualMenuOptions() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         if (!node.getPotentials().isEmpty() && node.getPotentials().get(0) instanceof TablePotential tablePotential) {
             boolean hasUncertainty = tablePotential.hasUncertainty(getEvidenceCaseFromSelectedColumn());
             if (hasUncertainty) {
@@ -840,20 +820,22 @@ import java.util.List;
      *
      * @param evt
      */
-    protected void doubleClickEvent(MouseEvent evt) {
-        if (!node.getPotentials().isEmpty() && node.getPotentials().get(0) instanceof TablePotential tablePotential) {
-            
-            EvidenceCase configuration = null;
-            int selectedColumn = valuesTable.columnAtPoint(evt.getPoint());
-            try {
-                configuration = getConfiguration(selectedColumn);
-            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-                e.printStackTrace();
+    protected void doubleClickEvent(MouseEvent evt) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+        if (node.getPotentials().isEmpty()) return;
+        try {
+            if (!(node.getFirstPotential() instanceof TablePotential tablePotential)) {
+                return;
             }
+            int selectedColumn = valuesTable.columnAtPoint(evt.getPoint());
+            EvidenceCase configuration = getConfiguration(selectedColumn);
             boolean hasUncertainty = tablePotential.hasUncertainty(configuration);
             if (hasUncertainty) {
                 showUncertaintyDialog();
             }
+        } catch (ThereIsNoPotentialsInNodeException e) {
+            throw new UnreacheableException(e);
+        } catch (DoEditException.ConstraintViolated e) {
+            throw new UnrecoverableException(e);
         }
     }
     
@@ -941,8 +923,14 @@ import java.util.List;
                 if (SwingUtilities.isRightMouseButton(e)) {
                     if ((row > -1) && (col > 0) && !isReadOnly()) {
                         if (getUncertaintyContextualMenu() != null) {
-                            updateContextualMenuOptions();
-                            getUncertaintyContextualMenu().show(valuesTable, e.getX(), e.getY());
+                            try {
+                                updateContextualMenuOptions();
+                            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                                     ThereIsNoPotentialsInNodeException ex) {
+                                throw new UnrecoverableException(ex);
+                            } finally {
+                                getUncertaintyContextualMenu().show(valuesTable, e.getX(), e.getY());
+                            }
                         }
                     }
                 }
@@ -970,7 +958,6 @@ import java.util.List;
      */
     @Override public void setReadOnly(boolean readOnly) {
         boolean wasReadOnly = super.isReadOnly();
-        super.setReadOnly(readOnly);
 		/*
 		The read only attribute is set after the constructor is invoked and then,
 		after the setData(node) method is called. Thus, the cell renderer may need to be changed.
@@ -979,12 +966,18 @@ import java.util.List;
         if (wasReadOnly != readOnly) {
             boolean[] uncertaintyInColumns;
             if (node.getPotentials() != null) {
-                uncertaintyInColumns = getUncertaintyInColumns();
+                try {
+                    uncertaintyInColumns = getUncertaintyInColumns();
+                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                         ThereIsNoPotentialsInNodeException e) {
+                    throw new UnrecoverableException(e);
+                }
                 setCellRenderers(uncertaintyInColumns);
             } else {
                 setCellRenderers(null);
             }
         }
+        super.setReadOnly(readOnly);
         getValuesTable().setModifiable(!readOnly);
     }
     
@@ -998,7 +991,11 @@ import java.util.List;
         
         @Override public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
-                doubleClickEvent(e);
+                try {
+                    doubleClickEvent(e);
+                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther ex) {
+                    throw new UnrecoverableException(ex);
+                }
             }
         }
     }

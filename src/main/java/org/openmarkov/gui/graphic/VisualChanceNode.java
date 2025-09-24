@@ -290,7 +290,7 @@ public class VisualChanceNode extends VisualNode implements VisualChanceNodeFind
 		if (preResolutionFinding) {
 			g.setPaint(BACKGROUND_PRE_RESOLUTION_FINDING_COLOR);
 		} else if (postResolutionFinding && (
-				visualNetwork.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE
+                visualNetwork.getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
 		)) {
 			g.setPaint(BACKGROUND_POST_RESOLUTION_FINDING_COLOR);
 		} else {

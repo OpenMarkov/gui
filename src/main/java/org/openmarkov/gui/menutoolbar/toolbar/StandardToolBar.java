@@ -351,8 +351,8 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
      *                    NetworkPanel. Depending on this value, the button will be set
      *                    pressed or not.
      */
-    public void changeWorkingModeButton(int workingMode) {
-        workingModeButton.setSelected(workingMode == NetworkPanel.INFERENCE_WORKING_MODE);
+    public void changeWorkingModeButton(NetworkPanel.WorkingMode workingMode) {
+        workingModeButton.setSelected(workingMode == NetworkPanel.WorkingMode.INFERENCE);
     }
     
     /**

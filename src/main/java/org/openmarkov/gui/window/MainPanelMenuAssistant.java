@@ -82,10 +82,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
     public static final ActionCommands[] VIEWING_ACTION_COMMANDS = {ActionCommands.ZOOM, ActionCommands.ZOOM_IN,
             ActionCommands.ZOOM_OUT, ActionCommands.ZOOM_OTHER, ActionCommands.NODES};
     /**
-     * String database
-     */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-    /**
      * Menus and toolbar that manage zoom.
      */
     private ZoomMenuToolBar[] zoomMenus;
@@ -186,7 +182,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
      * Disables the menu items and toolbar buttons when any network is opened.
      */
     public void updateOptionsNewNetworkOpen() {
-        int workingMode = NetworkPanel.EDITION_WORKING_MODE;
+        NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
         if (currentNetworkPanel != null) {
             workingMode = currentNetworkPanel.getWorkingMode();
             boolean enable = currentNetworkPanel.getProbNet().getNetworkType() instanceof InfluenceDiagramType
@@ -196,7 +192,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
             setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, enable);
         }
         setOptionEnabled(FILING_ACTION_COMMANDS, true);
-        if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+        if (workingMode == NetworkPanel.WorkingMode.EDITION) {
             setOptionEnabled(EDITING_ACTION_COMMANDS, true);
             setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
         }
@@ -226,8 +222,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
     }
     
     private boolean getEnableWorkingModeButton() {
-        org.openmarkov.core.model.network.type.NetworkType networkType = currentNetworkPanel.getProbNet()
-                                                                                            .getNetworkType();
+        NetworkType networkType = currentNetworkPanel.getProbNet()
+                                                     .getNetworkType();
         return networkType instanceof InfluenceDiagramType || networkType instanceof BayesianNetworkType
                 || networkType instanceof MIDType
                 ;
@@ -319,8 +315,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
     public void updateNetworkAgents(NetworkPanel networkPanel) {
         if (currentNetworkPanel.getProbNet().isMultiagent()) {
             ArrayList<StringWithProperties> agents = new ArrayList<StringWithProperties>();
-            agents.add(new StringWithProperties(stringDatabase.getString("Network.Agent1")));
-            agents.add(new StringWithProperties(stringDatabase.getString("Network.Agent2")));
+            agents.add(new StringWithProperties(StringDatabase.getUniqueInstance().getString("Network.Agent1")));
+            agents.add(new StringWithProperties(StringDatabase.getUniqueInstance().getString("Network.Agent2")));
             currentNetworkPanel.getProbNet().setAgents(agents);
         } /*
          * else if (!currentNetworkPanel.getProbNet().isMultiagent()) { if
@@ -340,7 +336,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
     public void updateOptionsNetworkDependent(NetworkPanel networkPanel) {
         currentNetworkPanel = networkPanel;
         ProbNet currentProbNet = currentNetworkPanel.getProbNet();
-        int workingMode = currentNetworkPanel.getWorkingMode();
+        NetworkPanel.WorkingMode workingMode = currentNetworkPanel.getWorkingMode();
         if (networkPanel.getByTitle()) {
             setOptionSelected(ActionCommands.BYTITLE_NODES, true);
         } else {
@@ -361,40 +357,44 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
         setOptionEnabled(ActionCommands.DECISION_TREE, false);
         updateInferenceButtons();
         setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
-        if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-            setOptionEnabled(ActionCommands.OBJECT_SELECTION, true);
-            setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
-            setOptionEnabled(ActionCommands.LINK_CREATION, true);
-            setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
-            setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
-            if (!currentProbNet.hasConstraint(OnlyChanceNodes.class)) {
-                setOptionEnabled(ActionCommands.DECISION_CREATION, true);
-                setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
-                setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
-                setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
-                NetworkType networkType = currentProbNet.getNetworkType();
-                if ((networkType instanceof InfluenceDiagramType)
-                        || (networkType instanceof DecisionAnalysisNetworkType)) {
-                    setOptionEnabled(ActionCommands.DECISION_TREE, true);
+        switch (workingMode) {
+            case EDITION -> {
+                setOptionEnabled(ActionCommands.OBJECT_SELECTION, true);
+                setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
+                setOptionEnabled(ActionCommands.LINK_CREATION, true);
+                setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
+                setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
+                if (!currentProbNet.hasConstraint(OnlyChanceNodes.class)) {
+                    setOptionEnabled(ActionCommands.DECISION_CREATION, true);
+                    setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
+                    setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
+                    setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
+                    NetworkType networkType = currentProbNet.getNetworkType();
+                    if ((networkType instanceof InfluenceDiagramType)
+                            || (networkType instanceof DecisionAnalysisNetworkType)) {
+                        setOptionEnabled(ActionCommands.DECISION_TREE, true);
+                    }
+                    setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
                 }
-                setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
+                if ((
+                        currentProbNet.getNetworkType() instanceof MIDType || currentProbNet
+                                .getNetworkType() instanceof InfluenceDiagramType || currentProbNet
+                                .getNetworkType() instanceof DecisionAnalysisNetworkType
+                ) && currentProbNet.getDecisionCriteria() != null && currentProbNet.getDecisionCriteria().size() > 1) {
+                    setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
+                    setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, true);
+                }
             }
-            if ((
-                    currentProbNet.getNetworkType() instanceof MIDType || currentProbNet
-                            .getNetworkType() instanceof InfluenceDiagramType || currentProbNet
-                            .getNetworkType() instanceof DecisionAnalysisNetworkType
-            ) && currentProbNet.getDecisionCriteria() != null && currentProbNet.getDecisionCriteria().size() > 1) {
-                setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
-                setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, true);
-            }
-        } else {
-            setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
-            setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
-            updateOptionsEvidenceCasesNavigation(networkPanel);
-            setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, !networkPanel.isPropagationActive());
-            if (!networkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)) {
-                setOptionEnabled(ActionCommands.DECISION_TREE, true);
-                setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
+            case INFERENCE -> {
+                
+                setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
+                setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
+                updateOptionsEvidenceCasesNavigation(networkPanel);
+                setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, !networkPanel.isPropagationActive());
+                if (!networkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)) {
+                    setOptionEnabled(ActionCommands.DECISION_TREE, true);
+                    setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
+                }
             }
         }
         updateOptionsFindingsDependent(networkPanel);
@@ -448,26 +448,29 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
      * @param workingMode  the working mode (edition or inference).
      * @param networkPanel information of the network panel.
      */
-    public void updateOptionsNewWorkingMode(int workingMode, NetworkPanel networkPanel) {
-        if (workingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
-            setOptionEnabled(EDITING_ACTION_COMMANDS, false);
-            setOptionEnabled(ActionCommands.UNDO, false);
-            setOptionEnabled(ActionCommands.REDO, false);
-            setOptionEnabled(ActionCommands.CLIPBOARD_CUT, false);
-            setOptionEnabled(ActionCommands.CLIPBOARD_COPY, false);
-            setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
-            setOptionEnabled(ActionCommands.OBJECT_REMOVAL, false);
-            setOptionEnabled(ActionCommands.LINK_PROPERTIES, false);
-            setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
-            setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
-            setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
-            updateOptionsEvidenceCasesNavigation(networkPanel);
-            setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, !networkPanel.isPropagationActive());
-        } else if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-            setOptionEnabled(EDITING_ACTION_COMMANDS, true);
-            setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
-            setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
-            setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
+    public void updateOptionsNewWorkingMode(NetworkPanel.WorkingMode workingMode, NetworkPanel networkPanel) {
+        switch (workingMode) {
+            case EDITION -> {
+                setOptionEnabled(EDITING_ACTION_COMMANDS, true);
+                setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
+                setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
+                setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
+            }
+            case INFERENCE -> {
+                setOptionEnabled(EDITING_ACTION_COMMANDS, false);
+                setOptionEnabled(ActionCommands.UNDO, false);
+                setOptionEnabled(ActionCommands.REDO, false);
+                setOptionEnabled(ActionCommands.CLIPBOARD_CUT, false);
+                setOptionEnabled(ActionCommands.CLIPBOARD_COPY, false);
+                setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
+                setOptionEnabled(ActionCommands.OBJECT_REMOVAL, false);
+                setOptionEnabled(ActionCommands.LINK_PROPERTIES, false);
+                setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
+                setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
+                setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
+                updateOptionsEvidenceCasesNavigation(networkPanel);
+                setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, !networkPanel.isPropagationActive());
+            }
         }
         objectsSelected(networkPanel.getSelectedNodes(), networkPanel.getSelectedLinks());
     }
@@ -515,7 +518,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
         if (networkPanel.isPropagationActive()) {
             setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, false);
         } else {
-            if (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
+            if (networkPanel.getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
                 setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, true);
             }
         }
@@ -575,20 +578,31 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
         boolean canShowOptimalPolicy = false;
         boolean canTemporalEvolution = false;
         boolean canCreateNextSliceNode = false;
-        int workingMode = NetworkPanel.EDITION_WORKING_MODE;
+        NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
         if (currentNetworkPanel != null) {
             workingMode = currentNetworkPanel.getWorkingMode();
         }
-        if (!selectedNodes.isEmpty()) {
+        if (selectedNodes.isEmpty()) {
+            if (!selectedLinks.isEmpty()) {
+                if (workingMode == NetworkPanel.WorkingMode.EDITION) {
+                    canRemove = true;
+                }
+                if (selectedLinks.size() == 1) {
+                    if (workingMode == NetworkPanel.WorkingMode.EDITION) {
+                        canLinkProperties = true;
+                    }
+                }
+            }
+        } else {
             canCopy = true;
-            if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+            if (workingMode == NetworkPanel.WorkingMode.EDITION) {
                 canRemove = true;
                 canCut = true;
             }
             if (selectedLinks.isEmpty()) {
                 // if we are in Inference Mode, options about expansion and
                 // contraction must be activated
-                if (workingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
+                if (workingMode == NetworkPanel.WorkingMode.INFERENCE) {
                     VisualNode visualNode;
                     for (int i = 0; i < selectedNodes.size(); i++) {
                         visualNode = selectedNodes.get(i);
@@ -609,10 +623,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
                 VisualNode vNode;
                 for (int i = 0; i < selectedNodes.size(); i++) {
                     vNode = selectedNodes.get(i);
-                    if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-                        canRemoveFinding = vNode.isPreResolutionFinding();
-                    } else {
-                        canRemoveFinding = vNode.isPostResolutionFinding();
+                    switch (workingMode) {
+                        case EDITION -> canRemoveFinding = vNode.isPreResolutionFinding();
+                        case INFERENCE -> canRemoveFinding = vNode.isPostResolutionFinding();
                     }
                 }
                 if (selectedNodes.size() == 1) {
@@ -631,58 +644,56 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
                             canLog = true;
                             canTemporalEvolution = true;
                         }
-                        
                     }
-                    String label = null;
                     switch (visualNode.getNode().getNodeType()) {
-                        case CHANCE:
-                            canNodeTable = true;
-                            if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-                                label = stringDatabase.getString("Edit.NodePotential.Label");
-                            } else {
-                                label = stringDatabase.getString("Edit.ViewNodePotential.Label");
-                            }
-                            break;
-                        case UTILITY:
-                            canNodeTable = true;
-                            if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-                                label = stringDatabase.getString("Edit.Utility.Label");
-                            } else {
-                                label = stringDatabase.getString("Edit.ViewUtility.Label");
-                            }
-                            break;
-                        case DECISION:
-                            if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-                                label = stringDatabase.getString("Edit.NodePotential.Label");
-                                if (((VisualDecisionNode) visualNode).isHasPolicy()) {
-                                    canEditPolicy = true;
-                                    canRemovePolicy = true;
-                                } else {
-                                    canImposePolicy = true;
+                        case CHANCE, UTILITY -> canNodeTable = true;
+                        case DECISION -> {
+                            switch (workingMode) {
+                                case EDITION -> {
+                                    if (((VisualDecisionNode) visualNode).isHasPolicy()) {
+                                        canEditPolicy = true;
+                                        canRemovePolicy = true;
+                                    } else {
+                                        canImposePolicy = true;
+                                    }
                                 }
-                            } else {
-                                label = stringDatabase.getString("Edit.ViewNodePotential.Label");
-                                if (!((VisualDecisionNode) visualNode)
-                                        .isHasPolicy()) { // ...asaez...if network compiled...currently
-                                    // not needed
-                                    // ...because if not compiled, those options
-                                    // are not shown.
-                                    canShowExpectedUtility = true;
-                                    canShowOptimalPolicy = true;
+                                case INFERENCE -> {
+                                    if (!((VisualDecisionNode) visualNode)
+                                            .isHasPolicy()) { // ...asaez...if network compiled...currently
+                                        // not needed
+                                        // ...because if not compiled, those options
+                                        // are not shown.
+                                        canShowExpectedUtility = true;
+                                        canShowOptimalPolicy = true;
+                                    }
                                 }
                             }
-                            break;
+                        }
+                        case SV_SUM, SV_PRODUCT -> {
+                        }
                     }
+                    String label = StringDatabase.getUniqueInstance().getString(
+                            switch (visualNode.getNode().getNodeType()) {
+                                case CHANCE, DECISION -> switch (workingMode) {
+                                    case EDITION -> "Edit.NodePotential.Label";
+                                    case INFERENCE -> "Edit.ViewNodePotential.Label";
+                                };
+                                case UTILITY -> switch (workingMode) {
+                                    case EDITION -> "Edit.Utility.Label";
+                                    case INFERENCE -> "Edit.ViewUtility.Label";
+                                };
+                                case SV_SUM, SV_PRODUCT -> null;
+                            });
                     setText(ActionCommands.EDIT_POTENTIAL.getCommandName(), label);
-                    canAddFinding = !visualNode.hasAnyFinding() || (workingMode == NetworkPanel.EDITION_WORKING_MODE)
+                    canAddFinding = !visualNode.hasAnyFinding() || (workingMode == NetworkPanel.WorkingMode.EDITION)
                             || (
-                            workingMode == NetworkPanel.INFERENCE_WORKING_MODE && visualNode.isPostResolutionFinding()
+                            workingMode == NetworkPanel.WorkingMode.INFERENCE && visualNode.isPostResolutionFinding()
                     );
                     canAddFinding &= !(visualNode instanceof VisualUtilityNode);
                     boolean addOrChange =
-                            (workingMode == NetworkPanel.EDITION_WORKING_MODE && !visualNode.isPreResolutionFinding())
+                            (workingMode == NetworkPanel.WorkingMode.EDITION && !visualNode.isPreResolutionFinding())
                                     || (
-                                    workingMode == NetworkPanel.INFERENCE_WORKING_MODE && !visualNode
+                                    workingMode == NetworkPanel.WorkingMode.INFERENCE && !visualNode
                                             .isPostResolutionFinding()
                             );
                     if (visualNode.getNode().getVariable().isTemporal() &&
@@ -694,19 +705,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
                                                             .equals(visualNode.getNode().getVariable().getBaseName())))
                         canAddFinding = false;
                     
-                    setText(ActionCommands.NODE_ADD_FINDING.getCommandName(), stringDatabase
-                            .getString((addOrChange) ? "Inference.AddFinding.Label" : "Inference.ChangeFinding.Label"));
-                }
-            }
-        } else {
-            if (!selectedLinks.isEmpty()) {
-                if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-                    canRemove = true;
-                }
-                if (selectedLinks.size() == 1) {
-                    if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-                        canLinkProperties = true;
-                    }
+                    setText(ActionCommands.NODE_ADD_FINDING.getCommandName(), StringDatabase.getUniqueInstance()
+                                                                                            .getString((addOrChange) ? "Inference.AddFinding.Label" : "Inference.ChangeFinding.Label"));
                 }
             }
         }
@@ -762,13 +762,13 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
         boolean canShowOptimalPolicy = false;
         boolean canTemporalEvolution = false;
         boolean canCreateNextSliceNode = false;
-        int workingMode = NetworkPanel.EDITION_WORKING_MODE;
+        NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
         if (currentNetworkPanel != null) {
             workingMode = currentNetworkPanel.getWorkingMode();
         }
         if (!selectedInstances.isEmpty()) {
             canCopy = true;
-            if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+            if (workingMode == NetworkPanel.WorkingMode.EDITION) {
                 canRemove = true;
                 canCut = true;
             }
@@ -780,14 +780,14 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
         }
         if (!selectedNodes.isEmpty()) {
             canCopy = true;
-            if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+            if (workingMode == NetworkPanel.WorkingMode.EDITION) {
                 canRemove = true;
                 canCut = true;
             }
             if (selectedLinks.isEmpty()) {
                 // if we are in Inference Mode, options about expansion and
                 // contraction must be activated
-                if (workingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
+                if (workingMode == NetworkPanel.WorkingMode.INFERENCE) {
                     VisualNode visualNode;
                     for (int i = 0; i < selectedNodes.size(); i++) {
                         visualNode = selectedNodes.get(i);
@@ -808,11 +808,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
                 VisualNode vNode;
                 for (int i = 0; i < selectedNodes.size(); i++) {
                     vNode = selectedNodes.get(i);
-                    if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-                        canRemoveFinding = vNode.isPreResolutionFinding();
-                    } else {
-                        canRemoveFinding = vNode.isPostResolutionFinding();
-                    }
+                    canRemoveFinding = switch (workingMode) {
+                        case EDITION -> vNode.isPreResolutionFinding();
+                        case INFERENCE -> vNode.isPostResolutionFinding();
+                    };
                 }
                 if (selectedNodes.size() == 1) {
                     canNodeProperties = true;
@@ -824,68 +823,64 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
                                                             .containsShiftedVariable(visualNode.getNode()
                                                                                                .getVariable(), 1);
                     }
-                    String label = null;
                     switch (visualNode.getNode().getNodeType()) {
-                        case CHANCE:
+                        case CHANCE, UTILITY -> {
                             canNodeTable = true;
-                            if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-                                label = stringDatabase.getString("Edit.NodePotential.Label");
-                            } else {
-                                label = stringDatabase.getString("Edit.ViewNodePotential.Label");
-                            }
-                            break;
-                        case UTILITY:
-                            canNodeTable = true;
-                            if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-                                label = stringDatabase.getString("Edit.Utility.Label");
-                            } else {
-                                label = stringDatabase.getString("Edit.ViewUtility.Label");
-                            }
-                            break;
-                        case DECISION:
-                            if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-                                label = stringDatabase.getString("Edit.NodePotential.Label");
-                                if (((VisualDecisionNode) visualNode).isHasPolicy()) {
-                                    canEditPolicy = true;
-                                    canRemovePolicy = true;
-                                } else {
-                                    canImposePolicy = true;
+                        }
+                        case DECISION -> {
+                            switch (workingMode) {
+                                case EDITION -> {
+                                    if (((VisualDecisionNode) visualNode).isHasPolicy()) {
+                                        canEditPolicy = true;
+                                        canRemovePolicy = true;
+                                    } else {
+                                        canImposePolicy = true;
+                                    }
                                 }
-                            } else {
-                                label = stringDatabase.getString("Edit.ViewNodePotential.Label");
-                                if (true) { // ...asaez...if network compiled...currently
-                                    // not needed
-                                    // ...because if not compiled, those options
-                                    // are not shown.
+                                case INFERENCE -> {
                                     canShowExpectedUtility = true;
                                     canShowOptimalPolicy = true;
                                 }
                             }
-                            break;
+                        }
+                        case SV_SUM, SV_PRODUCT -> {
+                        }
                     }
+                    String label = StringDatabase.getUniqueInstance().getString(
+                            switch (visualNode.getNode().getNodeType()) {
+                                case CHANCE, DECISION -> switch (workingMode) {
+                                    case EDITION -> "Edit.NodePotential.Label";
+                                    case INFERENCE -> "Edit.ViewNodePotential.Label";
+                                };
+                                case UTILITY -> switch (workingMode) {
+                                    case EDITION -> "Edit.Utility.Label";
+                                    case INFERENCE -> "Edit.ViewUtility.Label";
+                                };
+                                case SV_SUM, SV_PRODUCT -> null;
+                            });
                     setText(ActionCommands.EDIT_POTENTIAL.getCommandName(), label);
-                    canAddFinding = !visualNode.hasAnyFinding() || (workingMode == NetworkPanel.EDITION_WORKING_MODE)
+                    canAddFinding = !visualNode.hasAnyFinding() || (workingMode == NetworkPanel.WorkingMode.EDITION)
                             || (
-                            workingMode == NetworkPanel.INFERENCE_WORKING_MODE && visualNode.isPostResolutionFinding()
+                            workingMode == NetworkPanel.WorkingMode.INFERENCE && visualNode.isPostResolutionFinding()
                     );
                     canAddFinding &= !(visualNode instanceof VisualUtilityNode);
                     boolean addOrChange =
-                            (workingMode == NetworkPanel.EDITION_WORKING_MODE && !visualNode.isPreResolutionFinding())
+                            (workingMode == NetworkPanel.WorkingMode.EDITION && !visualNode.isPreResolutionFinding())
                                     || (
-                                    workingMode == NetworkPanel.INFERENCE_WORKING_MODE && !visualNode
+                                    workingMode == NetworkPanel.WorkingMode.INFERENCE && !visualNode
                                             .isPostResolutionFinding()
                             );
-                    setText(ActionCommands.NODE_ADD_FINDING.getCommandName(), stringDatabase
-                            .getString((addOrChange) ? "Inference.AddFinding.Label" : "Inference.ChangeFinding.Label"));
+                    setText(ActionCommands.NODE_ADD_FINDING.getCommandName(), StringDatabase.getUniqueInstance()
+                                                                                            .getString((addOrChange) ? "Inference.AddFinding.Label" : "Inference.ChangeFinding.Label"));
                 }
             }
         } else {
             if (!selectedLinks.isEmpty() || !selectedReferenceLinks.isEmpty()) {
-                if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+                if (workingMode == NetworkPanel.WorkingMode.EDITION) {
                     canRemove = true;
                 }
                 if (selectedLinks.size() == 1) {
-                    if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+                    if (workingMode == NetworkPanel.WorkingMode.EDITION) {
                         canLinkProperties = true;
                     }
                 }

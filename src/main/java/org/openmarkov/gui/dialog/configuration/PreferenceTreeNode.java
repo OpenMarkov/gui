@@ -10,6 +10,8 @@
 
 package org.openmarkov.gui.dialog.configuration;
 
+import org.openmarkov.core.annotation.ToCheck;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -26,72 +28,66 @@ import java.util.prefs.Preferences;
  * @version 1.0 28 Aug 2009
  */
 @SuppressWarnings("serial") public class PreferenceTreeNode extends DefaultMutableTreeNode {
-	Preferences pref;
-	String nodeName;
-	String[] childrenNames;
-
-	public PreferenceTreeNode(Preferences pref) throws BackingStoreException {
-		this.pref = pref;
-		childrenNames = pref.childrenNames();
-	}
-
-	public Preferences getPrefObject() {
-		return pref;
-	}
-
-	@Override public boolean isLeaf() {
-		return ((childrenNames == null) || (childrenNames.length == 0));
-	}
-
-	@Override public int getChildCount() {
-		return childrenNames.length;
-	}
-
-	/**
-	 * Removes child at index @param childIndex Used to hide a child in
-	 * displayed tree
-	 *
-	 * @param childIndex
-	 * @author myebra
-	 */
-	public void removeChildAt(int childIndex) {
-		if (childIndex < childrenNames.length) {
-			ArrayList<String> newChildrenNames = new ArrayList<String>();
-			for (int i = 0; i < childrenNames.length; i++) {
-				if (i != childIndex) {
-					newChildrenNames.add(childrenNames[i]);
-				}
-			}
-			String[] newChildrenNames2 = new String[childrenNames.length - 1];
-			for (int i = 0; i < newChildrenNames.size(); i++) {
-				newChildrenNames2[i] = newChildrenNames.get(i);
-			}
-			this.childrenNames = newChildrenNames2;
-		}
-	}
-
-	@Override public TreeNode getChildAt(int childIndex) {
-		if (childIndex < childrenNames.length) {
-			try {
-				PreferenceTreeNode child = new PreferenceTreeNode(pref.node(childrenNames[childIndex]));
-				return child;
-			} catch (BackingStoreException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-				return new DefaultMutableTreeNode("Problem Child!");
-			}
-		}
-		return null;
-	}
-
-	public String toString() {
-		String name = pref.name();
+    Preferences pref;
+    String nodeName;
+    String[] childrenNames;
+    
+    public PreferenceTreeNode(Preferences pref) throws BackingStoreException {
+        this.pref = pref;
+        childrenNames = pref.childrenNames();
+    }
+    
+    public Preferences getPrefObject() {
+        return pref;
+    }
+    
+    @Override public boolean isLeaf() {
+        return ((childrenNames == null) || (childrenNames.length == 0));
+    }
+    
+    @Override public int getChildCount() {
+        return childrenNames.length;
+    }
+    
+    /**
+     * Removes child at index @param childIndex Used to hide a child in
+     * displayed tree
+     *
+     * @param childIndex
+     *
+     * @author myebra
+     */
+    public void removeChildAt(int childIndex) {
+        if (childIndex < childrenNames.length) {
+            ArrayList<String> newChildrenNames = new ArrayList<String>();
+            for (int i = 0; i < childrenNames.length; i++) {
+                if (i != childIndex) {
+                    newChildrenNames.add(childrenNames[i]);
+                }
+            }
+            String[] newChildrenNames2 = new String[childrenNames.length - 1];
+            for (int i = 0; i < newChildrenNames.size(); i++) {
+                newChildrenNames2[i] = newChildrenNames.get(i);
+            }
+            this.childrenNames = newChildrenNames2;
+        }
+    }
+    
+    @Override public TreeNode getChildAt(int childIndex) {
+        try {
+            return new PreferenceTreeNode(pref.node(childrenNames[childIndex]));
+        } catch (BackingStoreException e) {
+            throw new UnrecoverableException(e);
+        }
+    }
+    
+    public String toString() {
+        String name = pref.name();
         if ((name == null) || (name.isEmpty())) { // if root node
-			name = "System Preferences";
-			if (pref.isUserNode())
-				name = "User Preferences";
-		}
-		return name;
-	}
+            name = "System Preferences";
+            if (pref.isUserNode())
+                name = "User Preferences";
+        }
+        return name;
+    }
 }

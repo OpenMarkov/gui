@@ -8,7 +8,10 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.annotation.ImplementationRequirements;
 import org.openmarkov.core.annotation.RequiredConstructor;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -32,12 +35,12 @@ import java.util.List;
 	 *
 	 * @param node
 	 */
-	public abstract void setData(Node node);
+    public abstract void setData(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException;
 
 	/**
 	 * Modify the node according to the changes entered by the user in the panel
 	 */
-	public boolean saveChanges() {
+    public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong {
 		close();
 		return true;
 	}

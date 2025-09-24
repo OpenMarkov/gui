@@ -15,14 +15,8 @@ package org.openmarkov.gui.window.edition;
  */
 public class EditorPanelClipboardAssistant {
 	private SelectedContent content = null;
-
-	/**
-	 * Constructor of EditorPanelClipboardAssistant
-	 */
-	public EditorPanelClipboardAssistant() {
-	}
-
-	/**
+    
+    /**
 	 * @param copiedContent selected content to copy to the clipboard.
 	 */
 	public void copyToClipboard(SelectedContent copiedContent) {

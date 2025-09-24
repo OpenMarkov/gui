@@ -133,13 +133,7 @@ public class NodeDefinitionPanel extends JPanel
     public NodeDefinitionPanel(Node node) {
         this(true);// , notifier );
         this.node = node;
-        try {
-            initialize();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-        }
+        initialize();
         if (node.getProbNet().getAgents() != null) {
             getJComboBoxNetworkAgents().setEnabled(true);
             getJComboBoxNetworkAgents().setVisible(true);
@@ -781,9 +775,7 @@ public class NodeDefinitionPanel extends JPanel
                     ProbNet probNet = node.getProbNet();
                     purposeEdit.doEdit(probNet);
                 } catch (DoEditException.ConstraintViolated e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                    JOptionPane.showMessageDialog(this, e1.getMessage(), e1.getMessage(), JOptionPane.ERROR_MESSAGE);
+                    throw new UnrecoverableException(e1);
                 }
             }
         } else if (comboBox.equals(jComboBoxNodeRelevance)) {
@@ -793,8 +785,7 @@ public class NodeDefinitionPanel extends JPanel
                     ProbNet probNet = node.getProbNet();
                     relevanceEdit.doEdit(probNet);
                 } catch (DoEditException.ConstraintViolated e1) {
-                    // TODO Auto-generated catch block
-                    JOptionPane.showMessageDialog(this, e1.getMessage(), e1.getMessage(), JOptionPane.ERROR_MESSAGE);
+                    throw new UnrecoverableException(e1);
                 }
             }
         } else if (comboBox.equals(jComboBoxTimeSlice)) {
@@ -818,8 +809,7 @@ public class NodeDefinitionPanel extends JPanel
                      */
                     jComboBoxTimeSlice.setSelectedItem(comboBoxPreviousSelectedItem);
                     jComboBoxTimeSlice.hidePopup();
-                    e1.printStackTrace();
-                    JOptionPane.showMessageDialog(this, e1.getMessage(), e1.getMessage(), JOptionPane.ERROR_MESSAGE);
+                    throw new UnrecoverableException(e1);
                 }
             }
         } else if (comboBox.equals(jComboBoxNetworkAgents)) {
@@ -832,8 +822,7 @@ public class NodeDefinitionPanel extends JPanel
                     nodeAgentEdit.doEdit(probNet);
                     // comboBox.setSelectedIndex(optionSelected);
                 } catch (DoEditException.ConstraintViolated e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
+                    throw new UnrecoverableException(e1);
                 }
             }
         } else if (comboBox.equals(jComboBoxDecisionCriteria)) {
@@ -847,8 +836,7 @@ public class NodeDefinitionPanel extends JPanel
                     ProbNet probNet = node.getProbNet();
                     nodeDecisionCriteriaEdit.doEdit(probNet);
                 } catch (DoEditException.ConstraintViolated e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
+                    throw new UnrecoverableException(e1);
                 }
             }
         }
@@ -860,21 +848,21 @@ public class NodeDefinitionPanel extends JPanel
      * @param e - event information
      */
     @Override public void focusLost(FocusEvent e) {
-        if (e.getSource().equals(this.jTextFieldNodeName)) {
-            // actionPerformedNodeNameChangeValue();
-            if (!node.getName().equals(this.jTextFieldNodeName.getText())) {
-                NodeNameEdit nodeNameEdit = new NodeNameEdit(node, this.jTextFieldNodeName.getText());
-                try {
-                    ProbNet probNet = node.getProbNet();
-                    nodeNameEdit.doEdit(probNet);
-                } // TODO Auto-generated catch block
-                // e1.printStackTrace();
-                catch (DoEditException.ConstraintViolated e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                    JOptionPane.showMessageDialog(this, e1.getMessage(), e1.getMessage(), JOptionPane.ERROR_MESSAGE);
-                }
-            }
+        if (!e.getSource().equals(this.jTextFieldNodeName)) {
+            return;
+        }
+        // actionPerformedNodeNameChangeValue();
+        if (node.getName().equals(this.jTextFieldNodeName.getText())) {
+            return;
+        }
+        NodeNameEdit nodeNameEdit = new NodeNameEdit(node, this.jTextFieldNodeName.getText());
+        try {
+            ProbNet probNet = node.getProbNet();
+            nodeNameEdit.doEdit(probNet);
+        } // TODO Auto-generated catch block
+        // e1.printStackTrace();
+        catch (DoEditException.ConstraintViolated e1) {
+            throw new UnrecoverableException(e1);
         }
     }
     
@@ -930,17 +918,12 @@ public class NodeDefinitionPanel extends JPanel
      */
     public boolean checkName() {
         String name = jTextFieldNodeName.getText();
-        boolean result = true;
-        if ((name == null) || name.isEmpty()) {
-            result = false;
-        } else if (!node.getName().equals(name) && Util.existNode(node.getProbNet(), name)) {
-            result = false;
-        }
+        boolean result = name != null && !name.isEmpty() && !(!node.getName()
+                                                                   .equals(name) && Util.existNode(node.getProbNet(), name));
         if (!result) {
             jTextFieldNodeName.requestFocus();
-            return false;
         }
-        return true;
+        return result;
     }
     
     /**
@@ -953,7 +936,7 @@ public class NodeDefinitionPanel extends JPanel
         return true;
     }
     
-    @Override public void commentHasChanged() {
+    @Override public void commentHasChanged() throws DoEditException.ConstraintViolated {
         
         // check if the comment is empty
         String comment = getCommentHTMLScrollPaneNodeDefinitionComment().isEmpty() ?
@@ -961,34 +944,27 @@ public class NodeDefinitionPanel extends JPanel
                 getCommentHTMLScrollPaneNodeDefinitionComment().getCommentText();
         
         NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(node, comment, "DefinitionComment");
-        try {
             ProbNet probNet = node.getProbNet();
             nodeCommentEdit.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
-        }
     }
     
     /****
      * Starts the edit event to change the alwaysObserved property
      */
-    public void alwaysObservedPropertyHasChanged() {
+    public void alwaysObservedPropertyHasChanged() throws DoEditException.ConstraintViolated {
         NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.node, this.jCheckboxAlwaysObserved.isSelected());
-        try {
             ProbNet probNet = node.getProbNet();
             edit.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
-        }
     }
     
     @Override public void actionPerformed(ActionEvent e) {
-        if (e.getSource().equals(this.jCheckboxAlwaysObserved)) {
+        if (!e.getSource().equals(this.jCheckboxAlwaysObserved)) {
+            return;
+        }
+        try {
             alwaysObservedPropertyHasChanged();
+        } catch (DoEditException.ConstraintViolated ex) {
+            throw new UnrecoverableException(ex);
         }
     }
 }

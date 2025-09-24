@@ -19,6 +19,7 @@ import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasicImpl;
 import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.gui.menutoolbar.plugin.ToolbarManager;
+import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.toolplugin.ToolPluginManager;
 import org.openmarkov.gui.window.MainPanel;
 
@@ -26,8 +27,11 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * Class that manages the main menubar. It configures the default main menubar
@@ -1657,21 +1661,37 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      * @return a new File menu.
      */
     private JMenu getToolsMenu() {
-        
         if (toolsMenu == null) {
             toolsMenu = new JMenu();
             toolsMenu.setName(MenuItemNames.TOOLS_MENU);
             toolsMenu.setText(MenuLocalizer.getLabel(MenuItemNames.TOOLS_MENU));
             toolsMenu.setMnemonic(MenuLocalizer.getMnemonic(MenuItemNames.TOOLS_MENU).charAt(0));
             ToolPluginManager toolsMenuManager = ToolPluginManager.getInstance();
-            for (JMenuItem menuItem : toolsMenuManager.getMenuItems()) {
-                menuItem.addActionListener(listener);
-                toolsMenu.add(menuItem);
+            //Get all tool plugins grouped by pluging group
+            var pluginsByGroupIterator
+                    = new TreeMap<>(toolsMenuManager.getAllToolPlugins().stream()
+                                                    .collect(Collectors.groupingBy(ToolPlugin::pluginGroup)))
+                    .entrySet()
+                    .iterator();
+            while (pluginsByGroupIterator.hasNext()) {
+                var plugins = pluginsByGroupIterator.next().getValue();
+                //Sort all plugins in this group by priority and then by name.
+                plugins.sort(Comparator.comparing(ToolPlugin::priorityInGroup)
+                                       .thenComparing(ToolPlugin::menuOptionText));
+                //Add all of the sorted plugins of the group to the menu.
+                for (ToolPlugin plugin : plugins) {
+                    var menuItem = ToolPluginManager.toolPluginToMenuItem(plugin);
+                    //TODO: This action listener is likely not needed.
+                    menuItem.addActionListener(listener);
+                    toolsMenu.add(menuItem);
+                }
+                //Add separator only if this group isn't the last (To avoid having a separator that is empty).
+                if (pluginsByGroupIterator.hasNext()) {
+                    toolsMenu.addSeparator();
+                }
             }
-            
-            toolsMenu.add(getToolsConfigurationMenuItem());
+            addToolsConfigurationToMenu(toolsMenu);
         }
-        
         return toolsMenu;
         
     }
@@ -1681,16 +1701,12 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      *
      * @return a new item 'Tools - Configuration'.
      */
-    private JMenuItem getToolsConfigurationMenuItem() {
-        
-        if (toolsConfigurationMenuItem == null) {
-            toolsConfigurationMenuItem = new LocalizedMenuItem(MenuItemNames.CONFIGURATION_MENUITEM,
-                                                               ActionCommands.CONFIGURATION.getCommandName());
-            toolsConfigurationMenuItem.addActionListener(listener);
-        }
-        
-        return toolsConfigurationMenuItem;
-        
+    private void addToolsConfigurationToMenu(JMenu toolsMenu) {
+        toolsMenu.addSeparator();
+        toolsConfigurationMenuItem = new LocalizedMenuItem(MenuItemNames.CONFIGURATION_MENUITEM,
+                                                           ActionCommands.CONFIGURATION.getCommandName());
+        toolsConfigurationMenuItem.addActionListener(listener);
+        toolsMenu.add(toolsConfigurationMenuItem);
     }
     
     /**

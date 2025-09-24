@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.window.edition.EditorPanel;
@@ -178,7 +179,7 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     }
     
     @Override
-    protected boolean doOkClickBeforeHide() {
+    protected boolean doOkClickBeforeHide() throws Exception {
         Variable variable = visualNode.getNode().getVariable();
         if (variable.getVariableType() == VariableType.FINITE_STATES) {
             newFinding = new Finding(variable, variable.getState((String) getSelectedState()));

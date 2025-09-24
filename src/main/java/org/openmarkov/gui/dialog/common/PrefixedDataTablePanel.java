@@ -14,9 +14,9 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.exception.ThereIsNoNodeInDataException;
 import org.openmarkov.gui.util.Utilities;
 
-import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,239 +38,211 @@ import java.util.List;
  * @version 1.0 jlgozalo - change class modifier to public
  */
 public class PrefixedDataTablePanel extends KeyTablePanel {
-
-	/**
-	 * Static field for serializable class.
-	 */
-	private static final long serialVersionUID = 2127072068749928448L;
-	ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
-	/**
-	 * Prefixed data.
-	 */
+    
+    /**
+     * Static field for serializable class.
+     */
+    private static final long serialVersionUID = 2127072068749928448L;
+    ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
+    /**
+     * Prefixed data.
+     */
     private Object[][] prefixedData;
-	/**
-	 * Array that contains the prefixed data that is not in the table.
-	 */
-	private Object[][] absentData = null;
-	/**
-	 * String that appears in the titlebar of the dialog box showed to add new
-	 * rows.
-	 */
-	private String titleToSelectRows;
-	private Node node;
-
-	/**
-	 * This is the default constructor
-	 *
-	 * @param newColumns           array of texts that appear in the header of the columns.
-	 * @param newData              content of the cells (subset of prefixedData).
-	 * @param newPrefixedData      content that can appears into the cells.
-	 * @param newTitleToSelectRows title of the window where the user can select new rows.
-	 */
-	public PrefixedDataTablePanel(Node node, String[] newColumns, Object[][] newData, Object[][] newPrefixedData,
-			String newTitleToSelectRows, boolean firstColumnHidden) {
-
-		super(newColumns, new Object[0][0], false, false);
-		this.node = node;
-		prefixedData = newPrefixedData.clone();
-		titleToSelectRows = newTitleToSelectRows;
-		initialize();
-		valuesTable.setFirstColumnHidden(firstColumnHidden);
-		setData(newData);
-	}
-
-	private static Object[][] fillArrayWithNodes(List<Node> nodes) {
+    /**
+     * Array that contains the prefixed data that is not in the table.
+     */
+    private Object[][] absentData = null;
+    /**
+     * String that appears in the titlebar of the dialog box showed to add new
+     * rows.
+     */
+    private String titleToSelectRows;
+    private Node node;
+    
+    /**
+     * This is the default constructor
+     *
+     * @param newColumns           array of texts that appear in the header of the columns.
+     * @param newData              content of the cells (subset of prefixedData).
+     * @param newPrefixedData      content that can appears into the cells.
+     * @param newTitleToSelectRows title of the window where the user can select new rows.
+     */
+    public PrefixedDataTablePanel(Node node, String[] newColumns, Object[][] newData, Object[][] newPrefixedData,
+                                  String newTitleToSelectRows, boolean firstColumnHidden) {
+        
+        super(newColumns, new Object[0][0], false, false);
+        this.node = node;
+        prefixedData = newPrefixedData.clone();
+        titleToSelectRows = newTitleToSelectRows;
+        initialize();
+        valuesTable.setFirstColumnHidden(firstColumnHidden);
+        setData(newData);
+    }
+    
+    private static Object[][] fillArrayWithNodes(List<Node> nodes) {
         
         int i;
         int l = nodes.size();
         Object[][] result = new Object[l][2];
-		for (i = 0; i < l; i++) {
-			result[i][0] = "p_" + i; //internal name for the parent
-			result[i][1] = nodes.get(i).getName();
-		}
-
-		return result;
-	}
-
-	/**
-	 * Sets a new table model with new data.
-	 *
-	 * @param newData new data for the table.
-	 */
-	@Override public void setData(Object[][] newData) {
-
-		data = newData.clone();
-		tableModel = null;
-		valuesTable.setModel(getTableModel());
-		absentData = absentPrefixedData();
-		setEnabledAddValue(absentData.length != 0);
-
-	}
-
-	/**
-	 * Invoked when the button 'add' is pressed.
-	 */
-	@Override protected void actionPerformedAddValue() {
+        for (i = 0; i < l; i++) {
+            result[i][0] = "p_" + i; //internal name for the parent
+            result[i][1] = nodes.get(i).getName();
+        }
         
-        int i;
-        int l;
+        return result;
+    }
+    
+    /**
+     * Sets a new table model with new data.
+     *
+     * @param newData new data for the table.
+     */
+    @Override public void setData(Object[][] newData) {
+        
+        data = newData.clone();
+        tableModel = null;
+        valuesTable.setModel(getTableModel());
+        absentData = absentPrefixedData();
+        setEnabledAddValue(absentData.length != 0);
+        
+    }
+    
+    /**
+     * Invoked when the button 'add' is pressed.
+     */
+    @Override protected void actionPerformedAddValue() throws DoEditException, ThereIsNoNodeInDataException {
         Object[][] newData;
-        
         int newIndex = valuesTable.getRowCount();
-		if (absentData == null) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(this), "Ningún nodo disponible",
-					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.INFORMATION_MESSAGE);
-		} else {
-			newData = requestNewData();
-			if (newData != null) {
-				l = newData.length;
-				for (i = 0; i < l; i++) {
-					String name = (String) newData[i][1];
-					for (PNEdit edit : edits) {
-						if (((AddLinkEdit) edit).getNode1().getName().equals(name)) {
-							try {
-								node.getProbNet().getPNESupport().doEdit((AddLinkEdit) edit);
-								tableModel.insertRow(newIndex + i, newData[i]);
-								edits.remove(edit);
-								break;
-							} catch (DoEditException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-								JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
-										stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-							}
-						}
-
-					}
-				}
-				valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
-				absentData = absentPrefixedData();
-				setEnabledAddValue(absentData.length != 0);
-			}
-		}
-
-	}
-
-	/**
-	 * This method request the user to select one or more new elements to add.
-	 * The new elements are the subset of the prefixed set that aren't in the
-	 * array 'data'.
-	 *
-	 * @return the elements that the user has selected or null if he/she has
-	 * selected nothing.
-	 */
-	private Object[][] requestNewData() {
-
-		Object[][] possibleData = absentData;
+        if (absentData == null) {
+            throw new ThereIsNoNodeInDataException();
+        }
+        newData = requestNewData();
+        if (newData != null) {
+            for (int i = 0; i < newData.length; i++) {
+                String name = (String) newData[i][1];
+                for (PNEdit edit : edits) {
+                    if (((AddLinkEdit) edit).getNode1().getName().equals(name)) {
+                        node.getProbNet().getPNESupport().doEdit((AddLinkEdit) edit);
+                        tableModel.insertRow(newIndex + i, newData[i]);
+                        edits.remove(edit);
+                        break;
+                    }
+                    
+                }
+            }
+            valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+            absentData = absentPrefixedData();
+            setEnabledAddValue(absentData.length != 0);
+        }
+        
+    }
+    
+    /**
+     * This method request the user to select one or more new elements to add.
+     * The new elements are the subset of the prefixed set that aren't in the
+     * array 'data'.
+     *
+     * @return the elements that the user has selected or null if he/she has
+     * selected nothing.
+     */
+    private Object[][] requestNewData() {
+        
+        Object[][] possibleData = absentData;
         KeyListSelectionDialog dialog = new KeyListSelectionDialog(Utilities.getOwner(this), titleToSelectRows, possibleData, columns);
         
         return (dialog.requestSelectRows() == OkCancelHorizontalDialog.OK_BUTTON) ? dialog.getSelectedRows() : null;
-
-	}
-
-	/**
-	 * This method returns an array of arrays of strings whose elements are the
-	 * prefixed ones that aren't in the array 'data'.
-	 *
-	 * @return the prefixed data that aren't in the array 'data'.
-	 */
-	private Object[][] absentPrefixedData() {
-		List<Node> allNodes = node.getProbNet().getNodes();
-		List<Node> nodes = new ArrayList<Node>();
-		edits.clear();
-
-		for (Node otherNode : allNodes) {
-			if (!node.getParents().contains(otherNode) && otherNode != node) {
-
-				//LinkEdit linkEdit = new LinkEdit(node.getProbNet(),pNode.getName(), node.getName(), true, true);
-				AddLinkEdit linkEdit = new AddLinkEdit(node.getProbNet(), otherNode.getVariable(), node.getVariable(),
-						true);
-
-				try {
-					node.getProbNet().getPNESupport().announceEdit(linkEdit);
-					edits.add(linkEdit);
-					nodes.add(otherNode);
-				} catch (DoEditException.ConstraintViolated ignore) {
-				} // TODO Auto-generated catch block
-            
-            
+        
+    }
+    
+    /**
+     * This method returns an array of arrays of strings whose elements are the
+     * prefixed ones that aren't in the array 'data'.
+     *
+     * @return the prefixed data that aren't in the array 'data'.
+     */
+    private Object[][] absentPrefixedData() {
+        List<Node> allNodes = node.getProbNet().getNodes();
+        List<Node> nodes = new ArrayList<Node>();
+        edits.clear();
+        
+        for (Node otherNode : allNodes) {
+            if (!node.getParents().contains(otherNode) && otherNode != node) {
+                
+                //LinkEdit linkEdit = new LinkEdit(node.getProbNet(),pNode.getName(), node.getName(), true, true);
+                AddLinkEdit linkEdit = new AddLinkEdit(node.getProbNet(), otherNode.getVariable(), node.getVariable(),
+                                                       true);
+                
+                try {
+                    node.getProbNet().getPNESupport().announceEdit(linkEdit);
+                    edits.add(linkEdit);
+                    nodes.add(otherNode);
+                } catch (DoEditException.ConstraintViolated ignore) {
+                } // TODO Auto-generated catch block
+                
+                
             }
-
-		}
-		return fillArrayWithNodes(nodes);
-	}
-
-	/**
-	 * Invoked when the button 'remove' is pressed.
-	 */
-	@Override protected void actionPerformedRemoveValue() {
-
-		int selectedRow = valuesTable.getSelectedRow();
-		int rowCount = 0;
-
-		String name = (String) valuesTable.getValueAt(selectedRow, 1);
-		
+            
+        }
+        return fillArrayWithNodes(nodes);
+    }
+    
+    /**
+     * Invoked when the button 'remove' is pressed.
+     */
+    @Override protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
+        int selectedRow = valuesTable.getSelectedRow();
+        String name = (String) valuesTable.getValueAt(selectedRow, 1);
 		/*LinkEdit linkEdit;
 		linkEdit = new LinkEdit(node.getProbNet(), name,
 				node.getName(), true, 
 				false);*/
-		ProbNet probNet = node.getProbNet();
-		RemoveLinkEdit linkEdit;
-		try {
-			linkEdit = new RemoveLinkEdit(probNet, probNet.getVariable(name), node.getVariable(), true);
-            ProbNet probNet1 = node.getProbNet();
-            linkEdit.doEdit(probNet1);
-            
-            tableModel.removeRow(selectedRow);
-            valuesTable.getRowCount();
-            // Fixing issue #249
-			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/249/removing-the-two-parents-of-a-node
-			// Removed the "if" clause
-			// No parent is selected after a removal
+        ProbNet probNet = node.getProbNet();
+        RemoveLinkEdit linkEdit;
+        linkEdit = new RemoveLinkEdit(probNet, probNet.getVariable(name), node.getVariable(), true);
+        ProbNet nodeProbNet = node.getProbNet();
+        linkEdit.doEdit(nodeProbNet);
+        tableModel.removeRow(selectedRow);
+        valuesTable.getRowCount();
+        // Fixing issue #249
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/249/removing-the-two-parents-of-a-node
+        // Removed the "if" clause
+        // No parent is selected after a removal
 			/* if ((rowCount > 0) && (selectedRow >= rowCount)) {
 				valuesTable.getSelectionModel().setSelectionInterval(
 					selectedRow - 1, selectedRow - 1);
 			}*/
-			absentData = absentPrefixedData();
-			setEnabledAddValue(true);
-			// After deleting an item from the list,
-			// the remove value button is disabled
-			// till a new element is selected from the list
-			setEnabledRemoveValue(false);
-
-		} catch (DoEditException.ConstraintViolated e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
-					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-		}  // TODO Auto-generated catch block
+        absentData = absentPrefixedData();
+        setEnabledAddValue(true);
+        // After deleting an item from the list,
+        // the remove value button is disabled
+        // till a new element is selected from the list
+        setEnabledRemoveValue(false);
+        
+    }
     
+    // ESCA-JAVA0025:
+    
+    /**
+     * Invoked when the button 'up' is pressed.
+     */
+    @Override protected void actionPerformedUpValue() {
     
     }
-
-	// ESCA-JAVA0025:
-
-	/**
-	 * Invoked when the button 'up' is pressed.
-	 */
-	@Override protected void actionPerformedUpValue() {
-
-	}
-
-	// ESCA-JAVA0025:
-
-	/**
-	 * Invoked when the button 'down' is pressed.
-	 */
-	@Override protected void actionPerformedDownValue() {
-
-	}
-
-	/**
-	 * Invoked when the row selection changes.
-	 *
-	 * @param e selection event information.
-	 */
+    
+    // ESCA-JAVA0025:
+    
+    /**
+     * Invoked when the button 'down' is pressed.
+     */
+    @Override protected void actionPerformedDownValue() {
+    
+    }
+    
+    /**
+     * Invoked when the row selection changes.
+     *
+     * @param e selection event information.
+     */
     /*
     Fixing issue https://bitbucket.org/cisiad/org.openmarkov.issues/issue/221/button-delete-in-node-properties-parents
     The remove button was always set to disabled, unless more than two parents were present
@@ -278,22 +250,22 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
     as in it we are not able to determine in which panel we are located and thus
     if the button needs to be enabled or not.
      */
-	@Override public void valueChanged(ListSelectionEvent e) {
-		super.valueChanged(e);
-
-		boolean removeValueButtonEnabled = true;
-		int rowCount = valuesTable.getRowCount();
-
-		// If there are less than two rows
-		if (rowCount <= 2) {
-			// But at least there is one, it has not to be the nodes parent table, as
-			// one parent may be removable
-			if (rowCount >= 1 && this.titleToSelectRows != StringDatabase.getUniqueInstance()
-					.getString("NodeParentsPanel.prefixedDataTablePanelParentsTable.Title")) {
-				removeValueButtonEnabled = false;
-			}
-		}
-		// The button is enabled or disabled accordingly
-		removeValueButton.setEnabled(removeValueButtonEnabled);
-	}
+    @Override public void valueChanged(ListSelectionEvent e) {
+        super.valueChanged(e);
+        
+        boolean removeValueButtonEnabled = true;
+        int rowCount = valuesTable.getRowCount();
+        
+        // If there are less than two rows
+        if (rowCount <= 2) {
+            // But at least there is one, it has not to be the nodes parent table, as
+            // one parent may be removable
+            if (rowCount >= 1 && this.titleToSelectRows != StringDatabase.getUniqueInstance()
+                                                                         .getString("NodeParentsPanel.prefixedDataTablePanelParentsTable.Title")) {
+                removeValueButtonEnabled = false;
+            }
+        }
+        // The button is enabled or disabled accordingly
+        removeValueButton.setEnabled(removeValueButtonEnabled);
+    }
 }

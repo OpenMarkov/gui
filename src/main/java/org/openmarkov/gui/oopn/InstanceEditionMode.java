@@ -31,37 +31,33 @@ public class InstanceEditionMode extends EditionMode {
         super(editorPanel, probNet);
     }
     
-    @Override public void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) {
-        if (SwingUtilities.isLeftMouseButton(e) && Utilities.noMouseModifiers(e)) {
-            if (visualNetwork.getElementInPosition(position, g) == null) {
-                probNet.getPNESupport().setWithUndo(true);
-                String selectedClassFrameTitle = getClassComboBox().getSelectedClassFrameTitle();
-                NetworkPanel instanceNetworkPanel = (
-                        (NetworkPanel) MainPanel.getUniqueInstance().getMdi().getFrameByTitle(selectedClassFrameTitle)
-                );
-                if (instanceNetworkPanel != null) {
-                    ProbNet classNet = instanceNetworkPanel.getProbNet();
-                    String instanceName = JOptionPane.showInputDialog(null, "Instance Name:");
-                    
-                    if (instanceName != null) {
-                        try {
-                            AddInstanceEdit addInstanceEdit =
-                                    new AddInstanceEdit((OOPNet) probNet, classNet, instanceName,
-                                                                                  position);
-                            addInstanceEdit.doEdit(probNet);
-                        } catch (DoEditException e1) {
-                            JOptionPane.showMessageDialog(null,
-                                                          "Error while generating instance node.\nLook in the message window for more details", "Error",
-                                                          JOptionPane.ERROR_MESSAGE);
-                        }
-                        editorPanel.adjustPanelDimension();
-                        editorPanel.repaint();
-                    }
-                }
-            } else {
-                visualNetwork.selectElementInPosition(position, g);
-            }
+    @Override public void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException {
+        if (!(SwingUtilities.isLeftMouseButton(e) && Utilities.noMouseModifiers(e))) {
+            return;
         }
+        if (visualNetwork.getElementInPosition(position, g) != null) {
+            visualNetwork.selectElementInPosition(position, g);
+            return;
+        }
+        probNet.getPNESupport().setWithUndo(true);
+        String selectedClassFrameTitle = getClassComboBox().getSelectedClassFrameTitle();
+        NetworkPanel instanceNetworkPanel =
+                (NetworkPanel) MainPanel.getUniqueInstance().getMdi().getFrameByTitle(selectedClassFrameTitle);
+        if (instanceNetworkPanel == null) {
+            return;
+        }
+        ProbNet classNet = instanceNetworkPanel.getProbNet();
+        String instanceName = JOptionPane.showInputDialog(null, "Instance Name:");
+        if (instanceName == null) {
+            return;
+        }
+        AddInstanceEdit addInstanceEdit =
+                new AddInstanceEdit((OOPNet) probNet, classNet, instanceName,
+                                    position);
+        addInstanceEdit.doEdit(probNet);
+        editorPanel.adjustPanelDimension();
+        editorPanel.repaint();
+        
     }
     
     private static ClassComboBox getClassComboBox() {

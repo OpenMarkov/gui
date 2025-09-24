@@ -90,7 +90,7 @@ public class VisualNetwork implements PNUndoableEditListener {
     
     protected boolean isPropagationActive = true;
     
-    protected int workingMode = NetworkPanel.EDITION_WORKING_MODE;
+    protected NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
     
     /**
      * Listener to the selection.
@@ -972,7 +972,7 @@ public class VisualNetwork implements PNUndoableEditListener {
     @Override public void undoableEditHappened(UndoableEditEvent e) {
         
         constructVisualInfo();
-        if (getWorkingMode() != NetworkPanel.INFERENCE_WORKING_MODE)
+        if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE)
             visualDecisionNodeRefresh();
         
     }
@@ -1071,7 +1071,7 @@ public class VisualNetwork implements PNUndoableEditListener {
     @Override public void undoEditHappened(UndoableEditEvent event) {
         
         constructVisualInfo();
-        if (getWorkingMode() != NetworkPanel.INFERENCE_WORKING_MODE)
+        if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE)
             visualDecisionNodeRefresh();
         
     }
@@ -1220,11 +1220,11 @@ public class VisualNetwork implements PNUndoableEditListener {
         this.isPropagationActive = isPropagationActive;
     }
     
-    public int getWorkingMode() {
+    public NetworkPanel.WorkingMode getWorkingMode() {
         return workingMode;
     }
     
-    public void setWorkingMode(int workingMode) {
+    public void setWorkingMode(NetworkPanel.WorkingMode workingMode) {
         this.workingMode = workingMode;
     }
     
@@ -1249,7 +1249,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         // TODO Auto-generated method stub
     }
     
-    public void editInstanceName() {
+    public void editInstanceName() throws DoEditException {
         // TODO Auto-generated method stub
     }
     //TODO OOPN end

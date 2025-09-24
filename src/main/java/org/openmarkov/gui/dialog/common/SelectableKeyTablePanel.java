@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.RevelationStateEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -97,10 +98,8 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
             try {
                 ProbNet probNet = node.getProbNet();
                 arcEdit.doEdit(probNet);
-            } catch (DoEditException.ConstraintViolated e6) {
-                e6.printStackTrace();
-                JOptionPane.showMessageDialog(this, stringDatabase.getString(e6.getMessage()),
-                                              stringDatabase.getString(e6.getMessage()), JOptionPane.ERROR_MESSAGE);
+            } catch (DoEditException.ConstraintViolated ex) {
+                throw new UnrecoverableException(ex);
             }
         }
     }

@@ -33,161 +33,155 @@ import java.util.List;
  * @author ckonig
  */
 @SuppressWarnings("serial") public class RevelationArcPanel extends JPanel implements ItemListener {
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-	/***
-	 * Object where all the information will be saved
-	 */
-	private Link<Node> link;
-	/****
-	 * Variable Type of the revelation conditions
-	 */
-	private VariableType variableType;
-	/**
-	 * label for the table to show the values of the node
-	 */
-	private JLabel jLabelValuesPanel = null;
-	/**
-	 * table to show the states of the variable`s domain.
-	 */
-	private SelectableKeyTablePanel discreteNodeStatesTablePanel;
-	/**
-	 * table to show intervals of the variable's domain.
-	 */
-	private RevelationArcDiscretizeTablePanel discretizedNodeStatesTablePanel;
-
-	/****
-	 * Constructor - constructs a JPanel for displaying the revelation
-	 * conditions of a link
-	 * @param link
-	 */
-	public RevelationArcPanel(Link<Node> link) {
-		this.link = link;
-		this.variableType = link.getNode1().getVariable().getVariableType();
-		try {
-			initialize();
-		} catch (Throwable e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	public void initialize() {
-		setPreferredSize(new Dimension(600, 375));
-		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		this.add(Box.createRigidArea(new Dimension(5, 10)));
-		JLabel label = this.getJLabelValuesPanel();
-		label.setAlignmentX(Component.CENTER_ALIGNMENT);
-		this.add(label);
-		this.add(Box.createRigidArea(new Dimension(5, 10)));
-		JPanel centerPanel = new JPanel();
-		JPanel panel = this.getNodeStatesTablePanel();
-		centerPanel.add(panel);
-		centerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		this.add(centerPanel);
-	}
-
-	/**
-	 * @return The JLabel of the values panel
-	 */
-	protected JLabel getJLabelValuesPanel() {
-		if (jLabelValuesPanel == null) {
-			jLabelValuesPanel = new JLabel();
-			jLabelValuesPanel.setName("jLabelValuesPanel");
-			jLabelValuesPanel.setText("a Label");
-			Node node1 = link.getNode1();
-			Node node2 = link.getNode2();
-			MessageFormat messageForm = new MessageFormat(
-					stringDatabase.getString("RevelationArcPanel.jLabelValuesPanel.Text"));
-			Object[] labelArgs = new Object[] { node1.getName(), node2.getName() };
-			String msgText = messageForm.format(labelArgs);
-			jLabelValuesPanel.setText(msgText);
-		}
-		return jLabelValuesPanel;
-	}
-
-	/**
-	 * This method initializes NodeValuesTable.
-	 *
-	 * @return the PrefixedKeyTablePanel for the Node Values
-	 */
-	protected KeyTablePanel getNodeStatesTablePanel() {
-		if (this.variableType != VariableType.NUMERIC) {
-			return getNodeDiscreteStatesTablePanel();
+    /**
+     * String database
+     */
+    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    /***
+     * Object where all the information will be saved
+     */
+    private Link<Node> link;
+    /****
+     * Variable Type of the revelation conditions
+     */
+    private VariableType variableType;
+    /**
+     * label for the table to show the values of the node
+     */
+    private JLabel jLabelValuesPanel = null;
+    /**
+     * table to show the states of the variable`s domain.
+     */
+    private SelectableKeyTablePanel discreteNodeStatesTablePanel;
+    /**
+     * table to show intervals of the variable's domain.
+     */
+    private RevelationArcDiscretizeTablePanel discretizedNodeStatesTablePanel;
+    
+    /****
+     * Constructor - constructs a JPanel for displaying the revelation
+     * conditions of a link
+     * @param link
+     */
+    public RevelationArcPanel(Link<Node> link) {
+        this.link = link;
+        this.variableType = link.getNode1().getVariable().getVariableType();
+        initialize();
+    }
+    
+    public void initialize() {
+        setPreferredSize(new Dimension(600, 375));
+        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        this.add(Box.createRigidArea(new Dimension(5, 10)));
+        JLabel label = this.getJLabelValuesPanel();
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.add(label);
+        this.add(Box.createRigidArea(new Dimension(5, 10)));
+        JPanel centerPanel = new JPanel();
+        JPanel panel = this.getNodeStatesTablePanel();
+        centerPanel.add(panel);
+        centerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.add(centerPanel);
+    }
+    
+    /**
+     * @return The JLabel of the values panel
+     */
+    protected JLabel getJLabelValuesPanel() {
+        if (jLabelValuesPanel == null) {
+            jLabelValuesPanel = new JLabel();
+            jLabelValuesPanel.setName("jLabelValuesPanel");
+            jLabelValuesPanel.setText("a Label");
+            Node node1 = link.getNode1();
+            Node node2 = link.getNode2();
+            MessageFormat messageForm = new MessageFormat(
+                    stringDatabase.getString("RevelationArcPanel.jLabelValuesPanel.Text"));
+            Object[] labelArgs = new Object[]{node1.getName(), node2.getName()};
+            String msgText = messageForm.format(labelArgs);
+            jLabelValuesPanel.setText(msgText);
+        }
+        return jLabelValuesPanel;
+    }
+    
+    /**
+     * This method initializes NodeValuesTable.
+     *
+     * @return the PrefixedKeyTablePanel for the Node Values
+     */
+    protected KeyTablePanel getNodeStatesTablePanel() {
+        if (this.variableType != VariableType.NUMERIC) {
+            return getNodeDiscreteStatesTablePanel();
         }
         return getNodeDiscretizedStatesTablePanel();
     }
-
-	/**
-	 * This method initializes NodeValuesTable.
-	 *
-	 * @return the PrefixedKeyTablePanel for the Node Values
-	 */
-	protected PrefixedKeyTablePanel getNodeDiscreteStatesTablePanel() {
-		if (discreteNodeStatesTablePanel == null) {
-			String[] columnNames = {
-					stringDatabase.getString("DiscreteValuesTablePanel.ValuesTable." + "Columns.Name.Text"), "",
-					stringDatabase.getString("DiscreteValuesTablePanel.ValuesTable." + "Columns.Value.Text") };
-			discreteNodeStatesTablePanel = new SelectableKeyTablePanel(columnNames, new Object[][] {},
-					stringDatabase.getString("DiscreteValuesTablePanel.ValuesTable." + "Columns.Id.Prefix"), true,
-					link);
-		}
-		discreteNodeStatesTablePanel.setBorder(new EmptyBorder(0, 0, 0, 0));
-		return discreteNodeStatesTablePanel;
-	}
-
-	/**
-	 * This method initializes NodeValuesTable.
-	 *
-	 * @return the DiscretizeTablePanel for the Node Values
-	 */
-	protected DiscretizeTablePanel getNodeDiscretizedStatesTablePanel() {
-		if (discretizedNodeStatesTablePanel == null) {
-			String[] columnNames = { stringDatabase.getString("DiscretizeTableModel.Columns." + "IntervalId.Text"),
-					stringDatabase.getString("DiscretizeTableModel.Columns." + "IntervalName.Text"),
-					stringDatabase.getString("DiscretizeTableModel.Columns." + "LowLimitSymbol.Text"),
-					stringDatabase.getString("DiscretizeTableModel.Columns." + "LowLimitValue.Text"),
-					stringDatabase.getString("DiscretizeTableModel.Columns." + "ValuesSeparator.Text"),
-					stringDatabase.getString("DiscretizeTableModel.Columns." + "UpperLimitValue.Text"),
-					stringDatabase.getString("DiscretizeTableModel.Columns." + "UpperLimitSymbol.Text") };
-			discretizedNodeStatesTablePanel = new RevelationArcDiscretizeTablePanel(columnNames, link);
-			discretizedNodeStatesTablePanel.setBorder(new EmptyBorder(0, 0, 0, 0));
-		}
-		return discretizedNodeStatesTablePanel;
-	}
-
-	public void setFieldsFromProperties(Link<Node> link) {
-		if (link != null) {
-			if (this.variableType != VariableType.NUMERIC) {
-				discreteNodeStatesTablePanel.setData(convertStringsToTableDiscreteFormat(link));
-				discreteNodeStatesTablePanel.adjustColumnSize();
-			} else {
-				discretizedNodeStatesTablePanel.setPartitionedInterval();
-			}
-		}
-	}
+    
+    /**
+     * This method initializes NodeValuesTable.
+     *
+     * @return the PrefixedKeyTablePanel for the Node Values
+     */
+    protected PrefixedKeyTablePanel getNodeDiscreteStatesTablePanel() {
+        if (discreteNodeStatesTablePanel == null) {
+            String[] columnNames = {
+                    stringDatabase.getString("DiscreteValuesTablePanel.ValuesTable." + "Columns.Name.Text"), "",
+                    stringDatabase.getString("DiscreteValuesTablePanel.ValuesTable." + "Columns.Value.Text")};
+            discreteNodeStatesTablePanel = new SelectableKeyTablePanel(columnNames, new Object[][]{},
+                                                                       stringDatabase.getString("DiscreteValuesTablePanel.ValuesTable." + "Columns.Id.Prefix"), true,
+                                                                       link);
+        }
+        discreteNodeStatesTablePanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+        return discreteNodeStatesTablePanel;
+    }
+    
+    /**
+     * This method initializes NodeValuesTable.
+     *
+     * @return the DiscretizeTablePanel for the Node Values
+     */
+    protected DiscretizeTablePanel getNodeDiscretizedStatesTablePanel() {
+        if (discretizedNodeStatesTablePanel == null) {
+            String[] columnNames = {stringDatabase.getString("DiscretizeTableModel.Columns." + "IntervalId.Text"),
+                    stringDatabase.getString("DiscretizeTableModel.Columns." + "IntervalName.Text"),
+                    stringDatabase.getString("DiscretizeTableModel.Columns." + "LowLimitSymbol.Text"),
+                    stringDatabase.getString("DiscretizeTableModel.Columns." + "LowLimitValue.Text"),
+                    stringDatabase.getString("DiscretizeTableModel.Columns." + "ValuesSeparator.Text"),
+                    stringDatabase.getString("DiscretizeTableModel.Columns." + "UpperLimitValue.Text"),
+                    stringDatabase.getString("DiscretizeTableModel.Columns." + "UpperLimitSymbol.Text")};
+            discretizedNodeStatesTablePanel = new RevelationArcDiscretizeTablePanel(columnNames, link);
+            discretizedNodeStatesTablePanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+        }
+        return discretizedNodeStatesTablePanel;
+    }
+    
+    public void setFieldsFromProperties(Link<Node> link) {
+        if (link != null) {
+            if (this.variableType != VariableType.NUMERIC) {
+                discreteNodeStatesTablePanel.setData(convertStringsToTableDiscreteFormat(link));
+                discreteNodeStatesTablePanel.adjustColumnSize();
+            } else {
+                discretizedNodeStatesTablePanel.setPartitionedInterval();
+            }
+        }
+    }
     
     protected static Object[][] convertStringsToTableDiscreteFormat(Link<Node> link) {
-		Node node = link.getNode1();
-		State[] values = node.getVariable().getStates();
-		List<State> revealingStates = link.getRevealingStates();
+        Node node = link.getNode1();
+        State[] values = node.getVariable().getStates();
+        List<State> revealingStates = link.getRevealingStates();
         int i;
         int l = values.length;
         Object[][] data = new Object[l][2];
-		i = l - 1;
-		for (State value : values) {
+        i = l - 1;
+        for (State value : values) {
             data[i][0] = revealingStates.contains(value);
-			data[i--][1] = value.getName();
-		}
-		return data;
-	}
-
-	@Override public void itemStateChanged(ItemEvent e) {
-	}
-
-	public void saveChanges() {
-	}
+            data[i--][1] = value.getName();
+        }
+        return data;
+    }
+    
+    @Override public void itemStateChanged(ItemEvent e) {
+    }
+    
+    public void saveChanges() {
+    }
 }

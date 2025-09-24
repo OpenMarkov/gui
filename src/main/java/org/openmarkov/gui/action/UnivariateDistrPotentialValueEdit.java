@@ -11,6 +11,8 @@ import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
@@ -145,9 +147,13 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 	 * @return the position in the table
 	 */
 	public int getRowPosition(int position) {
-		int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(node);
-		return lastRow - position % newDistributionTable.getDimensions()[0];
-	}
+        try {
+            int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(node);
+            return lastRow - position % newDistributionTable.getDimensions()[0];
+        } catch (ThereIsNoPotentialsInNodeException e) {
+            throw new UnreacheableException(e);
+        }
+    }
 
 	/**
 	 * Gets the row position associated to value edited if priorityList no

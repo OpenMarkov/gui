@@ -134,15 +134,16 @@ public class NodeContextualMenu extends ContextualMenu {
         setOptionEnabled(ActionCommands.ABSORB_PARENTS.getCommandName(), AbsorbParentsValidator.validate(node));
         
         if (selectedNode.getNode().getNodeType() == NodeType.DECISION) {
-			if (panel.getNetworkPanel().getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
-				setDecisionNodeContextualMenuInEditionMode();
-			} else {
-				if (panel.getEvidenceCasesCompilationState(panel.getCurrentCase())) {
-					setDecisionNodeContextualMenuInCompiledInferenceMode();
-				} else {
-					setDecisionNodeContextualMenuInNotCompiledInferenceMode();
-				}
-			}
+            switch (panel.getNetworkPanel().getWorkingMode()) {
+                case EDITION -> setDecisionNodeContextualMenuInEditionMode();
+                case INFERENCE -> {
+                    if (panel.getEvidenceCasesCompilationState(panel.getCurrentCase())) {
+                        setDecisionNodeContextualMenuInCompiledInferenceMode();
+                    } else {
+                        setDecisionNodeContextualMenuInNotCompiledInferenceMode();
+                    }
+                }
+            }
 		} else {
 			setDefaultNodeContextualMenu();
 		}

@@ -7,7 +7,8 @@
 
 package org.openmarkov.gui.dialog;
 
-public interface CommentListener {
-	void commentHasChanged();
+import org.openmarkov.core.exception.DoEditException;
 
+public interface CommentListener {
+    void commentHasChanged() throws DoEditException.ConstraintViolated;
 }

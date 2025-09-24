@@ -7,7 +7,9 @@
 
 package org.openmarkov.gui.dialog;
 
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
 import org.openmarkov.gui.window.edition.EditorPanel;
 import org.openmarkov.gui.window.edition.NetworkPanel;
@@ -58,12 +60,17 @@ public class PropagationOptionsDialogListener implements ActionListener {
 			if (inferenceType.equals(stringDatabase.getString("OptionsInferenceDialog.optionAuto.Label"))) {
 				editorPanel.setAutomaticPropagation(true);
 				editorPanel.setPropagationActive(true);
-				if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
+                if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
 					for (int caseIndex = 0; caseIndex < editorPanel.getNumberOfCases(); caseIndex++) {
                         if (!editorPanel.getEvidenceCasesCompilationState(caseIndex)) {
-
-							editorPanel.doPropagation(editorPanel.getEvidenceCase(caseIndex), caseIndex);
-							editorPanel.updateAllVisualStates("", caseIndex);
+                            try {
+                                editorPanel.doPropagation(editorPanel.getEvidenceCase(caseIndex), caseIndex);
+                            } catch (NotEvaluableNetworkException | NonProjectablePotentialException |
+                                     CannotNormalizePotentialException | NotEnoughtMemoryException |
+                                     IncompatibleEvidenceException e) {
+                                throw new UnrecoverableException(e);
+                            }
+                            editorPanel.updateAllVisualStates("", caseIndex);
 						}
 					}
 					editorPanel.setSelectedAllNodes(false);
@@ -72,7 +79,7 @@ public class PropagationOptionsDialogListener implements ActionListener {
 				}
 			} else if (inferenceType.equals(stringDatabase.getString("OptionsInferenceDialog.optionManual.Label"))) {
 				editorPanel.setAutomaticPropagation(false);
-				if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
+                if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
 					inferenceToolBar.setCurrentEvidenceCaseName(editorPanel.getCurrentCase());
 				}
 			}
