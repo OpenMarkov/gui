@@ -9,6 +9,7 @@ package org.openmarkov.gui.window;
 
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.ParserException;
+import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
@@ -419,7 +420,7 @@ public class MainPanel extends JPanel {
      *
      * @param fileName
      */
-    public void openNetwork(String fileName) throws ParserException, IOException, ParserConfigurationException, SAXException {
+    public void openNetwork(String fileName) throws ParserException, IOException, ParserConfigurationException, SAXException, NoReaderForFileException {
         getMainPanelListenerAssistant().openNetwork(fileName);
     }
     

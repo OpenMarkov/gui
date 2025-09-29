@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.network;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.tasks.OptimalIntervention;
 import org.openmarkov.core.model.network.Node;
@@ -24,7 +25,7 @@ import java.awt.*;
 @SuppressWarnings("serial") public class OptimalStrategyDialog extends OkCancelHorizontalDialog {
 
 	public OptimalStrategyDialog(Window owner, ProbNet probNet, OptimalIntervention optimalIntervention)
-			throws NonProjectablePotentialException {
+            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
 		super(owner);
 		TreeADDCellRenderer cellRenderer = new TreeADDCellRenderer(probNet);
 		ProbNet dummyProbNet = new ProbNet();

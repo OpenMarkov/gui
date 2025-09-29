@@ -768,7 +768,8 @@ import java.util.List;
             try {
                 removeUncertainty();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | DoEditException.ConstraintViolated ex) {
+                     ThereIsNoPotentialsInNodeException | DoEditException.ConstraintViolated |
+                     NonProjectablePotentialException ex) {
                 throw new UnrecoverableException(ex);
             }
         }
@@ -777,7 +778,7 @@ import java.util.List;
     /**
      * Method for removing the uncertain values for a certain configuration
      */
-    public void removeUncertainty() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException.ConstraintViolated {
+    public void removeUncertainty() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException.ConstraintViolated, NonProjectablePotentialException {
         evidenceCase = getEvidenceCaseFromSelectedColumn();
         UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(node, evidenceCase);
         ProbNet probNet = node.getProbNet();

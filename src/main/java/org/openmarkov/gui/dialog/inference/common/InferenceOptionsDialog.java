@@ -947,6 +947,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         return multicriteriaOptions;
     }
     
+    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Override protected boolean doOkClickBeforeHide() throws Exception {
         selectedButton = OK_BUTTON;
         // If the is user is editing a cell, stop the edition to save the data

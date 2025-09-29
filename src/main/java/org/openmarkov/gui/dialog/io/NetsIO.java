@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.io;
 
 import org.apache.commons.io.FileUtils;
 import org.openmarkov.core.exception.WriterException;
+import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.io.ProbNetInfo;
@@ -50,7 +51,7 @@ public class NetsIO {
      *
      * @throws Exception if the file doesn't exist or the file format isn't correct.
      */
-    public static ProbNetInfo openNetworkFile(String fileName) throws IOException, ParserConfigurationException, SAXException, org.openmarkov.core.exception.ParserException {
+    public static ProbNetInfo openNetworkFile(String fileName) throws IOException, ParserConfigurationException, SAXException, org.openmarkov.core.exception.ParserException, NoReaderForFileException {
         // String fileExtension = getFileExtension(fileName);
         FormatManager formatManager = FormatManager.getInstance();
         ProbNetReader probNetReader = formatManager.getProbNetReader(fileName);
@@ -218,7 +219,7 @@ public class NetsIO {
      *
      * @throws Exception if the file doesn't exist or the file format isn't correct.
      */
-    public static ProbNetInfo openNetworkURL(URL url) throws SAXException, IOException, ParserConfigurationException, org.openmarkov.core.exception.ParserException {
+    public static ProbNetInfo openNetworkURL(URL url) throws SAXException, IOException, ParserConfigurationException, org.openmarkov.core.exception.ParserException, NoReaderForFileException {
         String networkName = url.getPath();
         networkName = networkName.substring(networkName.lastIndexOf('/') + 1);
         

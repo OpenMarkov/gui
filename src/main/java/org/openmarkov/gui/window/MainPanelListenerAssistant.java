@@ -16,6 +16,7 @@ import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.core.io.exception.NoWriterForExtensionException;
+import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.StrategyTree;
@@ -162,71 +163,81 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.OPEN_NETWORK -> {
                 try {
                     openNetwork();
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
-                    throw new UnreacheableException(ex);
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
+                    throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_NETWORK_URL -> openNetworkURL();
             case ActionCommands.OPEN_LAST_1_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(1));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_2_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(2));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_3_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(3));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_4_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(4));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_5_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(5));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_6_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(6));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_7_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(7));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_8_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(8));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_9_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(9));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -234,7 +245,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.SAVE_OPEN_NETWORK -> {
                 try {
                     saveOpenNetwork(getCurrentNetworkPanel());
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException ex) {
+                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
+                         NoReaderForFileException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -243,9 +255,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.LOAD_EVIDENCE -> loadEvidence(getCurrentNetworkPanel());
             case ActionCommands.SAVE_EVIDENCE -> saveEvidence(getCurrentNetworkPanel());
             case ActionCommands.NETWORK_PROPERTIES -> getCurrentNetworkPanel().changeNetworkProperties();
-            case ActionCommands.EXPAND_NETWORK ->
+            case ActionCommands.EXPAND_NETWORK -> {
+                try {
                     expandNetwork(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel()
                                                                                                  .getPreResolutionEvidence());
+                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
+                         NonProjectablePotentialException | NotSupportedOperationException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION, ActionCommands.TEMPORAL_EVOLUTION_ACTION ->
                     this.getCurrentNetworkPanel().temporalEvolution();
             //case ActionCommands.EXPAND_NETWORK_CE -> expandNetworkCE(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
@@ -443,8 +461,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES, ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES ->
                     this.getCurrentNetworkPanel().enableLinkRestriction();
-            case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES ->
+            case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES -> {
+                try {
                     this.getCurrentNetworkPanel().disableLinkRestriction();
+                } catch (DoEditException.ConstraintViolated ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> this.getCurrentNetworkPanel().enableRevelationArc();
             case ActionCommands.MARK_AS_INPUT -> this.getCurrentNetworkPanel().markSelectedAsInput();
             case ActionCommands.EDIT_CLASS -> this.getCurrentNetworkPanel().editClass();
@@ -457,8 +480,23 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.SET_ARITY_ONE -> this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
             case ActionCommands.SET_ARITY_MANY -> this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
-            case ActionCommands.DECISION_TREE -> showDecisionTree(this.getCurrentNetworkPanel().getProbNet());
-            case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY -> showOptimalStrategy(this.getCurrentNetworkPanel());
+            case ActionCommands.DECISION_TREE -> {
+                try {
+                    showDecisionTree(this.getCurrentNetworkPanel().getProbNet());
+                } catch (NotEvaluableNetworkException | IncompatibleEvidenceException |
+                         NonProjectablePotentialException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY -> {
+                try {
+                    showOptimalStrategy(this.getCurrentNetworkPanel());
+                } catch (IncompatibleEvidenceException | NonProjectablePotentialException |
+                         NotEvaluableNetworkException.NotApplicableNetwork |
+                         NotEvaluableNetworkException.UnsatisfiedContraints ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.NEXT_SLICE_NODE -> {
                 try {
                     this.getCurrentNetworkPanel().createNextSliceNode();
@@ -775,7 +813,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param networkPanel network panel that contains the network to be saved.
      */
-    private void saveOpenNetwork(NetworkPanel networkPanel) throws ParserException, IOException, ParserConfigurationException, SAXException {
+    private void saveOpenNetwork(NetworkPanel networkPanel) throws ParserException, IOException, ParserConfigurationException, SAXException, NoReaderForFileException {
         String fileName = networkPanel.getNetworkFile();
         if (fileName != null) {
             createBackUpNetworkFile(fileName, toBakExtension(networkPanel.getNetworkFile()));
@@ -959,7 +997,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * Open a network.
      */
-    private void openNetwork() throws ParserException, IOException, ParserConfigurationException, SAXException {
+    private void openNetwork() throws ParserException, IOException, ParserConfigurationException, SAXException, NoReaderForFileException {
         openNetwork("");
     }
     
@@ -970,7 +1008,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param fileName - for the network
      */
-    public void openNetwork(String fileName) throws ParserException, IOException, ParserConfigurationException, SAXException {
+    public void openNetwork(String fileName) throws ParserException, IOException, ParserConfigurationException, SAXException, NoReaderForFileException {
         if (fileName.isEmpty()) {
             fileName = requestNetworkFileToOpen();
         }
@@ -1078,7 +1116,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     networkMessageDialog.setMinimumSize(new Dimension(500, 300));
                     networkMessageDialog.setVisible(true);
                 }
-            } catch (IOException | SAXException | ParserConfigurationException | ParserException e) {
+            } catch (IOException | SAXException | ParserConfigurationException | ParserException |
+                     NoReaderForFileException e) {
                 ExceptionDialog.show("Network from URL could not be loaded:", e);
             }
         }
@@ -1153,7 +1192,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param probNet               the network to be expanded
      * @param preResolutionEvidence evidence to be added and propagated in the expanded network
      */
-    private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) {
+    private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException, NotSupportedOperationException {
         NetworkPanel networkPanelMID = getCurrentNetworkPanel();
         String path = (new File(networkPanelMID.getNetworkFile())).getParent();
         InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
@@ -1172,13 +1211,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         
         fileName = fileName + stringDatabase.getString("CostEffectiveness.ExpandNetwork.FileName") + ".pgmx";
         
-        ProbNet expandedNetwork;
-        try {
-            expandedNetwork = TemporalNetOperations.expandNetwork(probNet, preResolutionEvidence, fileName);
-        } catch (NotSupportedOperationException e) {
-            ExceptionDialog.show(e);
-            return;
-        }
+        ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet, preResolutionEvidence, fileName);
         
         NetworkPanel networkPanel = createNewFrame(expandedNetwork);
         //If enabled "save" tries to create the .bak file and throws an exception
@@ -1624,7 +1657,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         // TODO Auto-generated method stub
     }
     
-    private void showDecisionTree(ProbNet probNet) {
+    private void showDecisionTree(ProbNet probNet) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException {
         try {
             InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
                                                                                         Utilities.getOwner(mainPanel));
@@ -1645,7 +1678,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
     }
     
-    private void showOptimalStrategy(NetworkPanel networkPanel) {
+    private void showOptimalStrategy(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
         /*
         22/10/2014
         Solving issue 195
@@ -1667,14 +1700,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
             return;
         }
         if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
-            DANEvaluation eval = null;
-            try {
-                eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet, networkPanel.getEditorPanel()
-                                                                                            .getPreResolutionEvidence());
-            } catch (NotEvaluableNetworkException.NotApplicableNetwork |
-                     NotEvaluableNetworkException.UnsatisfiedContraints e1) {
-                throw new UnrecoverableException(e1);
-            }
+            DANEvaluation eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet, networkPanel.getEditorPanel()
+                                                                                                      .getPreResolutionEvidence());
             StrategyTree strategyTree = eval.getUtility().strategyTrees[0];
             
             //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);

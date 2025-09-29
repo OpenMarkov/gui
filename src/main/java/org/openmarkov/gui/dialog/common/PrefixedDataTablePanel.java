@@ -189,7 +189,8 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
+    @Override
+    protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         String name = (String) valuesTable.getValueAt(selectedRow, 1);
 		/*LinkEdit linkEdit;

@@ -11,7 +11,9 @@ import org.openmarkov.core.dt.DecisionTreeBranch;
 import org.openmarkov.core.dt.DecisionTreeElement;
 import org.openmarkov.core.dt.DecisionTreeNode;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.inference.MulticriteriaOptions.Type;
 import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -51,7 +53,7 @@ import java.awt.event.MouseListener;
     private ContextualMenuFactory contextualMenuFactory;
     private TreePanelListener listener;
     
-    public DecisionTreePanel(ProbNet probNet) throws NotEvaluableNetworkException {
+    public DecisionTreePanel(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
         listener = new TreePanelListener();
         contextualMenuFactory = new ContextualMenuFactory(listener);
         
@@ -73,12 +75,12 @@ import java.awt.event.MouseListener;
         
     }
     
-    public static DecisionTreeElement buildDecisionTree(ProbNet probNet) throws NotEvaluableNetworkException {
+    public static DecisionTreeElement buildDecisionTree(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
         return buildDecisionTree(probNet, 5);
     }
     
     
-    public static DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth) throws NotEvaluableNetworkException {
+    public static DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
         return buildDecisionTree(probNet, depth, new EvidenceCase());
     }
     
@@ -91,7 +93,7 @@ import java.awt.event.MouseListener;
      *
      * @throws NotEvaluableNetworkException
      */
-    private static DecisionTreeBranch buildDecisionTree(ProbNet probNet, int depth, EvidenceCase branchEvidence) throws NotEvaluableNetworkException {
+    private static DecisionTreeBranch buildDecisionTree(ProbNet probNet, int depth, EvidenceCase branchEvidence) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
         DecisionTreeBranch root = null;
         NetworkType networkType = probNet.getNetworkType();
         if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
@@ -122,18 +124,18 @@ import java.awt.event.MouseListener;
         repaint();
     }
     
-    public void inferenceExpandNextLevel() throws NotEvaluableNetworkException {
+    public void inferenceExpandNextLevel() throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
         inferenceExpandLevels(1);
     }
     
-    public void inferenceExpandLevels(int n) throws NotEvaluableNetworkException {
+    public void inferenceExpandLevels(int n) throws NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException {
         DecisionTreeModel auxModel = (DecisionTreeModel) jTree.getModel();
         DecisionTreeBranchPanel root = (DecisionTreeBranchPanel) auxModel.getRoot();
         inferenceExpandLevels(root.getTreeBranch(), null, n, new EvidenceCase());
         updateVisualInformation(root.getTreeBranch());
     }
     
-    private static void inferenceExpandLevels(DecisionTreeElement root, DecisionTreeNode parent, int n, EvidenceCase branchEvidence) throws NotEvaluableNetworkException {
+    private static void inferenceExpandLevels(DecisionTreeElement root, DecisionTreeNode parent, int n, EvidenceCase branchEvidence) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
         if (root instanceof DecisionTreeBranch || ((DecisionTreeNode) root).getNodeType() != NodeType.UTILITY) {
             if (root instanceof DecisionTreeNode) {
                 parent = (DecisionTreeNode) root;
@@ -178,7 +180,7 @@ import java.awt.event.MouseListener;
     }
     
     
-    public void inferenceExpandAllLevels() throws NotEvaluableNetworkException {
+    public void inferenceExpandAllLevels() throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
         inferenceExpandLevels(Integer.MAX_VALUE);
     }
     
@@ -194,9 +196,9 @@ import java.awt.event.MouseListener;
                     // Expand N levels
                     try {
                         inferenceExpandNextLevel();
-                    } catch (NotEvaluableNetworkException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                    } catch (NotEvaluableNetworkException | IncompatibleEvidenceException |
+                             NonProjectablePotentialException ex) {
+                        throw new UnrecoverableException(ex);
                     }
                     break;
                 case ActionCommands.TREE_EXPAND_ALL:
@@ -204,9 +206,9 @@ import java.awt.event.MouseListener;
                     // Expand all levels
                     try {
                         inferenceExpandAllLevels();
-                    } catch (NotEvaluableNetworkException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                    } catch (NotEvaluableNetworkException | IncompatibleEvidenceException |
+                             NonProjectablePotentialException ex) {
+                        throw new UnrecoverableException(ex);
                     }
                     break;
                 case ActionCommands.TREE_OPEN_NETWORK:

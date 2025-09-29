@@ -392,7 +392,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
+    protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.removeRow(selectedRowIndex);
     }

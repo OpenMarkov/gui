@@ -54,7 +54,8 @@ import java.util.List;
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
+    @Override
+    protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
         super.actionPerformedRemoveValue();
         notifyActionListeners(new ActionEvent(this, 2, "Remove"));
     }

@@ -101,7 +101,7 @@ class PreferencesTableModel extends AbstractTableModel {
             this.syncSave();
         } catch (BackingStoreException e) {
             this.pref = previousValueOfPref;
-            throw new RuntimeException(e);
+            throw e;
         }
     }
     

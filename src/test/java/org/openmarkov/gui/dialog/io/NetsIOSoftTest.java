@@ -10,6 +10,7 @@ package org.openmarkov.gui.dialog.io;
 import org.junit.jupiter.api.*;
 
 import org.openmarkov.core.io.ProbNetInfo;
+import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.ProbNet;
 
 import java.net.URL;
@@ -38,7 +39,7 @@ public class NetsIOSoftTest {
 
     @Disabled("Ignored because a deprecated network")
     @Test
-    public void testURLConnection() throws org.xml.sax.SAXException, java.io.IOException, javax.xml.parsers.ParserConfigurationException, org.openmarkov.core.exception.ParserException {
+    public void testURLConnection() throws org.xml.sax.SAXException, java.io.IOException, javax.xml.parsers.ParserConfigurationException, org.openmarkov.core.exception.ParserException, NoReaderForFileException {
         for (String urlString : urlsToTest) {
             URL url = new URL(urlString);
             NetsIO.openNetworkURL(url);

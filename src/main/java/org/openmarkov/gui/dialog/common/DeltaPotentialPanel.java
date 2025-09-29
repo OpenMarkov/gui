@@ -141,7 +141,7 @@ import java.awt.*;
                 double numericValue = Double.parseDouble(valueSpinner.getValue().toString());
                 PartitionedInterval domain = node.getVariable().getPartitionedInterval();
                 if (numericValue > domain.getMax() || numericValue < domain.getMin()) {
-                    throw new ValueOutOfDomaingRangeException(numericValue, domain);
+                    throw new UnrecoverableException(new ValueOutOfDomaingRangeException(numericValue, domain));
                 }
                 newPotential = new DeltaPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(),
                                                   numericValue);
@@ -156,8 +156,7 @@ import java.awt.*;
             return result;
         } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential |
                  BinomialPotentialWrongValueException.ThetaValueIsWrong |
-                 BinomialPotentialWrongValueException.NValuesIsWrong |
-                 ValueOutOfDomaingRangeException e) {
+                 BinomialPotentialWrongValueException.NValuesIsWrong e) {
             throw new UnrecoverableException(e);
         }
     }

@@ -1732,6 +1732,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      *                     done.
      * @param caseNumber   number of this evidence case.
      */
+    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     public void doPropagation(EvidenceCase evidenceCase, int caseNumber) throws NonProjectablePotentialException, NotEnoughtMemoryException, NotEvaluableNetworkException, CannotNormalizePotentialException, IncompatibleEvidenceException {
         Map<Variable, TablePotential> individualProbabilities = null;
         long start = System.currentTimeMillis();
@@ -2292,13 +2293,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /***
      * Resets the link restriction potential of a link
      */
-    public void disableLinkRestriction() {
+    public void disableLinkRestriction() throws DoEditException.ConstraintViolated {
         RemoveLinkRestrictionEdit removeLinkRestrictionEdit = new RemoveLinkRestrictionEdit(visualNetwork);
-        try {
             removeLinkRestrictionEdit.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated e) {
-            throw new RuntimeException(e);
-        }
         repaint();
     }
     

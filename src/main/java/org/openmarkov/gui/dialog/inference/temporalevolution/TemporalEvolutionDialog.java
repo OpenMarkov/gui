@@ -148,6 +148,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
         return scopeSelectorPanel;
     }
     
+    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Override protected boolean doOkClickBeforeHide() throws Exception {
         preResolutionEvidence.addFindings(scopeSelectorPanel.getSelectedFindings());
         try {

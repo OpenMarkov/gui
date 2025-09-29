@@ -528,7 +528,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     /***
      * This method resets the link restriction of the selected link.
      */
-    public void disableLinkRestriction() {
+    public void disableLinkRestriction() throws DoEditException.ConstraintViolated {
         editorPanel.disableLinkRestriction();
     }
     

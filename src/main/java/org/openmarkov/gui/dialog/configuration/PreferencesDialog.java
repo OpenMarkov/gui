@@ -311,12 +311,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * user preferences
      */
     protected void actionPerformedCancel() throws BackingStoreException {
-        Preferences rootPreferences = Preferences.systemRoot();
-        PreferencesTableModel rootPrefTableModel = new PreferencesTableModel(rootPreferences);
-        rootPrefTableModel.undo();
-        Preferences userPreferences = Preferences.userRoot();
-        PreferencesTableModel userPrefTableModel = new PreferencesTableModel(userPreferences);
-        userPrefTableModel.undo();
+        new PreferencesTableModel(Preferences.systemRoot()).undo();
+        new PreferencesTableModel(Preferences.userRoot()).undo();
         this.setVisible(false);
         this.dispose();
     }
@@ -326,12 +322,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * preferences
      */
     protected void actionPerformedSave() throws BackingStoreException {
-        Preferences rootPreferences = Preferences.systemRoot();
-        PreferencesTableModel rootPrefTableModel = new PreferencesTableModel(rootPreferences);
-        rootPrefTableModel.syncSave();
-        Preferences userPreferences = Preferences.userRoot();
-        PreferencesTableModel userPrefTableModel = new PreferencesTableModel(userPreferences);
-        userPrefTableModel.syncSave();
+        new PreferencesTableModel(Preferences.systemRoot()).syncSave();
+        new PreferencesTableModel(Preferences.userRoot()).syncSave();
         this.setVisible(false);
         this.dispose();
     }
@@ -356,14 +348,15 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      */
     protected void actionPerformedImport() throws IOException, InvalidPreferencesFormatException {
         System.out.println("Import selected");
-        if (chooser.showOpenDialog(PreferencesDialog.this) == JFileChooser.APPROVE_OPTION) {
-            try (InputStream in = new FileInputStream(chooser.getSelectedFile())) {
-                Preferences.importPreferences(in);
-                this.invalidate();
-                this.jTableEdition.repaint();
-                this.jTreePreferences.repaint();
-                this.repaint();
-            }
+        if (chooser.showOpenDialog(PreferencesDialog.this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        try (InputStream in = new FileInputStream(chooser.getSelectedFile())) {
+            Preferences.importPreferences(in);
+            this.invalidate();
+            this.jTableEdition.repaint();
+            this.jTreePreferences.repaint();
+            this.repaint();
         }
     }
     

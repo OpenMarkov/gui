@@ -8,6 +8,7 @@
 package org.openmarkov.gui.window;
 
 import org.openmarkov.core.exception.ParserException;
+import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.openmarkov.gui.dialog.SplashScreenLoader;
@@ -161,7 +162,7 @@ import java.io.IOException;
 	 *
 	 * @param fileName
 	 */
-    public void openNetwork(String fileName) throws ParserException, IOException, ParserConfigurationException, SAXException {
+	public void openNetwork(String fileName) throws ParserException, IOException, ParserConfigurationException, SAXException, NoReaderForFileException {
 		mainPanel.openNetwork(fileName);
 	}
 
