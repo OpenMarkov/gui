@@ -7,6 +7,7 @@ import org.openmarkov.java.exceptionUtils.ThrowableUtils;
 import java.util.ArrayList;
 
 public class OMExceptionHandler implements Thread.UncaughtExceptionHandler {
+    
     @Override public void uncaughtException(Thread thread, Throwable throwable) {
         ExceptionType exceptionType = null;
         // We get the root cause of the exception, as UnrecoverableException and UnreacheableException aren't exceptions

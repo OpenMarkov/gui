@@ -8,6 +8,7 @@
 package org.openmarkov.gui.dialog.io;
 
 import org.apache.commons.io.FileUtils;
+import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -51,7 +52,7 @@ public class NetsIO {
      *
      * @throws Exception if the file doesn't exist or the file format isn't correct.
      */
-    public static ProbNetInfo openNetworkFile(String fileName) throws IOException, ParserConfigurationException, SAXException, org.openmarkov.core.exception.ParserException, NoReaderForFileException {
+    public static ProbNetInfo openNetworkFile(String fileName) throws IOException, ParserConfigurationException, SAXException, ParserException, NoReaderForFileException {
         // String fileExtension = getFileExtension(fileName);
         FormatManager formatManager = FormatManager.getInstance();
         ProbNetReader probNetReader = formatManager.getProbNetReader(fileName);
@@ -59,10 +60,6 @@ public class NetsIO {
         // ProbNetReader probNetReader = formatManager.getProbNetReader(fileExtension);
         
         ProbNetInfo probNetInfo = probNetReader.loadProbNetInfo(fileName);
-        
-        if (probNetInfo == null) {
-            System.out.println("NetsIO.openNetworkFile from " + fileName + ": probNet null");
-        }
         return probNetInfo;
         
         /*
