@@ -50,7 +50,7 @@ public class DesktopPane extends JDesktopPane {
 	 * This method initialises this
 	 */
 	private void initialize() {
-        setBackground(Color.WHITE);
+        // setBackground(Color.WHITE);
 		// setBackground(SystemColor.controlShadow);
 	}
 
