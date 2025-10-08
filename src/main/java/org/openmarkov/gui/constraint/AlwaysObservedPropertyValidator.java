@@ -18,7 +18,7 @@ public class AlwaysObservedPropertyValidator {
      * @return {@code true} if the node can have the alwaysObserved property.
 	 */
 	public static boolean validate(Node node) {
-		if (!node.getProbNet().hasConstraint(NoRevelationArc.class)) {
+        if (!node.getProbNet().hasConstraintOfClass(NoRevelationArc.class)) {
             return node.getNodeType() == NodeType.CHANCE;
 		}
 		return false;

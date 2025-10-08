@@ -46,7 +46,7 @@ public class NetworkTemporalOptionsPanel extends JPanel {
 	public NetworkTemporalOptionsPanel(ProbNet probNet) {
 		this.setName("NetworkTemporalOptionsPanel");
 		this.probNet = probNet;
-		if (!probNet.hasConstraint(OnlyAtemporalVariables.class)) {			
+        if (!probNet.hasConstraintOfClass(OnlyAtemporalVariables.class)) {
 			initialize();
 		}
 	}
@@ -102,8 +102,8 @@ public class NetworkTemporalOptionsPanel extends JPanel {
 	 * @param probNet
 	 */	
 	public void update(ProbNet probNet) {
-		this.probNet = probNet;				
-		if (!probNet.hasConstraint(OnlyAtemporalVariables.class) && !initialized) {			
+		this.probNet = probNet;
+        if (!probNet.hasConstraintOfClass(OnlyAtemporalVariables.class) && !initialized) {
 			initialize();
 		}	
 	}

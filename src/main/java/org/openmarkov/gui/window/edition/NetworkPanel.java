@@ -327,14 +327,14 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      * This method absorbs a node into the rest of the net arc-reversal style. This means updating the only utility
      * child it might have and removing it next.
      */
-    public void absorbNode() {
+    public void absorbNode() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
         editorPanel.absorbNode();
     }
     
     /**
      * This method absorbs intermediate utility nodes.
      */
-    public void absorbParents() {
+    public void absorbParents() throws DoEditException {
         editorPanel.absorbParents();
     }
     
@@ -364,14 +364,14 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     /**
      * This method imposes a policy in a decision node.
      */
-    public void imposePolicyInNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    public void imposePolicyInNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         editorPanel.imposePolicyInNode();
     }
     
     /**
      * This method edits an imposed policy of a decision node.
      */
-    public void editNodePolicy() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    public void editNodePolicy() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         editorPanel.editNodePolicy();
     }
     
@@ -389,7 +389,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
             throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther,
             NonProjectablePotentialException,
             NotEvaluableNetworkException.NotApplicableNetwork,
-            NotEvaluableNetworkException.UnsatisfiedContraints, ThereIsNoPotentialsInNodeException {
+            NotEvaluableNetworkException.UnsatisfiedContraints, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         editorPanel.showExpectedUtilityOfNode();
     }
     
@@ -401,7 +401,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
             NonProjectablePotentialException,
             NotEvaluableNetworkException.NotApplicableNetwork,
             NotEvaluableNetworkException.UnsatisfiedContraints,
-            ThereIsNoPotentialsInNodeException {
+            ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         editorPanel.showOptimalPolicyOfNode();
     }
     
@@ -674,14 +674,11 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     }
     
     @Override public void undoableEditWillHappen(UndoableEditEvent event) {
-        // TODO Auto-generated method stub
         repaint();
     }
     
     @Override public void undoEditHappened(UndoableEditEvent event) {
-        
         setModified(((PNESupport) event.getSource()).getCanUndo());
-        
         repaint();
     }
     
@@ -828,7 +825,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     }
     
     // TODO OOPN start
-    public void markSelectedAsInput() {
+    public void markSelectedAsInput() throws DoEditException.ConstraintViolated {
         editorPanel.markSelectedAsInput();
     }
     
@@ -841,7 +838,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     }
     // TODO OOPN end
     
-    public void setParameterArity(ParameterArity arity) {
+    public void setParameterArity(ParameterArity arity) throws DoEditException.ConstraintViolated {
         editorPanel.setParameterArity(arity);
     }
     

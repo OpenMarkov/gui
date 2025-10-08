@@ -5,6 +5,7 @@ import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
+import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -48,7 +49,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
             try {
                 editMedianPotential();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException ex) {
+                     ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
                 throw new UnrecoverableException(ex);
             }
         });
@@ -57,7 +58,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
             try {
                 editScalePotential();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException ex) {
+                     ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
                 throw new UnrecoverableException(ex);
             }
         });
@@ -66,7 +67,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         add(buttonPanel, BorderLayout.PAGE_START);
     }
     
-    private void editMedianPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    private void editMedianPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), medianDummyNode, false, isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             // TODO: Do nothing?
@@ -75,7 +76,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         }
     }
     
-    private void editScalePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    private void editScalePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), scaleDummyNode, false, isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             // TODO: Do nothing?
@@ -102,27 +103,17 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     }
     
     @Override
-    public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong {
+    public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong, DoEditException {
         boolean result = super.saveChanges();
-        
         newPotential.setComment(oldPotential.getComment());
         PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
-        try {
-            edit.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e) {
-            throw new UnrecoverableException(e);
-        }
-        
+        edit.doEdit(probNet);
         return result;
     }
     
-    private void update() {
-        try {
-            TablePotential projectedPotential = newPotential.tableProject(new EvidenceCase(), null).get(0);
-            // TODO update table with projected potential
-        } catch (NonProjectablePotentialException e) {
-            e.printStackTrace();
-        }
+    private void update() throws NonProjectablePotentialException {
+        TablePotential projectedPotential = newPotential.tableProject(new EvidenceCase(), null).get(0);
+        // TODO update table with projected potential
     }
     
     @Override
@@ -134,15 +125,5 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
             
             //update();
         }
-    }
-    
-    @Override
-    public void undoableEditWillHappen(UndoableEditEvent event) {
-        // Ignore
-    }
-    
-    @Override
-    public void undoEditHappened(UndoableEditEvent event) {
-        // Ignore
     }
 }

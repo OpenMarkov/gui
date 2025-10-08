@@ -79,7 +79,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      * @param configuration
      * @param potential
      */
-    public UncertainValuesDialog(Window owner, EvidenceCase configuration, TablePotential potential) {
+    public UncertainValuesDialog(Window owner, EvidenceCase configuration, TablePotential potential) throws NonProjectablePotentialException {
         super(owner);
         //This constructor is never called by a utility node
         /*
@@ -125,7 +125,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      * @param configuration
      * @param potential     - exactDistrPotential for which we will set uncertainty
      */
-    public UncertainValuesDialog(Window owner, EvidenceCase configuration, ExactDistrPotential potential) {
+    public UncertainValuesDialog(Window owner, EvidenceCase configuration, ExactDistrPotential potential) throws NonProjectablePotentialException {
         super(owner);
         TablePotential tablePotential = potential.getTablePotential();
         //This constructor is always called in a utility node
@@ -334,14 +334,9 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         return stringDatabase.getString("UncertainValuesDialog.DistributionsTable.Columns." + column + ".Label");
     }
     
-    private void fillDistributionsTableModel(Variable variable, EvidenceCase configuration, TablePotential potential) {
+    private void fillDistributionsTableModel(Variable variable, EvidenceCase configuration, TablePotential potential) throws NonProjectablePotentialException {
         potential.getUncertainValues();
-        TablePotential projectedPotential = null;
-        try {
-            projectedPotential = potential.tableProject(configuration, null).get(0);
-        } catch (NonProjectablePotentialException e) {
-            e.printStackTrace();
-        }
+        TablePotential projectedPotential = potential.tableProject(configuration, null).get(0);
         UncertainValue[] projectedUncertainTable = projectedPotential.getUncertainValues();
         // Get the table of uncertain values
         UncertainValue[] uncertainTable = !hasUncertainValues(projectedUncertainTable) ?

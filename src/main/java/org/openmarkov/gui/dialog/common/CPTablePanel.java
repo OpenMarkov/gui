@@ -11,6 +11,7 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.component.ValuesTable;
+import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 
 import javax.swing.*;
 
@@ -28,7 +29,7 @@ import javax.swing.*;
 	 */
 	private boolean modifiable;
     
-    public CPTablePanel(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    public CPTablePanel(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
 		super(node);
 		modifiable = false;
 	}

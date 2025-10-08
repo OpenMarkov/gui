@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.io;
 
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
@@ -144,15 +145,17 @@ public abstract class FileChooser extends JFileChooser {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-
-	public String getPgmxFileFormat() throws ParserConfigurationException, SAXException, IOException {
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(getSelectedFile());
-		String version = doc.getDocumentElement().getAttribute("formatVersion");
-		//Removing the last digit of the version
-		version = version.substring(0, version.lastIndexOf('.'));
-        return "OpenMarkov." + version;
+    
+    public String getPgmxFileFormat() throws SAXException, IOException {
+        try {
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(getSelectedFile());
+            String version = doc.getDocumentElement().getAttribute("formatVersion");
+            //Removing the last digit of the version
+            version = version.substring(0, version.lastIndexOf('.'));
+            return "OpenMarkov." + version;
+        } catch (ParserConfigurationException e) {
+            throw new UnreacheableException(e);
+        }
 
 	}
 }

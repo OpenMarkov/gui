@@ -131,34 +131,30 @@ import java.awt.*;
         }
     }
     
-    @Override public boolean saveChanges() {
-        try {
-            boolean result = super.saveChanges();
-            ProbNet probNet = node.getProbNet();
-            Potential oldPotential = node.getPreviousPotential();
-            Potential newPotential = null;
-            if (node.getVariable().getVariableType() != VariableType.FINITE_STATES) {
-                double numericValue = Double.parseDouble(valueSpinner.getValue().toString());
-                PartitionedInterval domain = node.getVariable().getPartitionedInterval();
-                if (numericValue > domain.getMax() || numericValue < domain.getMin()) {
-                    throw new UnrecoverableException(new ValueOutOfDomaingRangeException(numericValue, domain));
-                }
-                newPotential = new DeltaPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(),
-                                                  numericValue);
-            } else {
-                int selectedIndex = stateComboBox.getSelectedIndex();
-                State state = node.getVariable().getStates()[selectedIndex];
-                newPotential = new DeltaPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(), state);
+    @Override
+    public boolean saveChanges() throws DoEditException, BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong {
+        boolean result = super.saveChanges();
+        ProbNet probNet = node.getProbNet();
+        Potential oldPotential = node.getPreviousPotential();
+        Potential newPotential = null;
+        if (node.getVariable().getVariableType() != VariableType.FINITE_STATES) {
+            double numericValue = Double.parseDouble(valueSpinner.getValue().toString());
+            PartitionedInterval domain = node.getVariable().getPartitionedInterval();
+            if (numericValue > domain.getMax() || numericValue < domain.getMin()) {
+                throw new UnrecoverableException(new ValueOutOfDomaingRangeException(numericValue, domain));
             }
-            newPotential.setComment(oldPotential.getComment());
-            PotentialChangeEdit edit = new PotentialChangeEdit(node, oldPotential, newPotential);
-            edit.doEdit(probNet);
-            return result;
-        } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential |
-                 BinomialPotentialWrongValueException.ThetaValueIsWrong |
-                 BinomialPotentialWrongValueException.NValuesIsWrong e) {
-            throw new UnrecoverableException(e);
+            newPotential = new DeltaPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(),
+                                              numericValue);
+        } else {
+            int selectedIndex = stateComboBox.getSelectedIndex();
+            State state = node.getVariable().getStates()[selectedIndex];
+            newPotential = new DeltaPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(), state);
         }
+        newPotential.setComment(oldPotential.getComment());
+        PotentialChangeEdit edit = new PotentialChangeEdit(node, oldPotential, newPotential);
+        edit.doEdit(probNet);
+        return result;
+        
     }
     
     @Override public void close() {

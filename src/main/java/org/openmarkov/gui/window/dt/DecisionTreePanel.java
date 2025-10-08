@@ -10,10 +10,7 @@ package org.openmarkov.gui.window.dt;
 import org.openmarkov.core.dt.DecisionTreeBranch;
 import org.openmarkov.core.dt.DecisionTreeElement;
 import org.openmarkov.core.dt.DecisionTreeNode;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.MulticriteriaOptions.Type;
 import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -41,6 +38,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 
 @SuppressWarnings("serial") public class DecisionTreePanel extends JScrollPane {
     protected DecisionTree jTree;
@@ -53,7 +51,7 @@ import java.awt.event.MouseListener;
     private ContextualMenuFactory contextualMenuFactory;
     private TreePanelListener listener;
     
-    public DecisionTreePanel(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
+    public DecisionTreePanel(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         listener = new TreePanelListener();
         contextualMenuFactory = new ContextualMenuFactory(listener);
         
@@ -75,12 +73,12 @@ import java.awt.event.MouseListener;
         
     }
     
-    public static DecisionTreeElement buildDecisionTree(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
+    public static DecisionTreeElement buildDecisionTree(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         return buildDecisionTree(probNet, 5);
     }
     
     
-    public static DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
+    public static DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         return buildDecisionTree(probNet, depth, new EvidenceCase());
     }
     
@@ -93,7 +91,7 @@ import java.awt.event.MouseListener;
      *
      * @throws NotEvaluableNetworkException
      */
-    private static DecisionTreeBranch buildDecisionTree(ProbNet probNet, int depth, EvidenceCase branchEvidence) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
+    private static DecisionTreeBranch buildDecisionTree(ProbNet probNet, int depth, EvidenceCase branchEvidence) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         DecisionTreeBranch root = null;
         NetworkType networkType = probNet.getNetworkType();
         if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
@@ -124,18 +122,18 @@ import java.awt.event.MouseListener;
         repaint();
     }
     
-    public void inferenceExpandNextLevel() throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
+    public void inferenceExpandNextLevel() throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         inferenceExpandLevels(1);
     }
     
-    public void inferenceExpandLevels(int n) throws NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException {
+    public void inferenceExpandLevels(int n) throws NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         DecisionTreeModel auxModel = (DecisionTreeModel) jTree.getModel();
         DecisionTreeBranchPanel root = (DecisionTreeBranchPanel) auxModel.getRoot();
         inferenceExpandLevels(root.getTreeBranch(), null, n, new EvidenceCase());
         updateVisualInformation(root.getTreeBranch());
     }
     
-    private static void inferenceExpandLevels(DecisionTreeElement root, DecisionTreeNode parent, int n, EvidenceCase branchEvidence) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
+    private static void inferenceExpandLevels(DecisionTreeElement root, DecisionTreeNode parent, int n, EvidenceCase branchEvidence) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         if (root instanceof DecisionTreeBranch || ((DecisionTreeNode) root).getNodeType() != NodeType.UTILITY) {
             if (root instanceof DecisionTreeNode) {
                 parent = (DecisionTreeNode) root;
@@ -164,23 +162,23 @@ import java.awt.event.MouseListener;
     
     private static EvidenceCase createEvidenceBranchPath(EvidenceCase branchEvidence, DecisionTreeBranch branch) {
         EvidenceCase newEvi = new EvidenceCase(branchEvidence);
-        try {
-            if (branch != null) {
-                Variable branchVariable = branch.getBranchVariable();
-                if (branchVariable != null && (!branchVariable.getName()
-                                                              .equalsIgnoreCase("OD")) && !newEvi.contains(branchVariable)
-                ) {
+        if (branch != null) {
+            Variable branchVariable = branch.getBranchVariable();
+            if (branchVariable != null
+                    && (!branchVariable.getName().equalsIgnoreCase("OD"))
+                    && !newEvi.contains(branchVariable)) {
+                try {
                     newEvi.addFinding(new Finding(branchVariable, branch.getBranchState()));
+                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
+                    throw new UnreacheableException(e);
                 }
             }
-        } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-            e.printStackTrace();
         }
         return newEvi;
     }
     
     
-    public void inferenceExpandAllLevels() throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException {
+    public void inferenceExpandAllLevels() throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         inferenceExpandLevels(Integer.MAX_VALUE);
     }
     
@@ -197,7 +195,9 @@ import java.awt.event.MouseListener;
                     try {
                         inferenceExpandNextLevel();
                     } catch (NotEvaluableNetworkException | IncompatibleEvidenceException |
-                             NonProjectablePotentialException ex) {
+                             NonProjectablePotentialException |
+                             PotentialOperationException.DifferentSizesInPotentialsAndStates |
+                             NotSupportedOperationException ex) {
                         throw new UnrecoverableException(ex);
                     }
                     break;
@@ -207,7 +207,9 @@ import java.awt.event.MouseListener;
                     try {
                         inferenceExpandAllLevels();
                     } catch (NotEvaluableNetworkException | IncompatibleEvidenceException |
-                             NonProjectablePotentialException ex) {
+                             NonProjectablePotentialException |
+                             PotentialOperationException.DifferentSizesInPotentialsAndStates |
+                             NotSupportedOperationException ex) {
                         throw new UnrecoverableException(ex);
                     }
                     break;
@@ -228,7 +230,11 @@ import java.awt.event.MouseListener;
                     Object selectedComponent = jTree.getLastSelectedPathComponent();
                     if (selectedComponent instanceof DecisionTreeNodePanel treeNodePanel) {
                         DecisionTreeNode treeNode = treeNodePanel.getTreeNode();
-                        tree2dot.paintDTNode(treeNode);
+                        try {
+                            tree2dot.paintDTNode(treeNode);
+                        } catch (IOException ex) {
+                            throw new UnrecoverableException(ex);
+                        }
                     }
                     break;
                 case null, default:

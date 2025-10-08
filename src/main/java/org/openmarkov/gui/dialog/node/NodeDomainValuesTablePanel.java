@@ -694,58 +694,41 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     // TODO this method must be changed when the Elvira parser will retrieve
     // data in an proper separated format
     protected Object[][] convertStringsToTableFormat(State[] states) {
-        int i = 0;
         int numColumns = 6; // name-symbol-value-separator-value-symbol
-        String aString;
-        String lowSymbol;
-        String upperSymbol;
-        double lowValue;
-        double upperValue;
-        int index;
-        String name;
-        int numIntervals = states.length;
-        Object[][] data = new Object[numIntervals][numColumns];
-        int position = 0;
-        try {
-            for (i = 0; i < numIntervals; i++) {
-                // for (i = numIntervals-1; i >= 0; i--) {
-                position = 0;
-                // aString = GUIDefaultStates.getValuesInAString(states[i].getName());
-                aString = states[i].getName();
-                // find name & lowSymbol
-                index = aString.indexOf('[');
-                if (index < 0)
-                    index = aString.indexOf('(');
-                name = aString.substring(0, index);
-                data[i][position++] = name; // position 0
-                aString = aString.substring(index);
-                lowSymbol = aString.substring(0, 1);
-                data[i][position++] = lowSymbol; // position 1
-                // find lowValue
-                aString = aString.substring(1);
-                index = aString.indexOf(',');
-                lowValue = Double.parseDouble(aString.substring(0, index));
-                data[i][position++] = lowValue; // position 2
-                // find separator
-                aString = aString.substring(index);
-                data[i][position++] = aString.substring(0, 1); // position 3
-                // find upperValue
-                aString = aString.substring(1);
-                index = aString.indexOf(']');
-                if (index < 0)
-                    index = aString.indexOf(')');
-                upperValue = Double.parseDouble(aString.substring(0, index));
-                data[i][position++] = upperValue; // position 4
-                // find upperSymbol
-                aString = aString.substring(index);
-                upperSymbol = aString.substring(0, 1);
-                data[i][position++] = upperSymbol; // position 5
-            }
-        } catch (StringIndexOutOfBoundsException ex) {
-            // ExceptionsHandler.handleException(ex,
-            // "Error accessing position in Intervals " + i + position--,
-            // false );
-            logger.info("Error accessing position in Intervals " + i + position--);
+        Object[][] data = new Object[states.length][numColumns];
+        for (int i = 0; i < states.length; i++) {
+            // for (i = numIntervals-1; i >= 0; i--) {
+            int position = 0;
+            // aString = GUIDefaultStates.getValuesInAString(states[i].getName());
+            String aString = states[i].getName();
+            // find name & lowSymbol
+            int index = aString.indexOf('[');
+            if (index < 0)
+                index = aString.indexOf('(');
+            String name = aString.substring(0, index);
+            data[i][position++] = name; // position 0
+            aString = aString.substring(index);
+            String lowSymbol = aString.substring(0, 1);
+            data[i][position++] = lowSymbol; // position 1
+            // find lowValue
+            aString = aString.substring(1);
+            index = aString.indexOf(',');
+            double lowValue = Double.parseDouble(aString.substring(0, index));
+            data[i][position++] = lowValue; // position 2
+            // find separator
+            aString = aString.substring(index);
+            data[i][position++] = aString.substring(0, 1); // position 3
+            // find upperValue
+            aString = aString.substring(1);
+            index = aString.indexOf(']');
+            if (index < 0)
+                index = aString.indexOf(')');
+            double upperValue = Double.parseDouble(aString.substring(0, index));
+            data[i][position++] = upperValue; // position 4
+            // find upperSymbol
+            aString = aString.substring(index);
+            String upperSymbol = aString.substring(0, 1);
+            data[i][position++] = upperSymbol; // position 5
         }
         return data;
     }
@@ -759,10 +742,9 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * @return an array of arrays of objects that has the same elements.
      */
     protected static Object[][] convertStringsToTableDiscreteFormat(State[] values) {
-        int i;
         int l = values.length;
         Object[][] data = new Object[l][1];
-        i = l - 1;
+        int i = l - 1;
         for (State value : values) {
             data[i--][0] = GUIDefaultStates.getString(value.getName());
         }
@@ -865,7 +847,6 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         }
         if (comboBox.getName().equals("jComboBoxNodeVariableType")) {
             if (itemSelected != null && itemEvent.getStateChange() == ItemEvent.SELECTED && !isUploadingData()) {
-                VariableTypeEdit variableTypeEdit;
                 VariableType variableType;
                 if (itemSelected.equals(stringDatabase
                                                 .getString("NodeDomainValuesTablePanel." + "jComboBoxNodeVariableType.Items.Discrete"))) {
@@ -877,7 +858,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     variableType = VariableType.NUMERIC;
                 }
                 
-                variableTypeEdit = new VariableTypeEdit(node, variableType);
+                VariableTypeEdit variableTypeEdit = new VariableTypeEdit(node, variableType);
                 ProbNet nodeProbNet = node.getProbNet();
                 try {
                     variableTypeEdit.doEdit(nodeProbNet);

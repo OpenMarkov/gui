@@ -12,6 +12,7 @@ import org.openmarkov.core.action.SetPotentialVariablesEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -23,6 +24,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
 import org.openmarkov.gui.dialog.common.*;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
+import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualNode;
 
@@ -326,7 +328,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * @return An integer indicating the button clicked by the user when closing
      * this dialog
      */
-    public int requestValues() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    public int requestValues() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         // Shows the potentials' options table
         if (node.getNodeType() == NodeType.DECISION && node.getPolicyType() == PolicyType.OPTIMAL && readOnly) {
             setEnabledDecisionOptions(true);
@@ -345,7 +347,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * @param node object from where load the information.
      */
     // TODO Remove all this
-    private void showFields(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+    private void showFields(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NotEnoughtMemoryException {
         // The element order in PotentialType object are same that
         // JComboBoxRelationType
         previouslySelectedPotentialType = node.getFirstPotential().getClass().getAnnotation(PotentialType.class)
@@ -461,9 +463,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             univariateDistrParametrizationComboBox
                     .setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
             univariateDistrParametrizationComboBox.setName("jComboBoxParametrization");
-            univariateDistrParametrizationComboBox.addActionListener(new java.awt.event.ActionListener() {
-                @Override public void actionPerformed(java.awt.event.ActionEvent evt) {
+            univariateDistrParametrizationComboBox.addActionListener(evt -> {
+                try {
                     distributionChanged();
+                } catch (DoEditException.CannotRemovePotential | DoEditException.ConstraintViolated e) {
+                    throw new UnrecoverableException(e);
                 }
             });
             univariateDistrParametrizationComboBox.setEnabled(!readOnly);
@@ -472,8 +476,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         
     }
     
-    protected void distributionChanged() {
-        
+    protected void distributionChanged() throws DoEditException.CannotRemovePotential, DoEditException.ConstraintViolated {
         String distributionUnivariateName = (String) univariateDistrComboBox.getSelectedItem();
         String distributionParameters = (String) univariateDistrParametrizationComboBox.getSelectedItem();
         //When we are changing the distribution the first value should be selected
@@ -481,19 +484,13 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         String distributionName = ProbDensFunctionManager.getUniqueInstance()
                                                          .getDistributionName(distributionUnivariateName, distributionParameters);
         if (!previouslySelectedDistributionName.equals(distributionName)) {
-            
             AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, distributionName);
-            try {
-                ProbNet probNet = node.getProbNet();
-                nodePotentialEdit.doEdit(probNet);
-            } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e1) {
-                e1.printStackTrace();
-            }
+            ProbNet probNet = node.getProbNet();
+            nodePotentialEdit.doEdit(probNet);
             updatePotentialPanel();
             previouslySelectedDistributionName = distributionName;
             
         }
-        
     }
     
     /**
@@ -607,7 +604,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * @return true if all the fields are correct.
      */
     @Override
-    protected boolean doOkClickBeforeHide() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong {
+    protected boolean doOkClickBeforeHide() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong, DoEditException {
         if (getPotentialPanel() instanceof TablePotentialPanel) {
             ((TablePotentialPanel) getPotentialPanel()).getValuesTable().stopCellEditing();
         }
@@ -620,23 +617,15 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             String comment = commentPane.isEmpty() ? "" : commentPane.getCommentText();
             node.getPotentials().get(0).setComment(comment);
         }
-        
         SetPotentialEdit setPotentialEdit;
         if (node.getNodeType() == NodeType.DECISION) {
             setPotentialEdit = new SetPotentialEdit(node, lastPotential, node.getPotential(), hasPolicy, (VisualDecisionNode) visualNode);
         } else {
             setPotentialEdit = new SetPotentialEdit(node, lastPotential, node.getPotential());
         }
-        
-        
-        try {
-            ProbNet probNet = node.getProbNet();
-            setPotentialEdit.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated e) {
-            e.printStackTrace();
-        }
+        ProbNet probNet = node.getProbNet();
+        setPotentialEdit.doEdit(probNet);
         node.finalizePotentialEdition();
-        
         node.getProbNet().getPNESupport().closeParenthesis();
         return true;
     }
@@ -725,11 +714,15 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     
     @Override public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(reorderVariablesButton)) {
-            actionPerformedReorderVariables();
+            try {
+                actionPerformedReorderVariables();
+            } catch (DoEditException.ConstraintViolated ex) {
+                throw new UnrecoverableException(ex);
+            }
         }
     }
     
-    protected void actionPerformedReorderVariables() {
+    protected void actionPerformedReorderVariables() throws DoEditException.ConstraintViolated {
         ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, node);
         if (reorderVariablesDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             List<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel().getVariables();
@@ -738,22 +731,14 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             if (potentialPanelForAction instanceof TablePotentialPanel) {
                 Potential potential = nodePotential.reorder(newVariables);
                 SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
-                try {
-                    ProbNet probNet = node.getProbNet();
-                    potentialEdit.doEdit(probNet);
-                } catch (DoEditException.ConstraintViolated e) {
-                    e.printStackTrace();
-                }
+                ProbNet probNet = node.getProbNet();
+                potentialEdit.doEdit(probNet);
                 updatePotentialPanel();
                 
             } else if (potentialPanelForAction instanceof ICIPotentialsTablePanel) {
                 SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(node, newVariables);
-                try {
-                    ProbNet probNet = node.getProbNet();
-                    setPotentialVariables.doEdit(probNet);
-                } catch (DoEditException.ConstraintViolated e) {
-                    e.printStackTrace();
-                }
+                ProbNet probNet = node.getProbNet();
+                setPotentialVariables.doEdit(probNet);
                 updatePotentialPanel();
             }
         }

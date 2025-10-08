@@ -60,7 +60,7 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	/**
 	 * number of positions in this table
 	 */
-	protected int position = -1;
+    protected long position = -1;
 	/**
 	 * list of variables that are shown in this table
 	 */
@@ -234,16 +234,14 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	/**
 	 * @return the position
 	 */
-	protected int getPosition() {
-
+    protected long getPosition() {
 		return position;
 	}
 
 	/**
 	 * @param position the position to set
 	 */
-	protected void setPosition(int position) {
-
+    protected void setPosition(long position) {
 		this.position = position;
 	}
 

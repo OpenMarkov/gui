@@ -46,7 +46,6 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	private OpenMarkovConfiguration() {
 		this.logger = LogManager.getLogger(OpenMarkovConfiguration.class);
 		readConfiguration();
-
 	}
 
 	// Methods
@@ -84,7 +83,6 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
             oos.writeObject(OPEN_MARKOV_CONFIGURATION);
 			oos.close();
 		} catch (IOException e) {
-			ExceptionDialog.show(e);
 		}
 	}
 
@@ -137,12 +135,9 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 			}
 		} catch (FileNotFoundException f) {
 			generateDefaultConfiguration(configurationsCollection);
-		} catch (IOException e) {
-			ExceptionDialog.show(e);
-		} catch (ClassNotFoundException e) {
-			logger.info(e);
+        } catch (IOException | ClassNotFoundException e) {
 		}
-	}
+    }
 
 	/**
      * @param configurationsCollection {@code HashMap} with {@code key =

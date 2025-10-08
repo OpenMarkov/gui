@@ -7,11 +7,14 @@
 
 package org.openmarkov.gui.window;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import org.openmarkov.core.exception.ParserException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.openmarkov.gui.dialog.SplashScreenLoader;
+import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
 import org.xml.sax.SAXException;
 
@@ -19,6 +22,7 @@ import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class constructs the main GUI in a frame with a splash screen during the
@@ -29,141 +33,141 @@ import java.io.IOException;
  * @version 1.3 jlgozalo - replacing System.err with JOptionPane
  */
 @SuppressWarnings("serial") public class MainGUI extends JFrame {
-
-	/**
-	 * Main panel of the GUI.
-	 */
-	MainPanel mainPanel = null;
-
-	/**
-	 * Launch the MainGUIInit runnable process
-	 */
-	public MainGUI() {
-
-		/*
-		 * Splash Screen panel
-		 */
-		SplashScreenLoader splash = new SplashScreenLoader();
-
-		configureUI();
-		splash.splashScreenInit();
-
-		splash.getSplash().setProgress("Loading OpenMarkov preferences", 0);
-		doReadPreferences();
-		splash.doingWork();
-		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		setTitle("OpenMarkov");
-		setName("MainGUI");
-		Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
-		setSize(screenPortionSize(screenInsets));
-		setLocation(screenInsets.left, screenInsets.top);
-		splash.getSplash().setProgress("Loading Resources", 25);
-		// TODO here will be the plug-in loaders in future
-		setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
-		splash.getSplash().setProgress("Loading Main Panel", 50);
-		setContentPane(getMainPanel());
-		splash.getSplash().setProgress("Completed", 100);
-		// loading the application
-		splash.splashScreenDestroy();
-	}
-	
-	
-	public void oldMainGUI() {
-
-		/*
-		 * Splash Screen panel
-		 */
-		SplashScreenLoader splash = new SplashScreenLoader();
-
-		configureUI();
-		splash.splashScreenInit();
-
-		splash.getSplash().setProgress("Loading OpenMarkov preferences", 0);
-		doReadPreferences();
-		splash.doingWork();
-		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		setTitle("OpenMarkov");
-		setName("MainGUI");
-		Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
-		setSize(screenPortionSize(screenInsets));
-		setLocation(screenInsets.left, screenInsets.top);
-		splash.getSplash().setProgress("Loading Resources", 25);
-		// TODO here will be the plug-in loaders in future
-		setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
-		splash.getSplash().setProgress("Loading Main Panel", 50);
-		setContentPane(getMainPanel());
-		splash.getSplash().setProgress("Completed", 100);
-		// loading the application
-		splash.splashScreenDestroy();
-	}
-
-	/**
-	 * This method sets and configures the UI manager.
-	 */
-	private static void configureUI() {
-
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-		/*
-		 * The next line is used to avoid that disabled menuitems are
-		 * highlighted.
-		 */
-
-		UIManager.put("MenuItem.disabledAreNavigable", Boolean.FALSE);
-
-	}
-
-	/**
+    
+    /**
+     * Main panel of the GUI.
+     */
+    MainPanel mainPanel = null;
+    
+    /**
+     * Launch the MainGUIInit runnable process
+     */
+    public MainGUI() {
+        
+        /*
+         * Splash Screen panel
+         */
+        SplashScreenLoader splash = new SplashScreenLoader();
+        
+        configureUI();
+        splash.splashScreenInit();
+        
+        splash.getSplash().setProgress("Loading OpenMarkov preferences", 0);
+        doReadPreferences();
+        splash.doingWork();
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("OpenMarkov");
+        setName("MainGUI");
+        Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+        setSize(screenPortionSize(screenInsets));
+        setLocation(screenInsets.left, screenInsets.top);
+        splash.getSplash().setProgress("Loading Resources", 25);
+        // TODO here will be the plug-in loaders in future
+        setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
+        splash.getSplash().setProgress("Loading Main Panel", 50);
+        setContentPane(getMainPanel());
+        splash.getSplash().setProgress("Completed", 100);
+        // loading the application
+        splash.splashScreenDestroy();
+    }
+    
+    
+    public void oldMainGUI() {
+        
+        /*
+         * Splash Screen panel
+         */
+        SplashScreenLoader splash = new SplashScreenLoader();
+        
+        configureUI();
+        splash.splashScreenInit();
+        
+        splash.getSplash().setProgress("Loading OpenMarkov preferences", 0);
+        doReadPreferences();
+        splash.doingWork();
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("OpenMarkov");
+        setName("MainGUI");
+        Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+        setSize(screenPortionSize(screenInsets));
+        setLocation(screenInsets.left, screenInsets.top);
+        splash.getSplash().setProgress("Loading Resources", 25);
+        // TODO here will be the plug-in loaders in future
+        setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
+        splash.getSplash().setProgress("Loading Main Panel", 50);
+        setContentPane(getMainPanel());
+        splash.getSplash().setProgress("Completed", 100);
+        // loading the application
+        splash.splashScreenDestroy();
+    }
+    
+    /**
+     * This method sets and configures the UI manager.
+     */
+    private static void configureUI() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                 UnsupportedLookAndFeelException e) {
+            throw new UnreacheableException(e);
+        }
+        /*
+         * The next line is used to avoid that disabled menuitems are
+         * highlighted.
+         */
+        
+        UIManager.put("MenuItem.disabledAreNavigable", Boolean.FALSE);
+        
+    }
+    
+    /**
      * read the {@code OpenMarkovPreferences} configuration, and set the
-	 * LastConnection preference to current Time
-	 */
-	private static void doReadPreferences() {
-		OpenMarkovPreferences.ensurePreferenceAreInitialized();
-		OpenMarkovPreferences
-				.set(OpenMarkovPreferencesKeys.LATEST_CONNECTION, Double.toString(System.currentTimeMillis()),
+     * LastConnection preference to current Time
+     */
+    private static void doReadPreferences() {
+        OpenMarkovPreferences.ensurePreferenceAreInitialized();
+        OpenMarkovPreferences
+                .set(OpenMarkovPreferencesKeys.LATEST_CONNECTION, Double.toString(System.currentTimeMillis()),
                      OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
-		OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_USER_CONNECTED, System.getProperty("user.name"),
+        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_USER_CONNECTED, System.getProperty("user.name"),
                                   OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
-	}
-
-	/**
-	 * This method returns a dimension that represents the 3/4 size of the
-	 * screen.
-	 *
-	 * @return new dimensions of the window.
-	 */
+    }
+    
+    /**
+     * This method returns a dimension that represents the 3/4 size of the
+     * screen.
+     *
+     * @return new dimensions of the window.
+     */
     private static Dimension screenPortionSize(Insets screenInsets) {
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		int width = screen.width - screenInsets.right - screenInsets.left;
-		int height = screen.height - screenInsets.top - screenInsets.bottom;
-		return new Dimension(width, height);
-	}
-
-	/**
-	 * This method initialises mainPanel.
-	 *
-	 * @return a new main panel.
-	 */
-	public MainPanel getMainPanel() {
-
-		if (mainPanel == null) {
-			mainPanel = new MainPanel(this);
-		}
-
-		return mainPanel;
-
-	}
-
-	/**
-	 * Opens net from file
-	 *
-	 * @param fileName
-	 */
-	public void openNetwork(String fileName) throws ParserException, IOException, ParserConfigurationException, SAXException, NoReaderForFileException {
-		mainPanel.openNetwork(fileName);
-	}
-
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = screen.width - screenInsets.right - screenInsets.left;
+        int height = screen.height - screenInsets.top - screenInsets.bottom;
+        return new Dimension(width, height);
+    }
+    
+    /**
+     * This method initialises mainPanel.
+     *
+     * @return a new main panel.
+     */
+    public MainPanel getMainPanel() {
+        
+        if (mainPanel == null) {
+            mainPanel = new MainPanel(this);
+        }
+        
+        return mainPanel;
+        
+    }
+    
+    /**
+     * Opens net from file
+     *
+     * @param fileName
+     */
+    public void openNetwork(String fileName) throws ParserException, IOException, SAXException, NoReaderForFileException, CorruptNetworkFile {
+        mainPanel.openNetwork(fileName);
+    }
+    
 }

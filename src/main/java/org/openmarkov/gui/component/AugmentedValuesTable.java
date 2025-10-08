@@ -122,17 +122,18 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
      * @author carmenyago
      */
     @Override protected boolean castValue(Object newValue) {
-        
-        if (newValue instanceof String newValueAsString)
-            try {
-                Double.parseDouble(newValueAsString);
-                return true;
-            } catch (NumberFormatException ex) {
-                return false;
+        return switch (newValue) {
+            case String newValueAsString -> {
+                try {
+                    Double.parseDouble(newValueAsString);
+                    yield true;
+                } catch (NumberFormatException ex) {
+                    yield false;
+                }
             }
-        if (newValue instanceof Double)
-            return true;
-        return false;
+            case Double d -> true;
+            default -> false;
+        };
     }
     
     /**
@@ -198,13 +199,6 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
             String a = functionValues[position];
             super.getModel().setValueAt(a, rowPosition, columnPosition);
         }
-    }
-    
-    /**
-     *
-     */
-    @Override public void undoableEditWillHappen(UndoableEditEvent event) {
-        // Ignore
     }
     
     /**

@@ -45,6 +45,7 @@ public class PotentialPanelManager {
      * Returns a potential panel by name.
      *
      * @param potentialType the potential's name.
+     *
      * @return a new Potential instance given the parameters.
      */
     public final PotentialPanel getPotentialPanel(String potentialType, Node node) {
@@ -52,8 +53,8 @@ public class PotentialPanelManager {
             return new EmptyPotentialPanel(node);
         }
         try {
-            Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get(potentialType)
-                                                                                     .getConstructor(Node.class);
+            Constructor<? extends PotentialPanel> constructor
+                    = potentialPanelClasses.get(potentialType).getConstructor(Node.class);
             return constructor.newInstance(node);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException e) {
@@ -66,6 +67,7 @@ public class PotentialPanelManager {
      *
      * @param potentialType   the potential's name.
      * @param potentialFamily the potential's family.
+     *
      * @return a new Potential instance given the parameters.
      */
     public final PotentialPanel getPotentialPanel(String potentialType, String potentialFamily, Node node) {
@@ -74,7 +76,8 @@ public class PotentialPanelManager {
                 Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get(potentialType)
                                                                                          .getConstructor(Node.class);
                 return constructor.newInstance(node);
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ignored) {
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                     InvocationTargetException ignored) {
             }
         }
         if (potentialPanelClasses.get(potentialFamily) != null) {
@@ -82,7 +85,8 @@ public class PotentialPanelManager {
                 Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get(potentialFamily)
                                                                                          .getConstructor(Node.class);
                 return constructor.newInstance(node);
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ignored) {
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                     InvocationTargetException ignored) {
             }
         }
         return new EmptyPotentialPanel(node);

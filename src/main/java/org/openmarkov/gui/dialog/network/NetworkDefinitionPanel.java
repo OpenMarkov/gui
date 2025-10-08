@@ -203,9 +203,11 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
                 jComboBoxNetworkTypes.setSelectedItem(stringDatabase.getString(
                         "NetworkDefinitionPanel.NetworkTypes.Items." + NetworkTypeManager
                                 .getName(probNet.getNetworkType())));
-                jComboBoxNetworkTypes.addActionListener(new ActionListener() {
-                    @Override public void actionPerformed(ActionEvent arg0) {
+                jComboBoxNetworkTypes.addActionListener(arg0 -> {
+                    try {
                         networkTypeChanged();
+                    } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
+                        throw new UnrecoverableException(e);
                     }
                 });
             }
@@ -315,37 +317,40 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
         networkCommentEdit.doEdit(probNet);
     }
     
-    private void networkTypeChanged() {
+    private void networkTypeChanged() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
         String itemSelected = (String) jComboBoxNetworkTypes.getSelectedItem();
-        if (itemSelected != null) {
-            org.openmarkov.core.model.network.type.NetworkType selectedNetworkType = null;
-            for (String networkTypeName : networkTypeManager.getNetworkTypeNames()) {
-                if (itemSelected.equals(stringDatabase
-                                                .getString("NetworkDefinitionPanel.NetworkTypes.Items." + networkTypeName))) {
-                    selectedNetworkType = networkTypeManager.getNetworkType(networkTypeName);
-                }
-            }
-            if (selectedNetworkType != null) {
-                /*
-                28/10/2014
-                Fixing issue 169
-                https://bitbucket.org/cisiad/org.openmarkov.issues/issue/169/opening-the-network-properties-dialog
-                The ChangeNetworkTypeEdit should only be invoked if the network type has actually changed
-                 */
-                if (probNet.getNetworkType().toString().compareTo(selectedNetworkType.toString()) != 0) {
-                    ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit(probNet, selectedNetworkType);
-                    try {
-                        changeNetworkType.doEdit(probNet);
-                        parent.update(probNet);
-                        //parent.getNetworkAdvancedPanel().update(probNet); SUSTITUIDA POR 342
-                    } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
-                        // TODO maintain comboBox with the current probNet
-                        // TODO temporal change in exception management
-                        ExceptionDialog.show(e);
-                    }
-                }
+        if (itemSelected == null) {
+            return;
+        }
+        NetworkType selectedNetworkType = null;
+        for (String networkTypeName : networkTypeManager.getNetworkTypeNames()) {
+            if (itemSelected.equals(stringDatabase.getString("NetworkDefinitionPanel.NetworkTypes.Items." + networkTypeName))) {
+                selectedNetworkType = networkTypeManager.getNetworkType(networkTypeName);
             }
         }
+        if (selectedNetworkType == null) {
+            return;
+        }
+        if (probNet.getNetworkType().toString().compareTo(selectedNetworkType.toString()) == 0) {
+            return;
+        }
+        /*
+        28/10/2014
+        Fixing issue 169
+        https://bitbucket.org/cisiad/org.openmarkov.issues/issue/169/opening-the-network-properties-dialog
+        The ChangeNetworkTypeEdit should only be invoked if the network type has actually changed
+         */
+        ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit(probNet, selectedNetworkType);
+        try {
+            changeNetworkType.doEdit(probNet);
+            parent.update(probNet);
+            //parent.getNetworkAdvancedPanel().update(probNet); SUSTITUIDA POR 342
+        } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
+            // TODO maintain comboBox with the current probNet
+            // TODO temporal change in exception management
+            throw e;
+        }
+        
     }
     
     public NetworkType getNetworkType() {

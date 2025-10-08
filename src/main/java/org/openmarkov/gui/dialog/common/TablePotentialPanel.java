@@ -23,6 +23,7 @@ import org.openmarkov.gui.component.ValuesTableModel;
 import org.openmarkov.gui.component.ValuesTableOptimalPolicyCellRenderer;
 import org.openmarkov.gui.component.ValuesTableWithLinkRestrictionCellRenderer;
 import org.openmarkov.gui.dialog.node.UncertainValuesDialog;
+import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.UncertaintyContextualMenu;
 import org.openmarkov.gui.util.Utilities;
@@ -140,7 +141,7 @@ import java.util.List;
      * @param node : node whose first potential is a TablePotential or a TableDeltaPotential
      *             Adaptation from TableDeltaPotential
      */
-    public TablePotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+    public TablePotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NotEnoughtMemoryException {
         super();
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
         this.node = node;
@@ -214,7 +215,7 @@ import java.util.List;
      * UNCLEAR--&gt; Called in PotentialEditDialog.showFields(Node)
      */
     @Override
-    public void setData(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    public void setData(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         this.node = node;
         setData();
     }
@@ -239,7 +240,7 @@ import java.util.List;
      */
     // Using node sets in variable node
     // What to do with the exception
-    public void setData() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    public void setData() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         
         // true
         hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(node);
@@ -320,7 +321,7 @@ import java.util.List;
      *
      * @return the table data to be set
      */
-    protected Object[][] convertListPotentialsToTableFormat() throws ThereIsNoPotentialsInNodeException {
+    protected Object[][] convertListPotentialsToTableFormat() throws ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         Object[][] values;
         
         // Empty array values[number_of_rows][number_of_colums]
@@ -510,15 +511,10 @@ import java.util.List;
      * <p>
      * minor changes
      */
-    protected int setNumberOfPostions() {
-        int numPositions = 1;
-        try {
-            for (Variable variable : potential.getVariables()) {
-                numPositions = numPositions * variable.getNumStates();
-            }
-        } catch (NullPointerException exception) {
-            numPositions = 0;
-            logger.error("not enough memory");
+    protected long setNumberOfPostions() throws NotEnoughtMemoryException {
+        long numPositions = 1;
+        for (Variable variable : potential.getVariables()) {
+            numPositions = numPositions * variable.getNumStates();
         }
         setPosition(numPositions);
         return numPositions;
@@ -657,14 +653,13 @@ import java.util.List;
     /**
      * Creates and shows the UncertainValuesDialog object
      */
-    public void showUncertaintyDialog() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException.ConstraintViolated {
+    public void showUncertaintyDialog() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException.ConstraintViolated, NonProjectablePotentialException {
         // Generates the evidenceCase based on the column
         // selected on the JTable object
         evidenceCase = getEvidenceCaseFromSelectedColumn();
         UncertainValuesDialog uncertDialog;
         if (isExactDistrPotential) {
-            uncertDialog = new UncertainValuesDialog(Utilities.getOwner(this), evidenceCase,
-                                                     (ExactDistrPotential) potential);
+            uncertDialog = new UncertainValuesDialog(Utilities.getOwner(this), evidenceCase, (ExactDistrPotential) potential);
         } else {
             uncertDialog = new UncertainValuesDialog(Utilities.getOwner(this), evidenceCase, tablePotential);
         }
@@ -761,7 +756,8 @@ import java.util.List;
             try {
                 showUncertaintyDialog();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | DoEditException.ConstraintViolated ex) {
+                     ThereIsNoPotentialsInNodeException | DoEditException.ConstraintViolated |
+                     NonProjectablePotentialException ex) {
                 throw new UnrecoverableException(ex);
             }
         } else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE.getCommandName())) {
@@ -835,7 +831,7 @@ import java.util.List;
             }
         } catch (ThereIsNoPotentialsInNodeException e) {
             throw new UnreacheableException(e);
-        } catch (DoEditException.ConstraintViolated e) {
+        } catch (DoEditException.ConstraintViolated | NonProjectablePotentialException e) {
             throw new UnrecoverableException(e);
         }
     }

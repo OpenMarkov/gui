@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.inference.common;
 
 import org.openmarkov.core.action.MulticriteriaEdit;
 import org.openmarkov.core.action.TemporalOptionsEdit;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.inference.TemporalOptions;
@@ -21,7 +20,6 @@ import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -197,7 +195,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         
         this.setTitle(stringDatabase.getString("InferenceOptionsDialog.Title"));
         // If the net has more than atemporal variables, the net would be temporal
-        isTemporal = !probNet.hasConstraint(OnlyAtemporalVariables.class);
+        isTemporal = !probNet.hasConstraintOfClass(OnlyAtemporalVariables.class);
         
         if (probNet.getDecisionCriteria() != null && probNet.getDecisionCriteria().size() > 1) {
             this.isMulticriteria = true;
@@ -954,19 +952,11 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         if (table != null && table.getCellEditor() != null) {
             table.getCellEditor().stopCellEditing();
         }
-        
         probNet.getPNESupport().openParenthesis();
-        
         if (isMulticriteria) {
-            MulticriteriaEdit editMulticriteria = new MulticriteriaEdit(probNet, decisionCriteria,
-                                                                        multicriteriaOptions);
-            try {
-                probNet.getPNESupport().doEdit(editMulticriteria);
-            } catch (DoEditException e) {
-                e.printStackTrace();
-            }
+            MulticriteriaEdit editMulticriteria = new MulticriteriaEdit(probNet, decisionCriteria, multicriteriaOptions);
+            probNet.getPNESupport().doEdit(editMulticriteria);
         }
-        
         if (isTemporal) {
             int numSlices;
             try {
@@ -974,7 +964,6 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
             } catch (NumberFormatException e) {
                 throw new InvalidArgumentException("Slices number", numSlicesTextField.getText(), "is not a valid number, as it must be a number between " + Integer.MIN_VALUE + " and " + Integer.MAX_VALUE);
             }
-            
             this.temporalOptions.setHorizon(numSlices);
             if (beginningOfCycleButton.isSelected()) {
                 this.temporalOptions.setTransition(TransitionTime.BEGINNING);
@@ -985,11 +974,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
             }
             
             TemporalOptionsEdit editTemporal = new TemporalOptionsEdit(probNet, temporalOptions);
-            try {
-                probNet.getPNESupport().doEdit(editTemporal);
-            } catch (DoEditException e) {
-                e.printStackTrace();
-            }
+            probNet.getPNESupport().doEdit(editTemporal);
         }
         
         probNet.getPNESupport().closeParenthesis();

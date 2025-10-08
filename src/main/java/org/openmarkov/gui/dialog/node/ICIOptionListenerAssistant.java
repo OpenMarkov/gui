@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.gui.dialog.common.CPTablePanel;
 import org.openmarkov.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,7 +67,7 @@ public class ICIOptionListenerAssistant implements ItemListener {
             try {
                 itemStateChangedTPC(e);
             } catch (NonProjectablePotentialException | IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException ex) {
+                     ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
                 throw new UnrecoverableException(ex);
             }
         }
@@ -97,7 +98,7 @@ public class ICIOptionListenerAssistant implements ItemListener {
         }
     }
     
-    private void itemStateChangedTPC(ItemEvent e) throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    private void itemStateChangedTPC(ItemEvent e) throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         if (e.getStateChange() == ItemEvent.DESELECTED) {
             // has been deselected tpc
             previousModel = TPC;

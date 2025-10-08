@@ -742,13 +742,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
     /**
      *
      */
-    @Override public void undoableEditWillHappen(UndoableEditEvent event) {
-        // Ignore
-    }
-    
-    /**
-     *
-     */
     @Override public void undoEditHappened(UndoableEditEvent event) {
         if (event.getEdit() instanceof TablePotentialValueEdit edit) {
             TablePotential editPotential = edit.getPotential();

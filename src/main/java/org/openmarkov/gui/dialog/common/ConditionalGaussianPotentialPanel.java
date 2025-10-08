@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
+import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 import org.openmarkov.gui.util.Utilities;
 
 import javax.swing.*;
@@ -55,7 +56,7 @@ public class ConditionalGaussianPotentialPanel
             try {
                 editMeanPotential();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException ex) {
+                     ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
                 throw new UnrecoverableException(ex);
             }
         });
@@ -64,7 +65,7 @@ public class ConditionalGaussianPotentialPanel
             try {
                 editVariancePotential();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException ex) {
+                     ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
                 throw new UnrecoverableException(ex);
             }
         });
@@ -73,7 +74,7 @@ public class ConditionalGaussianPotentialPanel
         add(buttonPanel, BorderLayout.PAGE_START);
     }
     
-    private void editMeanPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    private void editMeanPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), meanDummyNode,
                                                                           false, isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
@@ -83,7 +84,7 @@ public class ConditionalGaussianPotentialPanel
         }
     }
     
-    private void editVariancePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    private void editVariancePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), varianceDummyNode,
                                                                           false, isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
@@ -109,26 +110,17 @@ public class ConditionalGaussianPotentialPanel
     }
     
     @Override
-    public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong {
-        try {
-            boolean result = super.saveChanges();
-            newPotential.setComment(oldPotential.getComment());
-            PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
-            edit.doEdit(probNet);
-            return result;
-        } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e) {
-            throw new UnrecoverableException(e);
-        }
-        
+    public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong, DoEditException {
+        boolean result = super.saveChanges();
+        newPotential.setComment(oldPotential.getComment());
+        PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
+        edit.doEdit(probNet);
+        return result;
     }
     
-    private void update() {
-        try {
-            TablePotential projectedPotential = newPotential.tableProject(new EvidenceCase(), null).get(0);
-            // TODO update table with projected potential
-        } catch (NonProjectablePotentialException e) {
-            e.printStackTrace();
-        }
+    private void update() throws NonProjectablePotentialException {
+        TablePotential projectedPotential = newPotential.tableProject(new EvidenceCase(), null).get(0);
+        // TODO update table with projected potential
     }
     
     @Override public void undoableEditHappened(UndoableEditEvent event) {
@@ -139,13 +131,5 @@ public class ConditionalGaussianPotentialPanel
             
             //update();
         }
-    }
-    
-    @Override public void undoableEditWillHappen(UndoableEditEvent event) {
-        // Ignore
-    }
-    
-    @Override public void undoEditHappened(UndoableEditEvent event) {
-        // Ignore
     }
 }

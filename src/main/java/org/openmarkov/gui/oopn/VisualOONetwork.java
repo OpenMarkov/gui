@@ -666,17 +666,13 @@ public class VisualOONetwork extends VisualNetwork {
         return isEquivalent;
     }
     
-    @Override public void markSelectedAsInput() {
+    @Override public void markSelectedAsInput() throws DoEditException.ConstraintViolated {
         super.markSelectedAsInput();
         
         for (VisualInstance visualInstance : getSelectedInstances()) {
             MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualInstance.getInstance().isInput(),
                                                                   visualInstance.getInstance());
-            try {
-                markAsInputEdit.doEdit(probNet);
-            } catch (DoEditException.ConstraintViolated e) {
-                e.printStackTrace();
-            }
+            markAsInputEdit.doEdit(probNet);
         }
     }
     
@@ -713,24 +709,16 @@ public class VisualOONetwork extends VisualNetwork {
         }
     }
     
-    @Override public void setParameterArity(ParameterArity arity) {
+    @Override public void setParameterArity(ParameterArity arity) throws DoEditException.ConstraintViolated {
         for (VisualInstance visualInstance : getSelectedInstances()) {
             ChangeParameterArityEdit changeParameterArityEdit = new ChangeParameterArityEdit(probNet,
                                                                                              visualInstance.getInstance(), arity);
-            try {
-                changeParameterArityEdit.doEdit(probNet);
-            } catch (DoEditException.ConstraintViolated e) {
-                e.printStackTrace();
-            }
+            changeParameterArityEdit.doEdit(probNet);
         }
     }
     
     @Override public void undoableEditHappened(UndoableEditEvent e) {
         super.undoableEditHappened(e);
-    }
-    
-    @Override public void undoEditHappened(UndoableEditEvent event) {
-        super.undoEditHappened(event);
     }
     
     @Override protected void clean() {

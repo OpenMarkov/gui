@@ -307,7 +307,11 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
             // @ 2014/11/18. Issue 145.
             // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
             // Propagation of the domain in related variables in temporal models
-            propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
+            try {
+                propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
+            } catch (DoEditException.ConstraintViolated ex) {
+                throw new UnrecoverableException(ex);
+            }
             //
         }
         renameAction = true;
@@ -316,27 +320,21 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     // @ 2014/11/18. Issue 145.
     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
     // Propagation of the domain in related variables in temporal models
-    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) {
+    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) throws DoEditException.ConstraintViolated {
         // First we get the nodes in the same time slide as the node currently being edited
         List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
         // We create a variable to store the edit of the related node
         NodeStateEdit nodeStateEdit;
-        try {
-            // We iterate the related nodes, if any
-            if (nodeRelatedNodes != null) {
-                if (!nodeRelatedNodes.isEmpty()) {
-                    for (Node relatedNode : nodeRelatedNodes) {
-                        // we create the edit for the realted node
-                        nodeStateEdit = new NodeStateEdit(relatedNode, stateAction, selectedRow, option);
-                        // and we perform the edit
-                        ProbNet probNet = relatedNode.getProbNet();
-                        nodeStateEdit.doEdit(probNet);
-                    }
-                }
-            }
-        } catch (DoEditException.ConstraintViolated e) {
-            e.printStackTrace();
+        // We iterate the related nodes, if any
+        if (nodeRelatedNodes == null || nodeRelatedNodes.isEmpty()) {
+            return;
+        }
+        for (Node relatedNode : nodeRelatedNodes) {
+            // we create the edit for the realted node
+            nodeStateEdit = new NodeStateEdit(relatedNode, stateAction, selectedRow, option);
+            // and we perform the edit
+            ProbNet probNet = relatedNode.getProbNet();
+            nodeStateEdit.doEdit(probNet);
         }
     }
-    
 }

@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.io;
 
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
@@ -87,12 +88,12 @@ import java.util.List;
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
-			try {
+            try {
                 OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_NETWORK_FORMAT, getPgmxFileFormat(),
                                           OpenMarkovPreferences.OPENMARKOV_FORMATS);
-            } catch (ParserConfigurationException | IOException | SAXException e) {
-				e.printStackTrace();
-			}
+            } catch (SAXException | IOException e) {
+                throw new UnrecoverableException(e);
+            }
         }
 		return result;
 	}

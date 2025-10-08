@@ -353,7 +353,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 //When pressing "Cancel" in progressMonitor
             } catch (NotEvaluableNetworkException.NotApplicableNetwork |
                      NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException |
-                     NotEvaluableNetworkException.VariableIsNotTemporal e) {
+                     NotEvaluableNetworkException.VariableIsNotTemporal | NonProjectablePotentialException e) {
                 throw new UnrecoverableException(e);
             }
         });
@@ -380,7 +380,6 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             }
         });
     }
-    
     
     /**
      * Selects and prepares the series to be displayed
@@ -659,95 +658,75 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     // end 02/11/2022
     
     
-    private void createExcel(ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) {
-        
+    private void createExcel(ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) throws IOException, NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException, CannotNormalizePotentialException {
         JFileChooser fileChooser = new JFileChooser();
         String netName = probNet.getName();
         fileChooser.setSelectedFile(new File(netName + "-temporal_evolution.xlsx"));
-        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            
-            // This is like an if-else:
-            // condition? run if true : run if false;
-            String targetFilename = fileChooser.getSelectedFile().getAbsolutePath().endsWith(".xlsx") ?
-                    fileChooser.getSelectedFile().getAbsolutePath() :
-                    fileChooser.getSelectedFile().getAbsolutePath() + ".xlsx";
-            
-            List<Variable> temporalVariables = new ArrayList<>();
-            for (Variable variable : probNet.getVariables()) {
-                if (variable.isTemporal()) {
-                    if (variable.getVariableType() == VariableType.NUMERIC && probNet.getNode(variable)
-                                                                                     .getNodeType() != NodeType.UTILITY) {
-                        continue;
-                    }
-                    
-                    boolean addedOtherSlice = false;
-                    for (int i = 0; i < temporalVariables.size(); i++) {
-                        if (temporalVariables.get(i).getBaseName().equals(variable.getBaseName())) {
-                            addedOtherSlice = true;
-                        }
-                    }
-                    if (!addedOtherSlice) {
-                        temporalVariables.add(variable);
-                    }
+        if (fileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        String targetFilename = fileChooser.getSelectedFile().getAbsolutePath().endsWith(".xlsx") ?
+                fileChooser.getSelectedFile().getAbsolutePath() :
+                fileChooser.getSelectedFile().getAbsolutePath() + ".xlsx";
+        List<Variable> temporalVariables = new ArrayList<>();
+        for (Variable variable : probNet.getVariables()) {
+            if (variable.isTemporal()) {
+                if (variable.getVariableType() == VariableType.NUMERIC
+                        && probNet.getNode(variable).getNodeType() != NodeType.UTILITY) {
+                    continue;
+                }
+                boolean addedOtherSlice = temporalVariables
+                        .stream()
+                        .anyMatch(temporalVariable -> temporalVariable.getBaseName().equals(variable.getBaseName()));
+                if (!addedOtherSlice) {
+                    temporalVariables.add(variable);
                 }
             }
+        }
+        
+        HashMap<Variable, JTable> datasheet = new HashMap<>();
+        for (Variable temporalVariable : temporalVariables) {
+            System.out.println(temporalVariable.getBaseName());
+            TemporalEvolution veTemporalEvolution = new VETemporalEvolution(probNet, temporalVariable);
+            veTemporalEvolution.setPreResolutionEvidence(evidence);
+            veTemporalEvolution.setDecisionVariable(decisionSelected);
+            HashMap<Variable, TablePotential> result = veTemporalEvolution.getTemporalEvolution();
+            JTable table = createJTable(temporalVariable, result);
+            TemporalEvolutionReport.write(
+                    targetFilename.substring(0, targetFilename.length() - 5) + temporalVariable.getBaseName()
+                            + ".xlsx", table);
+            datasheet.put(temporalVariable, table);
+        }
+        
+        XSSFWorkbook hwb = new XSSFWorkbook();
+        for (Variable tabVariable : datasheet.keySet()) {
+            JTable jtable = datasheet.get(tabVariable);
+            XSSFSheet sheetTable = hwb.createSheet(tabVariable.getBaseName());
+            // first row, column names
+            Row rowIndexes = sheetTable.createRow(0);
+            rowIndexes.createCell(0).setCellValue("");
             
-            HashMap<Variable, JTable> datasheet = new HashMap<>();
-            for (Variable temporalVariable : temporalVariables) {
-                System.out.println(temporalVariable.getBaseName());
-                try {
-                    TemporalEvolution veTemporalEvolution = new VETemporalEvolution(probNet, temporalVariable);
-                    veTemporalEvolution.setPreResolutionEvidence(evidence);
-                    veTemporalEvolution.setDecisionVariable(decisionSelected);
-                    HashMap<Variable, TablePotential> result = veTemporalEvolution.getTemporalEvolution();
-                    JTable table = createJTable(temporalVariable, result);
-                    TemporalEvolutionReport.write(
-                            targetFilename.substring(0, targetFilename.length() - 5) + temporalVariable.getBaseName()
-                                    + ".xlsx", table);
-                    datasheet.put(temporalVariable, table);
-                } catch (@SuppressWarnings("OverlyBroadCatchBlock")
-                NonProjectablePotentialException | NotEvaluableNetworkException |
-                IncompatibleEvidenceException | IOException | CannotNormalizePotentialException e) {
-                    e.printStackTrace();
-                }
+            for (int i = 1; i < jtable.getColumnCount(); i++) {
+                rowIndexes.createCell(i + 1)
+                          .setCellValue(jtable.getColumnModel().getColumn(i).getHeaderValue().toString());
             }
-            
-            XSSFWorkbook hwb = new XSSFWorkbook();
-            for (Variable tabVariable : datasheet.keySet()) {
-                JTable jtable = datasheet.get(tabVariable);
-                XSSFSheet sheetTable = hwb.createSheet(tabVariable.getBaseName());
-                // first row, column names
-                Row rowIndexes = sheetTable.createRow(0);
-                rowIndexes.createCell(0).setCellValue("");
+            // fill data
+            for (int i = 0; i < jtable.getRowCount(); i++) {
+                Row row = sheetTable.createRow(i + 1);
+                for (int j = 0; j < jtable.getColumnCount(); j++) {
+                    if (jtable.getValueAt(i, j) instanceof String) {
+                        row.createCell(j).setCellValue((String) jtable.getValueAt(i, j));
+                    } else if (jtable.getValueAt(i, j) instanceof Integer) {
+                        row.createCell(j).setCellValue((Integer) jtable.getValueAt(i, j));
+                    } else {
+                        row.createCell(j).setCellValue((Double) jtable.getValueAt(i, j));
+                    }
+                }
                 
-                for (int i = 1; i < jtable.getColumnCount(); i++) {
-                    rowIndexes.createCell(i + 1)
-                              .setCellValue(jtable.getColumnModel().getColumn(i).getHeaderValue().toString());
-                }
-                // fill data
-                for (int i = 0; i < jtable.getRowCount(); i++) {
-                    Row row = sheetTable.createRow(i + 1);
-                    for (int j = 0; j < jtable.getColumnCount(); j++) {
-                        if (jtable.getValueAt(i, j) instanceof String) {
-                            row.createCell(j).setCellValue((String) jtable.getValueAt(i, j));
-                        } else if (jtable.getValueAt(i, j) instanceof Integer) {
-                            row.createCell(j).setCellValue((Integer) jtable.getValueAt(i, j));
-                        } else {
-                            row.createCell(j).setCellValue((Double) jtable.getValueAt(i, j));
-                        }
-                    }
-                    
-                }
             }
-            
-            FileOutputStream fileOut;
-            try {
-                fileOut = new FileOutputStream(targetFilename);
-                hwb.write(fileOut);
-                fileOut.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        }
+        try (FileOutputStream fileOut = new FileOutputStream(targetFilename)) {
+            hwb.write(fileOut);
         }
     }
     
@@ -1335,12 +1314,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             for (int i = 0; i < displaySeries.size(); i++) {
                 String nameOfSerie = (String) displaySeries.get(i).getKey();
                 // end
-                
                 XYSeries serie = null;
                 try {
                     serie = (XYSeries) displaySeries.get(i).clone();
                 } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
+                    throw new UnreacheableException(e);
                 }
                 serie.setKey(nameOfSerie);
                 result.addSeries(serie);

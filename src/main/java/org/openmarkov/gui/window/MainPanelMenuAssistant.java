@@ -209,12 +209,13 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
     }
     
     private void checkInferenceOptions() {
-        if (currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class) && currentNetworkPanel.getProbNet()
-                                                                                                        .hasConstraint(OnlyAtemporalVariables.class)) {
+        if (currentNetworkPanel.getProbNet()
+                               .hasConstraintOfClass(OnlyChanceNodes.class) && currentNetworkPanel.getProbNet()
+                                                                                                  .hasConstraintOfClass(OnlyAtemporalVariables.class)) {
             setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, false);
         } else {
             setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, !currentNetworkPanel.getProbNet()
-                                                                                   .hasConstraint(OnlyAtemporalVariables.class) || (
+                                                                                   .hasConstraintOfClass(OnlyAtemporalVariables.class) || (
                     currentNetworkPanel.getProbNet().getDecisionCriteria() != null
                             && currentNetworkPanel.getProbNet().getDecisionCriteria().size() > 1
             ));
@@ -364,7 +365,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
                 setOptionEnabled(ActionCommands.LINK_CREATION, true);
                 setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
                 setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
-                if (!currentProbNet.hasConstraint(OnlyChanceNodes.class)) {
+                if (!currentProbNet.hasConstraintOfClass(OnlyChanceNodes.class)) {
                     setOptionEnabled(ActionCommands.DECISION_CREATION, true);
                     setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
                     setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
@@ -391,7 +392,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
                 setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
                 updateOptionsEvidenceCasesNavigation(networkPanel);
                 setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, !networkPanel.isPropagationActive());
-                if (!networkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)) {
+                if (!networkPanel.getProbNet().hasConstraintOfClass(OnlyChanceNodes.class)) {
                     setOptionEnabled(ActionCommands.DECISION_TREE, true);
                     setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
                 }
@@ -937,10 +938,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
          * updateOptionsNetworkModified(((ProbNet)e.getSource()).getPNESupport().
          * getCanUndo(), ((ProbNet)e.getSource()).getPNESupport().getCanRedo());
          */
-    }
-    
-    @Override public void undoableEditWillHappen(UndoableEditEvent event) {
-        // TODO Auto-generated method stub
     }
     
     @Override public void undoEditHappened(UndoableEditEvent event) {

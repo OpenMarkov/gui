@@ -73,6 +73,7 @@ public interface ToolPlugin {
         ANALYSIS,
         PROCESSING,
         EXPORT,
+        USER_EXPERIENCE,
         UNCATEGORIZED;
     }
     

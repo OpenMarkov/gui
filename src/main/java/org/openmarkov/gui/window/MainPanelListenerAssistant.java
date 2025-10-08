@@ -8,7 +8,6 @@
 package org.openmarkov.gui.window;
 
 import org.apache.commons.io.FilenameUtils;
-import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.io.ProbNetInfo;
@@ -40,10 +39,7 @@ import org.openmarkov.gui.dialog.io.URLNetworkChooserDialog;
 import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
-import org.openmarkov.gui.exception.PreResolutionNodeInInferenceException;
-import org.openmarkov.gui.exception.ThereIsNoNextEvidenceCaseException;
-import org.openmarkov.gui.exception.ThereIsNoPreviousEvidenceCaseException;
+import org.openmarkov.gui.exception.*;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.util.PropertyNames;
@@ -61,7 +57,6 @@ import org.xml.sax.SAXException;
 import javax.swing.*;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
-import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -143,7 +138,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param e - event information.
      */
     @Override public void windowClosing(WindowEvent e) {
-        closeApplication();
+        try {
+            closeApplication();
+        } catch (WriterException ex) {
+            throw new UnrecoverableException(ex);
+        }
     }
     
     /**
@@ -154,105 +153,133 @@ public class MainPanelListenerAssistant extends WindowAdapter
     @Override public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
         ActionCommands actionCommandConstant = ActionCommands.of(actionCommand);
-        if (actionCommandConstant == null) {
-            return;
-            //throw new UnrecoverableException(new InvalidArgumentException(actionCommand, "it is not registered as a valid action command."));
-        }
         switch (actionCommandConstant) {
             case ActionCommands.NEW_NETWORK -> createNewNetwork();
             case ActionCommands.OPEN_NETWORK -> {
                 try {
                     openNetwork();
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.OPEN_NETWORK_URL -> openNetworkURL();
+            case ActionCommands.OPEN_NETWORK_URL -> {
+                try {
+                    openNetworkURL();
+                } catch (NoReaderForFileException | ParserException | IOException | SAXException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.OPEN_LAST_1_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(1));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_2_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(2));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_3_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(3));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_4_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(4));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_5_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(5));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_6_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(6));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_7_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(7));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_8_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(8));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.OPEN_LAST_9_FILE -> {
                 try {
                     openNetwork(LastOpenFiles.getFileNameAt(9));
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.SAVE_NETWORK -> saveNetwork(getCurrentNetworkPanel());
+            case ActionCommands.SAVE_NETWORK -> {
+                try {
+                    saveNetwork(getCurrentNetworkPanel());
+                } catch (WriterException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.SAVE_OPEN_NETWORK -> {
                 try {
                     saveOpenNetwork(getCurrentNetworkPanel());
-                } catch (ParserException | IOException | ParserConfigurationException | SAXException |
-                         NoReaderForFileException ex) {
+                } catch (ParserException | IOException | SAXException | NoReaderForFileException | CorruptNetworkFile |
+                         WriterException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.SAVEAS_NETWORK -> saveNetworkAs(getCurrentNetworkPanel());
-            case ActionCommands.CLOSE_NETWORK -> closeCurrentNetwork();
-            case ActionCommands.LOAD_EVIDENCE -> loadEvidence(getCurrentNetworkPanel());
+            case ActionCommands.SAVEAS_NETWORK -> {
+                try {
+                    saveNetworkAs(getCurrentNetworkPanel());
+                } catch (WriterException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.CLOSE_NETWORK -> {
+                try {
+                    closeCurrentNetwork();
+                } catch (WriterException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.LOAD_EVIDENCE -> {
+                try {
+                    loadEvidence(getCurrentNetworkPanel());
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         IncompatibleEvidenceException | CannotNormalizePotentialException | ParsingSourceException |
+                         IOException | EmptyDatabaseException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.SAVE_EVIDENCE -> saveEvidence(getCurrentNetworkPanel());
             case ActionCommands.NETWORK_PROPERTIES -> getCurrentNetworkPanel().changeNetworkProperties();
             case ActionCommands.EXPAND_NETWORK -> {
@@ -267,7 +294,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION, ActionCommands.TEMPORAL_EVOLUTION_ACTION ->
                     this.getCurrentNetworkPanel().temporalEvolution();
             //case ActionCommands.EXPAND_NETWORK_CE -> expandNetworkCE(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
-            case ActionCommands.EXIT_APPLICATION -> closeApplication();
+            case ActionCommands.EXIT_APPLICATION -> {
+                try {
+                    closeApplication();
+                } catch (WriterException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.CLIPBOARD_COPY -> {
                 getCurrentNetworkPanel().exportToClipboard(false);
                 mainPanel.getMainPanelMenuAssistant()
@@ -362,8 +395,20 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.ABSORB_NODE -> this.getCurrentNetworkPanel().absorbNode();
-            case ActionCommands.ABSORB_PARENTS -> this.getCurrentNetworkPanel().absorbParents();
+            case ActionCommands.ABSORB_NODE -> {
+                try {
+                    this.getCurrentNetworkPanel().absorbNode();
+                } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.ABSORB_PARENTS -> {
+                try {
+                    this.getCurrentNetworkPanel().absorbParents();
+                } catch (DoEditException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.NODE_PROPERTIES -> {
                 try {
                     getCurrentNetworkPanel().changeNodeProperties();
@@ -385,7 +430,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 try {
                     getCurrentNetworkPanel().imposePolicyInNode();
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                         ThereIsNoPotentialsInNodeException ex) {
+                         ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -393,7 +438,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 try {
                     getCurrentNetworkPanel().editNodePolicy();
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                         ThereIsNoPotentialsInNodeException ex) {
+                         ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -403,7 +448,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     getCurrentNetworkPanel().showExpectedUtilityOfNode();
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
                          NonProjectablePotentialException | NotEvaluableNetworkException.NotApplicableNetwork |
-                         NotEvaluableNetworkException.UnsatisfiedContraints | ThereIsNoPotentialsInNodeException ex) {
+                         NotEvaluableNetworkException.UnsatisfiedContraints | ThereIsNoPotentialsInNodeException |
+                         NotEnoughtMemoryException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -412,7 +458,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     getCurrentNetworkPanel().showOptimalPolicyOfNode();
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
                          NonProjectablePotentialException | NotEvaluableNetworkException.NotApplicableNetwork |
-                         NotEvaluableNetworkException.UnsatisfiedContraints | ThereIsNoPotentialsInNodeException ex) {
+                         NotEvaluableNetworkException.UnsatisfiedContraints | ThereIsNoPotentialsInNodeException |
+                         NotEnoughtMemoryException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -469,7 +516,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 }
             }
             case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> this.getCurrentNetworkPanel().enableRevelationArc();
-            case ActionCommands.MARK_AS_INPUT -> this.getCurrentNetworkPanel().markSelectedAsInput();
+            case ActionCommands.MARK_AS_INPUT -> {
+                try {
+                    this.getCurrentNetworkPanel().markSelectedAsInput();
+                } catch (DoEditException.ConstraintViolated ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.EDIT_CLASS -> this.getCurrentNetworkPanel().editClass();
             case ActionCommands.EDIT_INSTANCE_NAME -> {
                 try {
@@ -478,13 +531,27 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.SET_ARITY_ONE -> this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
-            case ActionCommands.SET_ARITY_MANY -> this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
+            case ActionCommands.SET_ARITY_ONE -> {
+                try {
+                    this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
+                } catch (DoEditException.ConstraintViolated ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
+            case ActionCommands.SET_ARITY_MANY -> {
+                try {
+                    this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
+                } catch (DoEditException.ConstraintViolated ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.DECISION_TREE -> {
                 try {
                     showDecisionTree(this.getCurrentNetworkPanel().getProbNet());
                 } catch (NotEvaluableNetworkException | IncompatibleEvidenceException |
-                         NonProjectablePotentialException ex) {
+                         NonProjectablePotentialException |
+                         PotentialOperationException.DifferentSizesInPotentialsAndStates |
+                         NotSupportedOperationException | NotEnoughtMemoryException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -493,7 +560,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     showOptimalStrategy(this.getCurrentNetworkPanel());
                 } catch (IncompatibleEvidenceException | NonProjectablePotentialException |
                          NotEvaluableNetworkException.NotApplicableNetwork |
-                         NotEvaluableNetworkException.UnsatisfiedContraints ex) {
+                         NotEvaluableNetworkException.UnsatisfiedContraints |
+                         PotentialOperationException.DifferentSizesInPotentialsAndStates |
+                         NotSupportedOperationException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -531,19 +600,24 @@ public class MainPanelListenerAssistant extends WindowAdapter
                  ActionCommands.DECISION_CREATION, ActionCommands.LOG, ActionCommands.CHANGE_ACTIVE_CLASS,
                  ActionCommands.ZOOM_PREFIX, ActionCommands.NODES, ActionCommands.ZOOM,
                  ActionCommands.OBJECT_SELECTION -> {
-                if (actionCommand.startsWith(ActionCommands.EDITION_MODE_PREFIX.getCommandName())) {
-                    activateEditionMode(actionCommand);
-                } else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS.getCommandName())) {
-                    MainPanel.getUniqueInstance().getToolbarManager()
-                             .addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS.getCommandName() + ".", ""));
-                } else if (ActionCommands.isZoomActionCommand(actionCommand)) {
-                    setZoom(false, getCurrentPanel(), ActionCommands.getValueZoomActionCommand(actionCommand));
-                } else if (e.getSource() instanceof JButton source) {
-                    var listeners = source.getActionListeners();
-                    //
-                    //throw new UnrecoverableException(new InvalidArgumentException(actionCommand, "it has not tied action"));
-                }
+                this.defaultActionOnCommand(e, actionCommand, actionCommandConstant);
             }
+            case null -> this.defaultActionOnCommand(e, actionCommand, actionCommandConstant);
+        }
+    }
+    
+    private void defaultActionOnCommand(ActionEvent e, String actionCommand, ActionCommands actionCommandConstant) {
+        if (actionCommand.startsWith(ActionCommands.EDITION_MODE_PREFIX.getCommandName())) {
+            activateEditionMode(actionCommand);
+        } else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS.getCommandName())) {
+            MainPanel.getUniqueInstance().getToolbarManager()
+                     .addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS.getCommandName() + ".", ""));
+        } else if (ActionCommands.isZoomActionCommand(actionCommand)) {
+            setZoom(false, getCurrentPanel(), ActionCommands.getValueZoomActionCommand(actionCommand));
+        } else if (e.getSource() instanceof JButton source) {
+            var listeners = source.getActionListeners();
+            //
+            //throw new UnrecoverableException(new InvalidArgumentException(actionCommand, "it has not tied action"));
         }
     }
     
@@ -610,7 +684,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return true, if the network can be closed; otherwise, false.
      */
-    private boolean networkCanBeClosed(NetworkPanel networkPanel) {
+    private boolean networkCanBeClosed(NetworkPanel networkPanel) throws WriterException {
         int response;
         boolean canClose = true;
         if (networkPanel.getModified()) {
@@ -652,7 +726,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
         if (!NetworkPanel.class.isAssignableFrom(contentPanel.getClass())) {
             return true;
         }
-        return networkCanBeClosed((NetworkPanel) contentPanel);
+        try {
+            return networkCanBeClosed((NetworkPanel) contentPanel);
+        } catch (WriterException e) {
+            throw new UnrecoverableException(e);
+        }
     }
     
     /**
@@ -755,7 +833,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return true if the network could be saved; otherwise, false.
      */
-    private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat) {
+    private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat) throws WriterException {
         mainPanel.getMessageWindow().getNormalMessageStream()
                  .println(stringDatabase.getString("SavingNetwork.Text.Label") + " " + fileName);
         NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidence(), fileName,
@@ -784,7 +862,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return true iff the network could be saved
      */
     
-    private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) {
+    private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) throws WriterException {
         String fileFormat = OpenMarkovPreferences
                 .get(OpenMarkovPreferencesKeys.LATEST_NETWORK_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
                      FileChooser.DEFAULT_FILE_FORMAT);
@@ -799,7 +877,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return true if the network has been saved; otherwise, false.
      */
-    private boolean saveNetwork(NetworkPanel networkPanel) {
+    private boolean saveNetwork(NetworkPanel networkPanel) throws WriterException {
         String fileName = networkPanel.getNetworkFile();
         if (fileName != null) {
             createBackUpNetworkFile(fileName, toBakExtension(networkPanel.getNetworkFile()));
@@ -813,7 +891,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param networkPanel network panel that contains the network to be saved.
      */
-    private void saveOpenNetwork(NetworkPanel networkPanel) throws ParserException, IOException, ParserConfigurationException, SAXException, NoReaderForFileException {
+    private void saveOpenNetwork(NetworkPanel networkPanel) throws ParserException, IOException, SAXException, NoReaderForFileException, CorruptNetworkFile, WriterException {
         String fileName = networkPanel.getNetworkFile();
         if (fileName != null) {
             createBackUpNetworkFile(fileName, toBakExtension(networkPanel.getNetworkFile()));
@@ -861,7 +939,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return true if the network has been saved; otherwise, false.
      */
-    private boolean saveNetworkAs(NetworkPanel networkPanel) {
+    private boolean saveNetworkAs(NetworkPanel networkPanel) throws WriterException {
         String fileName = networkPanel.getNetworkFile();
         /*
         fileName = requestNetworkFileToSave((fileName != null) ? fileName
@@ -954,7 +1032,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             
             // If the probNet has not the OnlyChanceNodes constraint and not has any criterion, we
             // create the default criterion.
-            if (!probNet.hasConstraint(OnlyChanceNodes.class) && (
+            if (!probNet.hasConstraintOfClass(OnlyChanceNodes.class) && (
                     probNet.getDecisionCriteria() == null || probNet.getDecisionCriteria().isEmpty()
             )) {
                 List<Criterion> criteria = new ArrayList<Criterion>();
@@ -997,7 +1075,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * Open a network.
      */
-    private void openNetwork() throws ParserException, IOException, ParserConfigurationException, SAXException, NoReaderForFileException {
+    private void openNetwork() throws ParserException, IOException, SAXException, NoReaderForFileException, CorruptNetworkFile {
         openNetwork("");
     }
     
@@ -1008,24 +1086,22 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param fileName - for the network
      */
-    public void openNetwork(String fileName) throws ParserException, IOException, ParserConfigurationException, SAXException, NoReaderForFileException {
+    public void openNetwork(String fileName) throws ParserException, IOException, SAXException, NoReaderForFileException, CorruptNetworkFile {
         if (fileName.isEmpty()) {
             fileName = requestNetworkFileToOpen();
         }
         if (fileName == null) return;
-        ProbNet netReadFromFile;
-        NetworkPanel networkPanel;
         mainPanel.getMessageWindow().getNormalMessageStream()
                  .println(stringDatabase.getString("LoadingNetwork.Text.Label") + " " + fileName);
         //TODO Performance issue here on first call
         ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
-        netReadFromFile = probNetInfo.getProbNet();
+        ProbNet netReadFromFile = probNetInfo.getProbNet();
         netReadFromFile.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
         netReadFromFile.getPNESupport().setWithUndo(true);
         netReadFromFile.setName(new File(fileName).getName());
         //TODO Performance issue here on first call
         var now = Instant.now();
-        networkPanel = createNewFrame(netReadFromFile);
+        NetworkPanel networkPanel = createNewFrame(netReadFromFile);
         System.out.println("Total: " + Duration.between(now, Instant.now()));
         networkPanel.setNetworkFile(fileName);
         List<EvidenceCase> evidence = probNetInfo.getEvidence();
@@ -1072,55 +1148,50 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * Open a network from a URL.
      */
     //TODO: generalize... It's almost the same as openNetwork...
-    public void openNetworkURL() {
+    public void openNetworkURL() throws NoReaderForFileException, ParserException, IOException, SAXException {
         URL url = requestURLFileToOpen();
-        ProbNet netReadFromURL;
-        NetworkPanel networkPanel;
-        if (url != null) {
-            String urlFile = url.getFile();
-            try {
-                mainPanel.getMessageWindow().getNormalMessageStream()
-                         .println(stringDatabase.getString("LoadingNetworkURL.Text.Label") + " " + url);
-                ProbNetInfo probNetInfo = NetsIO.openNetworkURL(url);
-                netReadFromURL = probNetInfo.getProbNet();
-                netReadFromURL.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
-                netReadFromURL.getPNESupport().setWithUndo(true);
-                netReadFromURL.setName(new File(urlFile).getName());
-                networkPanel = createNewFrame(netReadFromURL);
-                networkPanel.setNetworkFile(urlFile);
-                List<EvidenceCase> evidence = probNetInfo.getEvidence();
-                if (evidence != null && !evidence.isEmpty()) {
-                    EvidenceCase preResolutionEvidence = evidence.get(0);
-                    evidence.remove(0);
-                    networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
-                }
-                networkPanels.add(networkPanel);
-                LastOpenFiles.setLastFileName(urlFile);
-                // If the file was opened from a URL, the 'save' and 'save and reopen' buttons have to be disabled
-                mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(true);
-                mainPanel.getMessageWindow().getNormalMessageStream()
-                         .println(stringDatabase.getString("NetworkLoaded.Text.Label"));
-                mainPanel.getMainMenu().rechargeLastOpenFiles();
-                
-                if (netReadFromURL.getShowCommentWhenOpening()) {
-                    CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane();
-                    
-                    commentHTMLScrollPaneNetworkComment.setEditable(false);
-                    commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(netReadFromURL.getComment());
-                    commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension(500, 300));
-                    JOptionPane networkMessagePane = new JOptionPane(commentHTMLScrollPaneNetworkComment,
-                                                                     JOptionPane.INFORMATION_MESSAGE);
-                    JDialog networkMessageDialog = networkMessagePane.createDialog(Utilities.getOwner(mainPanel),
-                                                                                   stringDatabase.getString("NetworkCommentWindow.Title.Label"));
-                    networkMessageDialog.setResizable(true);
-                    networkMessageDialog.setMinimumSize(new Dimension(500, 300));
-                    networkMessageDialog.setVisible(true);
-                }
-            } catch (IOException | SAXException | ParserConfigurationException | ParserException |
-                     NoReaderForFileException e) {
-                ExceptionDialog.show("Network from URL could not be loaded:", e);
-            }
+        if (url == null) {
+            return;
         }
+        String urlFile = url.getFile();
+        mainPanel.getMessageWindow().getNormalMessageStream()
+                 .println(stringDatabase.getString("LoadingNetworkURL.Text.Label") + " " + url);
+        ProbNetInfo probNetInfo = NetsIO.openNetworkURL(url);
+        ProbNet netReadFromURL = probNetInfo.getProbNet();
+        netReadFromURL.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
+        netReadFromURL.getPNESupport().setWithUndo(true);
+        netReadFromURL.setName(new File(urlFile).getName());
+        NetworkPanel networkPanel = createNewFrame(netReadFromURL);
+        networkPanel.setNetworkFile(urlFile);
+        List<EvidenceCase> evidence = probNetInfo.getEvidence();
+        if (evidence != null && !evidence.isEmpty()) {
+            EvidenceCase preResolutionEvidence = evidence.get(0);
+            evidence.remove(0);
+            networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
+        }
+        networkPanels.add(networkPanel);
+        LastOpenFiles.setLastFileName(urlFile);
+        // If the file was opened from a URL, the 'save' and 'save and reopen' buttons have to be disabled
+        mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(true);
+        mainPanel.getMessageWindow().getNormalMessageStream()
+                 .println(stringDatabase.getString("NetworkLoaded.Text.Label"));
+        mainPanel.getMainMenu().rechargeLastOpenFiles();
+        
+        if (netReadFromURL.getShowCommentWhenOpening()) {
+            CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane();
+            
+            commentHTMLScrollPaneNetworkComment.setEditable(false);
+            commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(netReadFromURL.getComment());
+            commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension(500, 300));
+            JOptionPane networkMessagePane = new JOptionPane(commentHTMLScrollPaneNetworkComment,
+                                                             JOptionPane.INFORMATION_MESSAGE);
+            JDialog networkMessageDialog = networkMessagePane.createDialog(Utilities.getOwner(mainPanel),
+                                                                           stringDatabase.getString("NetworkCommentWindow.Title.Label"));
+            networkMessageDialog.setResizable(true);
+            networkMessageDialog.setMinimumSize(new Dimension(500, 300));
+            networkMessageDialog.setVisible(true);
+        }
+        
     }
     
     /**
@@ -1157,7 +1228,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return true if the network has been closed; otherwise, false.
      */
-    private boolean closeCurrentNetwork() {
+    private boolean closeCurrentNetwork() throws WriterException {
         if (getCurrentNetworkPanel() == null) {
             return true;
         }
@@ -1175,7 +1246,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * Process that executes when the user is trying to close the application.
      */
-    private void closeApplication() {
+    private void closeApplication() throws WriterException {
         boolean allClosed = true;
         while (allClosed && !networkPanels.isEmpty()) {
             allClosed = closeCurrentNetwork();
@@ -1338,7 +1409,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param currentNetworkPanel
      */
-    private void loadEvidence(NetworkPanel currentNetworkPanel) {
+    private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ParsingSourceException, IOException, EmptyDatabaseException {
         FileChooser evidenceFileChooser = new DBReaderFileChooser();
         evidenceFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
         // Set last used evidence format as default
@@ -1358,47 +1429,33 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 throw new UnrecoverableException(e);
             }
             ProbNet currentNet = currentNetworkPanel.getProbNet();
-            try {
-                CaseDatabase caseDatabase = caseDbReader.load(evidenceFileChooser.getSelectedFile().getAbsolutePath());
-                List<Variable> variables = caseDatabase.getVariables();
-                int[][] cases = caseDatabase.getCases();
-                for (int i = 0; i < cases.length; ++i) {
-                    EvidenceCase newEvidenceCase = new EvidenceCase();
-                    for (int j = 0; j < cases[i].length; ++j) {
-                        Variable variable;
-                        try {
-                            // Ignore missing values
-                            if (!variables.get(j).getStateName(cases[i][j]).isEmpty() && !variables.get(j)
-                                                                                                   .getStateName(cases[i][j])
-                                                                                                   .equals("?")) {
-                                variable = currentNet.getVariable(variables.get(j).getName());
-                                int stateIndex = variable.getStateIndex(variables.get(j)
-                                                                                 .getStateName(cases[i][j]));
-                                if (stateIndex == -1) continue;
-                                newEvidenceCase.addFinding(new Finding(variable, stateIndex));
-                            }
-                        } //							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-                        //									stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") + ": "
-                        //											+ variables.get(j).getName(),
-                        //									stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-                        catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-                            ExceptionDialog.show(e);
-                        }
+            CaseDatabase caseDatabase = caseDbReader.load(evidenceFileChooser.getSelectedFile().getAbsolutePath());
+            List<Variable> variables = caseDatabase.getVariables();
+            int[][] cases = caseDatabase.getCases();
+            for (int i = 0; i < cases.length; ++i) {
+                EvidenceCase newEvidenceCase = new EvidenceCase();
+                for (int j = 0; j < cases[i].length; ++j) {
+                    // Ignore missing values
+                    if (!variables.get(j).getStateName(cases[i][j]).isEmpty()
+                            && !variables.get(j).getStateName(cases[i][j]).equals("?")) {
+                        Variable variable = currentNet.getVariable(variables.get(j).getName());
+                        int stateIndex = variable.getStateIndex(variables.get(j)
+                                                                         .getStateName(cases[i][j]));
+                        if (stateIndex == -1) continue;
+                        newEvidenceCase.addFinding(new Finding(variable, stateIndex));
                     }
-                    currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
+                    
                 }
-                // save format extension in preferences
-                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_LOADED_EVIDENCE_FORMAT,
-                                          ((FileFilterBasic) evidenceFileChooser.getFileFilter()).getFilterExtension(),
-                                          OpenMarkovPreferences.OPENMARKOV_FORMATS);
-                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY,
-                                          getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
-                                          OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-            } catch (IOException | ParsingSourceException | EmptyDatabaseException | NotEvaluableNetworkException |
-                     NonProjectablePotentialException | NotEnoughtMemoryException | IncompatibleEvidenceException |
-                     CannotNormalizePotentialException e) {
-                ExceptionDialog.show("Evidence could not be loaded: ", e);
+                currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
             }
+            // save format extension in preferences
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_LOADED_EVIDENCE_FORMAT,
+                                      ((FileFilterBasic) evidenceFileChooser.getFileFilter()).getFilterExtension(),
+                                      OpenMarkovPreferences.OPENMARKOV_FORMATS);
+            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY,
+                                      getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
+                                      OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+            
         }
     }
     
@@ -1409,7 +1466,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         try {
             undoRedo(true);
         } catch (CannotUndoException e) {
-            ExceptionDialog.show("Undo operation could not be done: ", e);
+            throw new UnrecoverableException(e);
         }
     }
     
@@ -1420,7 +1477,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         try {
             undoRedo(false);
         } catch (CannotRedoException e) {
-            ExceptionDialog.show("Redo operation could not be done: ", e);
+            throw new UnrecoverableException(e);
         }
     }
     
@@ -1657,28 +1714,30 @@ public class MainPanelListenerAssistant extends WindowAdapter
         // TODO Auto-generated method stub
     }
     
-    private void showDecisionTree(ProbNet probNet) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException {
+    private void showDecisionTree(ProbNet probNet) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException, NotEnoughtMemoryException {
         try {
             InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
                                                                                         Utilities.getOwner(mainPanel));
             if (costEffectivenessDialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
                 return;
-            } else if (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()
-                    == MulticriteriaOptions.Type.UNICRITERION) {
-                // TODO: Do something for show unicriterion decision tree
-            } else if (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()
-                    == MulticriteriaOptions.Type.COST_EFFECTIVENESS) {
-                // TODO: Do something for show cost-effectiveness decision tree
+            }
+            switch (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()) {
+                case UNICRITERION -> {
+                    // TODO: Do something for show unicriterion decision tree
+                }
+                case COST_EFFECTIVENESS -> {
+                    // TODO: Do something for show cost-effectiveness decision tree
+                }
             }
             DecisionTreeWindow decisionTree = new DecisionTreeWindow(probNet);
             mainPanel.getMdi().createNewFrame(decisionTree);
             mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
         } catch (OutOfMemoryError e) {
-            ExceptionDialog.show("The system has run out of memory, probably because the operation was really expensive: ", e);
+            throw new NotEnoughtMemoryException(e);
         }
     }
     
-    private void showOptimalStrategy(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
+    private void showOptimalStrategy(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         /*
         22/10/2014
         Solving issue 195

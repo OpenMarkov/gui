@@ -19,6 +19,8 @@ open module org.openmarkov.gui {
     requires java.prefs;
     requires jeval;
     requires org.apache.commons.lang3;
+    requires org.apache.commons.compress;
+    requires com.formdev.flatlaf;
     
     
     exports org.openmarkov.gui.action;

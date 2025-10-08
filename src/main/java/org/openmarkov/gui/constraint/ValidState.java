@@ -95,7 +95,4 @@ public class ValidState extends PNConstraint {
         return true;
     }
     
-    @Override protected String constraintDescription() {
-        return message;
-    }
 }

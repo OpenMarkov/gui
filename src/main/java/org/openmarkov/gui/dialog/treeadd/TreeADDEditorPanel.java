@@ -362,7 +362,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 try {
                     editPotential(ae, (TreeADDBranch) node, path);
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                         ThereIsNoPotentialsInNodeException e) {
+                         ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException e) {
                     throw new UnrecoverableException(e);
                 }
             }
@@ -1203,7 +1203,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * @param branch
      * @param path
      */
-    private void editPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    private void editPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         TreePath parentPath = path.getParentPath();
         TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
         Potential potential = branch.getPotential();

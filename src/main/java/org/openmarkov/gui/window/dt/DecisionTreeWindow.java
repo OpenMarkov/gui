@@ -7,9 +7,7 @@
 
 package org.openmarkov.gui.window.dt;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 
@@ -19,7 +17,7 @@ import java.awt.*;
     private String title;
     private DecisionTreePanel decisionTreePanel = null;
     
-    public DecisionTreeWindow(ProbNet probNet) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException {
+    public DecisionTreeWindow(ProbNet probNet) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         setLayout(new BorderLayout());
         title = probNet.getName() + "- decision tree";
         decisionTreePanel = new DecisionTreePanel(probNet);

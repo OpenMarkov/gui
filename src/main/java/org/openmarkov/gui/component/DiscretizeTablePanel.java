@@ -783,11 +783,16 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      */
     @Override public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
-        if (e.getSource().equals(this.positiveInfinityButton)) {
-            actionPerformedPositiveInfinityValue();
-        } else if (e.getSource().equals(this.negativeInfinityButton)) {
-            actionPerformedNegativeInfinityValue();
-        }/*
+        try {
+            if (e.getSource().equals(this.positiveInfinityButton)) {
+                actionPerformedPositiveInfinityValue();
+            } else if (e.getSource().equals(this.negativeInfinityButton)) {
+                actionPerformedNegativeInfinityValue();
+            }
+        } catch (DoEditException.ConstraintViolated ex) {
+            throw new UnrecoverableException(ex);
+        }
+        /*
          * else if (e.getSource().equals(this.standardDomainButton)) {
          * actionPerformedStandardDomain(); }
          */
@@ -933,7 +938,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'InfinitePositive' is pressed.
      */
-    protected void actionPerformedPositiveInfinityValue() {
+    protected void actionPerformedPositiveInfinityValue() throws DoEditException.ConstraintViolated {
         int selectedRow = valuesTable.getSelectedRow();
         int selectedColumn = valuesTable.getSelectedColumn();
         cancelCellEditing();
@@ -943,19 +948,15 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         belongs[limits.length - 1] = false;
         PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
         PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node, newPartitionedInterval);
-        try {
-            ProbNet probNet = node.getProbNet();
-            partitionedIntervalEdit.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated e) {
-            e.printStackTrace();
-        }
+        ProbNet probNet = node.getProbNet();
+        partitionedIntervalEdit.doEdit(probNet);
         valuesTable.setValueAt(INFINITY, selectedRow, selectedColumn);
     }
     
     /**
      * Invoked when the button 'InfiniteNegative' is pressed.
      */
-    protected void actionPerformedNegativeInfinityValue() {
+    protected void actionPerformedNegativeInfinityValue() throws DoEditException.ConstraintViolated {
         int selectedRow = valuesTable.getSelectedRow();
         int selectedColumn = valuesTable.getSelectedColumn();
         cancelCellEditing();
@@ -965,12 +966,8 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         belongs[0] = true;
         PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
         PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node, newPartitionedInterval);
-        try {
-            ProbNet probNet = node.getProbNet();
-            partitionedIntervalEdit.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated e) {
-            e.printStackTrace();
-        }
+        ProbNet probNet = node.getProbNet();
+        partitionedIntervalEdit.doEdit(probNet);
         valuesTable.setValueAt(NEGATIVE_INFINITY, selectedRow, selectedColumn);
     }
     
@@ -1082,7 +1079,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                 ProbNet probNet = node.getProbNet();
                 partitionedIntervalEdit.doEdit(probNet);
             } catch (DoEditException.ConstraintViolated e) {
-                e.printStackTrace();
+                throw new UnrecoverableException(e);
             }
             setDataFromPartitionedInterval(variable.getPartitionedInterval(), variable.getStates());
         }
@@ -1148,55 +1145,49 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     // @ 2014/11/18. Issue 145.
     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
     // Propagation of the domain in related variables in temporal models
-    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) {
+    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) throws DoEditException.ConstraintViolated {
         // First we get the nodes in the same time slide as the node currently being edited
         List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
         // We create a variable to store the edit of the related node
         NodeStateEdit nodeStateEdit;
-        try {
-            // We iterate the related nodes, if any
-            if (nodeRelatedNodes != null) {
-                if (!nodeRelatedNodes.isEmpty()) {
-                    for (Node relatedNode : nodeRelatedNodes) {
-                        // we create the edit for the realted node
-                        nodeStateEdit = new NodeStateEdit(relatedNode, stateAction, selectedRow, option);
-                        // and we perform the edit
-                        ProbNet probNet = relatedNode.getProbNet();
-                        nodeStateEdit.doEdit(probNet);
-                    }
+        // We iterate the related nodes, if any
+        if (nodeRelatedNodes != null) {
+            if (!nodeRelatedNodes.isEmpty()) {
+                for (Node relatedNode : nodeRelatedNodes) {
+                    // we create the edit for the realted node
+                    nodeStateEdit = new NodeStateEdit(relatedNode, stateAction, selectedRow, option);
+                    // and we perform the edit
+                    ProbNet probNet = relatedNode.getProbNet();
+                    nodeStateEdit.doEdit(probNet);
                 }
             }
-        } catch (DoEditException.ConstraintViolated e) {
-            e.printStackTrace();
         }
+        
     }
     
     // @ 2014/11/18. Issue 145.
     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
     // Propagation of the domain in related variables in temporal models
     private void propagateNodePartitionedIntervalEditRelatedVariables(StateAction stateAction, int selectedRow,
-                                                                      boolean option) {
+                                                                      boolean option) throws DoEditException.ConstraintViolated {
         // First we get the nodes in the same time slide as the node currently being edited
         List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
         // We create a variable to store the edit of the related node
         NodePartitionedIntervalEdit nodePartitionedIntervalEdit;
-        try {
-            // We iterate the related nodes, if any
-            if (nodeRelatedNodes != null) {
-                if (!nodeRelatedNodes.isEmpty()) {
-                    for (Node relatedNode : nodeRelatedNodes) {
-                        // we create the edit for the realted node
-                        nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(relatedNode, stateAction,
-                                                                                      selectedRow, option);
-                        // and we perform the edit
-                        ProbNet probNet = relatedNode.getProbNet();
-                        nodePartitionedIntervalEdit.doEdit(probNet);
-                    }
+        // We iterate the related nodes, if any
+        if (nodeRelatedNodes != null) {
+            if (!nodeRelatedNodes.isEmpty()) {
+                for (Node relatedNode : nodeRelatedNodes) {
+                    // we create the edit for the realted node
+                    nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(relatedNode, stateAction,
+                                                                                  selectedRow, option);
+                    // and we perform the edit
+                    ProbNet probNet = relatedNode.getProbNet();
+                    nodePartitionedIntervalEdit.doEdit(probNet);
                 }
             }
-        } catch (DoEditException.ConstraintViolated e) {
-            e.printStackTrace();
         }
+        
     }
     
     /**

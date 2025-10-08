@@ -119,10 +119,6 @@ import java.util.ListIterator;
         }
     }
     
-    @Override public void undoableEditWillHappen(UndoableEditEvent event) {
-        // TODO Auto-generated method stub
-    }
-    
     @Override public void undoEditHappened(UndoableEditEvent event) {
         int priorityListPosition;
         UndoableEdit edit = event.getEdit();

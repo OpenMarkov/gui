@@ -3,6 +3,7 @@ package org.openmarkov.gui.configuration;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.gui.dialog.ExceptionDialog;
 
 import java.io.*;
@@ -133,6 +134,10 @@ public final class LocalPreference<T extends Serializable> {
      * <p>
      * If the value hasn't been loaded by a previous call to {@link LocalPreference#get()}, the changes won't be saved.
      */
+    @ToCheck(reasonKind = ToCheck.ReasonKind.USER_EXPERIENCE,
+            reasonDescription = "Many of the exceptions of this class are ignored, as otherwise, the user would be" +
+                    "bombarded with exceptions happening if their OS doesn't allow to use Backing Stores. But, do we " +
+                    "want them to be logged nevertheless")
     public void save() {
         if (this.value == null) {
             return;
@@ -143,7 +148,6 @@ public final class LocalPreference<T extends Serializable> {
             String newNodeValue = Base64.getEncoder().encodeToString(byteOut.toByteArray());
             this.node.put(this.key, newNodeValue);
         } catch (IOException e) {
-            ExceptionDialog.show(e);
         }
     }
     

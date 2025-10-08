@@ -153,14 +153,6 @@ import java.util.List;
 		// TODO Auto-generated method stub
 	}
 
-	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override public void undoEditHappened(UndoableEditEvent event) {
-		// TODO Auto-generated method stub
-	}
-
 	@Override public void tableChanged(TableModelEvent arg0) {
 		// TODO Auto-generated method stub
 	}

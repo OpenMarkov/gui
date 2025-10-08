@@ -1,6 +1,7 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.UnrecoverableException;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -402,7 +403,7 @@ public final class SimpleHTMLEditor extends JPanel {
                 htmlDocument.remove(start, end - start);
                 htmlEditorKit.insertHTML(htmlDocument, start, hyperlinkHTML, 0, 0, HTML.Tag.A);
             } catch (BadLocationException | IOException ex) {
-                ex.printStackTrace();
+                throw new UnrecoverableException(ex);
             }
         }
         
@@ -526,7 +527,7 @@ public final class SimpleHTMLEditor extends JPanel {
                 try {
                     Desktop.getDesktop().browse(href);
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    throw new UnrecoverableException(ex);
                 }
             });
             

@@ -8,6 +8,7 @@
 package org.openmarkov.gui.graphic;
 
 import org.apache.logging.log4j.LogManager;
+import org.openmarkov.core.exception.UnreacheableException;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -201,8 +202,7 @@ public class VisualArrow extends VisualElement {
 		try {
 			transformation2D = transformation2D.createInverse();
 		} catch (NoninvertibleTransformException e) {
-			// ExceptionsHandler.handleException(e, null, true);
-			LogManager.getLogger(VisualLink.class).info(e);
+            throw new UnreacheableException(e);
 		}
         int length = points.length;
 		for (index = 0; index < length; index++) {
@@ -431,7 +431,7 @@ public class VisualArrow extends VisualElement {
 		try {
 			transformation2D = transformation2D.createInverse();
 		} catch (NoninvertibleTransformException e) {
-			LogManager.getLogger(VisualLink.class).info(e);
+            throw new UnreacheableException(e);
 		}
 		transformation2D.transform(points[0], points[0]);
 		transformation2D.transform(points[1], points[1]);

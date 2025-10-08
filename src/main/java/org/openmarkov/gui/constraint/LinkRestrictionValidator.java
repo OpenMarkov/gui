@@ -37,7 +37,7 @@ public class LinkRestrictionValidator {
 		Node node1 = link.getNode1();
 		Node node2 = link.getNode2();
 		ProbNet net = node1.getProbNet();
-		if (!net.hasConstraint(NoLinkRestriction.class)) {
+        if (!net.hasConstraintOfClass(NoLinkRestriction.class)) {
 			if ((node1.getNodeType() == NodeType.CHANCE || node1.getNodeType() == NodeType.DECISION) && (
 					node2.getNodeType() == NodeType.CHANCE || node2.getNodeType() == NodeType.DECISION
 			) || node2.getNodeType() == NodeType.UTILITY) {

@@ -1045,11 +1045,6 @@ public class VisualNetwork implements PNUndoableEditListener {
         
     }
     
-    @Override public void undoableEditWillHappen(UndoableEditEvent event) {
-        // TODO Auto-generated method stub
-        
-    }
-    
     /**
      * Returns different types of visual nodes according to the supplied node.
      *
@@ -1069,11 +1064,10 @@ public class VisualNetwork implements PNUndoableEditListener {
     }
     
     @Override public void undoEditHappened(UndoableEditEvent event) {
-        
         constructVisualInfo();
-        if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE)
+        if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();
-        
+        }
     }
     
     public void setProbNet(ProbNet probNet) {
@@ -1229,15 +1223,11 @@ public class VisualNetwork implements PNUndoableEditListener {
     }
     
     //TODO OOPN start
-    public void markSelectedAsInput() {
+    public void markSelectedAsInput() throws DoEditException.ConstraintViolated {
         for (VisualNode visualNode : getSelectedNodes()) {
-            MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualNode.getNode().isInput(),
-                                                                  visualNode.getNode());
-            try {
-                markAsInputEdit.doEdit(probNet);
-            } catch (DoEditException.ConstraintViolated e) {
-                e.printStackTrace();
-            }
+            MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualNode.getNode()
+                                                                                      .isInput(), visualNode.getNode());
+            markAsInputEdit.doEdit(probNet);
         }
     }
     
@@ -1245,7 +1235,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         // TODO Auto-generated method stub
     }
     
-    public void setParameterArity(ParameterArity arity) {
+    public void setParameterArity(ParameterArity arity) throws DoEditException.ConstraintViolated {
         // TODO Auto-generated method stub
     }
     

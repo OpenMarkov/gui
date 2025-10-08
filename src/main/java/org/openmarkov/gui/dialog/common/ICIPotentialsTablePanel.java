@@ -16,6 +16,7 @@ import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.gui.component.*;
 import org.openmarkov.gui.dialog.node.ICIOptionsPanel;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -208,6 +209,7 @@ import java.util.List;
      * for canonical models
      *
      * @param properties - node additionalProperties
+     *
      * @return the number of rows of this Potentials Table
      */
     protected static int howManyCanonicalRows(Node properties) {
@@ -227,6 +229,7 @@ import java.util.List;
      * Set a blank data table for canonical models
      *
      * @param properties - to obtain the required number of rows and columns
+     *
      * @return the blank data table
      */
     private static Object[][] setBlankCanonicalTable(Node properties) {
@@ -245,6 +248,7 @@ import java.util.List;
      * Retrieves ICIPotential
      *
      * @param listPotentials
+     *
      * @return this ICI potential
      */
     private static ICIPotential getThisICIPotential(List<Potential> listPotentials) {
@@ -258,23 +262,16 @@ import java.util.List;
      *
      * @param listPotentials - the list of potentials of the node
      */
-    private int getNumberOfPostions(List<Potential> listPotentials) {
-        int numPositions = 0;
-        int numParentStates;
-        try {
-            List<Variable> variables = listPotentials.get(0).getVariables();
-            int numChildStates = variables.get(0).getNumStates();
-            for (int i = 1; i < variables.size(); i++) {
-                numParentStates = variables.get(i).getNumStates();
-                numPositions += numParentStates * numChildStates;
-            }
-            numPositions += numChildStates; // for the leak column
-        } catch (NullPointerException exception) {
-            numPositions = 0;
-            // ExceptionsHandler.handleException(
-            // exception, "not enougth memory", false );
-            logger.error("not enougth memory");
+    private long getNumberOfPostions(List<Potential> listPotentials) {
+        long numPositions = 0;
+        long numParentStates;
+        List<Variable> variables = listPotentials.get(0).getVariables();
+        int numChildStates = variables.get(0).getNumStates();
+        for (int i = 1; i < variables.size(); i++) {
+            numParentStates = variables.get(i).getNumStates();
+            numPositions += numParentStates * numChildStates;
         }
+        numPositions += numChildStates; // for the leak column
         setPosition(numPositions);
         return numPositions;
     }
@@ -286,6 +283,7 @@ import java.util.List;
      * {@code NodeProperties}
      *
      * @param properties - node properties
+     *
      * @return the table data to be set
      */
     protected Object[][] convertListPotentialsToCanonicalTableFormat(Node properties) {
@@ -332,12 +330,13 @@ import java.util.List;
         }
         
         // create the array of arrays
-        return  new Object[numRows][numColumns];
+        return new Object[numRows][numColumns];
     }
     
     /**
      * @param oldValues
      * @param node
+     *
      * @return the new values
      */
     private Object[][] setCanonicalTable(Object[][] oldValues, Node node) {

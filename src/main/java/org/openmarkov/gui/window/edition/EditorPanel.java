@@ -710,14 +710,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * This method absorbs a node into the rest of the net arc-reversal style. This means updating the only utility
      * child it might have and removing it next.
      */
-    public void absorbNode() {
+    public void absorbNode() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
         Node node = getSelectedNode();
-        try {
-            AbsorbNodeEdit absorbNode = new AbsorbNodeEdit(probNet, node.getVariable());
-            absorbNode.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
-            e.printStackTrace();
-        }
+        AbsorbNodeEdit absorbNode = new AbsorbNodeEdit(probNet, node.getVariable());
+        absorbNode.doEdit(probNet);
         repaint();
     }
     
@@ -732,17 +728,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * TODO: Fill as desired
      */
-    public void absorbParents() {
-        
-        
+    public void absorbParents() throws DoEditException {
         Node node = getSelectedNode();
-        try {
-            AbsorbParentsEdit absorbParents = new AbsorbParentsEdit(probNet, node);
-            absorbParents.doEdit(probNet);
-        } catch (DoEditException e) {
-            e.printStackTrace();
-        }
-        
+        AbsorbParentsEdit absorbParents = new AbsorbParentsEdit(probNet, node);
+        absorbParents.doEdit(probNet);
         repaint();
     }
     
@@ -816,7 +805,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         return (nodePropertiesDialog.requestProperties() == OkCancelHorizontalDialog.OK_BUTTON);
     }
     
-    private boolean requestPotentialValues(Window owner, Node node, boolean newNode, boolean readOnly) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    private boolean requestPotentialValues(Window owner, Node node, boolean newNode, boolean readOnly) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         potentialsDialog = new PotentialEditDialog(owner, node, newNode, readOnly);
         return (
                 potentialsDialog.requestValues()// to know if the user has
@@ -948,7 +937,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method imposes a policy in a decision node.
      */
-    public void imposePolicyInNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    public void imposePolicyInNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         VisualNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
@@ -992,7 +981,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method edits an imposed policy of a decision node.
      */
-    public void editNodePolicy() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    public void editNodePolicy() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         VisualNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
@@ -1035,7 +1024,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         repaint();
     }
     
-    private static boolean requestImposePolicyValues(Window owner, VisualNode visualNode) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
+    private static boolean requestImposePolicyValues(Window owner, VisualNode visualNode) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         PotentialEditDialog imposePolicyDialog = new PotentialEditDialog(owner, visualNode, false);
         imposePolicyDialog.setTitle("ImposePolicydialog.Title.Label");
         return (imposePolicyDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
@@ -1045,7 +1034,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method shows the expected utility of a decision node.
      */
-    public void showExpectedUtilityOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
+    public void showExpectedUtilityOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, NotEnoughtMemoryException {
         VisualNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
@@ -1070,7 +1059,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method shows the optimal policy for a decision node.
      */
-    public void showOptimalPolicyOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
+    public void showOptimalPolicyOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, NotEnoughtMemoryException {
         VisualNetwork n = getVisualNetwork();
         VisualNode visualNode;
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
@@ -1750,7 +1739,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             individualProbabilities = vePosteriorValues.getPosteriorValues();
         } catch (OutOfMemoryError e) {
             if (!approximateInferenceWarningGiven) {
-                throw new NotEnoughtMemoryException();
+                throw new NotEnoughtMemoryException(e);
             }
             inferenceAlgorithm = inferenceManager.getDefaultApproximateAlgorithm(probNet);
             // TODO - Check these lines
@@ -2210,7 +2199,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * will remain like that for a long time). As for now, the method is not called from anywhere.
      * Ask {@author IagoParis} about details.
      */
-    public void evaluatePolicy() {
+    public void evaluatePolicy() throws NonProjectablePotentialException {
         
         // Network is expanded before calling to evaluatePolicy
         
@@ -2295,7 +2284,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void disableLinkRestriction() throws DoEditException.ConstraintViolated {
         RemoveLinkRestrictionEdit removeLinkRestrictionEdit = new RemoveLinkRestrictionEdit(visualNetwork);
-            removeLinkRestrictionEdit.doEdit(probNet);
+        removeLinkRestrictionEdit.doEdit(probNet);
         repaint();
     }
     
@@ -2351,7 +2340,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     // TODO OOPN start
-    public void markSelectedAsInput() {
+    public void markSelectedAsInput() throws DoEditException.ConstraintViolated {
         visualNetwork.markSelectedAsInput();
         repaint();
     }
@@ -2360,7 +2349,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         visualNetwork.editClass();
     }
     
-    public void setParameterArity(ParameterArity arity) {
+    public void setParameterArity(ParameterArity arity) throws DoEditException.ConstraintViolated {
         visualNetwork.setParameterArity(arity);
     }
     
@@ -2481,12 +2470,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         }
     }
     
-    
-    @Override
-    public void undoableEditWillHappen(UndoableEditEvent event) {
-        //do nothing
-    }
-    
     @Override
     public void undoEditHappened(UndoableEditEvent event) {
         List<Finding> findings = preResolutionEvidence.getFindings();
@@ -2507,8 +2490,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     
     @Override
     public void undoableEditHappened(UndoableEditEvent e) {
-        
-        
         for (Finding finding : preResolutionEvidence.getFindings()) {
             Variable variable = finding.getVariable();
             for (VisualNode visualNode : visualNetwork.getAllNodes()) {
@@ -2517,7 +2498,5 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 }
             }
         }
-        
-        
     }
 }

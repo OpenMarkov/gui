@@ -61,4 +61,6 @@
     <Localization class="org.openmarkov.gui.graphic.VisualChanceNode" value="{node}"/>
     <Localization class="org.openmarkov.gui.graphic.VisualDecisionNode" value="{node}"/>
     <Localization class="org.openmarkov.gui.graphic.VisualUtilityNode" value="{node}"/>
+    <Localization class="org.openmarkov.gui.exception.CorruptNetworkFile"
+                  value="Network from {fileToRead} is corrupted and could not be loaded."/>
 </ClassLocalizations>

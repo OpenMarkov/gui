@@ -101,7 +101,7 @@ import java.awt.*;
     }
     
     @Override public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong,
-            BinomialPotentialWrongValueException.NValuesIsWrong {
+            BinomialPotentialWrongValueException.NValuesIsWrong, DoEditException {
         boolean result = super.saveChanges();
         ProbNet probNet = node.getProbNet();
         Potential oldPotential = node.getPotentials().get(0);
@@ -120,11 +120,7 @@ import java.awt.*;
         }
         newPotential.setComment(oldPotential.getComment());
         PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
-        try {
-            edit.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e) {
-            e.printStackTrace();
-        }
+        edit.doEdit(probNet);
         return result;
     }
     
