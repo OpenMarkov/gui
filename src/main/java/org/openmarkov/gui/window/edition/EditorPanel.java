@@ -255,7 +255,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         addMouseListener(this);
         addMouseMotionListener(this);
         addKeyListener(this);
-        this.setBackground(Color.white);
+        //this.setBackground(Color.white);
         //adjustPanelDimension ();
         setZoomToFitNetwork();
     }
