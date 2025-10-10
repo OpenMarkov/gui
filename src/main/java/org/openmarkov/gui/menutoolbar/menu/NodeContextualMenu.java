@@ -9,15 +9,14 @@ package org.openmarkov.gui.menutoolbar.menu;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.gui.constraint.AbsorbParentsValidator;
-import org.openmarkov.gui.constraint.AbsorbNodeValidator;
+import org.openmarkov.gui.validator.AbsorbParentsValidator;
+import org.openmarkov.gui.validator.AbsorbNodeValidator;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.localize.MenuLocalizer;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.gui.window.edition.EditorPanel;
-import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;

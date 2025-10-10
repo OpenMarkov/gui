@@ -5,7 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.constraint;
+package org.openmarkov.gui.validator;
 
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;

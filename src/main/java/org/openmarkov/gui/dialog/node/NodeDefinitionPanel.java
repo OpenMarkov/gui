@@ -17,7 +17,7 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.NodeAgentEdit;
 import org.openmarkov.gui.action.NodeDecisionCriteriaEdit;
-import org.openmarkov.gui.constraint.AlwaysObservedPropertyValidator;
+import org.openmarkov.gui.validator.AlwaysObservedPropertyValidator;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.localize.StringDatabase;

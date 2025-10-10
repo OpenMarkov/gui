@@ -10,6 +10,7 @@ package org.openmarkov.gui.dialog.common;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
+import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -171,13 +172,11 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
                 //LinkEdit linkEdit = new LinkEdit(node.getProbNet(),pNode.getName(), node.getName(), true, true);
                 AddLinkEdit linkEdit = new AddLinkEdit(node.getProbNet(), otherNode.getVariable(), node.getVariable(),
                                                        true);
-                
-                try {
-                    node.getProbNet().getPNESupport().announceEdit(linkEdit);
-                    edits.add(linkEdit);
-                    nodes.add(otherNode);
-                } catch (DoEditException.ConstraintViolated ignore) {
-                } // TODO Auto-generated catch block
+                @ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG, reasonDescription = "An edit is announced without it being done")
+                var check = false;
+                node.getProbNet().getPNESupport().announceEdit(linkEdit);
+                edits.add(linkEdit);
+                nodes.add(otherNode);
                 
                 
             }

@@ -7,9 +7,7 @@
 
 package org.openmarkov.gui.action;
 
-import org.openmarkov.core.action.CRemoveNodeEdit;
-import org.openmarkov.core.action.CompoundPNEdit;
-import org.openmarkov.core.action.RemoveLinkEdit;
+import org.openmarkov.core.action.*;
 import org.openmarkov.core.oopn.action.RemoveInstanceEdit;
 import org.openmarkov.core.oopn.action.RemoveReferenceLinkEdit;
 import org.openmarkov.gui.graphic.VisualLink;
@@ -21,6 +19,7 @@ import org.openmarkov.gui.oopn.VisualReferenceLink;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 @SuppressWarnings("serial")
 /**
@@ -52,8 +51,9 @@ import java.util.List;
 		// TODO OOPN end
 		this.linksToRemove = union(visualNetwork.getSelectedLinks(), visualNetwork.getLinksOfNodes(this.nodesToRemove));
 	}
-
-	@Override public void generateEdits() {
+	
+	@Override public Vector<PNEdit> generateEdits() {
+		Vector<PNEdit> edits = new Vector<>();
 		for (VisualLink link : linksToRemove) {
             edits.add(new RemoveLinkEdit(probNet, probNet.getVariable(link.getSourceNode().getNode().getName()),
                     probNet.getVariable(link.getDestinationNode().getNode().getName()),
@@ -74,6 +74,7 @@ import java.util.List;
 			}
 		}
 		// TODO OOPN end
+		return edits;
 	}
 
 	/**

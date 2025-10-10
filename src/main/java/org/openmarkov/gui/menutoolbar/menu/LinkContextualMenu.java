@@ -9,9 +9,9 @@ package org.openmarkov.gui.menutoolbar.menu;
 
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.gui.constraint.LinkInversionWithPotentialsUpdateValidator;
-import org.openmarkov.gui.constraint.LinkRestrictionValidator;
-import org.openmarkov.gui.constraint.RevelationArcValidator;
+import org.openmarkov.gui.validator.LinkInversionWithPotentialsUpdateValidator;
+import org.openmarkov.gui.validator.LinkRestrictionValidator;
+import org.openmarkov.gui.validator.RevelationArcValidator;
 import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
