@@ -9,6 +9,7 @@ package org.openmarkov.gui.action;
 
 import org.junit.jupiter.api.*;
 
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -55,7 +56,7 @@ public class MoveNodeEditTest {
 	 *
 	 * @throws Exception if an error occurrs.
 	 */
-	@BeforeEach public void setUp() throws org.openmarkov.core.exception.DoEditException.ConstraintViolated {
+	@BeforeEach public void setUp() throws ConstraintViolatedException {
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");

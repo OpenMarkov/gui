@@ -7,7 +7,8 @@
 
 package org.openmarkov.gui.oopn;
 
-import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -666,7 +667,7 @@ public class VisualOONetwork extends VisualNetwork {
         return isEquivalent;
     }
     
-    @Override public void markSelectedAsInput() throws DoEditException.ConstraintViolated {
+    @Override public void markSelectedAsInput() throws ConstraintViolatedException {
         super.markSelectedAsInput();
         
         for (VisualInstance visualInstance : getSelectedInstances()) {
@@ -709,7 +710,7 @@ public class VisualOONetwork extends VisualNetwork {
         }
     }
     
-    @Override public void setParameterArity(ParameterArity arity) throws DoEditException.ConstraintViolated {
+    @Override public void setParameterArity(ParameterArity arity) throws ConstraintViolatedException {
         for (VisualInstance visualInstance : getSelectedInstances()) {
             ChangeParameterArityEdit changeParameterArityEdit = new ChangeParameterArityEdit(probNet,
                                                                                              visualInstance.getInstance(), arity);

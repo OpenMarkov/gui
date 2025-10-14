@@ -7,8 +7,8 @@
 
 package org.openmarkov.gui.dialog.inference.common;
 
-import org.openmarkov.core.action.MulticriteriaEdit;
-import org.openmarkov.core.action.TemporalOptionsEdit;
+import org.openmarkov.core.action.core.MulticriteriaEdit;
+import org.openmarkov.core.action.core.TemporalOptionsEdit;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.inference.TemporalOptions;

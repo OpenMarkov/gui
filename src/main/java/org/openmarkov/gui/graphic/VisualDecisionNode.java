@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.graphic;
 
-import org.openmarkov.core.action.VisualDecisionNodePolicyChangeListener;
+import org.openmarkov.core.action.base.VisualDecisionNodePolicyChangeListener;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;

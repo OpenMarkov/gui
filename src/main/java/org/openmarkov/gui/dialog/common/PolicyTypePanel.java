@@ -7,9 +7,9 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.RemovePolicyEdit;
-import org.openmarkov.core.action.SetPotentialEdit;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.core.RemovePolicyEdit;
+import org.openmarkov.core.action.core.SetPotentialEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PolicyType;
@@ -149,7 +149,7 @@ import java.awt.event.ItemListener;
             if (e.getItem().equals(getJRadioButtonOptimalType())) {
                 itemStateChangedOptimalType(e);
             }
-        } catch (DoEditException.ConstraintViolated ex) {
+        } catch (ConstraintViolatedException ex) {
             throw new UnrecoverableException(ex);
         }
     }
@@ -165,7 +165,7 @@ import java.awt.event.ItemListener;
          */
     }
     
-    private void itemStateChangedOptimalType(ItemEvent e) throws DoEditException.ConstraintViolated {
+    private void itemStateChangedOptimalType(ItemEvent e) throws ConstraintViolatedException {
         if (e.getStateChange() == ItemEvent.DESELECTED) {
             // optionDeselected = comboBox.getSelectedIndex();
             previousPolicy = PolicyType.OPTIMAL;
@@ -180,7 +180,7 @@ import java.awt.event.ItemListener;
         }
     }
     
-    private void itemStateChangedProbabilisticType(ItemEvent e) throws DoEditException.ConstraintViolated {
+    private void itemStateChangedProbabilisticType(ItemEvent e) throws ConstraintViolatedException {
         if (e.getStateChange() == ItemEvent.DESELECTED) {
             // optionDeselected = comboBox.getSelectedIndex();
             previousPolicy = PolicyType.PROBABILISTIC;

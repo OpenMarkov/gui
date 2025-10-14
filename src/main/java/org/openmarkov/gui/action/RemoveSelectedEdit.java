@@ -7,7 +7,10 @@
 
 package org.openmarkov.gui.action;
 
-import org.openmarkov.core.action.*;
+import org.openmarkov.core.action.core.CRemoveNodeEdit;
+import org.openmarkov.core.action.base.CompoundPNEdit;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 import org.openmarkov.core.oopn.action.RemoveInstanceEdit;
 import org.openmarkov.core.oopn.action.RemoveReferenceLinkEdit;
 import org.openmarkov.gui.graphic.VisualLink;
@@ -56,8 +59,8 @@ import java.util.Vector;
 		Vector<PNEdit> edits = new Vector<>();
 		for (VisualLink link : linksToRemove) {
             edits.add(new RemoveLinkEdit(probNet, probNet.getVariable(link.getSourceNode().getNode().getName()),
-                    probNet.getVariable(link.getDestinationNode().getNode().getName()),
-                    link.getLink().isDirected()));
+                                         probNet.getVariable(link.getDestinationNode().getNode().getName()),
+                                         link.getLink().isDirected()));
         }
 		for (VisualNode node : nodesToRemove) {
 			edits.add(new CRemoveNodeEdit(probNet, node.getNode()));

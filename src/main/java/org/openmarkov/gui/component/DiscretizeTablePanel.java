@@ -7,10 +7,9 @@
 
 package org.openmarkov.gui.component;
 
-import org.openmarkov.core.action.NodeStateEdit;
-import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.annotation.ToCheck;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.core.NodeStateEdit;
+import org.openmarkov.core.action.base.StateAction;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.*;
@@ -328,7 +327,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      * This method is used to change the interval's type in a discretize Table
      * To closed from opened To opened from closed
      */
-    private void changeLimitIntervalDiscretize(int row, int column) throws DoEditException.ConstraintViolated, WrongIntervalException.InfinityInIntervalNotAllowed, WrongIntervalException.LimitsValuesAreWrong {
+    private void changeLimitIntervalDiscretize(int row, int column) throws ConstraintViolatedException, WrongIntervalException.InfinityInIntervalNotAllowed, WrongIntervalException.LimitsValuesAreWrong {
         if (column != LOWER_BOUND_SYMBOL_COLUMN_INDEX && column != UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
             return;
         }
@@ -789,7 +788,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             } else if (e.getSource().equals(this.negativeInfinityButton)) {
                 actionPerformedNegativeInfinityValue();
             }
-        } catch (DoEditException.ConstraintViolated ex) {
+        } catch (ConstraintViolatedException ex) {
             throw new UnrecoverableException(ex);
         }
         /*
@@ -801,7 +800,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedAddValue() throws ConstraintViolatedException {
         String option = (String) JOptionPane
                 .showInputDialog(this,
                                  stringDatabase.getString("AddState.Text"),
@@ -837,7 +836,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedRemoveValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         removeState(selectedRow);
     }
@@ -845,7 +844,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * @param selectedRow
      */
-    protected void removeState(int selectedRow) throws DoEditException.ConstraintViolated {
+    protected void removeState(int selectedRow) throws ConstraintViolatedException {
         int rowCount;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.REMOVE, selectedRow, "");
         ProbNet probNet = node.getProbNet();
@@ -892,7 +891,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedUpValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
@@ -915,7 +914,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedDownValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
@@ -938,7 +937,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'InfinitePositive' is pressed.
      */
-    protected void actionPerformedPositiveInfinityValue() throws DoEditException.ConstraintViolated {
+    protected void actionPerformedPositiveInfinityValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         int selectedColumn = valuesTable.getSelectedColumn();
         cancelCellEditing();
@@ -956,7 +955,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'InfiniteNegative' is pressed.
      */
-    protected void actionPerformedNegativeInfinityValue() throws DoEditException.ConstraintViolated {
+    protected void actionPerformedNegativeInfinityValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         int selectedColumn = valuesTable.getSelectedColumn();
         cancelCellEditing();
@@ -1005,7 +1004,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                     // Propagation of the domain in related variables in temporal models
                     propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
                     //
-                } catch (DoEditException.ConstraintViolated e) {
+                } catch (ConstraintViolatedException e) {
                     // If an error occurred or a constraint is broken
                     // we restore the old name of the edited state
                     String oldState = node.getVariable().getStateName(indexState);
@@ -1078,7 +1077,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             try {
                 ProbNet probNet = node.getProbNet();
                 partitionedIntervalEdit.doEdit(probNet);
-            } catch (DoEditException.ConstraintViolated e) {
+            } catch (ConstraintViolatedException e) {
                 throw new UnrecoverableException(e);
             }
             setDataFromPartitionedInterval(variable.getPartitionedInterval(), variable.getStates());
@@ -1108,7 +1107,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             if (column == LOWER_BOUND_SYMBOL_COLUMN_INDEX || column == UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
                 try {
                     changeLimitIntervalDiscretize(row, column);
-                } catch (DoEditException.ConstraintViolated | WrongIntervalException.InfinityInIntervalNotAllowed |
+                } catch (ConstraintViolatedException | WrongIntervalException.InfinityInIntervalNotAllowed |
                          WrongIntervalException.LimitsValuesAreWrong ex) {
                     throw new UnreacheableException(ex);
                 }
@@ -1145,7 +1144,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     // @ 2014/11/18. Issue 145.
     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
     // Propagation of the domain in related variables in temporal models
-    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) throws DoEditException.ConstraintViolated {
+    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) throws ConstraintViolatedException {
         // First we get the nodes in the same time slide as the node currently being edited
         List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
         // We create a variable to store the edit of the related node
@@ -1169,7 +1168,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
     // Propagation of the domain in related variables in temporal models
     private void propagateNodePartitionedIntervalEditRelatedVariables(StateAction stateAction, int selectedRow,
-                                                                      boolean option) throws DoEditException.ConstraintViolated {
+                                                                      boolean option) throws ConstraintViolatedException {
         // First we get the nodes in the same time slide as the node currently being edited
         List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
         // We create a variable to store the edit of the related node

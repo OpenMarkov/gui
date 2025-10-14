@@ -8,10 +8,10 @@
 package org.openmarkov.gui.action;
 
 import org.apache.logging.log4j.Logger;
-import org.openmarkov.core.action.ICIPotentialEdit;
-import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.SimplePNEdit;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.core.ICIPotentialEdit;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.SimplePNEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Util;
@@ -191,7 +191,7 @@ import java.util.List;
         
     }
     
-    @Override public void doEdit() throws DoEditException.ConstraintViolated {
+    @Override public void doEdit() throws ConstraintViolatedException {
         
         if (priorityList.isEmpty()) {
             //User is editing a new column of potentials //node
@@ -289,7 +289,7 @@ import java.util.List;
         iciPotentialEdit.doEdit(probNet);
     }
     
-    @Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
         this.checkConstraintsWillBeMet();
         PNEdit.startEdit(this, probNet);
         this.doEdit();

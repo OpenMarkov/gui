@@ -7,9 +7,9 @@
 
 package org.openmarkov.gui.dialog.network;
 
-import org.openmarkov.core.action.NetworkDefaultStatesEdit;
-import org.openmarkov.core.action.VariableTypeConstraintEdit;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.core.NetworkDefaultStatesEdit;
+import org.openmarkov.core.action.core.VariableTypeConstraintEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.ProbNet;
@@ -23,8 +23,6 @@ import org.openmarkov.gui.util.GUIDefaultStates;
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Panel to set the definition of the variables of a network. It will have a
@@ -217,21 +215,21 @@ public class NetworkVariablesPanel extends JPanel {
             jComboBoxVariableType.addActionListener(arg0 -> {
                 try {
                     variableTypeChanged();
-                } catch (DoEditException.ConstraintViolated e) {
+                } catch (ConstraintViolatedException e) {
                     throw new UnrecoverableException(e);
                 }
             });
             jComboBoxDefaultStates.addActionListener(arg0 -> {
                 try {
                     defaultStatesChanged();
-                } catch (DoEditException.ConstraintViolated e) {
+                } catch (ConstraintViolatedException e) {
                     throw new UnrecoverableException(e);
                 }
             });
         }
     }
     
-    private void variableTypeChanged() throws DoEditException.ConstraintViolated {
+    private void variableTypeChanged() throws ConstraintViolatedException {
         VariableTypeConstraintEdit variableTypeCE = null;
         Object itemSelected = jComboBoxVariableType.getSelectedItem();
         if (itemSelected != null && itemSelected.equals(stringDatabase
@@ -246,7 +244,7 @@ public class NetworkVariablesPanel extends JPanel {
         }
     }
     
-    private void defaultStatesChanged() throws DoEditException.ConstraintViolated {
+    private void defaultStatesChanged() throws ConstraintViolatedException {
         // warning mpalacios relative function to options position.
         // Review "otros" option
         Object itemSelected = jComboBoxDefaultStates.getSelectedItem();

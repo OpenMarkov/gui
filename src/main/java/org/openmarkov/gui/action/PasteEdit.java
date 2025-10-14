@@ -7,9 +7,9 @@
 
 package org.openmarkov.gui.action;
 
-import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
+import org.openmarkov.core.action.core.AddNodeEdit;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;

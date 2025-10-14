@@ -7,10 +7,10 @@
 
 package org.openmarkov.gui.window.edition;
 
-import org.openmarkov.core.action.CloseParenthesisEdit;
-import org.openmarkov.core.action.OpenParenthesisEdit;
-import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.action.PNUndoableEditListener;
+import org.openmarkov.core.action.base.CloseParenthesisEdit;
+import org.openmarkov.core.action.base.OpenParenthesisEdit;
+import org.openmarkov.core.action.base.PNESupport;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
@@ -327,7 +327,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      * This method absorbs a node into the rest of the net arc-reversal style. This means updating the only utility
      * child it might have and removing it next.
      */
-    public void absorbNode() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+    public void absorbNode() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
         editorPanel.absorbNode();
     }
     
@@ -507,7 +507,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     /**
      * This methods reverts the selected link.
      */
-    public void invertLinkAndUpdatePotentials() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+    public void invertLinkAndUpdatePotentials() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
         editorPanel.invertLinkAndUpdatePotentials();
     }
     
@@ -528,7 +528,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     /***
      * This method resets the link restriction of the selected link.
      */
-    public void disableLinkRestriction() throws DoEditException.ConstraintViolated {
+    public void disableLinkRestriction() throws ConstraintViolatedException {
         editorPanel.disableLinkRestriction();
     }
     
@@ -825,7 +825,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     }
     
     // TODO OOPN start
-    public void markSelectedAsInput() throws DoEditException.ConstraintViolated {
+    public void markSelectedAsInput() throws ConstraintViolatedException {
         editorPanel.markSelectedAsInput();
     }
     
@@ -838,7 +838,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     }
     // TODO OOPN end
     
-    public void setParameterArity(ParameterArity arity) throws DoEditException.ConstraintViolated {
+    public void setParameterArity(ParameterArity arity) throws ConstraintViolatedException {
         editorPanel.setParameterArity(arity);
     }
     
@@ -850,7 +850,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         }
     }
     
-    public void createNextSliceNode() throws DoEditException.ConstraintViolated {
+    public void createNextSliceNode() throws ConstraintViolatedException {
         editorPanel.createNextSliceNode();
     }
 }

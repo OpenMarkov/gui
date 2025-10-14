@@ -8,8 +8,8 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.AugmentedTablePotential;

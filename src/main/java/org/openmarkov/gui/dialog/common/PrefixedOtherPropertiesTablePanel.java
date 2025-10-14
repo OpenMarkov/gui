@@ -16,9 +16,9 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.action.OtherPropertyEdit;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -245,7 +245,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedAddValue() throws ConstraintViolatedException {
         String propertyName = JOptionPane.showInputDialog(this, stringDatabase.getString("AddOtherProperty.Name.Message"),
                                                           stringDatabase.getString("AddOtherProperty.Name.Title"), JOptionPane.QUESTION_MESSAGE);
         if (propertyName == null) {
@@ -276,7 +276,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedRemoveValue() throws ConstraintViolatedException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.removeRow(selectedRowIndex);
         //ProbNet probNet = null;
@@ -296,7 +296,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedUpValue() throws ConstraintViolatedException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex - 1);
         valuesTable.setRowSelectionInterval(selectedRowIndex - 1, selectedRowIndex - 1);
@@ -313,7 +313,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedDownValue() throws ConstraintViolatedException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex + 1);
         valuesTable.setRowSelectionInterval(selectedRowIndex + 1, selectedRowIndex + 1);
@@ -355,7 +355,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
                 OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "RENAME", row, rowData);
                 otherPropertyEdit.doEdit(probNet);
             }
-        } catch (DoEditException.ConstraintViolated e1) {
+        } catch (ConstraintViolatedException e1) {
             String oldName = new ArrayList<>(node.getOtherProperties().keySet()).get(row);
             //List<String> keySet = new ArrayList<>(node.getOtherProperties().keySet());
             //String oldKey = keySet.get(index);

@@ -7,10 +7,10 @@
 
 package org.openmarkov.gui.action;
 
-import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.SimplePNEdit;
-import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.SimplePNEdit;
+import org.openmarkov.core.action.base.StateAction;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
@@ -122,8 +122,8 @@ import java.util.List;
 		}
 
 	}
-	
-	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+    
+    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
         this.checkConstraintsWillBeMet();
 		PNEdit.startEdit(this, probNet);
 		this.doEdit();

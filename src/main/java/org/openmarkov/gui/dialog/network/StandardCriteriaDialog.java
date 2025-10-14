@@ -7,8 +7,8 @@
 
 package org.openmarkov.gui.dialog.network;
 
-import org.openmarkov.core.action.DecisionCriteriaEdit;
-import org.openmarkov.core.action.StateAction;
+import org.openmarkov.core.action.core.DecisionCriteriaEdit;
+import org.openmarkov.core.action.base.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.Criterion.CECriterion;

@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.dialog.CommentListener;
 
@@ -179,13 +179,13 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
             isEmpty = hTMLTextEditor.getCommentText().trim().replaceAll("[\r\n]", "").isEmpty();
             try {
                 notifyCommentChanged();
-            } catch (DoEditException.ConstraintViolated ex) {
+            } catch (ConstraintViolatedException ex) {
                 throw new UnrecoverableException(ex);
             }
         }
     }
     
-    private void notifyCommentChanged() throws DoEditException.ConstraintViolated {
+    private void notifyCommentChanged() throws ConstraintViolatedException {
         for (CommentListener listener : commentListeners) {
             listener.commentHasChanged();
         }

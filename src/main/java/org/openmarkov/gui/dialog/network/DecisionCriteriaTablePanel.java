@@ -7,10 +7,11 @@
 
 package org.openmarkov.gui.dialog.network;
 
-import org.openmarkov.core.action.DecisionCriteriaEdit;
-import org.openmarkov.core.action.DecisionCriterionUnitEdit;
-import org.openmarkov.core.action.SimplePNEdit;
-import org.openmarkov.core.action.StateAction;
+import org.openmarkov.core.action.core.DecisionCriteriaEdit;
+import org.openmarkov.core.action.core.DecisionCriterionUnitEdit;
+import org.openmarkov.core.action.base.SimplePNEdit;
+import org.openmarkov.core.action.base.StateAction;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Criterion;
@@ -88,7 +89,7 @@ import java.util.List;
         valuesTable.getSelectionModel().setSelectionInterval(row, row);
     }
     
-    @Override protected void actionPerformedAddValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedAddValue() throws ConstraintViolatedException {
         String option = JOptionPane.showInputDialog(this, stringDatabase.getString("AddCriterion.Text"),
                                                     stringDatabase.getString("AddCriterion.Title"), JOptionPane.QUESTION_MESSAGE);
         if (option == null) {
@@ -128,7 +129,7 @@ import java.util.List;
          */
     }
     
-    @Override protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedRemoveValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         String criteriaName = (String) valuesTable.getValueAt(selectedRow, 1);
         
@@ -151,7 +152,7 @@ import java.util.List;
         }
     }
     
-    @Override protected void actionPerformedUpValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedUpValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swapName = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
@@ -181,7 +182,7 @@ import java.util.List;
         
     }
     
-    @Override protected void actionPerformedDownValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedDownValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swapName = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];

@@ -8,8 +8,8 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.apache.logging.log4j.Logger;
-import org.openmarkov.core.action.UncertainValuesEdit;
-import org.openmarkov.core.action.UncertainValuesRemoveEdit;
+import org.openmarkov.core.action.core.UncertainValuesEdit;
+import org.openmarkov.core.action.core.UncertainValuesRemoveEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
@@ -653,7 +653,7 @@ import java.util.List;
     /**
      * Creates and shows the UncertainValuesDialog object
      */
-    public void showUncertaintyDialog() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException.ConstraintViolated, NonProjectablePotentialException {
+    public void showUncertaintyDialog() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, ConstraintViolatedException, NonProjectablePotentialException {
         // Generates the evidenceCase based on the column
         // selected on the JTable object
         evidenceCase = getEvidenceCaseFromSelectedColumn();
@@ -756,7 +756,7 @@ import java.util.List;
             try {
                 showUncertaintyDialog();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | DoEditException.ConstraintViolated |
+                     ThereIsNoPotentialsInNodeException | ConstraintViolatedException |
                      NonProjectablePotentialException ex) {
                 throw new UnrecoverableException(ex);
             }
@@ -764,7 +764,7 @@ import java.util.List;
             try {
                 removeUncertainty();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | DoEditException.ConstraintViolated |
+                     ThereIsNoPotentialsInNodeException | ConstraintViolatedException |
                      NonProjectablePotentialException ex) {
                 throw new UnrecoverableException(ex);
             }
@@ -774,7 +774,7 @@ import java.util.List;
     /**
      * Method for removing the uncertain values for a certain configuration
      */
-    public void removeUncertainty() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException.ConstraintViolated, NonProjectablePotentialException {
+    public void removeUncertainty() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, ConstraintViolatedException, NonProjectablePotentialException {
         evidenceCase = getEvidenceCaseFromSelectedColumn();
         UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(node, evidenceCase);
         ProbNet probNet = node.getProbNet();
@@ -831,7 +831,7 @@ import java.util.List;
             }
         } catch (ThereIsNoPotentialsInNodeException e) {
             throw new UnreacheableException(e);
-        } catch (DoEditException.ConstraintViolated | NonProjectablePotentialException e) {
+        } catch (ConstraintViolatedException | NonProjectablePotentialException e) {
             throw new UnrecoverableException(e);
         }
     }

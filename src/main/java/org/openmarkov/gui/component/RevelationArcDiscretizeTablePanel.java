@@ -7,8 +7,8 @@
 
 package org.openmarkov.gui.component;
 
-import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.base.StateAction;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
@@ -17,7 +17,6 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.action.RevelationIntervalEdit;
 
-import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import java.awt.event.MouseEvent;
 
@@ -85,7 +84,7 @@ import java.awt.event.MouseEvent;
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedAddValue() throws ConstraintViolatedException {
         int rowCount = valuesTable.getRowCount();
         int newIndex = valuesTable.getRowCount();
         RevelationIntervalEdit revelationArcStateEdit =
@@ -99,7 +98,7 @@ import java.awt.event.MouseEvent;
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedRemoveValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         RevelationIntervalEdit revelationArcStateEdit =
                 new RevelationIntervalEdit(link, StateAction.REMOVE, selectedRow, 0, false);
@@ -150,7 +149,7 @@ import java.awt.event.MouseEvent;
         ProbNet probNet = node.getProbNet();
         try {
             nodePartitionedIntervalEdit.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated e) {
+        } catch (ConstraintViolatedException e) {
             throw new UnrecoverableException(e);
         }
         setPartitionedInterval();
@@ -164,7 +163,7 @@ import java.awt.event.MouseEvent;
         }
         try {
             changeIntervalDiscretize(row, column);
-        } catch (DoEditException.ConstraintViolated ex) {
+        } catch (ConstraintViolatedException ex) {
             throw new UnrecoverableException(ex);
         }
         
@@ -176,7 +175,7 @@ import java.awt.event.MouseEvent;
      * @param row
      * @param column
      */
-    private void changeIntervalDiscretize(int row, int column) throws DoEditException.ConstraintViolated {
+    private void changeIntervalDiscretize(int row, int column) throws ConstraintViolatedException {
         switch (column) {
             case LOWER_BOUND_VALUE_COLUMN_INDEX, UPPER_BOUND_VALUE_COLUMN_INDEX -> {
                 double j = (Double) valuesTable.getValueAt(row, column);

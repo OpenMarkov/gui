@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.graphic;
 
-import org.openmarkov.core.action.VisualChanceNodeFindingChangeListener;
+import org.openmarkov.core.action.base.VisualChanceNodeFindingChangeListener;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;

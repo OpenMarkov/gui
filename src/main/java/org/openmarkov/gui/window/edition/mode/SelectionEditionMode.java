@@ -6,7 +6,7 @@
  */
 package org.openmarkov.gui.window.edition.mode;
 
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.action.MoveNodeEdit;
 import org.openmarkov.gui.graphic.VisualElement;
@@ -57,7 +57,7 @@ import java.util.List;
     }
     
     @Override
-    public void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException.ConstraintViolated {
+    public void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g) throws ConstraintViolatedException {
         switch (selectionState) {
             case SelectionState.DEFAULT -> {
             }

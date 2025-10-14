@@ -9,10 +9,10 @@ package org.openmarkov.gui.dialog.node;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openmarkov.core.action.NodeReplaceStatesEdit;
-import org.openmarkov.core.action.PrecisionEdit;
-import org.openmarkov.core.action.VariableTypeEdit;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.core.NodeReplaceStatesEdit;
+import org.openmarkov.core.action.core.PrecisionEdit;
+import org.openmarkov.core.action.core.VariableTypeEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
@@ -862,7 +862,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 ProbNet nodeProbNet = node.getProbNet();
                 try {
                     variableTypeEdit.doEdit(nodeProbNet);
-                } catch (DoEditException.ConstraintViolated e) {
+                } catch (ConstraintViolatedException e) {
                     throw new UnrecoverableException(e);
                 }
                 // @ 2014/11/18. Issue 145.
@@ -875,7 +875,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             ProbNet probNet = relatedNode.getProbNet();
                             try {
                                 variableTypeEdit.doEdit(probNet);
-                            } catch (DoEditException.ConstraintViolated e) {
+                            } catch (ConstraintViolatedException e) {
                                 throw new UnrecoverableException(e);
                             }
                         }
@@ -917,7 +917,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     this.removeAll();
                     initialize();
                     setFieldsFromProperties(node);
-                } catch (DoEditException.ConstraintViolated e) {
+                } catch (ConstraintViolatedException e) {
                     comboBox.setSelectedIndex(optionDeselected);
                     comboBox.requestFocus();
                     throw new UnrecoverableException(e);
@@ -944,7 +944,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             }
                         }
                         // @@@
-                    } catch (DoEditException.ConstraintViolated e1) {
+                    } catch (ConstraintViolatedException e1) {
                         throw new UnrecoverableException(e1);
                     }
                 }
@@ -1005,7 +1005,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 ProbNet probNet1 = node.getProbNet();
                 try {
                     partitionedIntervalEdit.doEdit(probNet1);
-                } catch (DoEditException.ConstraintViolated e) {
+                } catch (ConstraintViolatedException e) {
                     throw new UnrecoverableException(e);
                 }
                 // @ 2014/11/18. Issue 145.
@@ -1019,7 +1019,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             ProbNet probNet = relatedNode.getProbNet();
                             try {
                                 partitionedIntervalEdit.doEdit(probNet);
-                            } catch (DoEditException.ConstraintViolated e) {
+                            } catch (ConstraintViolatedException e) {
                                 throw new UnrecoverableException(e);
                             }
                         }
@@ -1047,13 +1047,13 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         if (actionComand.equals("StandardDomain")) {
             try {
                 actionPerformedStandardDomain(arg0);
-            } catch (DoEditException.ConstraintViolated e) {
+            } catch (ConstraintViolatedException e) {
                 throw new UnrecoverableException(e);
             }
         }
     }
     
-    private void actionPerformedStandardDomain(ActionEvent arg0) throws DoEditException.ConstraintViolated {
+    private void actionPerformedStandardDomain(ActionEvent arg0) throws ConstraintViolatedException {
         StandardDomainsDialog standardDomainDialog = new StandardDomainsDialog(Utilities.getOwner(this));
         // @ 2014/11/18. Issue 145.
         // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables

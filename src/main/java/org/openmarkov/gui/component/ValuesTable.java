@@ -10,12 +10,9 @@
 
 package org.openmarkov.gui.component;
 
-import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.action.UncertainValuesEdit;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
-import org.openmarkov.core.exception.UnreacheableException;
-import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.core.UncertainValuesEdit;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -414,7 +411,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
                                                                                     priorityList, getTableModel().getNotEditablePositions());
             
             nodePotentialEdit.doEdit(probNet);
-        } catch (DoEditException.ConstraintViolated | DoEditException.CannotRemovePotential e) {
+        } catch (ConstraintViolatedException | DoEditException.CannotRemovePotential e) {
             throw new UnrecoverableException(e);
         } catch (ThereIsNoPotentialsInNodeException e) {
             throw new UnreacheableException(e);

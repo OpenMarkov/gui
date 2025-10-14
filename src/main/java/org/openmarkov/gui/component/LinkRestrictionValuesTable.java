@@ -8,8 +8,8 @@
 
 package org.openmarkov.gui.component;
 
-import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -18,9 +18,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.gui.action.LinkRestrictionPotentialValueEdit;
-import org.openmarkov.core.localize.StringDatabase;
 
-import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
 import java.util.ArrayList;
@@ -94,7 +92,7 @@ import java.util.ArrayList;
                     node2.setPotentials(potentials);
                 }
             }
-        } catch (DoEditException.ConstraintViolated e) {
+        } catch (ConstraintViolatedException e) {
             throw new UnrecoverableException(e);
         }
     }

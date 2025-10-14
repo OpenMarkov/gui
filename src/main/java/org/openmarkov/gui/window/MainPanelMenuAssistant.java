@@ -7,9 +7,9 @@
 
 package org.openmarkov.gui.window;
 
-import org.openmarkov.core.action.ChangeNetworkTypeEdit;
-import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.action.PNUndoableEditListener;
+import org.openmarkov.core.action.core.ChangeNetworkTypeEdit;
+import org.openmarkov.core.action.base.PNESupport;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.*;

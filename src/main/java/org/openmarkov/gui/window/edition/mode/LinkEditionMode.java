@@ -6,7 +6,7 @@
  */
 package org.openmarkov.gui.window.edition.mode;
 
-import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.util.Utilities;

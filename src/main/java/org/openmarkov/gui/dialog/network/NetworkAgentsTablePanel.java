@@ -7,9 +7,9 @@
 
 package org.openmarkov.gui.dialog.network;
 
-import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.StateAction;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
@@ -51,7 +51,7 @@ import java.util.List;
                 try {
                     networkAgentEdit.doEdit(probNet);
                     edits.add(networkAgentEdit);
-                } catch (DoEditException.ConstraintViolated e) {
+                } catch (ConstraintViolatedException e) {
                     throw new UnrecoverableException(e);
                 }
                 setData(dataTable);
@@ -60,7 +60,7 @@ import java.util.List;
         }
     }
     
-    @Override protected void actionPerformedAddValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedAddValue() throws ConstraintViolatedException {
         
         String option = JOptionPane.showInputDialog(this, stringDatabase.getString("AddAgent.Text"),
                                                     stringDatabase.getString("AddAgent.Title"), JOptionPane.QUESTION_MESSAGE);
@@ -94,7 +94,7 @@ import java.util.List;
         }
     }
     
-    @Override protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedRemoveValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         String agentName = (String) valuesTable.getValueAt(selectedRow, 1);
         NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.REMOVE, "", agentName, null);
@@ -113,7 +113,7 @@ import java.util.List;
         }
     }
     
-    @Override protected void actionPerformedUpValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedUpValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
@@ -134,7 +134,7 @@ import java.util.List;
         
     }
     
-    @Override protected void actionPerformedDownValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedDownValue() throws ConstraintViolatedException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];

@@ -7,12 +7,12 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.openmarkov.core.action.NodeAlwaysObservedEdit;
-import org.openmarkov.core.action.NodeCommentEdit;
-import org.openmarkov.core.action.NodeNameEdit;
-import org.openmarkov.core.action.PurposeEdit;
-import org.openmarkov.core.action.RelevanceEdit;
-import org.openmarkov.core.action.TimeSliceEdit;
+import org.openmarkov.core.action.core.NodeAlwaysObservedEdit;
+import org.openmarkov.core.action.core.NodeCommentEdit;
+import org.openmarkov.core.action.core.NodeNameEdit;
+import org.openmarkov.core.action.core.PurposeEdit;
+import org.openmarkov.core.action.core.RelevanceEdit;
+import org.openmarkov.core.action.core.TimeSliceEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.NodeAgentEdit;
@@ -774,7 +774,7 @@ public class NodeDefinitionPanel extends JPanel
                 try {
                     ProbNet probNet = node.getProbNet();
                     purposeEdit.doEdit(probNet);
-                } catch (DoEditException.ConstraintViolated e1) {
+                } catch (ConstraintViolatedException e1) {
                     throw new UnrecoverableException(e1);
                 }
             }
@@ -784,7 +784,7 @@ public class NodeDefinitionPanel extends JPanel
                 try {
                     ProbNet probNet = node.getProbNet();
                     relevanceEdit.doEdit(probNet);
-                } catch (DoEditException.ConstraintViolated e1) {
+                } catch (ConstraintViolatedException e1) {
                     throw new UnrecoverableException(e1);
                 }
             }
@@ -800,7 +800,7 @@ public class NodeDefinitionPanel extends JPanel
                     ProbNet probNet = node.getProbNet();
                     timeSliceEdit.doEdit(probNet);
                     // comboBox.setSelectedIndex(optionSelected);
-                } catch (DoEditException.ConstraintViolated e1) {
+                } catch (ConstraintViolatedException e1) {
                     /*
                     Fixing issue 203
                     https://bitbucket.org/cisiad/org.openmarkov.issues/issue/203/two-time-related-variables-with-identical
@@ -821,7 +821,7 @@ public class NodeDefinitionPanel extends JPanel
                     ProbNet probNet = node.getProbNet();
                     nodeAgentEdit.doEdit(probNet);
                     // comboBox.setSelectedIndex(optionSelected);
-                } catch (DoEditException.ConstraintViolated e1) {
+                } catch (ConstraintViolatedException e1) {
                     throw new UnrecoverableException(e1);
                 }
             }
@@ -835,7 +835,7 @@ public class NodeDefinitionPanel extends JPanel
                 try {
                     ProbNet probNet = node.getProbNet();
                     nodeDecisionCriteriaEdit.doEdit(probNet);
-                } catch (DoEditException.ConstraintViolated e1) {
+                } catch (ConstraintViolatedException e1) {
                     throw new UnrecoverableException(e1);
                 }
             }
@@ -861,7 +861,7 @@ public class NodeDefinitionPanel extends JPanel
             nodeNameEdit.doEdit(probNet);
         } // TODO Auto-generated catch block
         // e1.printStackTrace();
-        catch (DoEditException.ConstraintViolated e1) {
+        catch (ConstraintViolatedException e1) {
             throw new UnrecoverableException(e1);
         }
     }
@@ -936,7 +936,7 @@ public class NodeDefinitionPanel extends JPanel
         return true;
     }
     
-    @Override public void commentHasChanged() throws DoEditException.ConstraintViolated {
+    @Override public void commentHasChanged() throws ConstraintViolatedException {
         
         // check if the comment is empty
         String comment = getCommentHTMLScrollPaneNodeDefinitionComment().isEmpty() ?
@@ -951,7 +951,7 @@ public class NodeDefinitionPanel extends JPanel
     /****
      * Starts the edit event to change the alwaysObserved property
      */
-    public void alwaysObservedPropertyHasChanged() throws DoEditException.ConstraintViolated {
+    public void alwaysObservedPropertyHasChanged() throws ConstraintViolatedException {
         NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.node, this.jCheckboxAlwaysObserved.isSelected());
             ProbNet probNet = node.getProbNet();
             edit.doEdit(probNet);
@@ -963,7 +963,7 @@ public class NodeDefinitionPanel extends JPanel
         }
         try {
             alwaysObservedPropertyHasChanged();
-        } catch (DoEditException.ConstraintViolated ex) {
+        } catch (ConstraintViolatedException ex) {
             throw new UnrecoverableException(ex);
         }
     }

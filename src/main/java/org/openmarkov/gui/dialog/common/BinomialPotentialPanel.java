@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.PotentialChangeEdit;
+import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;

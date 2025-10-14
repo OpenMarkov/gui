@@ -8,18 +8,16 @@
 
 package org.openmarkov.gui.component;
 
-import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.gui.action.ICITablePotentialValueEdit;
-import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.MismatchedValueException;
 
-import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
 import java.util.ListIterator;
@@ -86,7 +84,7 @@ import java.util.ListIterator;
             ProbNet probNet1 = node.getProbNet();
             try {
                 nodePotentialEdit.doEdit(probNet1);
-            } catch (DoEditException.ConstraintViolated e) {
+            } catch (ConstraintViolatedException e) {
                 throw new UnrecoverableException(e);
             }
         }

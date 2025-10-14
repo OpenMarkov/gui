@@ -7,22 +7,19 @@
 
 package org.openmarkov.gui.dialog.network;
 
-import org.openmarkov.core.action.ChangeNetworkTypeEdit;
-import org.openmarkov.core.action.NetworkCommentEdit;
+import org.openmarkov.core.action.core.ChangeNetworkTypeEdit;
+import org.openmarkov.core.action.core.NetworkCommentEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.gui.dialog.CommentListener;
-import org.openmarkov.gui.dialog.ExceptionDialog;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -206,7 +203,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
                 jComboBoxNetworkTypes.addActionListener(arg0 -> {
                     try {
                         networkTypeChanged();
-                    } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
+                    } catch (ConstraintViolatedException | DoEditException.CannotDoEditException e) {
                         throw new UnrecoverableException(e);
                     }
                 });
@@ -308,7 +305,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
         return true;
     }
     
-    @Override public void commentHasChanged() throws DoEditException.ConstraintViolated {
+    @Override public void commentHasChanged() throws ConstraintViolatedException {
         // check if the comment is empty
         String comment = getCommentHTMLScrollPaneNetworkDefinition().isEmpty() ?
                 "" :
@@ -317,7 +314,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
         networkCommentEdit.doEdit(probNet);
     }
     
-    private void networkTypeChanged() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+    private void networkTypeChanged() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
         String itemSelected = (String) jComboBoxNetworkTypes.getSelectedItem();
         if (itemSelected == null) {
             return;
@@ -345,7 +342,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
             changeNetworkType.doEdit(probNet);
             parent.update(probNet);
             //parent.getNetworkAdvancedPanel().update(probNet); SUSTITUIDA POR 342
-        } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException e) {
+        } catch (ConstraintViolatedException | DoEditException.CannotDoEditException e) {
             // TODO maintain comboBox with the current probNet
             // TODO temporal change in exception management
             throw e;

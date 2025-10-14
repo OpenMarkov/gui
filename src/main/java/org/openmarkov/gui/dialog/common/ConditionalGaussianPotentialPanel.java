@@ -7,8 +7,8 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.action.PotentialChangeEdit;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -24,8 +24,6 @@ import org.openmarkov.gui.util.Utilities;
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Conditional Gaussian")
 public class ConditionalGaussianPotentialPanel

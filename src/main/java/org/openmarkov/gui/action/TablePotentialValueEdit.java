@@ -7,9 +7,10 @@
 
 package org.openmarkov.gui.action;
 
-import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PotentialChangeEdit;
-import org.openmarkov.core.action.SimplePNEdit;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.core.PotentialChangeEdit;
+import org.openmarkov.core.action.base.SimplePNEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.exception.UnreacheableException;
@@ -163,7 +164,7 @@ import java.util.List;
      * In case the potential is ExactDistrPotential...
      * Carmen Yago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
      */
-    @Override public void doEdit() throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
+    @Override public void doEdit() throws ConstraintViolatedException, DoEditException.CannotRemovePotential {
         PotentialChangeEdit changePotentialEdit;
         if (!getExactDistrPotential()) {
             if (priorityList.isEmpty()) {
@@ -229,7 +230,7 @@ import java.util.List;
     }
     
     @Override
-    public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
+    public void doEdit(ProbNet probNet) throws ConstraintViolatedException, DoEditException.CannotRemovePotential {
         this.checkConstraintsWillBeMet();
         PNEdit.startEdit(this, probNet);
         this.doEdit();

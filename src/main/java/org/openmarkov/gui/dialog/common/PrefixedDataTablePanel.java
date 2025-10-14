@@ -7,10 +7,11 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.RemoveLinkEdit;
+import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 import org.openmarkov.core.annotation.ToCheck;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -189,7 +190,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
      * Invoked when the button 'remove' is pressed.
      */
     @Override
-    protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+    protected void actionPerformedRemoveValue() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         String name = (String) valuesTable.getValueAt(selectedRow, 1);
 		/*LinkEdit linkEdit;

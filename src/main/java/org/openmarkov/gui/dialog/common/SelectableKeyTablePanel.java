@@ -7,15 +7,14 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.RevelationStateEdit;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.core.RevelationStateEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 
-import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -98,7 +97,7 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
             try {
                 ProbNet probNet = node.getProbNet();
                 arcEdit.doEdit(probNet);
-            } catch (DoEditException.ConstraintViolated ex) {
+            } catch (ConstraintViolatedException ex) {
                 throw new UnrecoverableException(ex);
             }
         }

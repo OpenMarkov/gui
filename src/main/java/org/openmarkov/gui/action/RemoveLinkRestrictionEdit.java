@@ -1,8 +1,8 @@
 package org.openmarkov.gui.action;
 
-import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.SimplePNEdit;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.SimplePNEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -37,8 +37,8 @@ public class RemoveLinkRestrictionEdit extends SimplePNEdit {
             link.setRestrictionsPotential(null);
         }
     }
-
-    @Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+    
+    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
         this.checkConstraintsWillBeMet();
         PNEdit.startEdit(this, probNet);
         this.doEdit();

@@ -1,7 +1,7 @@
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.action.PotentialChangeEdit;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
@@ -17,8 +17,6 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType = "Discretized Cauchy")

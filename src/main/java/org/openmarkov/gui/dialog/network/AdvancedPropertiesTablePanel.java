@@ -7,8 +7,8 @@
 
 package org.openmarkov.gui.dialog.network;
 
-import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;

@@ -6,7 +6,8 @@
  */
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.PotentialChangeEdit;
+import org.openmarkov.core.action.core.PotentialChangeEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -134,7 +135,7 @@ import java.awt.event.ActionListener;
     }
     
     @Override
-    public boolean saveChanges() throws DoEditException.CannotRemovePotential, DoEditException.ConstraintViolated {
+    public boolean saveChanges() throws DoEditException.CannotRemovePotential, ConstraintViolatedException {
         GLMPotential newPotential = (GLMPotential) this.potential.copy();
         String[] covariates = regressionPanel.getCovariates();
         double[] coefficients = regressionPanel.getCoefficients();

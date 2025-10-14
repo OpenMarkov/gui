@@ -6,6 +6,7 @@
  */
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GLMPotential;
@@ -55,7 +56,7 @@ import java.util.List;
      * Invoked when the button 'remove' is pressed.
      */
     @Override
-    protected void actionPerformedRemoveValue() throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+    protected void actionPerformedRemoveValue() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
         super.actionPerformedRemoveValue();
         notifyActionListeners(new ActionEvent(this, 2, "Remove"));
     }
@@ -63,7 +64,7 @@ import java.util.List;
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedUpValue() throws ConstraintViolatedException {
         super.actionPerformedUpValue();
         notifyActionListeners(new ActionEvent(this, 3, "Up"));
     }
@@ -71,7 +72,7 @@ import java.util.List;
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() throws DoEditException.ConstraintViolated {
+    @Override protected void actionPerformedDownValue() throws ConstraintViolatedException {
         super.actionPerformedDownValue();
         notifyActionListeners(new ActionEvent(this, 4, "Down"));
     }

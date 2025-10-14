@@ -398,7 +398,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.ABSORB_NODE -> {
                 try {
                     this.getCurrentNetworkPanel().absorbNode();
-                } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException ex) {
+                } catch (ConstraintViolatedException | DoEditException.CannotDoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -502,7 +502,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS -> {
                 try {
                     this.getCurrentNetworkPanel().invertLinkAndUpdatePotentials();
-                } catch (DoEditException.ConstraintViolated | DoEditException.CannotDoEditException ex) {
+                } catch (ConstraintViolatedException | DoEditException.CannotDoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -511,7 +511,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES -> {
                 try {
                     this.getCurrentNetworkPanel().disableLinkRestriction();
-                } catch (DoEditException.ConstraintViolated ex) {
+                } catch (ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -519,7 +519,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.MARK_AS_INPUT -> {
                 try {
                     this.getCurrentNetworkPanel().markSelectedAsInput();
-                } catch (DoEditException.ConstraintViolated ex) {
+                } catch (ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -534,14 +534,14 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.SET_ARITY_ONE -> {
                 try {
                     this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
-                } catch (DoEditException.ConstraintViolated ex) {
+                } catch (ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.SET_ARITY_MANY -> {
                 try {
                     this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
-                } catch (DoEditException.ConstraintViolated ex) {
+                } catch (ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -569,7 +569,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.NEXT_SLICE_NODE -> {
                 try {
                     this.getCurrentNetworkPanel().createNextSliceNode();
-                } catch (DoEditException.ConstraintViolated ex) {
+                } catch (ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }

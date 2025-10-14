@@ -7,12 +7,9 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.openmarkov.core.action.SetPotentialEdit;
-import org.openmarkov.core.action.SetPotentialVariablesEdit;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
-import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.core.action.core.SetPotentialEdit;
+import org.openmarkov.core.action.core.SetPotentialVariablesEdit;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -466,7 +463,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             univariateDistrParametrizationComboBox.addActionListener(evt -> {
                 try {
                     distributionChanged();
-                } catch (DoEditException.CannotRemovePotential | DoEditException.ConstraintViolated e) {
+                } catch (DoEditException.CannotRemovePotential | ConstraintViolatedException e) {
                     throw new UnrecoverableException(e);
                 }
             });
@@ -476,7 +473,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         
     }
     
-    protected void distributionChanged() throws DoEditException.CannotRemovePotential, DoEditException.ConstraintViolated {
+    protected void distributionChanged() throws DoEditException.CannotRemovePotential, ConstraintViolatedException {
         String distributionUnivariateName = (String) univariateDistrComboBox.getSelectedItem();
         String distributionParameters = (String) univariateDistrParametrizationComboBox.getSelectedItem();
         //When we are changing the distribution the first value should be selected
@@ -716,13 +713,13 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         if (e.getSource().equals(reorderVariablesButton)) {
             try {
                 actionPerformedReorderVariables();
-            } catch (DoEditException.ConstraintViolated ex) {
+            } catch (ConstraintViolatedException ex) {
                 throw new UnrecoverableException(ex);
             }
         }
     }
     
-    protected void actionPerformedReorderVariables() throws DoEditException.ConstraintViolated {
+    protected void actionPerformedReorderVariables() throws ConstraintViolatedException {
         ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, node);
         if (reorderVariablesDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             List<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel().getVariables();

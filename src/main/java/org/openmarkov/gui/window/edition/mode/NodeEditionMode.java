@@ -7,8 +7,8 @@
 
 package org.openmarkov.gui.window.edition.mode;
 
-import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.action.core.AddNodeEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.Node;
@@ -37,7 +37,7 @@ public abstract class NodeEditionMode extends EditionMode {
     }
     
     @Override
-    public void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException.ConstraintViolated {
+    public void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) throws ConstraintViolatedException {
         if (!(SwingUtilities.isLeftMouseButton(e) && Utilities.noMouseModifiers(e))) {
             return;
         }

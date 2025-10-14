@@ -7,10 +7,11 @@
 
 package org.openmarkov.gui.graphic;
 
-import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditListener;
+import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
+import org.openmarkov.core.action.base.PNESupport;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -683,7 +684,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 				try {
 					probNet.getPNESupport().announceEdit(moveNodeEdit);
 					probNet.getPNESupport().doEdit(moveNodeEdit);
-				} catch (ConstraintViolated e1) {
+				} catch (ConstraintViolatedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (CanNotDoEditException e1) {
@@ -1223,7 +1224,7 @@ public class VisualNetwork implements PNUndoableEditListener {
     }
     
     //TODO OOPN start
-    public void markSelectedAsInput() throws DoEditException.ConstraintViolated {
+    public void markSelectedAsInput() throws ConstraintViolatedException {
         for (VisualNode visualNode : getSelectedNodes()) {
             MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualNode.getNode()
                                                                                       .isInput(), visualNode.getNode());
@@ -1235,7 +1236,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         // TODO Auto-generated method stub
     }
     
-    public void setParameterArity(ParameterArity arity) throws DoEditException.ConstraintViolated {
+    public void setParameterArity(ParameterArity arity) throws ConstraintViolatedException {
         // TODO Auto-generated method stub
     }
     
