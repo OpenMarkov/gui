@@ -10,7 +10,9 @@
 
 package org.openmarkov.gui.component;
 
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.UncertainValuesEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Node;
@@ -26,7 +28,6 @@ import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.MismatchedValueException;
 
 import javax.swing.*;
-import javax.swing.event.UndoableEditEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -35,7 +36,6 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.text.JTextComponent;
-import javax.swing.undo.UndoableEdit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -174,7 +174,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      */
     public ValuesTable(Node node, ValuesTableModel tableModel, final boolean modifiable) {
         super(tableModel, modifiable, true, true);
-        node.getProbNet().getPNESupport().addUndoableEditListener(this);
+        node.getProbNet().getPNESupport().addListener(this);
         this.tableModel = tableModel;
         this.node = node;
         this.probNet = node.getProbNet();
@@ -410,8 +410,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
             TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(node, (Double) newValue, row, col,
                                                                                     priorityList, getTableModel().getNotEditablePositions());
             
-            nodePotentialEdit.doEdit(probNet);
-        } catch (ConstraintViolatedException | DoEditException.CannotRemovePotential e) {
+            nodePotentialEdit.executeEdit();
+        } catch (DoEditException e) {
             throw new UnrecoverableException(e);
         } catch (ThereIsNoPotentialsInNodeException e) {
             throw new UnreacheableException(e);
@@ -670,8 +670,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
         System.out.println("    showingTPCvalues = " + isShowingTPCvalues());
     }
     
-    @Override public void undoableEditHappened(UndoableEditEvent event) {
-        UndoableEdit edit = event.getEdit();
+    @Override public void undoableEditHappened(PNUndoableEditEvent event) {
+        PNEdit edit = event.getEdit();
         if (edit instanceof TablePotentialValueEdit) {
             tablePotentialValueEditHappened((TablePotentialValueEdit) edit);
         } else if (edit instanceof UncertainValuesEdit) {
@@ -739,7 +739,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
     /**
      *
      */
-    @Override public void undoEditHappened(UndoableEditEvent event) {
+    @Override public void undoEditHappened(PNUndoableEditEvent event) {
         if (event.getEdit() instanceof TablePotentialValueEdit edit) {
             TablePotential editPotential = edit.getPotential();
             if (!edit.getExactDistrPotential()) {
@@ -810,8 +810,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      */
     public void setData(Node node) {
         if (this.probNet.getPNESupport() != node.getProbNet().getPNESupport()) {
-            this.probNet.getPNESupport().removeUndoableEditListener(this);
-            node.getProbNet().getPNESupport().addUndoableEditListener(this);
+            this.probNet.getPNESupport().removeListener(this);
+            node.getProbNet().getPNESupport().addListener(this);
         }
         this.probNet = node.getProbNet();
     }
@@ -820,7 +820,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
      * Closes this object and prepare it for disposal
      */
     public void close() {
-        probNet.getPNESupport().removeUndoableEditListener(this);
+        probNet.getPNESupport().removeListener(this);
     }
     
     /**

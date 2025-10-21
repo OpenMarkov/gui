@@ -773,8 +773,8 @@ public class NodeDefinitionPanel extends JPanel
                 }
                 try {
                     ProbNet probNet = node.getProbNet();
-                    purposeEdit.doEdit(probNet);
-                } catch (ConstraintViolatedException e1) {
+                    purposeEdit.executeEdit();
+                } catch (DoEditException e1) {
                     throw new UnrecoverableException(e1);
                 }
             }
@@ -783,8 +783,8 @@ public class NodeDefinitionPanel extends JPanel
                 RelevanceEdit relevanceEdit = new RelevanceEdit(node, Double.parseDouble(itemSelected));
                 try {
                     ProbNet probNet = node.getProbNet();
-                    relevanceEdit.doEdit(probNet);
-                } catch (ConstraintViolatedException e1) {
+                    relevanceEdit.executeEdit();
+                } catch (DoEditException e1) {
                     throw new UnrecoverableException(e1);
                 }
             }
@@ -798,9 +798,9 @@ public class NodeDefinitionPanel extends JPanel
                 }
                 try {
                     ProbNet probNet = node.getProbNet();
-                    timeSliceEdit.doEdit(probNet);
+                    timeSliceEdit.executeEdit();
                     // comboBox.setSelectedIndex(optionSelected);
-                } catch (ConstraintViolatedException e1) {
+                } catch (DoEditException e1) {
                     /*
                     Fixing issue 203
                     https://bitbucket.org/cisiad/org.openmarkov.issues/issue/203/two-time-related-variables-with-identical
@@ -819,9 +819,9 @@ public class NodeDefinitionPanel extends JPanel
                 NodeAgentEdit nodeAgentEdit = new NodeAgentEdit(node, agent);
                 try {
                     ProbNet probNet = node.getProbNet();
-                    nodeAgentEdit.doEdit(probNet);
+                    nodeAgentEdit.executeEdit();
                     // comboBox.setSelectedIndex(optionSelected);
-                } catch (ConstraintViolatedException e1) {
+                } catch (DoEditException e1) {
                     throw new UnrecoverableException(e1);
                 }
             }
@@ -834,8 +834,8 @@ public class NodeDefinitionPanel extends JPanel
                                                                                                  decisionCriteria);
                 try {
                     ProbNet probNet = node.getProbNet();
-                    nodeDecisionCriteriaEdit.doEdit(probNet);
-                } catch (ConstraintViolatedException e1) {
+                    nodeDecisionCriteriaEdit.executeEdit();
+                } catch (DoEditException e1) {
                     throw new UnrecoverableException(e1);
                 }
             }
@@ -858,10 +858,10 @@ public class NodeDefinitionPanel extends JPanel
         NodeNameEdit nodeNameEdit = new NodeNameEdit(node, this.jTextFieldNodeName.getText());
         try {
             ProbNet probNet = node.getProbNet();
-            nodeNameEdit.doEdit(probNet);
+            nodeNameEdit.executeEdit();
         } // TODO Auto-generated catch block
         // e1.printStackTrace();
-        catch (ConstraintViolatedException e1) {
+        catch (DoEditException e1) {
             throw new UnrecoverableException(e1);
         }
     }
@@ -936,7 +936,7 @@ public class NodeDefinitionPanel extends JPanel
         return true;
     }
     
-    @Override public void commentHasChanged() throws ConstraintViolatedException {
+    @Override public void commentHasChanged() throws DoEditException {
         
         // check if the comment is empty
         String comment = getCommentHTMLScrollPaneNodeDefinitionComment().isEmpty() ?
@@ -945,16 +945,16 @@ public class NodeDefinitionPanel extends JPanel
         
         NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(node, comment, "DefinitionComment");
             ProbNet probNet = node.getProbNet();
-            nodeCommentEdit.doEdit(probNet);
+        nodeCommentEdit.executeEdit();
     }
     
     /****
      * Starts the edit event to change the alwaysObserved property
      */
-    public void alwaysObservedPropertyHasChanged() throws ConstraintViolatedException {
+    public void alwaysObservedPropertyHasChanged() throws DoEditException {
         NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.node, this.jCheckboxAlwaysObserved.isSelected());
             ProbNet probNet = node.getProbNet();
-            edit.doEdit(probNet);
+        edit.executeEdit();
     }
     
     @Override public void actionPerformed(ActionEvent e) {
@@ -963,7 +963,7 @@ public class NodeDefinitionPanel extends JPanel
         }
         try {
             alwaysObservedPropertyHasChanged();
-        } catch (ConstraintViolatedException ex) {
+        } catch (DoEditException ex) {
             throw new UnrecoverableException(ex);
         }
     }

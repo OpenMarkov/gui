@@ -8,12 +8,9 @@
 package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 import org.openmarkov.core.action.base.StateAction;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.util.GUIDefaultStates;
 
 /**
@@ -23,7 +20,7 @@ import org.openmarkov.gui.util.GUIDefaultStates;
  * @author Miguel Palacios
  * @version 1.0 21/12/10
  */
-public class NodePartitionedIntervalEdit extends SimplePNEdit {
+public class NodePartitionedIntervalEdit extends PNEdit {
 
 	/**
 	 *
@@ -139,14 +136,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit {
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		switch (stateAction) {
 		case MODIFY_DELIMITER_INTERVAL:

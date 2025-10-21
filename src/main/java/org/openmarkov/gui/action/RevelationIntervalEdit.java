@@ -8,13 +8,10 @@
 package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 import org.openmarkov.core.action.base.StateAction;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
 
 /*****
  * A simple edit which allows to add and modify intervals and modify them.
@@ -22,7 +19,7 @@ import org.openmarkov.core.model.network.ProbNet;
  * @author caroline
  *
  */
-@SuppressWarnings("serial") public class RevelationIntervalEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class RevelationIntervalEdit extends PNEdit {
 
 	/***
 	 * Object which stores the revelation conditions
@@ -112,14 +109,7 @@ import org.openmarkov.core.model.network.ProbNet;
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		switch (stateAction) {
 		case ADD:

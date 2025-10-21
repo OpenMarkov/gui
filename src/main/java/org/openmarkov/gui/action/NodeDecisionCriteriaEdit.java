@@ -7,13 +7,10 @@
 package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 
-@SuppressWarnings("serial") public class NodeDecisionCriteriaEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class NodeDecisionCriteriaEdit extends PNEdit {
 
 	private Criterion currentDecisionCriteria;
 	private Criterion newDecisionCriteria;
@@ -30,14 +27,7 @@ import org.openmarkov.core.model.network.ProbNet;
 		node.getVariable().setDecisionCriterion(newDecisionCriteria);
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		node.getVariable().setDecisionCriterion(currentDecisionCriteria);
 	}

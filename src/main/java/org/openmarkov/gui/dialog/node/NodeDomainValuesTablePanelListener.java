@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.action.core.PrecisionEdit;
 import org.openmarkov.core.action.core.UnitEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
@@ -173,8 +173,8 @@ public class NodeDomainValuesTablePanelListener
                                                                                .getValue());
             ProbNet probNet = getPanel().getNode().getProbNet();
             try {
-                precisionEdit.doEdit(probNet);
-            } catch (ConstraintViolatedException e) {
+                precisionEdit.executeEdit();
+            } catch (DoEditException e) {
                 throw new UnrecoverableException(e);
             }
             System.out.println("precision set to " + ((Double) getPanel().getJFormattedTextFieldPrecision().getValue())
@@ -183,8 +183,8 @@ public class NodeDomainValuesTablePanelListener
             UnitEdit unitEdit = new UnitEdit(getPanel().getNode(), getPanel().getJTextFieldUnit().getText());
             ProbNet probNet = getPanel().getNode().getProbNet();
             try {
-                unitEdit.doEdit(probNet);
-            } catch (ConstraintViolatedException e) {
+                unitEdit.executeEdit();
+            } catch (DoEditException e) {
                 throw new UnrecoverableException(e);
             }
             getPanel().getJTextFieldUnit().setText(getPanel().getJTextFieldUnit().getText());
@@ -198,8 +198,8 @@ public class NodeDomainValuesTablePanelListener
                                                                                .getValue());
             ProbNet probNet = getPanel().getNode().getProbNet();
             try {
-                precisionEdit.doEdit(probNet);
-            } catch (ConstraintViolatedException e) {
+                precisionEdit.executeEdit();
+            } catch (DoEditException e) {
                 throw new UnrecoverableException(e);
             }
             NumberFormat nf = NumberFormat.getNumberInstance();
@@ -256,8 +256,8 @@ public class NodeDomainValuesTablePanelListener
                                                                                               newPartitionedInterval);
                 ProbNet panelProbNet = getPanel().getNode().getProbNet();
                 try {
-                    partitionedIntervalEdit.doEdit(panelProbNet);
-                } catch (ConstraintViolatedException e) {
+                    partitionedIntervalEdit.executeEdit();
+                } catch (DoEditException e) {
                     throw new UnrecoverableException(e);
                 }
                 PartitionedInterval newPartitionInterval = getPanel().getNode().getVariable().getPartitionedInterval();
@@ -268,8 +268,8 @@ public class NodeDomainValuesTablePanelListener
             UnitEdit unitEdit = new UnitEdit(getPanel().getNode(), getPanel().getJTextFieldUnit().getText());
             try {
                 ProbNet probNet = getPanel().getNode().getProbNet();
-                unitEdit.doEdit(probNet);
-            } catch (ConstraintViolatedException e) {
+                unitEdit.executeEdit();
+            } catch (DoEditException e) {
                 throw new UnrecoverableException(e);
             }
         }

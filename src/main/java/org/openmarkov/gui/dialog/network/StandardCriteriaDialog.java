@@ -84,7 +84,7 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
         while (!probNet.getDecisionCriteria().isEmpty()) {
             Criterion criterionToBeDeleted = probNet.getDecisionCriteria().get(0);
             DecisionCriteriaEdit edit = new DecisionCriteriaEdit(probNet, StateAction.REMOVE, criterionToBeDeleted, null);
-            probNet.getPNESupport().doEdit(edit);
+            edit.executeEdit();
         }
         
         //Get the list with the new criteria
@@ -93,7 +93,7 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
         // Add new criteria to the probNet
         for (Criterion criterion : defaultCriteria) {
             DecisionCriteriaEdit edit = new DecisionCriteriaEdit(probNet, StateAction.ADD, criterion, null);
-            probNet.getPNESupport().doEdit(edit);
+            edit.executeEdit();
         }
         
         // Set as default the first criteria of the probNet

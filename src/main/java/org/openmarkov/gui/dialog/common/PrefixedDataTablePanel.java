@@ -7,11 +7,10 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 import org.openmarkov.core.annotation.ToCheck;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -124,7 +123,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
                 String name = (String) newData[i][1];
                 for (PNEdit edit : edits) {
                     if (((AddLinkEdit) edit).getNode1().getName().equals(name)) {
-                        node.getProbNet().getPNESupport().doEdit((AddLinkEdit) edit);
+                        edit.executeEdit();
                         tableModel.insertRow(newIndex + i, newData[i]);
                         edits.remove(edit);
                         break;
@@ -173,9 +172,8 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
                 //LinkEdit linkEdit = new LinkEdit(node.getProbNet(),pNode.getName(), node.getName(), true, true);
                 AddLinkEdit linkEdit = new AddLinkEdit(node.getProbNet(), otherNode.getVariable(), node.getVariable(),
                                                        true);
-                @ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG, reasonDescription = "An edit is announced without it being done")
+                @ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG, reasonDescription = "An edit is added without it being done")
                 var check = false;
-                node.getProbNet().getPNESupport().announceEdit(linkEdit);
                 edits.add(linkEdit);
                 nodes.add(otherNode);
                 
@@ -190,7 +188,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
      * Invoked when the button 'remove' is pressed.
      */
     @Override
-    protected void actionPerformedRemoveValue() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
+    protected void actionPerformedRemoveValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         String name = (String) valuesTable.getValueAt(selectedRow, 1);
 		/*LinkEdit linkEdit;
@@ -201,7 +199,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
         RemoveLinkEdit linkEdit;
         linkEdit = new RemoveLinkEdit(probNet, probNet.getVariable(name), node.getVariable(), true);
         ProbNet nodeProbNet = node.getProbNet();
-        linkEdit.doEdit(nodeProbNet);
+        linkEdit.executeEdit();
         tableModel.removeRow(selectedRow);
         valuesTable.getRowCount();
         // Fixing issue #249

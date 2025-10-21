@@ -7,9 +7,11 @@
 
 package org.openmarkov.gui.graphic;
 
+import org.openmarkov.core.model.network.Point2D;
+import org.openmarkov.gui.swingUtils.SwingUtils;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Point2D;
 
 /**
  * This is an abstract class where common elements are defined. This elements
@@ -101,7 +103,7 @@ public abstract class VisualElement {
 	 */
 	public boolean pointInsideShape(Point2D.Double point, Graphics2D g) {
 		Shape shape = getShape(g);
-        return shape != null && shape.contains(point);
+        return shape != null && shape.contains(SwingUtils.om2DPointToSwing2DPoint(point));
 	}
 
 	/**

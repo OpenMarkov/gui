@@ -13,7 +13,7 @@ import org.junit.jupiter.api.*;
 
 import org.openmarkov.core.action.base.StateAction;
 import org.openmarkov.core.action.core.VariableTypeEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -55,7 +55,7 @@ public class NodePartitionedIntervalEditTest {
 	 *
 	 * @throws Exception if an error occurs.
 	 */
-	@BeforeEach public void setUp() throws ConstraintViolatedException {
+    @BeforeEach public void setUp() throws DoEditException {
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");
@@ -76,12 +76,12 @@ public class NodePartitionedIntervalEditTest {
 
 		VariableTypeEdit variableTypeEdit = new VariableTypeEdit(node1, VariableType.DISCRETIZED);
         
-        variableTypeEdit.doEdit(probNet);
+        variableTypeEdit.executeEdit();
         
         NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node1,
 				StateAction.MODIFY_DELIMITER_INTERVAL, 0, true);
         
-        nodePartitionedIntervalEdit.doEdit(probNet);
+        nodePartitionedIntervalEdit.executeEdit();
     }
 
 	/**

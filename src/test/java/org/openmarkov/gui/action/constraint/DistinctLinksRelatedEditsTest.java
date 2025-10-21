@@ -34,25 +34,24 @@ public class DistinctLinksRelatedEditsTest {
     
     @Disabled
     @Test
-    public void testUndoableEditWillHappen() throws ConstraintViolatedException, DoEditException.CannotInvertLink {
-        PNESupport pNESupport = new PNESupport(false);
+    public void testUndoableEditWillHappen() throws DoEditException {
+        PNESupport pNESupport = influenceDiagram.getPNESupport();
         PNConstraint constraint = new DistinctLinks();
         
         influenceDiagram.addConstraint(constraint);
-        pNESupport.addUndoableEditListener(constraint);
+        pNESupport.addListener(constraint);
         
         // do legal AddLink: add an directed link between U and A
         Variable vU = influenceDiagram.getVariable("U");
         Variable vA = influenceDiagram.getVariable("A");
         // creates an undirected link from node A to D
         AddLinkEdit legalEdit = new AddLinkEdit(influenceDiagram, vU, vA, true);
-        pNESupport.announceEdit(legalEdit);
-        legalEdit.doEdit();
+        legalEdit.executeEdit();
         
         // do ilegal LinkAdd. Add an directed link between A and U
         AddLinkEdit ilegalAdd = new AddLinkEdit(influenceDiagram, vA, vU, true);
         try {
-            ilegalAdd.doEdit(influenceDiagram);
+            ilegalAdd.executeEdit();
             fail();
         } catch (ConstraintViolatedException e) {
             // The constraint should have faild
@@ -62,7 +61,7 @@ public class DistinctLinksRelatedEditsTest {
         // do ilegal InvertLink. Add an directed link between D and U
         InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vD, true);
         try {
-            ilegalAdd.doEdit(influenceDiagram);
+            ilegalAdd.executeEdit();
             fail();
         } catch (ConstraintViolatedException e) {
             // The constraint should have failed
@@ -70,16 +69,14 @@ public class DistinctLinksRelatedEditsTest {
         
         // do legal invert link: create undirected link between U and D
         InvertLinkEdit legalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vD, false);
-        
-        pNESupport.announceEdit(legalInvertLinkEdit);
-        legalInvertLinkEdit.doEdit();
+        legalInvertLinkEdit.executeEdit();
         
         
         // do ilegal LinkEdit. Add an undirected link between U and D
         AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"),
                                                      influenceDiagram.getVariable("D"), false);
         try {
-            ilegalLinkEdit.doEdit(influenceDiagram);
+            ilegalLinkEdit.executeEdit();
             fail();
         } catch (ConstraintViolatedException e) {
             // The constraint should have failed

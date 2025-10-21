@@ -70,7 +70,7 @@ public class LinkInversionWithPotentialsUpdateValidator {
 
 		// Check cycles
 		PNConstraint noCycle = new NoCycle();
-		return noCycle.checkProbNet(newProbNet);
+        return noCycle.isMetBy(newProbNet);
 	}
 
 	/**

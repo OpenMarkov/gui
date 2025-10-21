@@ -67,7 +67,7 @@ public class PropagationOptionsDialogListener implements ActionListener {
                                 editorPanel.doPropagation(editorPanel.getEvidenceCase(caseIndex), caseIndex);
                             } catch (NotEvaluableNetworkException | NonProjectablePotentialException |
                                      CannotNormalizePotentialException | NotEnoughtMemoryException |
-                                     IncompatibleEvidenceException e) {
+                                     IncompatibleEvidenceException | ConstraintViolatedException e) {
                                 throw new UnrecoverableException(e);
                             }
                             editorPanel.updateAllVisualStates("", caseIndex);

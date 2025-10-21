@@ -8,13 +8,13 @@
 package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
 
 /**
  * This class is the visual representation of a utility node.

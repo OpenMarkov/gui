@@ -36,7 +36,7 @@ import java.util.List;
 	 *
 	 * @param node
 	 */
-    public abstract void setData(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException;
+    public abstract void setData(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException;
 
 	/**
 	 * Modify the node according to the changes entered by the user in the panel

@@ -9,12 +9,12 @@ package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.action.base.VisualChanceNodeFindingChangeListener;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.geom.RoundRectangle2D;
 
 /**

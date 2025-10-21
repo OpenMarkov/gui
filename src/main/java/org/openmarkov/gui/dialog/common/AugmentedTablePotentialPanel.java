@@ -72,7 +72,7 @@ public class AugmentedTablePotentialPanel
      *
      * @param node : node whose first potential is a AugmentedTablePotential
      */
-    public AugmentedTablePotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    public AugmentedTablePotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException {
         super();
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
         this.node = node;
@@ -145,7 +145,7 @@ public class AugmentedTablePotentialPanel
      *
      * @author carmenyago
      */
-    @Override public void setData() throws ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    @Override public void setData() throws ThereIsNoPotentialsInNodeException {
         
         // true
         hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(node);
@@ -280,7 +280,7 @@ public class AugmentedTablePotentialPanel
      * <p>
      * Override because we need the variables in tablePotential no in potential
      */
-    @Override protected long setNumberOfPostions() throws NotEnoughtMemoryException {
+    @Override protected long setNumberOfPostions() {
         long numPositions = 1;
         for (Variable variable : tablePotential.getVariables()) {
             numPositions = numPositions * variable.getNumStates();

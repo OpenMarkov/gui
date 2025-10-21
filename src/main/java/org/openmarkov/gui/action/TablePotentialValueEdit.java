@@ -9,13 +9,10 @@ package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -38,7 +35,7 @@ import java.util.List;
  * @version 1.1 28/05/2016 - cmyago - Eliminated the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
  * - adding the attribute getExactDistrPotential
  */
-@SuppressWarnings("serial") public class TablePotentialValueEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class TablePotentialValueEdit extends PNEdit {
     /**
      * The column of the table where is the potential
      */
@@ -164,7 +161,7 @@ import java.util.List;
      * In case the potential is ExactDistrPotential...
      * Carmen Yago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
      */
-    @Override public void doEdit() throws ConstraintViolatedException, DoEditException.CannotRemovePotential {
+    @Override public void doEdit() throws DoEditException {
         PotentialChangeEdit changePotentialEdit;
         if (!getExactDistrPotential()) {
             if (priorityList.isEmpty()) {
@@ -226,15 +223,7 @@ import java.util.List;
             changePotentialEdit = new PotentialChangeEdit(probNet, oldExactDistrPotential, exactDistrPotential);
         }
         
-        changePotentialEdit.doEdit(probNet);
-    }
-    
-    @Override
-    public void doEdit(ProbNet probNet) throws ConstraintViolatedException, DoEditException.CannotRemovePotential {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
+        changePotentialEdit.executeEdit();
     }
     
     /**

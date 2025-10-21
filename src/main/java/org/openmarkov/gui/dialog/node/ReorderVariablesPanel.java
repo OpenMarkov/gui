@@ -22,7 +22,6 @@ import org.openmarkov.gui.dialog.common.KeyTablePanel;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.event.UndoableEditEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -147,10 +146,6 @@ import java.util.List;
 	 */
 	public List<PNEdit> getEdits() {
 		return edits;
-	}
-
-	@Override public void undoableEditHappened(UndoableEditEvent arg0) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override public void tableChanged(TableModelEvent arg0) {

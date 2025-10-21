@@ -276,7 +276,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     loadEvidence(getCurrentNetworkPanel());
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException | ParsingSourceException |
-                         IOException | EmptyDatabaseException ex) {
+                         IOException | EmptyDatabaseException | ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -328,7 +328,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 try {
                     setNewWorkingMode();
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
-                         IncompatibleEvidenceException | CannotNormalizePotentialException ex) {
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -338,7 +339,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     evidenceCasesNavigationOption("CREATE_NEW_EVIDENCE_CASE");
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
-                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -347,7 +349,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     evidenceCasesNavigationOption("GO_TO_FIRST_EVIDENCE_CASE");
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
-                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -356,7 +359,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     evidenceCasesNavigationOption("GO_TO_PREVIOUS_EVIDENCE_CASE");
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
-                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -365,7 +369,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     evidenceCasesNavigationOption("GO_TO_NEXT_EVIDENCE_CASE");
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
-                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -374,7 +379,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     evidenceCasesNavigationOption("GO_TO_LAST_EVIDENCE_CASE");
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
-                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -383,7 +389,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     evidenceCasesNavigationOption("CLEAR_OUT_ALL_EVIDENCE_CASES");
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
-                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException ex) {
+                         ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -391,14 +398,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 try {
                     getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant());
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
-                         IncompatibleEvidenceException | CannotNormalizePotentialException ex) {
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.ABSORB_NODE -> {
                 try {
                     this.getCurrentNetworkPanel().absorbNode();
-                } catch (ConstraintViolatedException | DoEditException.CannotDoEditException ex) {
+                } catch (DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -413,7 +421,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 try {
                     getCurrentNetworkPanel().changeNodeProperties();
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
-                         IncompatibleEvidenceException | CannotNormalizePotentialException ex) {
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -422,7 +431,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     getCurrentNetworkPanel().changePotential();
                 } catch (ThereIsNoPotentialsInNodeException | IncompatibleEvidenceException |
                          NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
-                         CannotNormalizePotentialException ex) {
+                         CannotNormalizePotentialException | ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -442,14 +451,20 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.DECISION_REMOVE_POLICY -> getCurrentNetworkPanel().removePolicyFromNode();
+            case ActionCommands.DECISION_REMOVE_POLICY -> {
+                try {
+                    getCurrentNetworkPanel().removePolicyFromNode();
+                } catch (DoEditException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            }
             case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY -> {
                 try {
                     getCurrentNetworkPanel().showExpectedUtilityOfNode();
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
                          NonProjectablePotentialException | NotEvaluableNetworkException.NotApplicableNetwork |
                          NotEvaluableNetworkException.UnsatisfiedContraints | ThereIsNoPotentialsInNodeException |
-                         NotEnoughtMemoryException ex) {
+                         NotEnoughtMemoryException | ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -459,7 +474,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
                          NonProjectablePotentialException | NotEvaluableNetworkException.NotApplicableNetwork |
                          NotEvaluableNetworkException.UnsatisfiedContraints | ThereIsNoPotentialsInNodeException |
-                         NotEnoughtMemoryException ex) {
+                         NotEnoughtMemoryException | ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -469,7 +484,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.NODE_REMOVE_FINDING -> {
                 try {
                     getCurrentNetworkPanel().removeFinding();
-                } catch (PreResolutionNodeInInferenceException ex) {
+                } catch (PreResolutionNodeInInferenceException | DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -477,7 +492,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 try {
                     getCurrentNetworkPanel().removeAllFindings();
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
-                         IncompatibleEvidenceException | CannotNormalizePotentialException ex) {
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -502,7 +518,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS -> {
                 try {
                     this.getCurrentNetworkPanel().invertLinkAndUpdatePotentials();
-                } catch (ConstraintViolatedException | DoEditException.CannotDoEditException ex) {
+                } catch (DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -511,7 +527,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES -> {
                 try {
                     this.getCurrentNetworkPanel().disableLinkRestriction();
-                } catch (ConstraintViolatedException ex) {
+                } catch (DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -519,7 +535,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.MARK_AS_INPUT -> {
                 try {
                     this.getCurrentNetworkPanel().markSelectedAsInput();
-                } catch (ConstraintViolatedException ex) {
+                } catch (DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -534,14 +550,14 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.SET_ARITY_ONE -> {
                 try {
                     this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
-                } catch (ConstraintViolatedException ex) {
+                } catch (DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.SET_ARITY_MANY -> {
                 try {
                     this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
-                } catch (ConstraintViolatedException ex) {
+                } catch (DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -569,7 +585,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.NEXT_SLICE_NODE -> {
                 try {
                     this.getCurrentNetworkPanel().createNextSliceNode();
-                } catch (ConstraintViolatedException ex) {
+                } catch (DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -1046,7 +1062,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             frameIndex++;
             // mainPanelMenuAssistant is added as listener to probNet
             // for menus updated purposes.
-            probNet.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
+            probNet.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
         }
     }
     
@@ -1096,7 +1112,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         //TODO Performance issue here on first call
         ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
         ProbNet netReadFromFile = probNetInfo.getProbNet();
-        netReadFromFile.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
+        netReadFromFile.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
         netReadFromFile.getPNESupport().setWithUndo(true);
         netReadFromFile.setName(new File(fileName).getName());
         //TODO Performance issue here on first call
@@ -1158,7 +1174,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                  .println(stringDatabase.getString("LoadingNetworkURL.Text.Label") + " " + url);
         ProbNetInfo probNetInfo = NetsIO.openNetworkURL(url);
         ProbNet netReadFromURL = probNetInfo.getProbNet();
-        netReadFromURL.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
+        netReadFromURL.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
         netReadFromURL.getPNESupport().setWithUndo(true);
         netReadFromURL.setName(new File(urlFile).getName());
         NetworkPanel networkPanel = createNewFrame(netReadFromURL);
@@ -1409,7 +1425,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param currentNetworkPanel
      */
-    private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ParsingSourceException, IOException, EmptyDatabaseException {
+    private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException {
         FileChooser evidenceFileChooser = new DBReaderFileChooser();
         evidenceFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
         // Set last used evidence format as default
@@ -1516,7 +1532,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * This method establishes the network working mode (edition or inference),
      * by setting the opposite to the current one.
      */
-    private void setNewWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    private void setNewWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         NetworkPanel.WorkingMode currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
         NetworkPanel.WorkingMode newWorkingMode = null;
         boolean performInference = true;
@@ -1590,7 +1606,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param command the Action Command corresponding to the selected option
      */
-    private void evidenceCasesNavigationOption(String command) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException, ThereIsNoPreviousEvidenceCaseException {
+    private void evidenceCasesNavigationOption(String command) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException, ThereIsNoPreviousEvidenceCaseException, ConstraintViolatedException {
         switch (command) {
             case "CREATE_NEW_EVIDENCE_CASE" -> getCurrentNetworkPanel().createNewEvidenceCase();
             case "GO_TO_FIRST_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToFirstEvidenceCase();
@@ -1777,7 +1793,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 veOptimalStrategy = new VEOptimalIntervention(probNet,
                                                               networkPanel.getEditorPanel().getPreResolutionEvidence());
             } catch (NotEvaluableNetworkException.NotApplicableNetwork |
-                     NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException e) {
+                     NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException |
+                     ConstraintViolatedException e) {
                 throw new UnrecoverableException(e);
             }
             

@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.StateAction;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
@@ -49,9 +49,9 @@ import java.util.List;
                 NetworkAgentEdit networkAgentEdit =
                         new NetworkAgentEdit(probNet, StateAction.RENAME, newName, agentName, dataTable);
                 try {
-                    networkAgentEdit.doEdit(probNet);
+                    networkAgentEdit.executeEdit();
                     edits.add(networkAgentEdit);
-                } catch (ConstraintViolatedException e) {
+                } catch (DoEditException e) {
                     throw new UnrecoverableException(e);
                 }
                 setData(dataTable);
@@ -60,7 +60,7 @@ import java.util.List;
         }
     }
     
-    @Override protected void actionPerformedAddValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedAddValue() throws DoEditException {
         
         String option = JOptionPane.showInputDialog(this, stringDatabase.getString("AddAgent.Text"),
                                                     stringDatabase.getString("AddAgent.Title"), JOptionPane.QUESTION_MESSAGE);
@@ -70,7 +70,7 @@ import java.util.List;
             
             NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.ADD, "", option, null);
             //doEdit
-            networkAgentEdit.doEdit(probNet);
+            networkAgentEdit.executeEdit();
             edits.add(networkAgentEdit);
 
 			
@@ -94,11 +94,11 @@ import java.util.List;
         }
     }
     
-    @Override protected void actionPerformedRemoveValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedRemoveValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         String agentName = (String) valuesTable.getValueAt(selectedRow, 1);
         NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.REMOVE, "", agentName, null);
-        networkAgentEdit.doEdit(probNet);
+        networkAgentEdit.executeEdit();
         edits.add(networkAgentEdit);
         //StringsWithProperties agents = probNet.getAgents();
         List<StringWithProperties> agents = probNet.getAgents();
@@ -113,14 +113,14 @@ import java.util.List;
         }
     }
     
-    @Override protected void actionPerformedUpValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedUpValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
         dataTable[selectedRow - 1][0] = swap;
         
         NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.UP, "", "", dataTable);
-        networkAgentEdit.doEdit(probNet);
+        networkAgentEdit.executeEdit();
         edits.add(networkAgentEdit);
         setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
@@ -134,13 +134,13 @@ import java.util.List;
         
     }
     
-    @Override protected void actionPerformedDownValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedDownValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];
         dataTable[selectedRow + 1][0] = swap;
         NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.DOWN, "", "", dataTable);
-        networkAgentEdit.doEdit(probNet);
+        networkAgentEdit.executeEdit();
         edits.add(networkAgentEdit);
         setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);

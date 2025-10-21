@@ -35,25 +35,24 @@ public class NoMultipleLinksRelatedEditsTest {
     
     @Disabled
     @Test
-    public void testUndoableEditWillHappen() throws ConstraintViolatedException, DoEditException.CannotInvertLink {
-        PNESupport pNESupport = new PNESupport(false);
+    public void testUndoableEditWillHappen() throws DoEditException {
+        PNESupport pNESupport = influenceDiagram.getPNESupport();
         PNConstraint constraint = new NoMultipleLinks();
         
         influenceDiagram.addConstraint(constraint);
-        pNESupport.addUndoableEditListener(constraint);
+        pNESupport.addListener(constraint);
         
         // do legal AddLink: add an directed link between U and A
         Variable vU = influenceDiagram.getVariable("U");
         Variable vA = influenceDiagram.getVariable("A");
         // creates an undirected link from node A to D
         AddLinkEdit legalEdit = new AddLinkEdit(influenceDiagram, vU, vA, true);
-        pNESupport.announceEdit(legalEdit);
-        legalEdit.doEdit();
+        legalEdit.executeEdit();
         
         // do ilegal LinkAdd. Add an undirected link between U and A
         AddLinkEdit ilegalAdd = new AddLinkEdit(influenceDiagram, vU, vA, false);
         try {
-            ilegalAdd.doEdit(influenceDiagram);
+            ilegalAdd.executeEdit();
             fail();
         } catch (ConstraintViolatedException e) {
             // the ilegal edit should have thrown the exception
@@ -62,18 +61,16 @@ public class NoMultipleLinksRelatedEditsTest {
         // do ilegal LinkEdit. Add an undirected link between U and A
         AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"),
                                                      influenceDiagram.getVariable("A"), false);
-        pNESupport.announceEdit(ilegalLinkEdit);
-        ilegalLinkEdit.doEdit();
+        ilegalLinkEdit.executeEdit();
         
         // do legal invert link
         InvertLinkEdit legalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vA, true);
-        pNESupport.announceEdit(legalInvertLinkEdit);
-        legalInvertLinkEdit.doEdit();
+        legalInvertLinkEdit.executeEdit();
         
         // do ilegal InvertLink. Add an directed link between U and A
         InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vA, false);
         try {
-            ilegalInvertLinkEdit.doEdit(influenceDiagram);
+            ilegalInvertLinkEdit.executeEdit();
             fail();
         } catch (ConstraintViolatedException | DoEditException.CannotInvertLink e) {
             // the ilegal edit should have thrown the exception

@@ -8,8 +8,10 @@
 
 package org.openmarkov.gui.component;
 
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -19,8 +21,6 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.gui.action.LinkRestrictionPotentialValueEdit;
 
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.undo.UndoableEdit;
 import java.util.ArrayList;
 
 /**
@@ -77,7 +77,7 @@ import java.util.ArrayList;
         LinkRestrictionPotentialValueEdit linkPotentialEdit =
                 new LinkRestrictionPotentialValueEdit(link, (Integer) newValue, row, col);
         try {
-            linkPotentialEdit.doEdit(net);
+            linkPotentialEdit.executeEdit();
             super.getModel().setValueAt(newValue, row, col);
             int variable1Index = col - 1;
             int variable2Index = node2.getVariable().getNumStates() - row;
@@ -92,13 +92,13 @@ import java.util.ArrayList;
                     node2.setPotentials(potentials);
                 }
             }
-        } catch (ConstraintViolatedException e) {
+        } catch (DoEditException e) {
             throw new UnrecoverableException(e);
         }
     }
     
-    @Override public void undoableEditHappened(UndoableEditEvent event) {
-        UndoableEdit unEdit = event.getEdit();
+    @Override public void undoableEditHappened(PNUndoableEditEvent event) {
+        PNEdit unEdit = event.getEdit();
         if (unEdit instanceof LinkRestrictionPotentialValueEdit) {
             if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit edit) {
                 super.getModel().setValueAt(edit.getNewValue(), edit.getRowPosition(), edit.getColumnPosition());
@@ -106,7 +106,7 @@ import java.util.ArrayList;
         }
     }
     
-    @Override public void undoEditHappened(UndoableEditEvent event) {
+    @Override public void undoEditHappened(PNUndoableEditEvent event) {
         if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit edit) {
             super.getModel().setValueAt(edit.getNewValue(), edit.getRowPosition(), edit.getColumnPosition());
         }

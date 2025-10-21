@@ -8,8 +8,10 @@
 
 package org.openmarkov.gui.component;
 
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -18,8 +20,6 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.gui.action.ICITablePotentialValueEdit;
 import org.openmarkov.gui.exception.MismatchedValueException;
 
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.undo.UndoableEdit;
 import java.util.ListIterator;
 
 @SuppressWarnings("serial") public class ICIValuesTable extends ValuesTable implements PNUndoableEditListener {
@@ -83,17 +83,17 @@ import java.util.ListIterator;
             
             ProbNet probNet1 = node.getProbNet();
             try {
-                nodePotentialEdit.doEdit(probNet1);
-            } catch (ConstraintViolatedException e) {
+                nodePotentialEdit.executeEdit();
+            } catch (DoEditException e) {
                 throw new UnrecoverableException(e);
             }
         }
         
     }
     
-    @Override public void undoableEditHappened(UndoableEditEvent arg0) {
+    @Override public void undoableEditHappened(PNUndoableEditEvent arg0) {
         int priorityListPosition;
-        UndoableEdit edit = arg0.getEdit();
+        PNEdit edit = arg0.getEdit();
         if (edit instanceof ICITablePotentialValueEdit) {
             ICITablePotentialValueEdit iciEdit = (ICITablePotentialValueEdit) arg0.getEdit();
             priorityList = iciEdit.getPriorityList();
@@ -117,9 +117,9 @@ import java.util.ListIterator;
         }
     }
     
-    @Override public void undoEditHappened(UndoableEditEvent event) {
+    @Override public void undoEditHappened(PNUndoableEditEvent event) {
         int priorityListPosition;
-        UndoableEdit edit = event.getEdit();
+        PNEdit edit = event.getEdit();
         if (edit instanceof ICITablePotentialValueEdit iciEdit) {
             priorityList = iciEdit.getPriorityList();
             if (!iciEdit.getLeakyFlag()) {// noisy parameters

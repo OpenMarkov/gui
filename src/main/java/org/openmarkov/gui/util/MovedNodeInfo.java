@@ -8,8 +8,7 @@
 package org.openmarkov.gui.util;
 
 import org.openmarkov.core.model.network.Node;
-
-import java.awt.geom.Point2D;
+import org.openmarkov.core.model.network.Point2D;
 
 /**
  * This class contains the information of a node that has been moved. This class

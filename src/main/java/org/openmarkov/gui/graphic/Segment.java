@@ -9,8 +9,7 @@ package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.UnrecoverableException;
-
-import java.awt.geom.Point2D;
+import org.openmarkov.core.model.network.Point2D;
 
 /**
  * This class represents a segment delimited by two points.
@@ -85,7 +84,6 @@ public class Segment {
 			b = newStartPoint.getY() - m * newStartPoint.getX();
 		}
 		length = newStartPoint.distance(newEndPoint);
-
 	}
 
 	/**

@@ -1,11 +1,8 @@
 package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNetwork;
@@ -13,7 +10,7 @@ import org.openmarkov.gui.graphic.VisualNetwork;
 import javax.swing.undo.CannotUndoException;
 import java.util.List;
 
-public class RemoveLinkRestrictionEdit extends SimplePNEdit {
+public class RemoveLinkRestrictionEdit extends PNEdit {
 
     private VisualNetwork visualNetwork;
     List<VisualLink> links;
@@ -38,13 +35,6 @@ public class RemoveLinkRestrictionEdit extends SimplePNEdit {
         }
     }
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
-    }
-
     @Override
     public void undo() throws CannotUndoException {
         super.undo();

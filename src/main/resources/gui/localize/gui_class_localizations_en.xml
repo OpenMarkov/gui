@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassLocalizations>
-    <Localization class="org.openmarkov.core.model.network.constraint.ValidName"
-                  value="Variable names must not be empty and it two variables cannot have the same name"/>
-    <Localization class="org.openmarkov.core.model.network.constraint.ValidState"
-                  value="All state have names and two states cannot have the same name"/>
     <Localization class="org.openmarkov.gui.exception.BinomialPotentialWrongValueException$NValuesIsWrong"
                   value="N value must be positive, but it was {nValue}."/>
     <Localization class="org.openmarkov.gui.exception.BinomialPotentialWrongValueException$ThetaValueIsWrong"

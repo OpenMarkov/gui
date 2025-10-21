@@ -8,13 +8,13 @@ package org.openmarkov.gui.window.edition.mode;
 
 import org.openmarkov.core.annotation.ImplementationRequirements;
 import org.openmarkov.core.annotation.RequiredConstructor;
+import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.window.edition.EditorPanel;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 
 /**
  * This class the defines the behaviour of the editor panel in a certain edition

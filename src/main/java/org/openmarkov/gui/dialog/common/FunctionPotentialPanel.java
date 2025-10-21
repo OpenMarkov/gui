@@ -7,7 +7,6 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.core.PotentialChangeEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -96,13 +95,13 @@ import java.util.List;
     }
     
     @Override
-    public boolean saveChanges() throws DoEditException.CannotRemovePotential, ConstraintViolatedException {
+    public boolean saveChanges() throws DoEditException {
         FunctionPotential newPotential = (FunctionPotential) this.potential.copy();
         newPotential.setFunction(function);
         PotentialChangeEdit potentialChangeEdit
                 = new PotentialChangeEdit(node.getProbNet(), this.potential, newPotential);
         ProbNet probNet = node.getProbNet();
-        potentialChangeEdit.doEdit(probNet);
+        potentialChangeEdit.executeEdit();
         return true;
     }
     

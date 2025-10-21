@@ -8,6 +8,7 @@ package org.openmarkov.gui.window.edition.mode;
 
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.edition.EditorPanel;
@@ -15,7 +16,6 @@ import org.openmarkov.gui.window.edition.EditorPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 
 @EditionState(name = "Edit.Mode.Link", icon = "link.gif", cursor = "link.gif") public class LinkEditionMode
         extends EditionMode {
@@ -37,7 +37,7 @@ import java.awt.geom.Point2D;
         }
         PNEdit linkEdit = visualNetwork.finishLinkCreation(position, g);
         if (linkEdit != null) {
-            linkEdit.doEdit(probNet);
+            linkEdit.executeEdit();
         }
         editorPanel.repaint();
     }

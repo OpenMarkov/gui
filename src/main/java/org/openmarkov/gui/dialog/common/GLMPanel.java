@@ -56,7 +56,7 @@ import java.util.List;
      * Invoked when the button 'remove' is pressed.
      */
     @Override
-    protected void actionPerformedRemoveValue() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
+    protected void actionPerformedRemoveValue() throws DoEditException {
         super.actionPerformedRemoveValue();
         notifyActionListeners(new ActionEvent(this, 2, "Remove"));
     }
@@ -64,7 +64,7 @@ import java.util.List;
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedUpValue() throws DoEditException {
         super.actionPerformedUpValue();
         notifyActionListeners(new ActionEvent(this, 3, "Up"));
     }
@@ -72,7 +72,7 @@ import java.util.List;
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedDownValue() throws DoEditException {
         super.actionPerformedDownValue();
         notifyActionListeners(new ActionEvent(this, 4, "Down"));
     }

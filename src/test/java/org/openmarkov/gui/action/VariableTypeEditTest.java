@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.core.VariableTypeEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -73,7 +73,7 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testNumeric2Discretized() throws ConstraintViolatedException {
+    public void testNumeric2Discretized() throws DoEditException {
         State[] defaultStates = numericNode.getProbNet().getDefaultStates();
         State[] states = numericNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) numericNode.getVariable().getPartitionedInterval()
@@ -81,7 +81,7 @@ public class VariableTypeEditTest {
         VariableTypeEdit edit = new VariableTypeEdit(numericNode, VariableType.DISCRETIZED);
         
         probNet.getPNESupport().setWithUndo(true);
-        edit.doEdit(probNet);
+        edit.executeEdit();
         
         
         // Check the states of the node (if there is one)
@@ -117,7 +117,7 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testNumeric2FiniteStates() throws ConstraintViolatedException {
+    public void testNumeric2FiniteStates() throws DoEditException {
         State[] defaultStates = numericNode.getProbNet().getDefaultStates();
         State[] states = numericNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) numericNode.getVariable().getPartitionedInterval()
@@ -125,7 +125,7 @@ public class VariableTypeEditTest {
         VariableTypeEdit edit = new VariableTypeEdit(numericNode, VariableType.FINITE_STATES);
         
         probNet.getPNESupport().setWithUndo(true);
-        edit.doEdit(probNet);
+        edit.executeEdit();
         
         
         // Check the states of the node (if there is one)
@@ -160,14 +160,14 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testFiniteStates2Discretized() throws ConstraintViolatedException {
+    public void testFiniteStates2Discretized() throws DoEditException {
         State[] defaultStates = finiteStatesNode.getProbNet().getDefaultStates();
         State[] states = finiteStatesNode.getVariable().getStates().clone();
         
         VariableTypeEdit edit = new VariableTypeEdit(finiteStatesNode, VariableType.DISCRETIZED);
         
         probNet.getPNESupport().setWithUndo(true);
-        edit.doEdit(probNet);
+        edit.executeEdit();
         
         // Check the states of the node (if there is one)
         if (states.length != 1) {
@@ -194,14 +194,14 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testFiniteStates2Numeric() throws ConstraintViolatedException {
+    public void testFiniteStates2Numeric() throws DoEditException {
         State[] defaultStates = finiteStatesNode.getProbNet().getDefaultStates();
         State[] states = finiteStatesNode.getVariable().getStates().clone();
         
         VariableTypeEdit edit = new VariableTypeEdit(finiteStatesNode, VariableType.NUMERIC);
         
         probNet.getPNESupport().setWithUndo(true);
-        edit.doEdit(probNet);
+        edit.executeEdit();
         
         
         // Check the states of the node (if there is one)
@@ -226,14 +226,14 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testDiscretized2FiniteStates() throws ConstraintViolatedException {
+    public void testDiscretized2FiniteStates() throws DoEditException {
         State[] states = discretizedNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
                                                                                    .getPartitionedInterval().clone();
         VariableTypeEdit edit = new VariableTypeEdit(discretizedNode, VariableType.FINITE_STATES);
         
         probNet.getPNESupport().setWithUndo(true);
-        edit.doEdit(probNet);
+        edit.executeEdit();
         
         
         // Check that the number of states must be different than one
@@ -260,13 +260,13 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testDiscretized2Numeric() throws ConstraintViolatedException {
+    public void testDiscretized2Numeric() throws DoEditException {
         State[] states = discretizedNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
                                                                                    .getPartitionedInterval().clone();
         VariableTypeEdit edit = new VariableTypeEdit(discretizedNode, VariableType.DISCRETIZED);
         probNet.getPNESupport().setWithUndo(true);
-        edit.doEdit(probNet);
+        edit.executeEdit();
         
         // Check that the number of states must be different than one
         assertTrue(states.length != 1);

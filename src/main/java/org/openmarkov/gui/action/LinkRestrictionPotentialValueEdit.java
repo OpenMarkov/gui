@@ -8,15 +8,12 @@
 package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-@SuppressWarnings("serial") public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class LinkRestrictionPotentialValueEdit extends PNEdit {
 
 	/**
 	 * The column of the table where is the potential
@@ -82,14 +79,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void redo() {
+    @Override public void redo() {
 		this.setTypicalRedo(false);
 		super.redo();
 		if (!link.hasRestrictions()) {

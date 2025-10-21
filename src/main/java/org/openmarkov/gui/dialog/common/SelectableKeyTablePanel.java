@@ -8,7 +8,7 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.core.RevelationStateEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -96,8 +96,8 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
             RevelationStateEdit arcEdit = new RevelationStateEdit(link, selectedState, (Boolean) data);
             try {
                 ProbNet probNet = node.getProbNet();
-                arcEdit.doEdit(probNet);
-            } catch (ConstraintViolatedException ex) {
+                arcEdit.executeEdit();
+            } catch (DoEditException ex) {
                 throw new UnrecoverableException(ex);
             }
         }

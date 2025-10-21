@@ -7,8 +7,9 @@
 
 package org.openmarkov.gui.component;
 
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
@@ -19,9 +20,7 @@ import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
 
 import javax.swing.*;
-import javax.swing.event.UndoableEditEvent;
 import javax.swing.text.JTextComponent;
-import javax.swing.undo.UndoableEdit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -109,8 +108,8 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
         AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, newValueString, row, col,
                                                                                         priorityList, getTableModel().getNotEditablePositions());
         try {
-            nodePotentialEdit.doEdit(probNet);
-        } catch (DoEditException.CannotRemovePotential | ConstraintViolatedException e) {
+            nodePotentialEdit.executeEdit();
+        } catch (DoEditException e) {
             throw new UnrecoverableException(e);
         }
     }
@@ -167,8 +166,8 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
     /**
      * Updates the edited column
      */
-    @Override public void undoableEditHappened(UndoableEditEvent event) {
-        UndoableEdit edit = event.getEdit();
+    @Override public void undoableEditHappened(PNUndoableEditEvent event) {
+        PNEdit edit = event.getEdit();
         if (edit instanceof AugmentedPotentialValueEdit) {
             augmentedPotentialValueEditHappened((AugmentedPotentialValueEdit) edit);
         }
@@ -205,7 +204,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
     /**
      * UNCLEAR--&gt;Priority list
      */
-    @Override public void undoEditHappened(UndoableEditEvent event) {
+    @Override public void undoEditHappened(PNUndoableEditEvent event) {
         //if (event.getEdit () instanceof AugmentedPotentialValueEdit)
         AugmentedPotentialValueEdit edit = (AugmentedPotentialValueEdit) event.getEdit();
         Potential editPotential = edit.getPotential();

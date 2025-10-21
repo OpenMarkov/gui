@@ -59,7 +59,7 @@ public class UnivariateDistrPotentialPanel
      *
      * @author carmenyago : adaptation to TableDeltaPotential
      */
-    public UnivariateDistrPotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    public UnivariateDistrPotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException {
         super();
         
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
@@ -115,7 +115,7 @@ public class UnivariateDistrPotentialPanel
         return tableModel;
     }
     
-    @Override public void setData() throws ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    @Override public void setData() throws ThereIsNoPotentialsInNodeException {
         
         // true
         hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(node);

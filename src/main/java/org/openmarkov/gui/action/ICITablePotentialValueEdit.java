@@ -10,10 +10,8 @@ package org.openmarkov.gui.action;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.core.ICIPotentialEdit;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -22,7 +20,7 @@ import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import java.util.Iterator;
 import java.util.List;
 
-@SuppressWarnings("serial") public class ICITablePotentialValueEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class ICITablePotentialValueEdit extends PNEdit {
     /**
      *
      */
@@ -191,8 +189,7 @@ import java.util.List;
         
     }
     
-    @Override public void doEdit() throws ConstraintViolatedException {
-        
+    @Override public void doEdit() throws DoEditException {
         if (priorityList.isEmpty()) {
             //User is editing a new column of potentials //node
             priorityList = getPriorityListInitialization();
@@ -286,14 +283,7 @@ import java.util.List;
             iciPotentialEdit = new ICIPotentialEdit(probNet, iciPotential, noisyVariable, newNoisyParameters);
             
         }
-        iciPotentialEdit.doEdit(probNet);
-    }
-    
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
+        iciPotentialEdit.executeEdit();
     }
     
     @Override public void undo() {

@@ -8,9 +8,10 @@
 package org.openmarkov.gui.oopn;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.oopn.Instance;
@@ -34,10 +35,7 @@ import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import javax.swing.*;
-import javax.swing.event.UndoableEditEvent;
 import java.awt.*;
-import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -228,7 +226,7 @@ public class VisualOONetwork extends VisualNetwork {
      *
      * @return the instance in the position given
      */
-    public VisualInstance getInstanceInPosition(java.awt.geom.Point2D.Double position, Graphics2D g) {
+    public VisualInstance getInstanceInPosition(Point2D.Double position, Graphics2D g) {
         VisualInstance instance;
         VisualInstance instanceFound = null;
         Iterator<VisualInstance> iterator = visualInstances.values().iterator();
@@ -264,7 +262,7 @@ public class VisualOONetwork extends VisualNetwork {
         
     }
     
-    public VisualElement getReferenceLinkInPosition(Double position, Graphics2D g) {
+    public VisualElement getReferenceLinkInPosition(Point2D.Double position, Graphics2D g) {
         VisualReferenceLink linkFound = null;
         int i = 0;
         int length = visualReferenceLinks.size();
@@ -518,7 +516,7 @@ public class VisualOONetwork extends VisualNetwork {
     /**
      *
      */
-    @Override public void addToSelection(java.awt.geom.Point2D.Double cursorPosition, Graphics2D g) {
+    @Override public void addToSelection(Point2D.Double cursorPosition, Graphics2D g) {
         VisualNode node;
         VisualLink link;
         VisualInstance instance;
@@ -540,7 +538,7 @@ public class VisualOONetwork extends VisualNetwork {
      *
      * @return element in the position given, null if none
      */
-    @Override public VisualElement selectElementInPosition(java.awt.geom.Point2D.Double cursorPosition, Graphics2D g) {
+    @Override public VisualElement selectElementInPosition(Point2D.Double cursorPosition, Graphics2D g) {
         VisualElement selectedElement;
         if ((selectedElement = getReferenceLinkInPosition(cursorPosition, g)) != null) {
             setSelectedAllObjects(false);
@@ -560,7 +558,7 @@ public class VisualOONetwork extends VisualNetwork {
      * @param cursorPosition
      * @param g
      */
-    @Override public void startLinkCreation(java.awt.geom.Point2D.Double cursorPosition, Graphics2D g) {
+    @Override public void startLinkCreation(Point2D.Double cursorPosition, Graphics2D g) {
         VisualInstance instance;
         
         VisualNode node;
@@ -607,7 +605,7 @@ public class VisualOONetwork extends VisualNetwork {
         }
     }
     
-    @Override public PNEdit finishLinkCreation(java.awt.geom.Point2D.Double point, Graphics2D g) {
+    @Override public PNEdit finishLinkCreation(Point2D.Double point, Graphics2D g) {
         PNEdit linkEdit = null;
         VisualInstance newInstanceLinkDestination;
         VisualNode newLinkDestination;
@@ -667,13 +665,13 @@ public class VisualOONetwork extends VisualNetwork {
         return isEquivalent;
     }
     
-    @Override public void markSelectedAsInput() throws ConstraintViolatedException {
+    @Override public void markSelectedAsInput() throws DoEditException {
         super.markSelectedAsInput();
         
         for (VisualInstance visualInstance : getSelectedInstances()) {
             MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualInstance.getInstance().isInput(),
                                                                   visualInstance.getInstance());
-            markAsInputEdit.doEdit(probNet);
+            markAsInputEdit.executeEdit();
         }
     }
     
@@ -695,7 +693,7 @@ public class VisualOONetwork extends VisualNetwork {
             return;
         }
         InstanceNameEdit instanceNameEdit = new InstanceNameEdit(probNet, selectedInstance, newInstanceName);
-        instanceNameEdit.doEdit(probNet);
+        instanceNameEdit.executeEdit();
     }
     
     @Override public void setWorkingMode(NetworkPanel.WorkingMode workingMode) {
@@ -710,15 +708,15 @@ public class VisualOONetwork extends VisualNetwork {
         }
     }
     
-    @Override public void setParameterArity(ParameterArity arity) throws ConstraintViolatedException {
+    @Override public void setParameterArity(ParameterArity arity) throws DoEditException {
         for (VisualInstance visualInstance : getSelectedInstances()) {
             ChangeParameterArityEdit changeParameterArityEdit = new ChangeParameterArityEdit(probNet,
                                                                                              visualInstance.getInstance(), arity);
-            changeParameterArityEdit.doEdit(probNet);
+            changeParameterArityEdit.executeEdit();
         }
     }
     
-    @Override public void undoableEditHappened(UndoableEditEvent e) {
+    @Override public void undoableEditHappened(PNUndoableEditEvent e) {
         super.undoableEditHappened(e);
     }
     

@@ -8,9 +8,7 @@
 package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 import org.openmarkov.core.action.base.StateAction;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
@@ -24,7 +22,7 @@ import java.util.List;
  *
  * @author myebra
  */
-@SuppressWarnings("serial") public class NetworkAgentEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class NetworkAgentEdit extends PNEdit {
 
 	private String agentName;
 	private String newName;
@@ -123,14 +121,7 @@ import java.util.List;
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		probNet.setAgents(lastAgents);
 		//TODO restore agents in nodes

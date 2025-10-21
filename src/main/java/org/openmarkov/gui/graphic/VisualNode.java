@@ -9,10 +9,10 @@ package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.Point2D;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Point2D;
 
 /**
  * This abstract class specifies the methods that all visual nodes have to
@@ -152,7 +152,6 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
      * @return position of the node in the screen.
      */
     @Override public Point2D.Double getPosition() {
-        
         return new Point2D.Double(node.getCoordinateX(), node.getCoordinateY());
     }
     

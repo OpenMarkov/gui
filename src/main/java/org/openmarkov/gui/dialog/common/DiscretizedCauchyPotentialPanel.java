@@ -1,5 +1,6 @@
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;
@@ -87,17 +88,17 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     public void setData(Node node) {
         ProbNet medianDummyNet = new ProbNet(probNet.getNetworkType());
         medianDummyNode = medianDummyNet.addPotential(newPotential.getMedian());
-        medianDummyNet.getPNESupport().addUndoableEditListener(this);
+        medianDummyNet.getPNESupport().addListener(this);
         
         ProbNet scaleDummyNet = new ProbNet(probNet.getNetworkType());
         scaleDummyNode = scaleDummyNet.addPotential(newPotential.getScale());
-        scaleDummyNet.getPNESupport().addUndoableEditListener(this);
+        scaleDummyNet.getPNESupport().addListener(this);
     }
     
     @Override
     public void close() {
-        medianDummyNode.getProbNet().getPNESupport().removeUndoableEditListener(this);
-        scaleDummyNode.getProbNet().getPNESupport().removeUndoableEditListener(this);
+        medianDummyNode.getProbNet().getPNESupport().removeListener(this);
+        scaleDummyNode.getProbNet().getPNESupport().removeListener(this);
     }
     
     @Override
@@ -105,7 +106,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         boolean result = super.saveChanges();
         newPotential.setComment(oldPotential.getComment());
         PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
-        edit.doEdit(probNet);
+        edit.executeEdit();
         return result;
     }
     
@@ -115,7 +116,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     }
     
     @Override
-    public void undoableEditHappened(UndoableEditEvent event) {
+    public void undoableEditHappened(PNUndoableEditEvent event) {
         // Update new potential and potential panel
         if (event.getEdit() instanceof PotentialChangeEdit) {
             newPotential.setMedian(medianDummyNode.getPotentials().get(0));

@@ -344,7 +344,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * @param node object from where load the information.
      */
     // TODO Remove all this
-    private void showFields(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NotEnoughtMemoryException {
+    private void showFields(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         // The element order in PotentialType object are same that
         // JComboBoxRelationType
         previouslySelectedPotentialType = node.getFirstPotential().getClass().getAnnotation(PotentialType.class)
@@ -463,7 +463,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             univariateDistrParametrizationComboBox.addActionListener(evt -> {
                 try {
                     distributionChanged();
-                } catch (DoEditException.CannotRemovePotential | ConstraintViolatedException e) {
+                } catch (DoEditException e) {
                     throw new UnrecoverableException(e);
                 }
             });
@@ -473,7 +473,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         
     }
     
-    protected void distributionChanged() throws DoEditException.CannotRemovePotential, ConstraintViolatedException {
+    protected void distributionChanged() throws DoEditException {
         String distributionUnivariateName = (String) univariateDistrComboBox.getSelectedItem();
         String distributionParameters = (String) univariateDistrParametrizationComboBox.getSelectedItem();
         //When we are changing the distribution the first value should be selected
@@ -483,7 +483,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         if (!previouslySelectedDistributionName.equals(distributionName)) {
             AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, distributionName);
             ProbNet probNet = node.getProbNet();
-            nodePotentialEdit.doEdit(probNet);
+            nodePotentialEdit.executeEdit();
             updatePotentialPanel();
             previouslySelectedDistributionName = distributionName;
             
@@ -621,7 +621,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             setPotentialEdit = new SetPotentialEdit(node, lastPotential, node.getPotential());
         }
         ProbNet probNet = node.getProbNet();
-        setPotentialEdit.doEdit(probNet);
+        setPotentialEdit.executeEdit();
         node.finalizePotentialEdition();
         node.getProbNet().getPNESupport().closeParenthesis();
         return true;
@@ -713,13 +713,13 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         if (e.getSource().equals(reorderVariablesButton)) {
             try {
                 actionPerformedReorderVariables();
-            } catch (ConstraintViolatedException ex) {
+            } catch (DoEditException ex) {
                 throw new UnrecoverableException(ex);
             }
         }
     }
     
-    protected void actionPerformedReorderVariables() throws ConstraintViolatedException {
+    protected void actionPerformedReorderVariables() throws DoEditException {
         ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, node);
         if (reorderVariablesDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             List<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel().getVariables();
@@ -729,13 +729,13 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                 Potential potential = nodePotential.reorder(newVariables);
                 SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
                 ProbNet probNet = node.getProbNet();
-                potentialEdit.doEdit(probNet);
+                potentialEdit.executeEdit();
                 updatePotentialPanel();
                 
             } else if (potentialPanelForAction instanceof ICIPotentialsTablePanel) {
                 SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(node, newVariables);
                 ProbNet probNet = node.getProbNet();
-                setPotentialVariables.doEdit(probNet);
+                setPotentialVariables.executeEdit();
                 updatePotentialPanel();
             }
         }

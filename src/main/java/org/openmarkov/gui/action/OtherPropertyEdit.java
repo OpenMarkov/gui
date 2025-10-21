@@ -7,8 +7,6 @@
 package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import java.util.LinkedHashMap;
@@ -20,7 +18,7 @@ import java.util.LinkedHashMap;
  * @author agoni
  */
 
-public class OtherPropertyEdit extends SimplePNEdit {
+public class OtherPropertyEdit extends PNEdit {
 	/**
 	 *
 	 */
@@ -225,13 +223,6 @@ public class OtherPropertyEdit extends SimplePNEdit {
 			}
 			break;
 		}
-	}
-    
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
 	}
 	
 	@Override public void undo() {

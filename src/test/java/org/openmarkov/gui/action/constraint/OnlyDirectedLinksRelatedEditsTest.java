@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
@@ -40,14 +41,14 @@ public class OnlyDirectedLinksRelatedEditsTest {
     /**
      * Checks veto
      */
-    @Test public void testUndoableEditWillHappen() throws ConstraintViolatedException {
+    @Test public void testUndoableEditWillHappen() throws DoEditException {
         
         // Add constraints as listeners.
-        PNESupport pNESupport = new PNESupport(false);
+        PNESupport pNESupport = probNetDirected.getPNESupport();
         probNetDirected.addConstraint(new OnlyDirectedLinks());
         List<PNConstraint> constraints = probNetDirected.getConstraints();
         for (PNConstraint constraint : constraints) { // sets listeners
-            pNESupport.addUndoableEditListener(constraint);
+            pNESupport.addListener(constraint);
         }
         // Create edits
         Variable va = probNetDirected.getVariable("A");
@@ -55,14 +56,13 @@ public class OnlyDirectedLinksRelatedEditsTest {
         
         // test no exception in legal edit
         AddLinkEdit cEdit = new AddLinkEdit(probNetDirected, va, vc, true);
-        pNESupport.announceEdit(cEdit);
-        cEdit.doEdit();
+        cEdit.executeEdit();
         
         // test exception in no legal edit
         AddLinkEdit iEdit;
         try {
             iEdit = new AddLinkEdit(probNetDirected, va, vc, false);
-            iEdit.doEdit(probNetDirected);
+            iEdit.executeEdit();
             fail();
         } catch (ConstraintViolatedException cve) {
             // It should have thrown an exception.

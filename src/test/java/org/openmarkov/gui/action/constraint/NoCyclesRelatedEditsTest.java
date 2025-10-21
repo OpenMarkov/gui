@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -18,8 +19,7 @@ import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.testTags.TestSpeed;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class NoCyclesRelatedEditsTest {
@@ -42,9 +42,13 @@ public class NoCyclesRelatedEditsTest {
         Variable va = probNetDirected.getNode("A", NodeType.CHANCE).getVariable();
         Variable vc = probNetDirected.getNode("C", NodeType.CHANCE).getVariable();
         
-        assertTrue(testedConstraint.checkProbNet(probNetDirected));
-        new AddLinkEdit(probNetDirected, vc, va, true).doEdit();
-        assertFalse(testedConstraint.checkProbNet(probNetDirected));
+        assertTrue(testedConstraint.isMetBy(probNetDirected));
+        try {
+            new AddLinkEdit(probNetDirected, vc, va, true).executeEdit();
+            fail();
+        } catch (DoEditException e) {
+            //Exception should have happened.
+        }
     }
     
 }

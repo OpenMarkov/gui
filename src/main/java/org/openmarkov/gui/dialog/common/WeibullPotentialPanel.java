@@ -206,7 +206,7 @@ import java.util.Map;
         newPotential.setTimeVariable(timeVariable);
         PNEdit edit = new PotentialChangeEdit(node.getProbNet(), oldPotential, newPotential);
         ProbNet probNet = node.getProbNet();
-        edit.doEdit(probNet);
+        edit.executeEdit();
         return true;
     }
     

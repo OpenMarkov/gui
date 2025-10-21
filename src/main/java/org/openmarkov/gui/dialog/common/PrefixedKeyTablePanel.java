@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.core.NodeStateEdit;
 import org.openmarkov.core.action.base.StateAction;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -141,7 +141,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedAddValue() throws DoEditException {
         // TODO warning esto afecta a la tabla de propiedades adicionales
         String option = JOptionPane.showInputDialog(this, stringDatabase.getString("AddState.Message"),
                                                     stringDatabase.getString("AddState.Title"), JOptionPane.QUESTION_MESSAGE);
@@ -151,7 +151,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
         int newIndex = valuesTable.getRowCount();
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.ADD, newIndex, option);
         ProbNet probNet = node.getProbNet();
-        nodeStateEdit.doEdit(probNet);
+        nodeStateEdit.executeEdit();
         // @ 2014/11/18. Issue 145.
         // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
         // Propagation of the domain in related variables in temporal models
@@ -166,12 +166,12 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedRemoveValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         int rowCount;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.REMOVE, selectedRow, "");
         ProbNet probNet = node.getProbNet();
-        nodeStateEdit.doEdit(probNet);
+        nodeStateEdit.executeEdit();
         // @ 2014/11/18. Issue 145.
         // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
         // Propagation of the domain in related variables in temporal models
@@ -199,12 +199,12 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedUpValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
         ProbNet probNet = node.getProbNet();
-        nodeStateEdit.doEdit(probNet);
+        nodeStateEdit.executeEdit();
         // @ 2014/11/18. Issue 145.
         // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
         // Propagation of the domain in related variables in temporal models
@@ -223,12 +223,12 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedDownValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
         ProbNet probNet = node.getProbNet();
-        nodeStateEdit.doEdit(probNet);
+        nodeStateEdit.executeEdit();
         // @ 2014/11/18. Issue 145.
         // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
         // Propagation of the domain in related variables in temporal models
@@ -300,8 +300,8 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
             NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.RENAME, row, newName);
             ProbNet probNet = node.getProbNet();
             try {
-                nodeStateEdit.doEdit(probNet);
-            } catch (ConstraintViolatedException ex) {
+                nodeStateEdit.executeEdit();
+            } catch (DoEditException ex) {
                 throw new UnrecoverableException(ex);
             }
             // @ 2014/11/18. Issue 145.
@@ -309,7 +309,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
             // Propagation of the domain in related variables in temporal models
             try {
                 propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
-            } catch (ConstraintViolatedException ex) {
+            } catch (DoEditException ex) {
                 throw new UnrecoverableException(ex);
             }
             //
@@ -320,7 +320,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     // @ 2014/11/18. Issue 145.
     // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
     // Propagation of the domain in related variables in temporal models
-    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) throws ConstraintViolatedException {
+    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) throws DoEditException {
         // First we get the nodes in the same time slide as the node currently being edited
         List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
         // We create a variable to store the edit of the related node
@@ -334,7 +334,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
             nodeStateEdit = new NodeStateEdit(relatedNode, stateAction, selectedRow, option);
             // and we perform the edit
             ProbNet probNet = relatedNode.getProbNet();
-            nodeStateEdit.doEdit(probNet);
+            nodeStateEdit.executeEdit();
         }
     }
 }

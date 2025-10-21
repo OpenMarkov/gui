@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.window;
 
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.core.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
@@ -925,7 +926,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
         setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
     }
     
-    @Override public void undoableEditHappened(UndoableEditEvent e) {
+    @Override public void undoableEditHappened(PNUndoableEditEvent e) {
         ProbNet probNet = currentNetworkPanel.getProbNet();
         // update menu options and network agents when network type has been
         // modified
@@ -940,7 +941,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
          */
     }
     
-    @Override public void undoEditHappened(UndoableEditEvent event) {
+    @Override public void undoEditHappened(PNUndoableEditEvent event) {
         updateOptionsNetworkModified(((PNESupport) event.getSource()).getCanUndo(),
                                      ((PNESupport) event.getSource()).getCanRedo());
         /*

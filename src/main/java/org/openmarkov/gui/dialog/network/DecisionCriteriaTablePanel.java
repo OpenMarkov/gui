@@ -7,11 +7,10 @@
 
 package org.openmarkov.gui.dialog.network;
 
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.DecisionCriteriaEdit;
 import org.openmarkov.core.action.core.DecisionCriterionUnitEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 import org.openmarkov.core.action.base.StateAction;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Criterion;
@@ -53,7 +52,7 @@ import java.util.List;
         if (tableEvent.getType() != TableModelEvent.UPDATE) {
             return;
         }
-        SimplePNEdit criteriaEdit = null;
+        PNEdit criteriaEdit = null;
         switch (column) {
             case 1 -> {
                 String criterionName = (String) dataTable[row][column - 1];
@@ -80,7 +79,7 @@ import java.util.List;
         }
         if (criteriaEdit != null) {
             try {
-                criteriaEdit.doEdit(probNet);
+                criteriaEdit.executeEdit();
             } catch (DoEditException e) {
                 throw new UnrecoverableException(e);
             }
@@ -89,7 +88,7 @@ import java.util.List;
         valuesTable.getSelectionModel().setSelectionInterval(row, row);
     }
     
-    @Override protected void actionPerformedAddValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedAddValue() throws DoEditException {
         String option = JOptionPane.showInputDialog(this, stringDatabase.getString("AddCriterion.Text"),
                                                     stringDatabase.getString("AddCriterion.Title"), JOptionPane.QUESTION_MESSAGE);
         if (option == null) {
@@ -98,7 +97,7 @@ import java.util.List;
         int newIndex = valuesTable.getRowCount();
         DecisionCriteriaEdit criteriaEdit
                 = new DecisionCriteriaEdit(probNet, StateAction.ADD, new Criterion(option), null);
-        criteriaEdit.doEdit(probNet);
+        criteriaEdit.executeEdit();
         //edits.add(criteriaEdit);
         
         /*
@@ -129,14 +128,14 @@ import java.util.List;
          */
     }
     
-    @Override protected void actionPerformedRemoveValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedRemoveValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         String criteriaName = (String) valuesTable.getValueAt(selectedRow, 1);
         
         DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.REMOVE,
                                                                      probNet.getDecisionCriteria()
                                                                             .get(selectedRow), null);
-        criteriaEdit.doEdit(probNet);
+        criteriaEdit.executeEdit();
         //edits.add(criteriaEdit);
         // StringsWithProperties agents = probNet.getAgents();
         List<Criterion> criterias = probNet.getDecisionCriteria();
@@ -152,7 +151,7 @@ import java.util.List;
         }
     }
     
-    @Override protected void actionPerformedUpValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedUpValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swapName = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
@@ -165,7 +164,7 @@ import java.util.List;
         DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.UP,
                                                                      probNet.getDecisionCriteria()
                                                                             .get(selectedRow), null);
-        criteriaEdit.doEdit(probNet);
+        criteriaEdit.executeEdit();
         //edits.add(criteriaEdit);
         setData(dataTable);
         /*
@@ -182,7 +181,7 @@ import java.util.List;
         
     }
     
-    @Override protected void actionPerformedDownValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedDownValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swapName = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];
@@ -193,7 +192,7 @@ import java.util.List;
         DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.DOWN,
                                                                      probNet.getDecisionCriteria()
                                                                             .get(selectedRow), null);
-        criteriaEdit.doEdit(probNet);
+        criteriaEdit.executeEdit();
         //edits.add(criteriaEdit);
         setData(dataTable);
         /*

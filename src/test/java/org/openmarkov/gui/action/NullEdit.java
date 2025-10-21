@@ -8,11 +8,9 @@
 package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 
-public class NullEdit extends SimplePNEdit {
+public class NullEdit extends PNEdit {
     
     /**
      * Serial ID
@@ -26,13 +24,6 @@ public class NullEdit extends SimplePNEdit {
     }
     
     @Override public void doEdit() {
-    
-    }
-    
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
     }
     
     @Override public void undo() {

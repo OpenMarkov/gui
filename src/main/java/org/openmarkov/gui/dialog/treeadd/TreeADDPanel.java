@@ -8,7 +8,7 @@
 package org.openmarkov.gui.dialog.treeadd;
 
 import org.openmarkov.core.action.core.SetPotentialEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.dialog.common.PotentialPanel;
@@ -32,10 +32,10 @@ import java.awt.*;
         setData(node);
     }
     
-    @Override public boolean saveChanges() throws ConstraintViolatedException {
+    @Override public boolean saveChanges() throws DoEditException {
         SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, treeADDController.getTreePotential());
         ProbNet probNet = node.getProbNet();
-        setPotentialEdit.doEdit(probNet);
+        setPotentialEdit.executeEdit();
         return true;
     }
     

@@ -9,11 +9,8 @@ package org.openmarkov.gui.action;
 
 import org.junit.jupiter.api.*;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.testTags.TestSpeed;
 import org.openmarkov.gui.graphic.VisualChanceNode;
@@ -22,7 +19,6 @@ import org.openmarkov.gui.graphic.VisualNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 
@@ -56,7 +52,7 @@ public class MoveNodeEditTest {
 	 *
 	 * @throws Exception if an error occurrs.
 	 */
-	@BeforeEach public void setUp() throws ConstraintViolatedException {
+    @BeforeEach public void setUp() throws DoEditException {
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");
@@ -84,7 +80,7 @@ public class MoveNodeEditTest {
 		probNet.getPNESupport().setWithUndo(true);
 		MoveNodeEdit moveNodeEdit = new MoveNodeEdit(movedNodes);
         
-        moveNodeEdit.doEdit(probNet);
+        moveNodeEdit.executeEdit();
     }
 
 	/**
@@ -93,7 +89,7 @@ public class MoveNodeEditTest {
      */
 	@Tag(TestSpeed.SLOW)
 	@Test public final void testUndoRedo() {
-
+        var manager = probNet.getPNESupport().getUndoManager();
 		assertEquals(node1.getCoordinateX(), 21.0, 0.1);
 		assertEquals(node1.getCoordinateY(), 160.0, 0.1);
 		assertEquals(node2.getCoordinateX(), 101.0, 0.1);

@@ -11,11 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.AugmentedTable;
@@ -30,7 +27,7 @@ import java.util.List;
  * @author carmenyago
  * @version 1.1 22/05/2017 Changed into AugmentedPotentialValueEdit: now is the edit for all the AugmentedPotentials
  */
-@SuppressWarnings("serial") public class AugmentedPotentialValueEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class AugmentedPotentialValueEdit extends PNEdit {
     /**
      * The column of the table where is the potential
      */
@@ -182,17 +179,9 @@ import java.util.List;
     /*
      *
      */
-    @Override public void doEdit() throws ConstraintViolatedException, DoEditException.CannotRemovePotential {
+    @Override public void doEdit() throws DoEditException {
         PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(node, oldPotential, newPotential);
-        changePotentialEdit.doEdit(this.probNet);
-    }
-    
-    @Override
-    public void doEdit(ProbNet probNet) throws ConstraintViolatedException, DoEditException.CannotRemovePotential {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
+        changePotentialEdit.executeEdit();
     }
     
     /**

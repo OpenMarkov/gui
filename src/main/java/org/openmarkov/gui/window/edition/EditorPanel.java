@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.window.edition;
 
+import org.openmarkov.core.action.base.PNESupport;
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.core.*;
 import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.*;
@@ -40,6 +42,7 @@ import org.openmarkov.gui.graphic.*;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
+import org.openmarkov.gui.swingUtils.SwingUtils;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
@@ -50,12 +53,8 @@ import org.openmarkov.inference.algorithm.variableElimination.tasks.VEExpectedUt
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEPropagation;
 
 import javax.swing.*;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -215,7 +214,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         // super();
         this.networkPanel = networkPanel;
         this.probNet = networkPanel.getProbNet();
-        this.probNet.getPNESupport().addUndoableEditListener(this);
+        this.probNet.getPNESupport().addListener(this);
         this.visualNetwork = visualNetwork;
         automaticPropagation = true;
         propagationActive = true;
@@ -408,7 +407,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 try {
                     changeNodeProperties(node);
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
-                         IncompatibleEvidenceException | CannotNormalizePotentialException ex) {
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ConstraintViolatedException ex) {
                     repaint();
                     throw new UnrecoverableException(ex);
                 }
@@ -428,7 +428,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 try {
                     changeNodeProperties();
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
-                         IncompatibleEvidenceException | CannotNormalizePotentialException ex) {
+                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                         ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 } finally {
                     repaint();
@@ -452,9 +453,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         VisualState visualState = visualNetwork.whatStateInPosition(cursorPosition, g);
         try {
             toggleFinding(visualNode, visualState);
-        } catch (ConstraintViolatedException | DoEditException.CannotDoEditException |
-                 IncompatibleEvidenceException | NotEvaluableNetworkException | NonProjectablePotentialException |
-                 NotEnoughtMemoryException | CannotNormalizePotentialException ex) {
+        } catch (IncompatibleEvidenceException | NotEvaluableNetworkException | NonProjectablePotentialException |
+                 NotEnoughtMemoryException | CannotNormalizePotentialException | DoEditException ex) {
             throw new UnreacheableException(ex);
         }
         
@@ -592,17 +592,14 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * @param undoOperation if true, an undo must be performed; if false, a redo
      *                      will be performed.
      *
-     * @throws CannotUndoException if undo can't be performed.
-     * @throws CannotRedoException if redo can't be performed.
      */
-    private void undoRedo(boolean undoOperation) throws CannotUndoException, CannotRedoException {
+    private void undoRedo(boolean undoOperation) {
         visualNetwork.setSelectedAllObjects(false);
+        PNESupport pneSupport = probNet.getPNESupport();
         if (undoOperation) {
-            probNet.getPNESupport().undo();
-            // undoManager.undo();
+            pneSupport.undo();
         } else {
-            // undoManager.redo();
-            probNet.getPNESupport().redo();
+            pneSupport.redo();
         }
         adjustPanelDimension();
         repaint();
@@ -611,18 +608,15 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method performs a undo operation.
      *
-     * @throws CannotUndoException if undo can't be performed.
      */
-    public void undo() throws CannotUndoException {
+    public void undo() {
         undoRedo(true);
     }
     
     /**
      * This method performs a redo operation.
-     *
-     * @throws CannotRedoException if redo can't be performed.
      */
-    public void redo() throws CannotRedoException {
+    public void redo() {
         undoRedo(false);
     }
     
@@ -711,10 +705,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * This method absorbs a node into the rest of the net arc-reversal style. This means updating the only utility
      * child it might have and removing it next.
      */
-    public void absorbNode() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
+    public void absorbNode() throws DoEditException {
         Node node = getSelectedNode();
         AbsorbNodeEdit absorbNode = new AbsorbNodeEdit(probNet, node.getVariable());
-        absorbNode.doEdit(probNet);
+        absorbNode.executeEdit();
         repaint();
     }
     
@@ -732,7 +726,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     public void absorbParents() throws DoEditException {
         Node node = getSelectedNode();
         AbsorbParentsEdit absorbParents = new AbsorbParentsEdit(probNet, node);
-        absorbParents.doEdit(probNet);
+        absorbParents.executeEdit();
         repaint();
     }
     
@@ -743,7 +737,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      *
      * @param selectedNode
      */
-    public void changeNodeProperties(VisualNode selectedNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void changeNodeProperties(VisualNode selectedNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         if (requestNodePropertiesToUser2(Utilities.getOwner(this), selectedNode.getNode(), false)) {
             adjustPanelDimension();
             selectedNode.update(postResolutionEvidence.size());
@@ -755,7 +749,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         }
     }
     
-    public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
         if (selectedNodes.size() == 1) {
             changeNodeProperties(selectedNodes.getFirst());
@@ -765,7 +759,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      *
      */
-    public void showPotentialDialog(boolean readOnly) throws IncompatibleEvidenceException, ThereIsNoPotentialsInNodeException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException {
+    public void showPotentialDialog(boolean readOnly) throws IncompatibleEvidenceException, ThereIsNoPotentialsInNodeException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException, ConstraintViolatedException {
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
         Node node = selectedNodes.get(0).getNode();
         
@@ -913,7 +907,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         visualNetwork.setSelectedAllObjects(false);
         SelectedContent clipboardContent = clipboardAssistant.paste();
         PasteEdit pasteEdit = new PasteEdit(probNet, clipboardContent);
-        pasteEdit.doEdit(probNet);
+        pasteEdit.executeEdit();
         // Set the nodes and links we just pasted as selected
         SelectedContent pastedContent = pasteEdit.getPastedContent();
         for (Node node : pastedContent.getNodes()) {
@@ -1005,7 +999,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method removes an imposed policy from a decision node.
      */
-    public void removePolicyFromNode() {
+    public void removePolicyFromNode() throws DoEditException {
         VisualNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
@@ -1014,7 +1008,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 RemovePolicyEdit removePolicyEdit = new RemovePolicyEdit(visualNode.getNode(), (VisualDecisionNode) visualNode);
                 try {
                     ProbNet probNet1 = visualNode.getNode().getProbNet();
-                    removePolicyEdit.doEdit(probNet1);
+                    removePolicyEdit.executeEdit();
                 } catch (ConstraintViolatedException e) {
                     throw new UnreacheableException(e);
                 }
@@ -1035,7 +1029,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method shows the expected utility of a decision node.
      */
-    public void showExpectedUtilityOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, NotEnoughtMemoryException {
+    public void showExpectedUtilityOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, NotEnoughtMemoryException, ConstraintViolatedException {
         VisualNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
@@ -1060,7 +1054,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method shows the optimal policy for a decision node.
      */
-    public void showOptimalPolicyOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, NotEnoughtMemoryException {
+    public void showOptimalPolicyOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, NotEnoughtMemoryException, ConstraintViolatedException {
         VisualNetwork n = getVisualNetwork();
         VisualNode visualNode;
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
@@ -1158,7 +1152,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method removes findings from selected nodes.
      */
-    public void removeFinding() throws PreResolutionNodeInInferenceException {
+    public void removeFinding() throws PreResolutionNodeInInferenceException, DoEditException {
         setPropagationActive(isAutomaticPropagation());
         VisualNode node;
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
@@ -1170,7 +1164,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                     if (node.isPreResolutionFinding() && preResolutionEvidence.getFinding(variable) != null) {
                         RemoveFindingEdit removeFindingEdit = new RemoveFindingEdit(node.getNode(), preResolutionEvidence, (VisualChanceNode) node, variable);
                         try {
-                            removeFindingEdit.doEdit(node.getNode().getProbNet());
+                            removeFindingEdit.executeEdit();
                         } catch (ConstraintViolatedException e) {
                             throw new UnreacheableException(e);
                         }
@@ -1455,7 +1449,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * This method updates the value of each state for each node in the network
      * with the current individual probabilities.
      */
-    public void updateIndividualProbabilitiesAndUtilities() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void updateIndividualProbabilitiesAndUtilities() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         // if some visualNode has a number of values different from the
         // number of evidence cases in memory, we need to recreate its
         // visual states and consider that the network has been changed.
@@ -1531,7 +1525,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * This method removes all the findings established in the current evidence
      * case.
      */
-    public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         setPropagationActive(isAutomaticPropagation());
         List<VisualNode> visualNodes = visualNetwork.getAllNodes();
         for (int i = 0; i < visualNodes.size(); i++) {
@@ -1561,7 +1555,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      *
      * @param node the node in which to remove the findings.
      */
-    public void removeNodeEvidenceInAllCases(Node node) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void removeNodeEvidenceInAllCases(Node node) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         try {
             for (int i = 0; i < postResolutionEvidence.size(); i++) {
                 List<Finding> findings = postResolutionEvidence.get(i).getFindings();
@@ -1618,7 +1612,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * @param state      the visual state in which the finding is going to be
      *                   set.
      */
-    public void toggleFinding(VisualNode visualNode, VisualState state) throws IncompatibleEvidenceException, ConstraintViolatedException, DoEditException.CannotDoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException {
+    public void toggleFinding(VisualNode visualNode, VisualState state) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException {
         setNewFinding(visualNode, null, new Finding(visualNode.getNode().getVariable(), state.getStateIndex()), true);
     }
     
@@ -1630,7 +1624,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * @param finding    a finding.
      * @param toggle     a boolean value.
      */
-    public void setNewFinding(VisualNode visualNode, Finding previousFinding, Finding finding, boolean toggle) throws IncompatibleEvidenceException, ConstraintViolatedException, DoEditException.CannotDoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException {
+    public void setNewFinding(VisualNode visualNode, Finding previousFinding, Finding finding, boolean toggle) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException {
         Variable variable = visualNode.getNode().getVariable();
         
         boolean isInferenceMode = networkPanel.getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE;
@@ -1649,7 +1643,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 visualNode.setPostResolutionFinding(true);
             } else {
                 AddFindingEdit addFindingEdit = new AddFindingEdit(visualNode.getNode(), evidenceCase, previousFinding, finding, (VisualChanceNode) visualNode);
-                addFindingEdit.doEdit(visualNode.getNode().getProbNet());
+                addFindingEdit.executeEdit();
             }
         }
         // Flag current case as not compiled
@@ -1723,7 +1717,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * @param caseNumber   number of this evidence case.
      */
     @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
-    public void doPropagation(EvidenceCase evidenceCase, int caseNumber) throws NonProjectablePotentialException, NotEnoughtMemoryException, NotEvaluableNetworkException, CannotNormalizePotentialException, IncompatibleEvidenceException {
+    public void doPropagation(EvidenceCase evidenceCase, int caseNumber) throws NonProjectablePotentialException, NotEnoughtMemoryException, NotEvaluableNetworkException, CannotNormalizePotentialException, IncompatibleEvidenceException, ConstraintViolatedException {
         Map<Variable, TablePotential> individualProbabilities = null;
         long start = System.currentTimeMillis();
         try {
@@ -1946,7 +1940,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method creates a new evidence case
      */
-    public void createNewEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void createNewEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         EvidenceCase newEvidenceCase = new EvidenceCase();
         EvidenceCase currentEvidenceCase = getCurrentEvidenceCase();
         List<Finding> currentFindings = currentEvidenceCase.getFindings();
@@ -1959,7 +1953,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method adds a new evidence case
      */
-    public void addNewEvidenceCase(EvidenceCase newEvidenceCase) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void addNewEvidenceCase(EvidenceCase newEvidenceCase) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         setPropagationActive(isAutomaticPropagation());
         postResolutionEvidence.add(newEvidenceCase);
         currentCase = (postResolutionEvidence.size() - 1);
@@ -1981,7 +1975,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method makes the first evidence case to be the current
      */
-    public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         currentCase = 0;
         updateAllVisualStates("", currentCase);
         networkPanel.getMainPanel().getInferenceToolBar().setCurrentEvidenceCaseName(currentCase);
@@ -2004,7 +1998,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method makes the previous evidence case to be the current
      */
-    public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoPreviousEvidenceCaseException {
+    public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoPreviousEvidenceCaseException, ConstraintViolatedException {
         if (!(currentCase > 0)) {
             throw new ThereIsNoPreviousEvidenceCaseException();
         }
@@ -2030,7 +2024,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method makes the next evidence case to be the current
      */
-    public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException {
+    public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException, ConstraintViolatedException {
         if (!(currentCase < (postResolutionEvidence.size() - 1))) {
             throw new ThereIsNoNextEvidenceCaseException();
         }
@@ -2056,7 +2050,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method makes the last evidence case to be the current
      */
-    public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         currentCase = (postResolutionEvidence.size() - 1);
         updateAllVisualStates("", currentCase);
         networkPanel.getMainPanel().getInferenceToolBar().setCurrentEvidenceCaseName(currentCase);
@@ -2081,7 +2075,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * state' in which there is only an initial evidence case with no findings
      * (corresponding to prior probabilities)
      */
-    public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         setPropagationActive(isAutomaticPropagation());
         postResolutionEvidence.clear();
         evidenceCasesCompilationState.clear();
@@ -2137,7 +2131,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * @param mainPanelMenuAssistant the menu assistant associated to the main
      *                               panel.
      */
-    public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         setPropagationActive(true);
         if (networkPanel.getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
             for (int i = 0; i < getNumberOfCases(); i++) {
@@ -2182,7 +2176,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             @ToCheck(reasonKind = {ToCheck.ReasonKind.USER_EXPERIENCE, ToCheck.ReasonKind.CODE_QUALITY},
                     reasonDescription = "Can a RemoveSelectedEdit actually trigger a do edit exception?")
             var check = false;
-            cutEdit.doEdit(probNet);
+            cutEdit.executeEdit();
         } catch (DoEditException e) {
             throw new UnrecoverableException(e);
         }
@@ -2248,7 +2242,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method inverts the selected link arc-reversal style
      */
-    public void invertLinkAndUpdatePotentials() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
+    public void invertLinkAndUpdatePotentials() throws DoEditException {
         List<VisualLink> links = visualNetwork.getSelectedLinks();
         if (links.isEmpty()) {
             return;
@@ -2258,7 +2252,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         Node node2 = link.getNode2();
         InvertLinkAndUpdatePotentialsEdit invertLink =
                 new InvertLinkAndUpdatePotentialsEdit(probNet, node1.getVariable(), node2.getVariable());
-        invertLink.doEdit(probNet);
+        invertLink.executeEdit();
         repaint();
     }
     
@@ -2283,9 +2277,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /***
      * Resets the link restriction potential of a link
      */
-    public void disableLinkRestriction() throws ConstraintViolatedException {
+    public void disableLinkRestriction() throws DoEditException {
         RemoveLinkRestrictionEdit removeLinkRestrictionEdit = new RemoveLinkRestrictionEdit(visualNetwork);
-        removeLinkRestrictionEdit.doEdit(probNet);
+        removeLinkRestrictionEdit.executeEdit();
         repaint();
     }
     
@@ -2341,7 +2335,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     // TODO OOPN start
-    public void markSelectedAsInput() throws ConstraintViolatedException {
+    public void markSelectedAsInput() throws DoEditException {
         visualNetwork.markSelectedAsInput();
         repaint();
     }
@@ -2350,7 +2344,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         visualNetwork.editClass();
     }
     
-    public void setParameterArity(ParameterArity arity) throws ConstraintViolatedException {
+    public void setParameterArity(ParameterArity arity) throws DoEditException {
         visualNetwork.setParameterArity(arity);
     }
     
@@ -2392,7 +2386,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         setZoom(zoom);
     }
     
-    public void createNextSliceNode() throws ConstraintViolatedException {
+    public void createNextSliceNode() throws DoEditException {
         Node selectedNode = visualNetwork.getSelectedNodes().getFirst().getNode();
         Variable selectedVariable = selectedNode.getVariable();
         Variable newVariable = new Variable(selectedVariable);
@@ -2401,7 +2395,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                                                      selectedNode.getCoordinateY());
         AddNodeEdit addNodeEdit = new AddNodeEdit(probNet, newVariable, selectedNode.getNodeType(), position);
         try {
-            addNodeEdit.doEdit(probNet);
+            addNodeEdit.executeEdit();
         } finally {
             adjustPanelDimension();
             repaint();
@@ -2472,7 +2466,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     @Override
-    public void undoEditHappened(UndoableEditEvent event) {
+    public void undoEditHappened(PNUndoableEditEvent event) {
         List<Finding> findings = preResolutionEvidence.getFindings();
         Set<Variable> findingVariables = findings.stream()
                                                  .map(Finding::getVariable)
@@ -2490,7 +2484,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     @Override
-    public void undoableEditHappened(UndoableEditEvent e) {
+    public void undoableEditHappened(PNUndoableEditEvent e) {
         for (Finding finding : preResolutionEvidence.getFindings()) {
             Variable variable = finding.getVariable();
             for (VisualNode visualNode : visualNetwork.getAllNodes()) {

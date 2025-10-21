@@ -393,7 +393,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    protected void actionPerformedRemoveValue() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
+    protected void actionPerformedRemoveValue() throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.removeRow(selectedRowIndex);
     }
@@ -401,7 +401,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     /**
      * Invoked when the button 'up' is pressed.
      */
-    protected void actionPerformedUpValue() throws ConstraintViolatedException {
+    protected void actionPerformedUpValue() throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex - 1);
         valuesTable.setRowSelectionInterval(selectedRowIndex - 1, selectedRowIndex - 1);
@@ -410,7 +410,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     /**
      * Invoked when the button 'down' is pressed.
      */
-    protected void actionPerformedDownValue() throws ConstraintViolatedException {
+    protected void actionPerformedDownValue() throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex + 1);
         valuesTable.setRowSelectionInterval(selectedRowIndex + 1, selectedRowIndex + 1);

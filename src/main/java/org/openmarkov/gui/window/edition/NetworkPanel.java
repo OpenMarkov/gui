@@ -7,10 +7,7 @@
 
 package org.openmarkov.gui.window.edition;
 
-import org.openmarkov.core.action.base.CloseParenthesisEdit;
-import org.openmarkov.core.action.base.OpenParenthesisEdit;
-import org.openmarkov.core.action.base.PNESupport;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.base.*;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
@@ -98,7 +95,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     public NetworkPanel(ProbNet probNet, MainPanel mainPanel) {
         this.probNet = probNet;
         this.mainPanel = mainPanel;
-        probNet.getPNESupport().addUndoableEditListener(this);
+        probNet.getPNESupport().addListener(this);
         initialize();
     }
     
@@ -327,7 +324,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      * This method absorbs a node into the rest of the net arc-reversal style. This means updating the only utility
      * child it might have and removing it next.
      */
-    public void absorbNode() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
+    public void absorbNode() throws DoEditException {
         editorPanel.absorbNode();
     }
     
@@ -343,14 +340,14 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      * If some property has changed, insert a new undo point into the network
      * undo manager.
      */
-    public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.changeNodeProperties();
     }
     
     /**
      * This method has been created for testing.
      */
-    public void changePotential() throws IncompatibleEvidenceException, ThereIsNoPotentialsInNodeException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException {
+    public void changePotential() throws IncompatibleEvidenceException, ThereIsNoPotentialsInNodeException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.showPotentialDialog(getWorkingMode() != WorkingMode.EDITION);
     }
     
@@ -378,7 +375,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     /**
      * This method removes an imposed policy from a decision node.
      */
-    public void removePolicyFromNode() {
+    public void removePolicyFromNode() throws DoEditException {
         editorPanel.removePolicyFromNode();
     }
     
@@ -389,7 +386,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
             throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther,
             NonProjectablePotentialException,
             NotEvaluableNetworkException.NotApplicableNetwork,
-            NotEvaluableNetworkException.UnsatisfiedContraints, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+            NotEvaluableNetworkException.UnsatisfiedContraints, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException, ConstraintViolatedException {
         editorPanel.showExpectedUtilityOfNode();
     }
     
@@ -401,7 +398,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
             NonProjectablePotentialException,
             NotEvaluableNetworkException.NotApplicableNetwork,
             NotEvaluableNetworkException.UnsatisfiedContraints,
-            ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+            ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException, ConstraintViolatedException {
         editorPanel.showOptimalPolicyOfNode();
     }
     
@@ -429,7 +426,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     /**
      * This method removes findings from selected nodes.
      */
-    public void removeFinding() throws PreResolutionNodeInInferenceException {
+    public void removeFinding() throws PreResolutionNodeInInferenceException, DoEditException {
         editorPanel.removeFinding();
     }
     
@@ -447,7 +444,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      * This method updates the value of each state for each node in the network
      * with the current individual probabilities.
      */
-    public void updateIndividualProbabilitiesAndUtilities() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void updateIndividualProbabilitiesAndUtilities() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.updateIndividualProbabilitiesAndUtilities();
     }
     
@@ -455,7 +452,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      * This method removes all the findings established in the current evidence
      * case.
      */
-    public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.removeAllFindings();
     }
     
@@ -507,7 +504,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     /**
      * This methods reverts the selected link.
      */
-    public void invertLinkAndUpdatePotentials() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
+    public void invertLinkAndUpdatePotentials() throws DoEditException {
         editorPanel.invertLinkAndUpdatePotentials();
     }
     
@@ -528,7 +525,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     /***
      * This method resets the link restriction of the selected link.
      */
-    public void disableLinkRestriction() throws ConstraintViolatedException {
+    public void disableLinkRestriction() throws DoEditException {
         editorPanel.disableLinkRestriction();
     }
     
@@ -666,18 +663,18 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         editorPanel.setSelectedAllObjects(selected);
     }
     
-    @Override public void undoableEditHappened(UndoableEditEvent arg0) {
+    @Override public void undoableEditHappened(PNUndoableEditEvent arg0) {
         if (arg0.getEdit().getClass() != OpenParenthesisEdit.class &&
                 arg0.getEdit().getClass() != CloseParenthesisEdit.class) {
             setModified(true);
         }
     }
     
-    @Override public void undoableEditWillHappen(UndoableEditEvent event) {
+    @Override public void undoableEditWillHappen(PNUndoableEditEvent event) {
         repaint();
     }
     
-    @Override public void undoEditHappened(UndoableEditEvent event) {
+    @Override public void undoEditHappened(PNUndoableEditEvent event) {
         setModified(((PNESupport) event.getSource()).getCanUndo());
         repaint();
     }
@@ -704,35 +701,35 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     /**
      * This method creates a new evidence case
      */
-    public void createNewEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void createNewEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.createNewEvidenceCase();
     }
     
     /**
      * This method makes the first evidence case to be the current
      */
-    public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.goToFirstEvidenceCase();
     }
     
     /**
      * This method makes the previous evidence case to be the current
      */
-    public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoPreviousEvidenceCaseException {
+    public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoPreviousEvidenceCaseException, ConstraintViolatedException {
         editorPanel.goToPreviousEvidenceCase();
     }
     
     /**
      * This method makes the next evidence case to be the current
      */
-    public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException {
+    public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException, ConstraintViolatedException {
         editorPanel.goToNextEvidenceCase();
     }
     
     /**
      * This method makes the last evidence case to be the current
      */
-    public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.goToLastEvidenceCase();
     }
     
@@ -741,7 +738,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      * state' in which there is only an initial evidence case with no findings
      * (corresponding to prior probabilities)
      */
-    public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.clearOutAllEvidenceCases();
     }
     
@@ -752,7 +749,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      * @param mainPanelMenuAssistant the menu assistant associated to the main
      *                               panel.
      */
-    public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.propagateEvidence(mainPanelMenuAssistant);
     }
     
@@ -825,7 +822,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     }
     
     // TODO OOPN start
-    public void markSelectedAsInput() throws ConstraintViolatedException {
+    public void markSelectedAsInput() throws DoEditException {
         editorPanel.markSelectedAsInput();
     }
     
@@ -838,7 +835,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     }
     // TODO OOPN end
     
-    public void setParameterArity(ParameterArity arity) throws ConstraintViolatedException {
+    public void setParameterArity(ParameterArity arity) throws DoEditException {
         editorPanel.setParameterArity(arity);
     }
     
@@ -850,7 +847,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         }
     }
     
-    public void createNextSliceNode() throws ConstraintViolatedException {
+    public void createNextSliceNode() throws DoEditException {
         editorPanel.createNextSliceNode();
     }
 }

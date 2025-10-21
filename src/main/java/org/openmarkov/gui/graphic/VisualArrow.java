@@ -7,11 +7,13 @@
 
 package org.openmarkov.gui.graphic;
 
-import org.apache.logging.log4j.LogManager;
 import org.openmarkov.core.exception.UnreacheableException;
 
 import java.awt.*;
 import java.awt.geom.*;
+
+import org.openmarkov.core.model.network.Point2D;
+import org.openmarkov.gui.swingUtils.SwingUtils;
 
 /**
  * This class is the visual representation of a link.
@@ -177,28 +179,33 @@ public class VisualArrow extends VisualElement {
 	 * @return return an array that contains the coordinates of the nine points.
 	 */
 	private static Point2D.Double[] calculatePointsOfArrow(Point2D.Double start, Point2D.Double end) {
-
-		double tx = start.getX();
+        
+        
+        double tx = start.getX();
 		double ty = start.getY();
 		double angle = Math.atan((end.getY() - ty) / (end.getX() - tx));
-		Point2D.Double[] points = new Point2D.Double[9];
+        java.awt.geom.Point2D.Double[] points = new java.awt.geom.Point2D.Double[9];
         double halfWidth = WIDTH_TOP_ARROW / 2;
         int index;
         AffineTransform transformation2D = new AffineTransform();
 
 		transformation2D.rotate(-angle);
 		transformation2D.translate(-tx, -ty);
-		points[0] = new Point2D.Double();
-		transformation2D.transform(end, points[0]);
+        points[0] = new java.awt.geom.Point2D.Double();
+        
+        java.awt.geom.Point2D.Double swingEnd = SwingUtils.om2DPointToSwing2DPoint(end);
+        transformation2D.transform(swingEnd, points[0]);
+        end.setLocation(swingEnd.getX(), swingEnd.getY());
+        
         double incrHeight = (points[0].getX() >= 0) ? HEIGHT_TOP_ARROW : -HEIGHT_TOP_ARROW;
-		points[1] = new Point2D.Double(points[0].getX() - incrHeight, points[0].getY() - halfWidth);
-		points[3] = new Point2D.Double(points[1].getX(), points[0].getY());
-		points[2] = new Point2D.Double(points[3].getX(), points[3].getY() - WIDTH_LINE_TO_SELECT);
-		points[4] = new Point2D.Double(points[3].getX(), points[3].getY() + WIDTH_LINE_TO_SELECT);
-		points[5] = new Point2D.Double(points[1].getX(), points[0].getY() + halfWidth);
-		points[7] = new Point2D.Double(0, 0);
-		points[6] = new Point2D.Double(points[7].getX(), points[7].getY() - WIDTH_LINE_TO_SELECT);
-		points[8] = new Point2D.Double(points[7].getX(), points[7].getY() + WIDTH_LINE_TO_SELECT);
+        points[1] = new java.awt.geom.Point2D.Double(points[0].getX() - incrHeight, points[0].getY() - halfWidth);
+        points[3] = new java.awt.geom.Point2D.Double(points[1].getX(), points[0].getY());
+        points[2] = new java.awt.geom.Point2D.Double(points[3].getX(), points[3].getY() - WIDTH_LINE_TO_SELECT);
+        points[4] = new java.awt.geom.Point2D.Double(points[3].getX(), points[3].getY() + WIDTH_LINE_TO_SELECT);
+        points[5] = new java.awt.geom.Point2D.Double(points[1].getX(), points[0].getY() + halfWidth);
+        points[7] = new java.awt.geom.Point2D.Double(0, 0);
+        points[6] = new java.awt.geom.Point2D.Double(points[7].getX(), points[7].getY() - WIDTH_LINE_TO_SELECT);
+        points[8] = new java.awt.geom.Point2D.Double(points[7].getX(), points[7].getY() + WIDTH_LINE_TO_SELECT);
 		try {
 			transformation2D = transformation2D.createInverse();
 		} catch (NoninvertibleTransformException e) {
@@ -208,8 +215,13 @@ public class VisualArrow extends VisualElement {
 		for (index = 0; index < length; index++) {
 			transformation2D.transform(points[index], points[index]);
 		}
-
-		return points;
+        
+        
+        Point2D.Double[] corePoints = new Point2D.Double[9];
+        for (index = 0; index < corePoints.length; index++) {
+            corePoints[index] = SwingUtils.swing2DPointToOM2DPoint(points[index]);
+        }
+        return corePoints;
 
 	}
 
@@ -219,9 +231,7 @@ public class VisualArrow extends VisualElement {
 	 * @param point new starting point.
 	 */
 	public void setStartPoint(Point2D.Double point) {
-
 		startPoint = point;
-
 	}
 
 	/**
@@ -230,9 +240,7 @@ public class VisualArrow extends VisualElement {
 	 * @param point new ending point.
 	 */
 	public void setEndPoint(Point2D.Double point) {
-
 		endPoint = point;
-
 	}
 
 	/**
@@ -415,11 +423,10 @@ public class VisualArrow extends VisualElement {
 	 * @return Shape to paint
 	 */
     public static Shape getStripeShape(Point2D.Double start, Point2D.Double end, double distance) {
-        Point2D.Double[] points = new Point2D.Double[2];
 		double mx = (end.getX() - start.getX()) / 2;
 		double my = (end.getY() - start.getY()) / 2;
-		points[0] = new Point2D.Double(0, -HEIGTH_STRIPE);
-		points[1] = new Point2D.Double(0, HEIGTH_STRIPE);
+        java.awt.geom.Point2D.Double firstPoint = new java.awt.geom.Point2D.Double(0, -HEIGTH_STRIPE);
+        java.awt.geom.Point2D.Double secondPoint = new java.awt.geom.Point2D.Double(0, HEIGTH_STRIPE);
 		double tx = start.getX();
 		double ty = start.getY();
 		double angle = Math.atan((end.getY() - ty) / (end.getX() - tx));
@@ -433,12 +440,13 @@ public class VisualArrow extends VisualElement {
 		} catch (NoninvertibleTransformException e) {
             throw new UnreacheableException(e);
 		}
-		transformation2D.transform(points[0], points[0]);
-		transformation2D.transform(points[1], points[1]);
-        GeneralPath polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, points.length);
-
-		polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
-		polygon.lineTo((float) points[1].getX(), (float) points[1].getY());
+        transformation2D.transform(firstPoint, firstPoint);
+        transformation2D.transform(secondPoint, secondPoint);
+        
+        GeneralPath polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, 2);
+        
+        polygon.moveTo((float) firstPoint.getX(), (float) firstPoint.getY());
+        polygon.lineTo((float) secondPoint.getX(), (float) secondPoint.getY());
 		polygon.closePath();
 		return polygon;
 

@@ -8,9 +8,9 @@
 package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.Point2D;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**

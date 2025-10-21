@@ -7,24 +7,23 @@
 
 package org.openmarkov.gui.graphic;
 
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.action.MarkAsInputEdit;
 import org.openmarkov.gui.util.MovedNodeInfo;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
-import javax.swing.event.UndoableEditEvent;
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -113,7 +112,7 @@ public class VisualNetwork implements PNUndoableEditListener {
     public VisualNetwork(ProbNet probNet) {
         
         this.probNet = probNet;
-        this.probNet.getPNESupport().addUndoableEditListener(this);
+        this.probNet.getPNESupport().addListener(this);
         
         //network.addNetworkChangeListener(this);
         //changed by mpalacios
@@ -959,9 +958,7 @@ public class VisualNetwork implements PNUndoableEditListener {
      * @return network which is painted.
      */
     public ProbNet getNetwork() {
-        
         return probNet;
-        
     }
     
     public PNESupport getpNESupport() {
@@ -970,12 +967,10 @@ public class VisualNetwork implements PNUndoableEditListener {
         
     }
     
-    @Override public void undoableEditHappened(UndoableEditEvent e) {
-        
+    @Override public void undoableEditHappened(PNUndoableEditEvent e) {
         constructVisualInfo();
         if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE)
             visualDecisionNodeRefresh();
-        
     }
     
     public void visualDecisionNodeRefresh() {
@@ -1064,7 +1059,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         return visualNode;
     }
     
-    @Override public void undoEditHappened(UndoableEditEvent event) {
+    @Override public void undoEditHappened(PNUndoableEditEvent event) {
         constructVisualInfo();
         if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();
@@ -1224,11 +1219,11 @@ public class VisualNetwork implements PNUndoableEditListener {
     }
     
     //TODO OOPN start
-    public void markSelectedAsInput() throws ConstraintViolatedException {
+    public void markSelectedAsInput() throws DoEditException {
         for (VisualNode visualNode : getSelectedNodes()) {
             MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualNode.getNode()
                                                                                       .isInput(), visualNode.getNode());
-            markAsInputEdit.doEdit(probNet);
+            markAsInputEdit.executeEdit();
         }
     }
     
@@ -1236,7 +1231,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         // TODO Auto-generated method stub
     }
     
-    public void setParameterArity(ParameterArity arity) throws ConstraintViolatedException {
+    public void setParameterArity(ParameterArity arity) throws DoEditException {
         // TODO Auto-generated method stub
     }
     

@@ -83,8 +83,7 @@ public class MulticriteriaEditTest {
         decisionCriteria.add(criterion1);
         probNet.setDecisionCriteria(decisionCriteria);
         MulticriteriaEdit edit = new MulticriteriaEdit(probNet, decisionCriteria, multicriteriaOptions);
-        
-        probNet.getPNESupport().doEdit(edit);
+        edit.executeEdit();
         assertEquals("Unit A", probNet.getInferenceOptions().getMultiCriteriaOptions().getMainUnit());
         assertEquals(probNet.getDecisionCriteria(), decisionCriteria);
         
@@ -97,7 +96,7 @@ public class MulticriteriaEditTest {
         probNet.setDecisionCriteria(decisionCriteria2);
         
         MulticriteriaEdit edit2 = new MulticriteriaEdit(probNet, decisionCriteria2, multicriteriaOptions2);
-        probNet.getPNESupport().doEdit(edit2);
+        edit2.executeEdit();
         assertEquals("Unit B", probNet.getInferenceOptions().getMultiCriteriaOptions().getMainUnit());
         assertEquals(probNet.getDecisionCriteria(), decisionCriteria2);
         

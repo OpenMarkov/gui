@@ -9,13 +9,10 @@ package org.openmarkov.gui.action;
 
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.gui.graphic.VisualNode;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,72 +23,65 @@ import java.util.List;
  * @author Miguel Palacios
  * @version 1.0 21/12/10
  */
-public class MoveNodeEdit extends SimplePNEdit {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 7578733825996342882L;
-	/**
-	 * The nodes last positions before the action
-	 */
-	private List<Point2D.Double> lastPositions = new ArrayList<Point2D.Double>();
-	/**
-	 * The new positions of the nodes to move
-	 */
-	private List<Point2D.Double> newPositions = new ArrayList<Point2D.Double>();
-	/**
-	 * The node's name to move
-	 */
-	private List<String> namesNode = new ArrayList<String>();
-	
-	/**
-	 * Logger
-	 */
-	protected Logger logger;
-
-	/**
+public class MoveNodeEdit extends PNEdit {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 7578733825996342882L;
+    /**
+     * The nodes last positions before the action
+     */
+    private List<Point2D.Double> lastPositions = new ArrayList<Point2D.Double>();
+    /**
+     * The new positions of the nodes to move
+     */
+    private List<Point2D.Double> newPositions = new ArrayList<Point2D.Double>();
+    /**
+     * The node's name to move
+     */
+    private List<String> namesNode = new ArrayList<String>();
+    
+    /**
+     * Logger
+     */
+    protected Logger logger;
+    
+    /**
      * Creates a new {@code MoveNodeEdit} with the nodes, and new X, Y
-	 * coordinates.
-	 *
-	 * @param movedNodes the nodes that will be edited, with their new
-	 *                   positions.
-	 */
-	public MoveNodeEdit(List<VisualNode> movedNodes) {
-		super(movedNodes.get(0).getNode().getProbNet());
-		for (VisualNode visualNode : movedNodes) {
-			lastPositions.add((Point2D.Double) visualNode.getPosition().clone());
-			newPositions.add((Point2D.Double) visualNode.getTemporalPosition().clone());
-			namesNode.add(visualNode.getNode().getName());
-		}
-	}
-
-	@Override public void doEdit() {
+     * coordinates.
+     *
+     * @param movedNodes the nodes that will be edited, with their new
+     *                   positions.
+     */
+    public MoveNodeEdit(List<VisualNode> movedNodes) {
+        super(movedNodes.get(0).getNode().getProbNet());
+        for (VisualNode visualNode : movedNodes) {
+            lastPositions.add(visualNode.getPosition().clone());
+            newPositions.add(visualNode.getTemporalPosition().clone());
+            namesNode.add(visualNode.getNode().getName());
+        }
+    }
+    
+    @Override public void doEdit() {
         Node node;
-		int i = 0;
-		for (String name : namesNode) {
+        int i = 0;
+        for (String name : namesNode) {
             node = probNet.getNode(name);
             node.setCoordinateX(newPositions.get(i).getX());
             node.setCoordinateY(newPositions.get(i).getY());
             i++;
-		}
-	}
+        }
+    }
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
-		super.undo();
-		int i = 0;
+    @Override public void undo() {
+        super.undo();
+        int i = 0;
         Node node;
-		for (String name : namesNode) {
+        for (String name : namesNode) {
             node = probNet.getNode(name);
             node.setCoordinateX(lastPositions.get(i).getX());
             node.setCoordinateY(lastPositions.get(i).getY());
             i++;
-		}
-	}
+        }
+    }
 }

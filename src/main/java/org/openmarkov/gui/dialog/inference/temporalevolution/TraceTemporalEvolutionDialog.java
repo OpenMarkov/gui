@@ -277,7 +277,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 // end
                 initialize(owner);
             } catch (NotEvaluableNetworkException | IncompatibleEvidenceException | CannotNormalizePotentialException |
-                     NonProjectablePotentialException e) {
+                     NonProjectablePotentialException | ConstraintViolatedException e) {
                 throw new UnrecoverableException(e);
             } catch (IndexOutOfBoundsException ignore) {
                 //When pressing "Cancel" in progressMonitor
@@ -353,7 +353,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 //When pressing "Cancel" in progressMonitor
             } catch (NotEvaluableNetworkException.NotApplicableNetwork |
                      NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException |
-                     NotEvaluableNetworkException.VariableIsNotTemporal | NonProjectablePotentialException e) {
+                     NotEvaluableNetworkException.VariableIsNotTemporal | NonProjectablePotentialException |
+                     ConstraintViolatedException e) {
                 throw new UnrecoverableException(e);
             }
         });
@@ -658,7 +659,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     // end 02/11/2022
     
     
-    private void createExcel(ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) throws IOException, NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException, CannotNormalizePotentialException {
+    private void createExcel(ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) throws IOException, NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         JFileChooser fileChooser = new JFileChooser();
         String netName = probNet.getName();
         fileChooser.setSelectedFile(new File(netName + "-temporal_evolution.xlsx"));

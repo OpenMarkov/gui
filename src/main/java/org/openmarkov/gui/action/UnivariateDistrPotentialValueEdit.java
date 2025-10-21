@@ -9,13 +9,10 @@ package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.AugmentedTable;
@@ -29,7 +26,7 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
  * @author carmenyago
  * @version 1.0  03/04/2017
  */
-@SuppressWarnings("serial") public class UnivariateDistrPotentialValueEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class UnivariateDistrPotentialValueEdit extends PNEdit {
 	/**
 	 * The column of the table where is the potential
 	 */
@@ -130,20 +127,12 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 	 * This method changes the old UnivariateDistrPotential in node for the updated potential
 	 * and updates the probNet
 	 */
-    @Override public void doEdit() throws ConstraintViolatedException, DoEditException.CannotRemovePotential {
+    @Override public void doEdit() throws DoEditException {
         PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
-		changePotentialEdit.doEdit(probNet);
+        changePotentialEdit.executeEdit();
 	}
     
-    @Override
-    public void doEdit(ProbNet probNet) throws ConstraintViolatedException, DoEditException.CannotRemovePotential {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-
-	/**
+    /**
 	 * Gets the row position associated to value edited if priorityList exists
 	 *
 	 * @param position position of the value in the array of values

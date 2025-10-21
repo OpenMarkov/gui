@@ -76,7 +76,7 @@ public class TemporalOptionsEditTest {
         temporalOptions.setTransition(TransitionTime.END);
         TemporalOptionsEdit edit = new TemporalOptionsEdit(probNet, temporalOptions);
         
-        probNet.getPNESupport().doEdit(edit);
+        edit.executeEdit();
         assertEquals(50, probNet.getInferenceOptions().getTemporalOptions().getHorizon());
         assertEquals(probNet.getInferenceOptions()
                             .getTemporalOptions()
@@ -87,8 +87,7 @@ public class TemporalOptionsEditTest {
         temporalOptions2.setHorizon(10);
         temporalOptions2.setTransition(TransitionTime.HALF);
         TemporalOptionsEdit edit2 = new TemporalOptionsEdit(probNet, temporalOptions2);
-        
-        probNet.getPNESupport().doEdit(edit2);
+        edit2.executeEdit();
         assertEquals(10, probNet.getInferenceOptions().getTemporalOptions().getHorizon());
         assertEquals(probNet.getInferenceOptions()
                             .getTemporalOptions()

@@ -955,7 +955,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         probNet.getPNESupport().openParenthesis();
         if (isMulticriteria) {
             MulticriteriaEdit editMulticriteria = new MulticriteriaEdit(probNet, decisionCriteria, multicriteriaOptions);
-            probNet.getPNESupport().doEdit(editMulticriteria);
+            editMulticriteria.executeEdit();
         }
         if (isTemporal) {
             int numSlices;
@@ -974,7 +974,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
             }
             
             TemporalOptionsEdit editTemporal = new TemporalOptionsEdit(probNet, temporalOptions);
-            probNet.getPNESupport().doEdit(editTemporal);
+            editTemporal.executeEdit();
         }
         
         probNet.getPNESupport().closeParenthesis();

@@ -16,7 +16,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.action.OtherPropertyEdit;
 import org.openmarkov.core.model.network.Node;
@@ -245,7 +245,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedAddValue() throws DoEditException {
         String propertyName = JOptionPane.showInputDialog(this, stringDatabase.getString("AddOtherProperty.Name.Message"),
                                                           stringDatabase.getString("AddOtherProperty.Name.Title"), JOptionPane.QUESTION_MESSAGE);
         if (propertyName == null) {
@@ -266,64 +266,64 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
         if (node != null) {
             OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "ADD", selectedRowIndex, noIDrowData);
             ProbNet probNet1 = node.getProbNet();
-            otherPropertyEdit.doEdit(probNet1);
+            otherPropertyEdit.executeEdit();
         } else if (probNet != null) {
             OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "ADD", selectedRowIndex, noIDrowData);
-            otherPropertyEdit.doEdit(probNet);
+            otherPropertyEdit.executeEdit();
         }
     }
     
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedRemoveValue() throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.removeRow(selectedRowIndex);
         //ProbNet probNet = null;
         if (node != null) {
             OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "REMOVE", selectedRowIndex, null);
             ProbNet probNet1 = node.getProbNet();
-            otherPropertyEdit.doEdit(probNet1);
+            otherPropertyEdit.executeEdit();
             //probNet = node.getProbNet();
             //probNet.doEdit(otherPropertyEdit);
         } else if (this.probNet != null) {
             OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "REMOVE", selectedRowIndex, null);
             //probNet = this.probNet;
-            otherPropertyEdit.doEdit(probNet);
+            otherPropertyEdit.executeEdit();
         }
     }
     
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedUpValue() throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex - 1);
         valuesTable.setRowSelectionInterval(selectedRowIndex - 1, selectedRowIndex - 1);
         if (node != null) {
             OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "UP", selectedRowIndex, null);
             ProbNet probNet1 = node.getProbNet();
-            otherPropertyEdit.doEdit(probNet1);
+            otherPropertyEdit.executeEdit();
         } else if (probNet != null) {
             OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "UP", selectedRowIndex, null);
-            otherPropertyEdit.doEdit(probNet);
+            otherPropertyEdit.executeEdit();
         }
     }
     
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() throws ConstraintViolatedException {
+    @Override protected void actionPerformedDownValue() throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex + 1);
         valuesTable.setRowSelectionInterval(selectedRowIndex + 1, selectedRowIndex + 1);
         if (node != null) {
             OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "DOWN", selectedRowIndex, null);
             ProbNet probNet1 = node.getProbNet();
-            otherPropertyEdit.doEdit(probNet1);
+            otherPropertyEdit.executeEdit();
         } else if (probNet != null) {
             OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "DOWN", selectedRowIndex, null);
-            otherPropertyEdit.doEdit(probNet);
+            otherPropertyEdit.executeEdit();
         }
     }
     
@@ -350,12 +350,12 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
             if (node != null) {
                 OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "RENAME", row, rowData);
                 ProbNet probNet1 = node.getProbNet();
-                otherPropertyEdit.doEdit(probNet1);
+                otherPropertyEdit.executeEdit();
             } else if (probNet != null) {
                 OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "RENAME", row, rowData);
-                otherPropertyEdit.doEdit(probNet);
+                otherPropertyEdit.executeEdit();
             }
-        } catch (ConstraintViolatedException e1) {
+        } catch (DoEditException e1) {
             String oldName = new ArrayList<>(node.getOtherProperties().keySet()).get(row);
             //List<String> keySet = new ArrayList<>(node.getOtherProperties().keySet());
             //String oldKey = keySet.get(index);

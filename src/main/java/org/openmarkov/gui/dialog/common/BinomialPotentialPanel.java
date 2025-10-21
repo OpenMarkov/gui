@@ -120,7 +120,7 @@ import java.awt.*;
         }
         newPotential.setComment(oldPotential.getComment());
         PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
-        edit.doEdit(probNet);
+        edit.executeEdit();
         return result;
     }
     

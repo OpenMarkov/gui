@@ -29,7 +29,7 @@ import javax.swing.*;
 	 */
 	private boolean modifiable;
     
-    public CPTablePanel(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    public CPTablePanel(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
 		super(node);
 		modifiable = false;
 	}

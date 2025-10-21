@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;
@@ -95,16 +96,16 @@ public class ConditionalGaussianPotentialPanel
     @Override public void setData(Node node) {
         ProbNet meanDummyNet = new ProbNet(probNet.getNetworkType());
         meanDummyNode = meanDummyNet.addPotential(newPotential.getMean());
-        meanDummyNet.getPNESupport().addUndoableEditListener(this);
+        meanDummyNet.getPNESupport().addListener(this);
         
         ProbNet varianceDummyNet = new ProbNet(probNet.getNetworkType());
         varianceDummyNode = varianceDummyNet.addPotential(newPotential.getVariance());
-        varianceDummyNet.getPNESupport().addUndoableEditListener(this);
+        varianceDummyNet.getPNESupport().addListener(this);
     }
     
     @Override public void close() {
-        meanDummyNode.getProbNet().getPNESupport().removeUndoableEditListener(this);
-        varianceDummyNode.getProbNet().getPNESupport().removeUndoableEditListener(this);
+        meanDummyNode.getProbNet().getPNESupport().removeListener(this);
+        varianceDummyNode.getProbNet().getPNESupport().removeListener(this);
     }
     
     @Override
@@ -112,7 +113,7 @@ public class ConditionalGaussianPotentialPanel
         boolean result = super.saveChanges();
         newPotential.setComment(oldPotential.getComment());
         PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
-        edit.doEdit(probNet);
+        edit.executeEdit();
         return result;
     }
     
@@ -121,7 +122,7 @@ public class ConditionalGaussianPotentialPanel
         // TODO update table with projected potential
     }
     
-    @Override public void undoableEditHappened(UndoableEditEvent event) {
+    @Override public void undoableEditHappened(PNUndoableEditEvent event) {
         // Update new potential and potential panel
         if (event.getEdit() instanceof PotentialChangeEdit) {
             newPotential.setMean(meanDummyNode.getPotentials().get(0));

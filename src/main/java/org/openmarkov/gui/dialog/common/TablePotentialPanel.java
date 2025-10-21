@@ -141,7 +141,7 @@ import java.util.List;
      * @param node : node whose first potential is a TablePotential or a TableDeltaPotential
      *             Adaptation from TableDeltaPotential
      */
-    public TablePotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NotEnoughtMemoryException {
+    public TablePotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         super();
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
         this.node = node;
@@ -215,7 +215,7 @@ import java.util.List;
      * UNCLEAR--&gt; Called in PotentialEditDialog.showFields(Node)
      */
     @Override
-    public void setData(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    public void setData(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         this.node = node;
         setData();
     }
@@ -240,7 +240,7 @@ import java.util.List;
      */
     // Using node sets in variable node
     // What to do with the exception
-    public void setData() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    public void setData() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         
         // true
         hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(node);
@@ -321,7 +321,7 @@ import java.util.List;
      *
      * @return the table data to be set
      */
-    protected Object[][] convertListPotentialsToTableFormat() throws ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    protected Object[][] convertListPotentialsToTableFormat() throws ThereIsNoPotentialsInNodeException {
         Object[][] values;
         
         // Empty array values[number_of_rows][number_of_colums]
@@ -511,7 +511,7 @@ import java.util.List;
      * <p>
      * minor changes
      */
-    protected long setNumberOfPostions() throws NotEnoughtMemoryException {
+    protected long setNumberOfPostions() {
         long numPositions = 1;
         for (Variable variable : potential.getVariables()) {
             numPositions = numPositions * variable.getNumStates();
@@ -653,7 +653,7 @@ import java.util.List;
     /**
      * Creates and shows the UncertainValuesDialog object
      */
-    public void showUncertaintyDialog() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, ConstraintViolatedException, NonProjectablePotentialException {
+    public void showUncertaintyDialog() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException, NonProjectablePotentialException {
         // Generates the evidenceCase based on the column
         // selected on the JTable object
         evidenceCase = getEvidenceCaseFromSelectedColumn();
@@ -671,7 +671,7 @@ import java.util.List;
                                                                  uncertDialog.getValuesColumn(), uncertDialog.getPosBase(), selectedColumn,
                                                                  uncertDialog.isChanceVariable());
         ProbNet probNet = node.getProbNet();
-        uncertEdit.doEdit(probNet);
+        uncertEdit.executeEdit();
         if (selectedColumn > 0) {
             ((ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)).setMark(selectedColumn - 1);
             getValuesTable().repaint();
@@ -756,16 +756,14 @@ import java.util.List;
             try {
                 showUncertaintyDialog();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | ConstraintViolatedException |
-                     NonProjectablePotentialException ex) {
+                     ThereIsNoPotentialsInNodeException | NonProjectablePotentialException | DoEditException ex) {
                 throw new UnrecoverableException(ex);
             }
         } else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE.getCommandName())) {
             try {
                 removeUncertainty();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | ConstraintViolatedException |
-                     NonProjectablePotentialException ex) {
+                     ThereIsNoPotentialsInNodeException | NonProjectablePotentialException | DoEditException ex) {
                 throw new UnrecoverableException(ex);
             }
         }
@@ -774,11 +772,11 @@ import java.util.List;
     /**
      * Method for removing the uncertain values for a certain configuration
      */
-    public void removeUncertainty() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, ConstraintViolatedException, NonProjectablePotentialException {
+    public void removeUncertainty() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException, NonProjectablePotentialException {
         evidenceCase = getEvidenceCaseFromSelectedColumn();
         UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(node, evidenceCase);
         ProbNet probNet = node.getProbNet();
-        uncertEdit.doEdit(probNet);
+        uncertEdit.executeEdit();
         if (selectedColumn <= 0) {
             return;
         }
@@ -831,7 +829,7 @@ import java.util.List;
             }
         } catch (ThereIsNoPotentialsInNodeException e) {
             throw new UnreacheableException(e);
-        } catch (ConstraintViolatedException | NonProjectablePotentialException e) {
+        } catch (NonProjectablePotentialException | DoEditException e) {
             throw new UnrecoverableException(e);
         }
     }

@@ -137,7 +137,7 @@ public class ParenthesisAnidationTest {
         
         assertEquals(2, probNet.getPNESupport().getOpenParenthesisStack().size());
         
-        assertSame(NullEdit.class, probNet.getPNESupport().getUndoManager().editToBeUndone().getClass());
+        assertSame(NullEdit.class, probNet.getPNESupport().getUndoManager().nextEditToUndo().getClass());
         
         numNullEdit = doNullEdit(numNullEdit);
         
@@ -157,14 +157,14 @@ public class ParenthesisAnidationTest {
         
         assertTrue(probNet.getPNESupport().getOpenParenthesisStack().isEmpty());
         
-        assertSame(CloseParenthesisEdit.class, probNet.getPNESupport().getUndoManager().editToBeUndone().getClass());
+        assertSame(CloseParenthesisEdit.class, probNet.getPNESupport().getUndoManager().nextEditToUndo().getClass());
         
         probNet.getPNESupport().undo();
         
         // NE
         assertTrue(probNet.getPNESupport().getOpenParenthesisStack().isEmpty());
         
-        assertEquals(0, ((NullEdit) probNet.getPNESupport().getUndoManager().editToBeUndone()).getNumEdit());
+        assertEquals(0, ((NullEdit) probNet.getPNESupport().getUndoManager().nextEditToUndo()).getNumEdit());
     }
     
     @Test
@@ -177,7 +177,7 @@ public class ParenthesisAnidationTest {
         probNet.getPNESupport().closeParenthesis();
         numEdit++;
         probNet.getPNESupport().undoAndDelete();
-        assertEquals(0, ((NullEdit) probNet.getPNESupport().getUndoManager().editToBeUndone()).getNumEdit());
+        assertEquals(0, ((NullEdit) probNet.getPNESupport().getUndoManager().nextEditToUndo()).getNumEdit());
         assertTrue(probNet.getPNESupport().getOpenParenthesisStack().isEmpty());
     }
     
@@ -209,7 +209,7 @@ public class ParenthesisAnidationTest {
         
         assertEquals(1, probNet.getPNESupport().getOpenParenthesisStack().size());
         
-        assertSame(NullEdit.class, probNet.getPNESupport().getUndoManager().editToBeUndone().getClass());
+        assertSame(NullEdit.class, probNet.getPNESupport().getUndoManager().nextEditToUndo().getClass());
         
         // ( NE NE
         probNet.getPNESupport().undo();
@@ -217,7 +217,7 @@ public class ParenthesisAnidationTest {
         
         assertEquals(1, probNet.getPNESupport().getOpenParenthesisStack().size());
         
-        assertSame(NullEdit.class, probNet.getPNESupport().getUndoManager().editToBeUndone().getClass());
+        assertSame(NullEdit.class, probNet.getPNESupport().getUndoManager().nextEditToUndo().getClass());
         
         numNullEdit = doNullEdit(numNullEdit);
         
@@ -227,30 +227,30 @@ public class ParenthesisAnidationTest {
         // ( NE NE ( NE )
         
         assertEquals(1, probNet.getPNESupport().getOpenParenthesisStack().size());
-        assertSame(CloseParenthesisEdit.class, probNet.getPNESupport().getUndoManager().editToBeUndone().getClass());
+        assertSame(CloseParenthesisEdit.class, probNet.getPNESupport().getUndoManager().nextEditToUndo().getClass());
         
         numNullEdit = doNullEdit(numNullEdit);
         // ( NE NE ( NE ) NE
         
         assertEquals(1, probNet.getPNESupport().getOpenParenthesisStack().size());
-        assertSame(NullEdit.class, probNet.getPNESupport().getUndoManager().editToBeUndone().getClass());
+        assertSame(NullEdit.class, probNet.getPNESupport().getUndoManager().nextEditToUndo().getClass());
         probNet.getPNESupport().closeParenthesis();
         
         // ( NE NE ( NE ) NE )
         assertTrue(probNet.getPNESupport().getOpenParenthesisStack().isEmpty());
-        assertSame(CloseParenthesisEdit.class, probNet.getPNESupport().getUndoManager().editToBeUndone().getClass());
+        assertSame(CloseParenthesisEdit.class, probNet.getPNESupport().getUndoManager().nextEditToUndo().getClass());
         
         probNet.getPNESupport().undoAndDelete();
         
         // empty
         assertTrue(probNet.getPNESupport().getOpenParenthesisStack().isEmpty());
-        assertNull(probNet.getPNESupport().getUndoManager().editToBeUndone());
+        assertNull(probNet.getPNESupport().getUndoManager().nextEditToUndo());
         
     }
     
     private int doNullEdit(int numNullEdit) throws DoEditException {
         NullEdit edit = new NullEdit(probNet, numNullEdit);
-        probNet.getPNESupport().doEdit(edit);
+        edit.executeEdit();
         numNullEdit++;
         return numNullEdit;
     }

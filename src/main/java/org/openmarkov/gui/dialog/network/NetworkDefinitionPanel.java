@@ -203,7 +203,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
                 jComboBoxNetworkTypes.addActionListener(arg0 -> {
                     try {
                         networkTypeChanged();
-                    } catch (ConstraintViolatedException | DoEditException.CannotDoEditException e) {
+                    } catch (DoEditException e) {
                         throw new UnrecoverableException(e);
                     }
                 });
@@ -305,16 +305,16 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
         return true;
     }
     
-    @Override public void commentHasChanged() throws ConstraintViolatedException {
+    @Override public void commentHasChanged() throws DoEditException {
         // check if the comment is empty
         String comment = getCommentHTMLScrollPaneNetworkDefinition().isEmpty() ?
                 "" :
                 getCommentHTMLScrollPaneNetworkDefinition().getCommentText();
         NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit(probNet, comment, getShowComment());
-        networkCommentEdit.doEdit(probNet);
+        networkCommentEdit.executeEdit();
     }
     
-    private void networkTypeChanged() throws ConstraintViolatedException, DoEditException.CannotDoEditException {
+    private void networkTypeChanged() throws DoEditException {
         String itemSelected = (String) jComboBoxNetworkTypes.getSelectedItem();
         if (itemSelected == null) {
             return;
@@ -339,7 +339,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
          */
         ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit(probNet, selectedNetworkType);
         try {
-            changeNetworkType.doEdit(probNet);
+            changeNetworkType.executeEdit();
             parent.update(probNet);
             //parent.getNetworkAdvancedPanel().update(probNet); SUSTITUIDA POR 342
         } catch (ConstraintViolatedException | DoEditException.CannotDoEditException e) {
