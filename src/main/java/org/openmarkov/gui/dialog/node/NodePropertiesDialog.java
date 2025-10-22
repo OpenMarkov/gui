@@ -100,14 +100,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 	 * @param node object from where load the information.
 	 */
 	private void setFieldsFromProperties(Node node) {
-		// Elvira do not distinguish between DISCRETE and DISCRETIZED
-		// so here we will see if there are intervals in the states
-		if (Util.hasLimitBracketSymbols(node.getVariable().getStates()) && (
-				node.getVariable().getVariableType() == VariableType.FINITE_STATES
-		)) {
-			// really DISCRETIZED, so change the value of the VariableType
-			node.getVariable().setVariableType(VariableType.DISCRETIZED);
-		}
+
 		// set the nodeProperties variable in this dialog and panels
 		this.node = node;
 		// *******
