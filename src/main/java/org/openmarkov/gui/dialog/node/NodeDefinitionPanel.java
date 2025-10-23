@@ -918,8 +918,7 @@ public class NodeDefinitionPanel extends JPanel
      */
     public boolean checkName() {
         String name = jTextFieldNodeName.getText();
-        boolean result = name != null && !name.isEmpty() && !(!node.getName()
-                                                                   .equals(name) && Util.existNode(node.getProbNet(), name));
+        boolean result = name != null && !name.isEmpty() && !(!node.getBaseName().equals(name) && Util.existNode(node.getProbNet(), name));
         if (!result) {
             jTextFieldNodeName.requestFocus();
         }
