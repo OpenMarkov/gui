@@ -716,8 +716,8 @@ public class VisualOONetwork extends VisualNetwork {
         }
     }
     
-    @Override public void undoableEditHappened(PNUndoableEditEvent e) {
-        super.undoableEditHappened(e);
+    @Override public void afterEditHappens(PNUndoableEditEvent e) {
+        super.afterEditHappens(e);
     }
     
     @Override protected void clean() {

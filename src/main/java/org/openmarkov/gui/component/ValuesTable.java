@@ -670,7 +670,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
         System.out.println("    showingTPCvalues = " + isShowingTPCvalues());
     }
     
-    @Override public void undoableEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterEditHappens(PNUndoableEditEvent event) {
         PNEdit edit = event.getEdit();
         if (edit instanceof TablePotentialValueEdit) {
             tablePotentialValueEditHappened((TablePotentialValueEdit) edit);
@@ -739,7 +739,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
     /**
      *
      */
-    @Override public void undoEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
         if (event.getEdit() instanceof TablePotentialValueEdit edit) {
             TablePotential editPotential = edit.getPotential();
             if (!edit.getExactDistrPotential()) {

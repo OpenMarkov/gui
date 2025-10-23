@@ -91,7 +91,7 @@ import java.util.ListIterator;
         
     }
     
-    @Override public void undoableEditHappened(PNUndoableEditEvent arg0) {
+    @Override public void afterEditHappens(PNUndoableEditEvent arg0) {
         int priorityListPosition;
         PNEdit edit = arg0.getEdit();
         if (edit instanceof ICITablePotentialValueEdit) {
@@ -117,7 +117,7 @@ import java.util.ListIterator;
         }
     }
     
-    @Override public void undoEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
         int priorityListPosition;
         PNEdit edit = event.getEdit();
         if (edit instanceof ICITablePotentialValueEdit iciEdit) {

@@ -967,7 +967,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         
     }
     
-    @Override public void undoableEditHappened(PNUndoableEditEvent e) {
+    @Override public void afterEditHappens(PNUndoableEditEvent e) {
         constructVisualInfo();
         if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE)
             visualDecisionNodeRefresh();
@@ -1059,7 +1059,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         return visualNode;
     }
     
-    @Override public void undoEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
         constructVisualInfo();
         if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();

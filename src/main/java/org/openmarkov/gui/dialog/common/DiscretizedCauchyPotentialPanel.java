@@ -116,7 +116,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     }
     
     @Override
-    public void undoableEditHappened(PNUndoableEditEvent event) {
+    public void afterEditHappens(PNUndoableEditEvent event) {
         // Update new potential and potential panel
         if (event.getEdit() instanceof PotentialChangeEdit) {
             newPotential.setMedian(medianDummyNode.getPotentials().get(0));

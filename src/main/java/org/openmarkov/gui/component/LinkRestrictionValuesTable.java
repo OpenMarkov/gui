@@ -97,7 +97,7 @@ import java.util.ArrayList;
         }
     }
     
-    @Override public void undoableEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterEditHappens(PNUndoableEditEvent event) {
         PNEdit unEdit = event.getEdit();
         if (unEdit instanceof LinkRestrictionPotentialValueEdit) {
             if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit edit) {
@@ -106,7 +106,7 @@ import java.util.ArrayList;
         }
     }
     
-    @Override public void undoEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
         if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit edit) {
             super.getModel().setValueAt(edit.getNewValue(), edit.getRowPosition(), edit.getColumnPosition());
         }

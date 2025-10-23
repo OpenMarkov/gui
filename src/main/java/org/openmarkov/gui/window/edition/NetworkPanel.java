@@ -663,18 +663,18 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         editorPanel.setSelectedAllObjects(selected);
     }
     
-    @Override public void undoableEditHappened(PNUndoableEditEvent arg0) {
+    @Override public void afterEditHappens(PNUndoableEditEvent arg0) {
         if (arg0.getEdit().getClass() != OpenParenthesisEdit.class &&
                 arg0.getEdit().getClass() != CloseParenthesisEdit.class) {
             setModified(true);
         }
     }
     
-    @Override public void undoableEditWillHappen(PNUndoableEditEvent event) {
+    @Override public void beforeEditHappens(PNUndoableEditEvent event) {
         repaint();
     }
     
-    @Override public void undoEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
         setModified(((PNESupport) event.getSource()).getCanUndo());
         repaint();
     }

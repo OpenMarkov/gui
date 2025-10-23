@@ -166,7 +166,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
     /**
      * Updates the edited column
      */
-    @Override public void undoableEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterEditHappens(PNUndoableEditEvent event) {
         PNEdit edit = event.getEdit();
         if (edit instanceof AugmentedPotentialValueEdit) {
             augmentedPotentialValueEditHappened((AugmentedPotentialValueEdit) edit);
@@ -204,7 +204,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
     /**
      * UNCLEAR--&gt;Priority list
      */
-    @Override public void undoEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
         //if (event.getEdit () instanceof AugmentedPotentialValueEdit)
         AugmentedPotentialValueEdit edit = (AugmentedPotentialValueEdit) event.getEdit();
         Potential editPotential = edit.getPotential();

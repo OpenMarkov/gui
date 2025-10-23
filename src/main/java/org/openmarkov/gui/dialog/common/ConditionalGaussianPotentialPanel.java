@@ -122,7 +122,7 @@ public class ConditionalGaussianPotentialPanel
         // TODO update table with projected potential
     }
     
-    @Override public void undoableEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterEditHappens(PNUndoableEditEvent event) {
         // Update new potential and potential panel
         if (event.getEdit() instanceof PotentialChangeEdit) {
             newPotential.setMean(meanDummyNode.getPotentials().get(0));

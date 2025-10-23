@@ -926,7 +926,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
         setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
     }
     
-    @Override public void undoableEditHappened(PNUndoableEditEvent e) {
+    @Override public void afterEditHappens(PNUndoableEditEvent e) {
         ProbNet probNet = currentNetworkPanel.getProbNet();
         // update menu options and network agents when network type has been
         // modified
@@ -941,7 +941,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
          */
     }
     
-    @Override public void undoEditHappened(PNUndoableEditEvent event) {
+    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
         updateOptionsNetworkModified(((PNESupport) event.getSource()).getCanUndo(),
                                      ((PNESupport) event.getSource()).getCanRedo());
         /*

@@ -2466,7 +2466,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     @Override
-    public void undoEditHappened(PNUndoableEditEvent event) {
+    public void afterUndoingEdit(PNUndoableEditEvent event) {
         List<Finding> findings = preResolutionEvidence.getFindings();
         Set<Variable> findingVariables = findings.stream()
                                                  .map(Finding::getVariable)
@@ -2479,12 +2479,12 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             boolean isPreResolution = findingVariables.contains(nodeVariable);
             visualNode.setPreResolutionFinding(isPreResolution);
         }
-        
-        
+        adjustPanelDimension();
+        repaint();
     }
     
     @Override
-    public void undoableEditHappened(PNUndoableEditEvent e) {
+    public void afterEditHappens(PNUndoableEditEvent e) {
         for (Finding finding : preResolutionEvidence.getFindings()) {
             Variable variable = finding.getVariable();
             for (VisualNode visualNode : visualNetwork.getAllNodes()) {
@@ -2493,5 +2493,18 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 }
             }
         }
+        adjustPanelDimension();
+        repaint();
+    }
+    
+    @Override public void onEditFailed(PNUndoableEditEvent event, DoEditException exception) {
+        adjustPanelDimension();
+        repaint();
+    }
+    
+    @Override
+    public void onEditViolatesConstraints(PNUndoableEditEvent pnUndoableEditEvent, ConstraintViolatedException ex) {
+        adjustPanelDimension();
+        repaint();
     }
 }
