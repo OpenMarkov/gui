@@ -22,9 +22,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
-import org.openmarkov.gui.action.PasteEdit;
-import org.openmarkov.gui.action.RemoveLinkRestrictionEdit;
-import org.openmarkov.gui.action.RemoveSelectedEdit;
+import org.openmarkov.gui.action.*;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.action.base.linkEdits.InvertLinkAndUpdatePotentialsEdit;
 import org.openmarkov.gui.dialog.PropagationOptionsDialog;
@@ -42,7 +40,6 @@ import org.openmarkov.gui.graphic.*;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
-import org.openmarkov.gui.swingUtils.SwingUtils;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
@@ -1154,15 +1151,15 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void removeFinding() throws PreResolutionNodeInInferenceException, DoEditException {
         setPropagationActive(isAutomaticPropagation());
-        VisualNode node;
+        VisualNode visualNode;
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
         for (int i = 0; i < selectedNodes.size(); i++) {
-            node = selectedNodes.get(i);
-            Variable variable = node.getNode().getVariable();
+            visualNode = selectedNodes.get(i);
+            Variable variable = visualNode.getNode().getVariable();
             switch (networkPanel.getWorkingMode()) {
                 case EDITION -> {
-                    if (node.isPreResolutionFinding() && preResolutionEvidence.getFinding(variable) != null) {
-                        RemoveFindingEdit removeFindingEdit = new RemoveFindingEdit(node.getNode(), preResolutionEvidence, (VisualChanceNode) node, variable);
+                    if (visualNode.isPreResolutionFinding() && preResolutionEvidence.getFinding(variable) != null) {
+                        RemoveFindingEdit removeFindingEdit = new RemoveFindingEdit(visualNode, preResolutionEvidence, variable);
                         try {
                             removeFindingEdit.executeEdit();
                         } catch (ConstraintViolatedException e) {
@@ -1171,13 +1168,13 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                     }
                 }
                 case INFERENCE -> {
-                    if (node.isPreResolutionFinding()) {
-                        throw new PreResolutionNodeInInferenceException(node);
+                    if (visualNode.isPreResolutionFinding()) {
+                        throw new PreResolutionNodeInInferenceException(visualNode);
                     }
-                    if (node.isPostResolutionFinding()
+                    if (visualNode.isPostResolutionFinding()
                             && postResolutionEvidence.get(currentCase).getFinding(variable) != null) {
                         postResolutionEvidence.get(currentCase).removeFinding(variable);
-                        node.setPostResolutionFinding(false);
+                        visualNode.setPostResolutionFinding(false);
                     }
                 }
             }
@@ -1642,7 +1639,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             if (isInferenceMode) {
                 visualNode.setPostResolutionFinding(true);
             } else {
-                AddFindingEdit addFindingEdit = new AddFindingEdit(visualNode.getNode(), evidenceCase, previousFinding, finding, (VisualChanceNode) visualNode);
+                AddFindingEdit addFindingEdit = new AddFindingEdit(visualNode, evidenceCase, previousFinding, finding);
                 addFindingEdit.executeEdit();
             }
         }
