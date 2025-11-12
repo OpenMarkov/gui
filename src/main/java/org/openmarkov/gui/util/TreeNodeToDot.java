@@ -1,7 +1,7 @@
 package org.openmarkov.gui.util;
 
-import org.openmarkov.core.dt.DecisionTreeBranch;
-import org.openmarkov.core.dt.DecisionTreeNode;
+import org.openmarkov.core.decisiontree.DecisionTreeBranch;
+import org.openmarkov.core.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.model.network.NodeType;
 
 import javax.swing.*;

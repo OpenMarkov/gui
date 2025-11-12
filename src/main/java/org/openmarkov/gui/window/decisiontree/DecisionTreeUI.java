@@ -5,7 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.window.dt;
+package org.openmarkov.gui.window.decisiontree;
 
 import javax.swing.plaf.basic.BasicTreeUI;
 import java.awt.event.MouseAdapter;
@@ -27,7 +27,7 @@ public class DecisionTreeUI extends BasicTreeUI {
 		}
 
 		@Override public void mousePressed(MouseEvent e) {
-            double zoom = ((DecisionTree) tree).getZoom();
+            double zoom = ((VisualDecisionTree) tree).getZoom();
 			int newX = (int) (e.getX() / zoom);
 			int newY = (int) (e.getY() / zoom);
 			e.translatePoint(newX - e.getX(), newY - e.getY());

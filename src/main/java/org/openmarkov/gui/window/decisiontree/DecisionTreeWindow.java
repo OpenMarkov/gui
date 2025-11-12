@@ -5,7 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.window.dt;
+package org.openmarkov.gui.window.decisiontree;
 
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.ProbNet;

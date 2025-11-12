@@ -5,9 +5,9 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.window.dt;
+package org.openmarkov.gui.window.decisiontree;
 
-import org.openmarkov.core.dt.DecisionTreeNode;
+import org.openmarkov.core.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.gui.dialog.treeadd.IconFactory;

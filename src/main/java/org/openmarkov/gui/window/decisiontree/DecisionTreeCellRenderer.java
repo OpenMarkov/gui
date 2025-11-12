@@ -5,7 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.window.dt;
+package org.openmarkov.gui.window.decisiontree;
 
 import javax.swing.*;
 import javax.swing.tree.TreeCellRenderer;

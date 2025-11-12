@@ -37,7 +37,7 @@ open module org.openmarkov.gui {
     exports org.openmarkov.gui.dialog.treeadd;
     exports org.openmarkov.gui.configuration;
     exports org.openmarkov.gui.window.mdi;
-    exports org.openmarkov.gui.window.dt;
+    exports org.openmarkov.gui.window.decisiontree;
     exports org.openmarkov.gui.dialog;
     exports org.openmarkov.gui.exception;
     

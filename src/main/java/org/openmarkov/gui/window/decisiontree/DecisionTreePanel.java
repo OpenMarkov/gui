@@ -5,11 +5,11 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.window.dt;
+package org.openmarkov.gui.window.decisiontree;
 
-import org.openmarkov.core.dt.DecisionTreeBranch;
-import org.openmarkov.core.dt.DecisionTreeElement;
-import org.openmarkov.core.dt.DecisionTreeNode;
+import org.openmarkov.core.decisiontree.DecisionTreeBranch;
+import org.openmarkov.core.decisiontree.DecisionTreeElement;
+import org.openmarkov.core.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.MulticriteriaOptions.Type;
 import org.openmarkov.core.model.network.CEP;
@@ -41,9 +41,9 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 
 @SuppressWarnings("serial") public class DecisionTreePanel extends JScrollPane {
-    protected DecisionTree jTree;
+    protected VisualDecisionTree jTree;
     
-    public DecisionTree getJTree() {
+    public VisualDecisionTree getJTree() {
         return jTree;
     }
     
@@ -63,7 +63,7 @@ import java.io.IOException;
     
     private void updateVisualInformation(DecisionTreeElement root) {
         DecisionTreeModel model = new DecisionTreeModel(root);
-        jTree = new DecisionTree(model);
+        jTree = new VisualDecisionTree(model);
         jTree.addMouseListener(listener);
         for (int i = 0; i < jTree.getRowCount(); i++) {
             jTree.expandRow(i);
@@ -318,7 +318,7 @@ import java.io.IOException;
     
     
     public DecisionTreeNode getDecisionTreeNode() {
-        DecisionTree dt = getJTree();
+        VisualDecisionTree dt = getJTree();
         TreeModel model = dt.getModel();
         DecisionTreeBranchPanel branchPanel = (DecisionTreeBranchPanel) model.getRoot();
         DecisionTreeBranch root = branchPanel.getTreeBranch();

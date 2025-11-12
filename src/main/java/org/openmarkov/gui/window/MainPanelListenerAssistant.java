@@ -44,7 +44,7 @@ import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.util.PropertyNames;
 import org.openmarkov.gui.util.Utilities;
-import org.openmarkov.gui.window.dt.DecisionTreeWindow;
+import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.gui.window.mdi.MDIListener;

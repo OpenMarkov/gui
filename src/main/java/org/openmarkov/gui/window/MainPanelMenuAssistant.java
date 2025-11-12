@@ -36,7 +36,7 @@ import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.gui.oopn.OOSelectionListener;
 import org.openmarkov.gui.oopn.VisualInstance;
 import org.openmarkov.gui.oopn.VisualReferenceLink;
-import org.openmarkov.gui.window.dt.DecisionTreeWindow;
+import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.edition.Zoom;
 

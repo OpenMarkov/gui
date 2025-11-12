@@ -4,7 +4,7 @@
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
  */
-package org.openmarkov.gui.window.dt;
+package org.openmarkov.gui.window.decisiontree;
 
 import org.openmarkov.gui.window.edition.Zoom;
 
@@ -12,14 +12,14 @@ import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 
-@SuppressWarnings("serial") public class DecisionTree extends JTree{
+@SuppressWarnings("serial") public class VisualDecisionTree extends JTree{
 
 	/**
 	 * Object to convert coordinates of the screen to the panel and vice versa.
 	 */
 	protected Zoom zoom;
 
-	public DecisionTree(DecisionTreeModel model) {
+	public VisualDecisionTree(DecisionTreeModel model) {
 		super(model);
 		getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		// Allows JTree nodes to accept CR/LF codes

@@ -5,15 +5,16 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.window.dt;
-
-import org.openmarkov.core.dt.DecisionTreeBranch;
-import org.openmarkov.core.dt.DecisionTreeElement;
-import org.openmarkov.core.dt.DecisionTreeNode;
+package org.openmarkov.gui.window.decisiontree;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+
+import org.openmarkov.core.decisiontree.DecisionTreeBranch;
+import org.openmarkov.core.decisiontree.DecisionTreeElement;
+import org.openmarkov.core.decisiontree.DecisionTreeNode;
+
 import java.util.HashSet;
 import java.util.Set;
 
