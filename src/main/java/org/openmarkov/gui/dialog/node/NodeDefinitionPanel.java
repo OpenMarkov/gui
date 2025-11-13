@@ -857,10 +857,8 @@ public class NodeDefinitionPanel extends JPanel
         }
         NodeNameEdit nodeNameEdit = new NodeNameEdit(node, this.jTextFieldNodeName.getText());
         try {
-            ProbNet probNet = node.getProbNet();
             nodeNameEdit.executeEdit();
-        } // TODO Auto-generated catch block
-        // e1.printStackTrace();
+        }
         catch (DoEditException e1) {
             throw new UnrecoverableException(e1);
         }
@@ -942,7 +940,7 @@ public class NodeDefinitionPanel extends JPanel
                 "" :
                 getCommentHTMLScrollPaneNodeDefinitionComment().getCommentText();
         
-        NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(node, comment, "DefinitionComment");
+        NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(node, comment);
             ProbNet probNet = node.getProbNet();
         nodeCommentEdit.executeEdit();
     }
