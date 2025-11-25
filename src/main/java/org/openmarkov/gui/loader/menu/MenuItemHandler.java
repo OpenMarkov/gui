@@ -12,8 +12,8 @@ package org.openmarkov.gui.loader.menu;
  * Interface
  */
 
-import org.openmarkov.core.annotation.ImplementationRequirements;
-import org.openmarkov.core.annotation.RequiredConstructor;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

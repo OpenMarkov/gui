@@ -187,41 +187,42 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         GroupLayout groupLayout = new GroupLayout(this);
         groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
                 groupLayout.createSequentialGroup().addContainerGap().addGroup(
-                        groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup()
-                                                                                               .addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-                                                                                                                    .addGroup(
-                                                                                                                            groupLayout.createSequentialGroup()
-                                                                                                                                       .addComponent(getJLabelNodeVariableType())
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getJComboBoxNodeVariableType(),
-                                                                                                                                                     GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-                                                                                                                                       .addGap(18)
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getJPanelMonotonyUpDown(), GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                     212, GroupLayout.PREFERRED_SIZE))
-                                                                                                                    .addGroup(
-                                                                                                                            groupLayout.createSequentialGroup()
-                                                                                                                                       .addComponent(getJLabelPrecision())
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(/*
-                                                                                                                                                * getJFormattedTextFieldPrecision
-                                                                                                                                                * (
-                                                                                                                                                * )
-                                                                                                                                                */getJComboBoxPrecision(), GroupLayout.PREFERRED_SIZE, 49,
-                                                                                                                                                  GroupLayout.PREFERRED_SIZE)
-                                                                                                                                       .addGap(18)
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getJLabelUnit())
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getJTextFieldUnit(), GroupLayout.PREFERRED_SIZE, 75,
-                                                                                                                                                     GroupLayout.PREFERRED_SIZE))
-                                                                                                                    .addGroup(
-                                                                                                                            groupLayout.createSequentialGroup()
-                                                                                                                                       .addComponent(getJLabelValuesPanel(), GroupLayout.DEFAULT_SIZE, 49,
-                                                                                                                                                     Short.MAX_VALUE)
-                                                                                                                                       .addComponent(getDiscretizedStatesPanel(), GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                     627, Short.MAX_VALUE)))
-                                                                                               .addContainerGap()))));
+                        groupLayout.createParallelGroup(Alignment.LEADING)
+                                   .addGroup(groupLayout.createSequentialGroup()
+                                                        .addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+                                                                             .addGroup(
+                                                                                     groupLayout.createSequentialGroup()
+                                                                                                .addComponent(getJLabelNodeVariableType())
+                                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(getJComboBoxNodeVariableType(),
+                                                                                                              GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+                                                                                                .addGap(18)
+                                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(getJPanelMonotonyUpDown(), GroupLayout.PREFERRED_SIZE,
+                                                                                                              212, GroupLayout.PREFERRED_SIZE))
+                                                                             .addGroup(
+                                                                                     groupLayout.createSequentialGroup()
+                                                                                                .addComponent(getJLabelPrecision())
+                                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(/*
+                                                                                                         * getJFormattedTextFieldPrecision
+                                                                                                         * (
+                                                                                                         * )
+                                                                                                         */getJComboBoxPrecision(), GroupLayout.PREFERRED_SIZE, 49,
+                                                                                                           GroupLayout.PREFERRED_SIZE)
+                                                                                                .addGap(18)
+                                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(getJLabelUnit())
+                                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(getJTextFieldUnit(), GroupLayout.PREFERRED_SIZE, 75,
+                                                                                                              GroupLayout.PREFERRED_SIZE))
+                                                                             .addGroup(
+                                                                                     groupLayout.createSequentialGroup()
+                                                                                                .addComponent(getJLabelValuesPanel(), GroupLayout.DEFAULT_SIZE, 49,
+                                                                                                              Short.MAX_VALUE)
+                                                                                                .addComponent(getDiscretizedStatesPanel(), GroupLayout.DEFAULT_SIZE,
+                                                                                                              627, Short.MAX_VALUE)))
+                                                        .addContainerGap()))));
         groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
                 groupLayout.createSequentialGroup()
                            .addContainerGap()

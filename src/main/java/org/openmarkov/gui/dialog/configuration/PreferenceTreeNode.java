@@ -10,11 +10,8 @@
 
 package org.openmarkov.gui.dialog.configuration;
 
-import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.core.localize.StringDatabase;
 
-import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import java.util.ArrayList;

@@ -6,13 +6,12 @@
  */
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.annotation.ImplementationRequirements;
-import org.openmarkov.core.annotation.RequiredConstructor;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 
 import javax.swing.*;
 import java.util.ArrayList;

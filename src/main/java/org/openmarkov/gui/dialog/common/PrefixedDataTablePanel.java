@@ -10,7 +10,7 @@ package org.openmarkov.gui.dialog.common;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
-import org.openmarkov.core.annotation.ToCheck;
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -122,7 +122,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
             for (int i = 0; i < newData.length; i++) {
                 String name = (String) newData[i][1];
                 for (PNEdit edit : edits) {
-                    if (((AddLinkEdit) edit).getNode1().getName().equals(name)) {
+                    if (((AddLinkEdit) edit).getNodeFrom().getName().equals(name)) {
                         edit.executeEdit();
                         tableModel.insertRow(newIndex + i, newData[i]);
                         edits.remove(edit);

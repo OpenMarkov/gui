@@ -10,7 +10,7 @@ package org.openmarkov.gui.window.edition;
 import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.core.*;
-import org.openmarkov.core.annotation.ToCheck;
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.*;
 
 import org.openmarkov.core.inference.InferenceAlgorithm;

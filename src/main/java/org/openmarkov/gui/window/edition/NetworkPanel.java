@@ -675,7 +675,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     }
     
     @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
-        setModified(((PNESupport) event.getSource()).getCanUndo());
+        setModified(event.getEdit().getProbNet().getPNESupport().getCanUndo());
         repaint();
     }
     

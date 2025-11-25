@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 /**
  * This class implements a panel to encapsulate a Discretize Table with the
@@ -801,7 +802,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      * Invoked when the button 'add' is pressed.
      */
     @Override protected void actionPerformedAddValue() throws DoEditException {
-        String option = (String) JOptionPane
+        /*
+        //The newStateName was requested in a dialog, now it takes a default value.
+        String newStateName = (String) JOptionPane
                 .showInputDialog(this,
                                  stringDatabase.getString("AddState.Text"),
                                  stringDatabase.getString("AddState.Text"),
@@ -809,25 +812,35 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                                  null, //no predefined values
                                  node.getVariable()
                                      .getNewValidName()); // preset value in field
-        if (option == null) {
+        if (newStateName == null) {
             return;
         }
+         */
+        var currentStateNames = Arrays.stream(node.getVariable().getStates())
+                                      .map(State::getName)
+                                      .collect(Collectors.toSet());
+        String newStateName = null;
+        for (int i = 1; newStateName == null || currentStateNames.contains(newStateName); i++) {
+            newStateName = stringDatabase.getString("AddState.DefaultValue") + " " + i;
+        }
         Variable variable = node.getVariable();
-        int newIndex = 0;
-        int newStateIndex = variable.getNumStates();
-        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.ADD, newStateIndex, option);
+        int newIndex = Math.max(this.valuesTable.getSelectedRow(), 0);
+        // The states shown in the table are reversed from the real order, so the index inside the variable is not 'i',
+        // but 'length-1'.
+        int newStateIndex = node.getVariable().getNumStates() - newIndex;
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.ADD, newStateIndex, newStateName);
         ProbNet probNet = node.getProbNet();
         nodeStateEdit.executeEdit();
         // @ 2014/11/18. Issue 145.
         // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
         // Propagation of the domain in related variables in temporal models
-        propagateNodeStateEditRelatedVariables(StateAction.ADD, newIndex, option);
+        propagateNodeStateEditRelatedVariables(StateAction.ADD, newIndex, newStateName);
         //
         if (variable.getVariableType() == VariableType.DISCRETIZED) {
             PartitionedInterval newPartitionedInterval = variable.getPartitionedInterval();
             setDataFromPartitionedInterval(newPartitionedInterval, variable.getStates());
         } else {
-            getTableModel().insertRow(newIndex, new Object[]{getKeyString(newIndex), option});
+            getTableModel().insertRow(newIndex, new Object[]{getKeyString(newIndex), newStateName});
         }
         valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
         

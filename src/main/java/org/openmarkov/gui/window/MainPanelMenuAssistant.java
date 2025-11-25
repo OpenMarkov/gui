@@ -40,7 +40,6 @@ import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.edition.Zoom;
 
-import javax.swing.event.UndoableEditEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -942,8 +941,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
     }
     
     @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
-        updateOptionsNetworkModified(((PNESupport) event.getSource()).getCanUndo(),
-                                     ((PNESupport) event.getSource()).getCanRedo());
+        updateOptionsNetworkModified(event.getEdit().getProbNet().getPNESupport().getCanUndo(),
+                                     event.getEdit().getProbNet().getPNESupport().getCanRedo());
         /*
          * updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo
          * (), ((PNESupport)event.getSource()).getCanRedo());

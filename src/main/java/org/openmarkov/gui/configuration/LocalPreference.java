@@ -3,8 +3,7 @@ package org.openmarkov.gui.configuration;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.annotation.ToCheck;
-import org.openmarkov.gui.dialog.ExceptionDialog;
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 
 import java.io.*;
 import java.util.Base64;
@@ -104,7 +103,7 @@ public final class LocalPreference<T extends Serializable> {
         if (this.value == null) {
             String nodeValue = this.node.get(this.key, null);
             if (nodeValue == null) {
-                this.value = Objects.requireNonNull(this.defaultValue.get());
+                this.set(this.defaultValue.get());
                 return this.value;
             }
             byte[] data = Base64.getDecoder().decode(nodeValue);
@@ -112,7 +111,7 @@ public final class LocalPreference<T extends Serializable> {
                 T value = this.valueClass != null ? this.valueClass.cast(in.readObject()) : (T) in.readObject();
                 this.value = Objects.requireNonNull(value);
             } catch (IOException | ClassNotFoundException | ClassCastException e) {
-                this.value = Objects.requireNonNull(this.defaultValue.get());
+                this.set(this.defaultValue.get());
             }
         }
         return this.value;

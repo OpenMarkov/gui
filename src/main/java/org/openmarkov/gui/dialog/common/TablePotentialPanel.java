@@ -398,7 +398,7 @@ import java.util.List;
         // Adding the parent
         // The first variable is always the node variable
         for (int i = 1; i < variables.size(); i++) {
-            values[i - 1][0] = variables.get(i);
+            values[i - 1][0] = variables.get(i).getName();
         }
         return values;
     }

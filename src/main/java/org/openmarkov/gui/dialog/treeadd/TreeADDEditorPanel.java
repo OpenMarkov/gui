@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
-import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
