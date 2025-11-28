@@ -103,7 +103,6 @@ import java.awt.*;
     @Override public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong,
             BinomialPotentialWrongValueException.NValuesIsWrong, DoEditException {
         boolean result = super.saveChanges();
-        ProbNet probNet = node.getProbNet();
         Potential oldPotential = node.getPotentials().get(0);
         Potential newPotential = null;
         if (node.getVariable().getVariableType() == VariableType.NUMERIC) {
@@ -119,7 +118,7 @@ import java.awt.*;
                                                  NValue, thetaValue);
         }
         newPotential.setComment(oldPotential.getComment());
-        PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
+        PotentialChangeEdit edit = new PotentialChangeEdit(node, oldPotential, newPotential);
         edit.executeEdit();
         return result;
     }

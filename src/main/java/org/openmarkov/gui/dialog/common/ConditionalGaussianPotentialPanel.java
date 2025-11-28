@@ -35,6 +35,7 @@ public class ConditionalGaussianPotentialPanel
     private ProbNet probNet;
     private Node meanDummyNode = null;
     private Node varianceDummyNode = null;
+    private Node node;
     private Potential oldPotential;
     private ConditionalGaussianPotential newPotential;
     
@@ -42,6 +43,7 @@ public class ConditionalGaussianPotentialPanel
         super();
         initComponents();
         this.probNet = node.getProbNet();
+        this.node = node;
         this.oldPotential = node.getPotentials().get(0);
         this.newPotential = (ConditionalGaussianPotential) oldPotential.copy();
         setData(node);
@@ -112,7 +114,7 @@ public class ConditionalGaussianPotentialPanel
     public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong, DoEditException {
         boolean result = super.saveChanges();
         newPotential.setComment(oldPotential.getComment());
-        PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
+        PotentialChangeEdit edit = new PotentialChangeEdit(node, oldPotential, newPotential);
         edit.executeEdit();
         return result;
     }

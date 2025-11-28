@@ -128,7 +128,7 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 	 * and updates the probNet
 	 */
     @Override public void doEdit() throws DoEditException {
-        PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
+        PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(node, oldPotential, newPotential);
         changePotentialEdit.executeEdit();
 	}
     

@@ -204,7 +204,7 @@ import java.util.Map;
         WeibullHazardPotential newPotential = new WeibullHazardPotential(oldPotential.getVariables(),
                                                                          oldPotential.getPotentialRole(), covariates, coefficients, uncertaintyMatrix, matrixType);
         newPotential.setTimeVariable(timeVariable);
-        PNEdit edit = new PotentialChangeEdit(node.getProbNet(), oldPotential, newPotential);
+        PNEdit edit = new PotentialChangeEdit(node, oldPotential, newPotential);
         ProbNet probNet = node.getProbNet();
         edit.executeEdit();
         return true;

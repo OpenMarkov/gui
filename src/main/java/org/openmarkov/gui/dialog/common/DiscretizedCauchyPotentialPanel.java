@@ -105,7 +105,8 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong, DoEditException {
         boolean result = super.saveChanges();
         newPotential.setComment(oldPotential.getComment());
-        PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
+        Node node = probNet.getNode(newPotential.getVariable(0));
+        PotentialChangeEdit edit = new PotentialChangeEdit(node, oldPotential, newPotential);
         edit.executeEdit();
         return result;
     }

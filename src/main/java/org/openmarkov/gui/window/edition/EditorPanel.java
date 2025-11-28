@@ -31,10 +31,7 @@ import org.openmarkov.gui.dialog.inference.temporalevolution.TemporalEvolutionDi
 import org.openmarkov.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
-import org.openmarkov.gui.dialog.node.AddFindingDialog;
-import org.openmarkov.gui.dialog.node.CommonNodePropertiesDialog;
-import org.openmarkov.gui.dialog.node.NodePropertiesDialog;
-import org.openmarkov.gui.dialog.node.PotentialEditDialog;
+import org.openmarkov.gui.dialog.node.*;
 import org.openmarkov.gui.exception.*;
 import org.openmarkov.gui.graphic.*;
 import org.openmarkov.core.localize.StringDatabase;
@@ -929,41 +926,30 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * This method imposes a policy in a decision node.
      */
-    public void imposePolicyInNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    public void imposePolicyInNode()
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         VisualNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
             visualNode = selectedNode.get(0);
-            if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
-                Node node = visualNode.getNode();
-                // TODO manage other kind of policy types from the interface
-                node.setPolicyType(PolicyType.OPTIMAL);
-                List<Variable> variables = new ArrayList<Variable>();
-                // it is added first conditioned variable
-                variables.add(node.getVariable());
-                /*
-                List<Node> nodes = node.getProbNet ().getNodes ();
-                for (Node possibleParent : nodes)
-                {
-                    if (node.isParent (possibleParent))
-                    {
-                        variables.add (possibleParent.getVariable ());
-                    }
-                }
-                */
-                for (Node parent : node.getParents()) {
-                    variables.add(parent.getVariable());
-                }
-                UniformPotential policy = new UniformPotential(variables, PotentialRole.POLICY);
-                List<Potential> policies = new ArrayList<Potential>();
-                policies.add(policy);
-                node.setPotentials(policies);
-                
-                if (!requestImposePolicyValues(Utilities.getOwner(this), visualNode)) {
-                    // if user cancels policy imposition then no potential is
-                    // restored to the node
-                    cancelAction();
-                }
+            Node node = visualNode.getNode();
+            // TODO manage other kind of policy types from the interface
+            node.setPolicyType(PolicyType.OPTIMAL);
+            List<Variable> variables = new ArrayList<Variable>();
+            // it is added first conditioned variable
+            variables.add(node.getVariable());
+            for (Node parent : node.getParents()) {
+                variables.add(parent.getVariable());
+            }
+            UniformPotential policy = new UniformPotential(variables, PotentialRole.POLICY);
+            List<Potential> policies = new ArrayList<Potential>();
+            policies.add(policy);
+            node.setPotentials(policies);
+
+            if (!requestImposePolicyValues(Utilities.getOwner(this), visualNode)) {
+                // if user cancels policy imposition then no potential is
+                // restored to the node
+                cancelAction();
             }
         }
         setSelectedAllNodes(false);
@@ -1017,7 +1003,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     private static boolean requestImposePolicyValues(Window owner, VisualNode visualNode) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
-        PotentialEditDialog imposePolicyDialog = new PotentialEditDialog(owner, visualNode, false);
+        ImposePolicyDialog imposePolicyDialog = new ImposePolicyDialog(owner, visualNode);
         imposePolicyDialog.setTitle("ImposePolicydialog.Title.Label");
         return (imposePolicyDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
     }
@@ -1142,7 +1128,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     private boolean requestAddFindingValues(Window owner, VisualNode node, Finding finding) {
-        addFindingDialog = new AddFindingDialog(owner, node, finding, networkPanel, this);
+        addFindingDialog = new AddFindingDialog(owner, node, finding, this);
         return (addFindingDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
     }
     

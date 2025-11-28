@@ -99,8 +99,7 @@ import java.util.List;
         FunctionPotential newPotential = (FunctionPotential) this.potential.copy();
         newPotential.setFunction(function);
         PotentialChangeEdit potentialChangeEdit
-                = new PotentialChangeEdit(node.getProbNet(), this.potential, newPotential);
-        ProbNet probNet = node.getProbNet();
+                = new PotentialChangeEdit(node, this.potential, newPotential);
         potentialChangeEdit.executeEdit();
         return true;
     }

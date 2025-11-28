@@ -162,8 +162,7 @@ import java.awt.event.ActionListener;
         } else {
             newPotential.setCholeskyDecomposition(uncertaintyMatrix);
         }
-        PotentialChangeEdit potentialChangeEdit = new PotentialChangeEdit(node.getProbNet(), this.potential, newPotential);
-        ProbNet probNet = node.getProbNet();
+        PotentialChangeEdit potentialChangeEdit = new PotentialChangeEdit(node, this.potential, newPotential);
         potentialChangeEdit.executeEdit();
         return true;
     }

@@ -12,17 +12,13 @@ import org.openmarkov.core.action.core.SetPotentialVariablesEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
+import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
 import org.openmarkov.gui.dialog.common.*;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 import org.openmarkov.gui.exception.NotEnoughtMemoryException;
-import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualNode;
 
 import javax.swing.*;
@@ -120,14 +116,14 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     
     private Potential lastPotential;
     
-    private Boolean hasPolicy;
-    
+
     /**
      * Creates the dialog.
      */
     public PotentialEditDialog(Window owner, Node node, boolean newElement, boolean readOnly) {
         super(owner);
         this.node = node;
+        this.lastPotential = node.getPotential();
         this.readOnly = readOnly;
         node.getProbNet().getPNESupport().setWithUndo(true);
         node.getProbNet().getPNESupport().openParenthesis();
@@ -158,11 +154,32 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     public PotentialEditDialog(Window owner, Node node, boolean newElement) {
         this(owner, node, newElement, false);
     }
-    
-    public PotentialEditDialog(Window owner, VisualNode visualNode, boolean newElement) {
-        this(owner, visualNode.getNode(), newElement, false);
+
+    public  PotentialEditDialog (Window owner, VisualNode visualNode){
+        super(owner);
         this.visualNode = visualNode;
-        
+        this.node = visualNode.getNode();
+        node.getProbNet().getPNESupport().setWithUndo(true);
+        node.getProbNet().getPNESupport().openParenthesis();
+        initialize();
+        List<Potential> potentials = node.getPotentials();
+        if (!potentials.isEmpty() && potentials.get(0).getComment() != null && !potentials.get(0).getComment()
+                .isEmpty()) {
+            commentPane.setCommentHTMLTextPaneText(potentials.get(0).getComment());
+        }
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        Rectangle bounds = owner.getBounds();
+        int width = screenSize.width / 2;
+        int height = screenSize.height / 2;
+        // center point of the owner window
+        int x = bounds.x / 2 - width / 2;
+        int y = bounds.y / 2 - height / 2;
+        this.setBounds(x, y, width, height);
+        setLocationRelativeTo(null);
+        setMinimumSize(new Dimension(width, height / 2));
+        setResizable(true);
+        pack();
     }
     
     /**
@@ -245,21 +262,19 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             }
             System.out.println(tableColumns);
             // Show small uniform potentials as table potentials. Saves clicks
-            if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
-                SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Table");
-                
-                setPotentialEdit.setInitialChange();
+            /*if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
+
+                Potential newPotential = stringToPotential("Table");
+                node.setPotentialConsistently(newPotential);
                 
             }
             // Show small uniform potentials as 'Exact' potentials. Saves clicks
             if (node.getNodeType() == NodeType.UTILITY && currentPotentialType.equals("Uniform") && tableColumns <= 128) {
-                
-                SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Uniform");
-                
-                setPotentialEdit.setInitialChange();
-                
-                
-            }
+
+                Potential newPotential = stringToPotential("Exact");
+                node.setPotentialConsistently(newPotential);
+
+            }*/
             
             
             potentialTypeComboBox.setSelectedItem(currentPotentialType);
@@ -304,12 +319,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                 potentialPanel = PotentialPanelManager.getInstance()
                                                       .getPotentialPanel(potentialName, potentialFamily, node);
 
-           
-            /*
-            potentialPanel = PotentialPanelManager.getInstance ().getPotentialPanel (potentialName,
-                                                                                     potentialFamily,
-                                                                                     node);
-            */
+
             potentialPanel.setReadOnly(readOnly);
             potentialPanel.suscribePanelResizeEventListener(this);
         }
@@ -325,7 +335,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * @return An integer indicating the button clicked by the user when closing
      * this dialog
      */
-    public int requestValues() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    public int requestValues() throws
+            IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther,
+            ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         // Shows the potentials' options table
         if (node.getNodeType() == NodeType.DECISION && node.getPolicyType() == PolicyType.OPTIMAL && readOnly) {
             setEnabledDecisionOptions(true);
@@ -575,13 +587,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     
     protected void potentialTypeChanged() {
         String potentialType = (String) potentialTypeComboBox.getSelectedItem();
-        lastPotential = node.getPotentials().get(0);
-        if (node.getNodeType() == NodeType.DECISION)
-            hasPolicy = ((VisualDecisionNode) visualNode).isHasPolicy();
         if (!previouslySelectedPotentialType.equals(potentialType)) {
-            SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, potentialType, lastPotential, hasPolicy, (VisualDecisionNode) visualNode);
-            setPotentialEdit.setPotential();
-            
+
+            Potential newPotential = stringToPotential(potentialType);
+            node.setPotentialConsistently(newPotential);
+
             updatePotentialPanel();
             previouslySelectedPotentialType = potentialType;
             optionPreviouslySelected = potentialTypeComboBox.getSelectedIndex();
@@ -615,19 +625,15 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             node.getPotentials().get(0).setComment(comment);
         }
         SetPotentialEdit setPotentialEdit;
-        if (node.getNodeType() == NodeType.DECISION) {
-            setPotentialEdit = new SetPotentialEdit(node, lastPotential, node.getPotential(), hasPolicy, (VisualDecisionNode) visualNode);
-        } else {
-            setPotentialEdit = new SetPotentialEdit(node, lastPotential, node.getPotential());
-        }
-        ProbNet probNet = node.getProbNet();
+        setPotentialEdit = new SetPotentialEdit(node, lastPotential, node.getPotential());
         setPotentialEdit.executeEdit();
-        node.finalizePotentialEdition();
         node.getProbNet().getPNESupport().closeParenthesis();
         return true;
     }
     
     @Override protected void doCancelClickBeforeHide() {
+        if(lastPotential != null)
+            node.setPotentialConsistently(lastPotential);
         getPotentialPanel().close();
         node.getProbNet().getPNESupport().closeParenthesis();
     }
@@ -762,6 +768,39 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         }
         // Finally, the value of enable is returned
         return enable;
+    }
+
+    protected JComboBox<String> getPotentialTypeComboBox(){
+        return potentialTypeComboBox;
+    }
+    protected void setPotentialTypeComboBox(JComboBox<String> potentialTypeComboBox){
+        this.potentialTypeComboBox = potentialTypeComboBox;
+    }
+
+    protected PotentialManager getPotentialManager(){
+        return potentialManager;
+    }
+
+    protected Node getNode(){
+        return node;
+    }
+
+    protected Potential stringToPotential(String potentialType){
+        lastPotential = node.getPotentials().get(0);
+        Potential newPotential;
+
+        PotentialManager relationTypeManager = new PotentialManager();
+
+        assert potentialType != null;
+        if (potentialType.equals(PotentialManager.getPotentialName(CycleLengthShift.class))) {
+            newPotential = relationTypeManager
+                    .getByName(potentialType, lastPotential.getVariables(), lastPotential.getPotentialRole(), node.getProbNet().getCycleLength());
+        } else {
+            newPotential = relationTypeManager.getByName(potentialType, lastPotential.getVariables(), lastPotential.getPotentialRole());
+        }
+
+        return newPotential;
+
     }
     
 }

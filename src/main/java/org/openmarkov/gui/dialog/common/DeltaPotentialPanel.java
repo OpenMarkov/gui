@@ -134,7 +134,6 @@ import java.awt.*;
     @Override
     public boolean saveChanges() throws DoEditException, BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong {
         boolean result = super.saveChanges();
-        ProbNet probNet = node.getProbNet();
         Potential oldPotential = node.getPreviousPotential();
         Potential newPotential = null;
         if (node.getVariable().getVariableType() != VariableType.FINITE_STATES) {

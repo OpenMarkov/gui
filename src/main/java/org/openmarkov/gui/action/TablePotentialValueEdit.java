@@ -216,11 +216,11 @@ import java.util.List;
                     }
                 }
             }
-            changePotentialEdit = new PotentialChangeEdit(probNet, oldTablePotential, tablePotential);
+            changePotentialEdit = new PotentialChangeEdit(node, oldTablePotential, tablePotential);
         } else {
             newTable[potentialSelected] = newValue;
             tablePotential.getValues()[potentialSelected] = newValue;
-            changePotentialEdit = new PotentialChangeEdit(probNet, oldExactDistrPotential, exactDistrPotential);
+            changePotentialEdit = new PotentialChangeEdit(node, oldExactDistrPotential, exactDistrPotential);
         }
         
         changePotentialEdit.executeEdit();

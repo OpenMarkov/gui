@@ -46,8 +46,7 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     
     private Finding finding;
     
-    private NetworkPanel networkPanel;
-    
+
     private Finding newFinding;
     private Finding previousFinding;
     
@@ -58,11 +57,10 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog {
      * @param visualNode the node to which this dialog is associated.
      * @param finding    the assigned finding
      */
-    public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding, NetworkPanel networkPanel, EditorPanel editorPanel) {
+    public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding, EditorPanel editorPanel) {
         super(owner);
         this.visualNode = visualNode;
         this.finding = finding;
-        this.networkPanel = networkPanel;
         this.editorPanel = editorPanel;
         initialize();
         setMinimumSize(new Dimension(260, getHeight()));
