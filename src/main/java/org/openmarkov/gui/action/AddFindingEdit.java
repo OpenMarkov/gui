@@ -26,7 +26,7 @@ public class AddFindingEdit extends PNEdit {
     }
     
     @Override
-    public void doEdit() throws DoEditException.CannotDoEditException {
+    protected void doEdit() throws DoEditException.CannotDoEditException {
         try {
             evidenceCase.addFinding(finding);
             visualNode.setPreResolutionFinding(true);

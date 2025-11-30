@@ -72,8 +72,8 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 		this.newValue = newValue;
 		this.isLower = isLower;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 
 		switch (stateAction) {
 		case ADD:

@@ -12,14 +12,11 @@ import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.oopn.Instance.ParameterArity;
-import org.openmarkov.core.oopn.action.MarkAsInputEdit;
 import org.openmarkov.gui.util.MovedNodeInfo;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
@@ -1218,26 +1215,6 @@ public class VisualNetwork implements PNUndoableEditListener {
         this.workingMode = workingMode;
     }
     
-    //TODO OOPN start
-    public void markSelectedAsInput() throws DoEditException {
-        for (VisualNode visualNode : getSelectedNodes()) {
-            MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualNode.getNode()
-                                                                                      .isInput(), visualNode.getNode());
-            markAsInputEdit.executeEdit();
-        }
-    }
-    
-    public void editClass() {
-        // TODO Auto-generated method stub
-    }
-    
-    public void setParameterArity(ParameterArity arity) throws DoEditException {
-        // TODO Auto-generated method stub
-    }
-    
-    public void editInstanceName() throws DoEditException {
-        // TODO Auto-generated method stub
-    }
     //TODO OOPN end
     
     public void selectElement(VisualElement selectedElement) {

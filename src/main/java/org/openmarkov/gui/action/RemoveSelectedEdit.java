@@ -11,14 +11,9 @@ import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.CRemoveNodeEdit;
 import org.openmarkov.core.action.base.CompoundPNEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
-import org.openmarkov.core.oopn.action.RemoveInstanceEdit;
-import org.openmarkov.core.oopn.action.RemoveReferenceLinkEdit;
 import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.gui.oopn.VisualInstance;
-import org.openmarkov.gui.oopn.VisualOONetwork;
-import org.openmarkov.gui.oopn.VisualReferenceLink;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +26,8 @@ import java.util.List;
  */ public class RemoveSelectedEdit extends CompoundPNEdit {
 	private List<VisualNode> nodesToRemove;
 	private List<VisualLink> linksToRemove;
-	// TODO OOPN start
-	private List<VisualInstance> instancesToRemove;
-	private List<VisualReferenceLink> referenceLinksToRemove;
-
-	// TODO OOPN end
+    
+    // TODO OOPN end
 
 	/**
 	 * Constructor for RemoveSelectedEdit.
@@ -45,12 +37,6 @@ import java.util.List;
 	public RemoveSelectedEdit(VisualNetwork visualNetwork) {
 		super(visualNetwork.getNetwork());
 		this.nodesToRemove = visualNetwork.getSelectedNodes();
-		// TODO OOPN start
-		if (visualNetwork instanceof VisualOONetwork) {
-			this.instancesToRemove = ((VisualOONetwork) visualNetwork).getSelectedInstances();
-			this.referenceLinksToRemove = ((VisualOONetwork) visualNetwork).getSelectedReferenceLinks();
-		}
-		// TODO OOPN end
 		this.linksToRemove = union(visualNetwork.getSelectedLinks(), visualNetwork.getLinksOfNodes(this.nodesToRemove));
 	}
     
@@ -64,18 +50,6 @@ import java.util.List;
 		for (VisualNode node : nodesToRemove) {
 			edits.add(new CRemoveNodeEdit(probNet, node.getNode()));
 		}
-		// TODO OOPN start
-		if (instancesToRemove != null) {
-			for (VisualInstance instance : instancesToRemove) {
-				edits.add(new RemoveInstanceEdit(getProbNet(), instance.getName()));
-			}
-		}
-		if (referenceLinksToRemove != null) {
-			for (VisualReferenceLink visualLink : referenceLinksToRemove) {
-				edits.add(new RemoveReferenceLinkEdit(getProbNet(), visualLink.getReferenceLink()));
-			}
-		}
-		// TODO OOPN end
 		return edits;
 	}
 

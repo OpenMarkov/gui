@@ -13,7 +13,7 @@ public class ImposePolicyEdit extends PNEdit {
     }
 
     @Override
-    public void doEdit() throws DoEditException {
+    protected void doEdit() throws DoEditException {
 
     }
 

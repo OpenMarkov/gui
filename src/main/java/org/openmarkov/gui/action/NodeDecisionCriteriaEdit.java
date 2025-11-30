@@ -22,8 +22,8 @@ import org.openmarkov.core.model.network.Node;
 		this.currentDecisionCriteria = node.getVariable().getDecisionCriterion();
 		this.newDecisionCriteria = decisionCriteria;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		node.getVariable().setDecisionCriterion(newDecisionCriteria);
 	}
     

@@ -35,7 +35,7 @@ import java.util.stream.IntStream;
         edits = new ArrayList<>();
     }
     
-    @Override public void doEdit() throws DoEditException {
+    @Override protected void doEdit() throws DoEditException {
         newVariables = new HashMap<>();
         edits = new ArrayList<>();
         // Gather new node creation edits
@@ -64,7 +64,7 @@ import java.util.stream.IntStream;
         }
         
         PNEdit finalizer = new PNEdit(this.probNet) {
-            @Override public void doEdit() {
+            @Override protected void doEdit() {
                 // Apply node generation edits
                 ArrayList<Node> pastedNodes = new ArrayList<>();
                 //Apply link creation edits

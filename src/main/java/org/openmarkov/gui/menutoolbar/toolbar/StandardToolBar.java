@@ -370,7 +370,6 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
             case ActionCommands.ZOOM_IN -> zoomInButton;
             case ActionCommands.ZOOM_OUT -> zoomOutButton;
             case ActionCommands.ZOOM_OTHER -> zoomComboBox;
-            case ActionCommands.CHANGE_WORKING_MODE -> workingModeButton;
             case ActionCommands.DECISION_TREE -> decisionTreeButton;
             case ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC -> costEffectivenessButton;
             case ActionCommands.SENSITIVITY_ANALYSIS -> sensAnalysisButton;

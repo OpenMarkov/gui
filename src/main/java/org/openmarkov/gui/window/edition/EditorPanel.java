@@ -21,7 +21,6 @@ import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
-import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.gui.action.*;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.action.base.linkEdits.InvertLinkAndUpdatePotentialsEdit;
@@ -38,6 +37,7 @@ import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.util.Utilities;
+import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
@@ -791,7 +791,14 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     private static boolean requestNodePropertiesToUser2(Window owner, Node node, boolean newNode) {
         NodePropertiesDialog nodePropertiesDialog = new CommonNodePropertiesDialog(owner, node, newNode);
-        return (nodePropertiesDialog.requestProperties() == OkCancelHorizontalDialog.OK_BUTTON);
+        if (owner instanceof MainGUI gui) {
+            gui.freeze();
+        }
+        boolean result = nodePropertiesDialog.requestProperties() == OkCancelHorizontalDialog.OK_BUTTON;
+        if (owner instanceof MainGUI gui) {
+            gui.unfreeze();
+        }
+        return result;
     }
     
     private boolean requestPotentialValues(Window owner, Node node, boolean newNode, boolean readOnly) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
@@ -2315,24 +2322,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             editionMode = editionModeManager.getDefaultEditionMode();
             setCursor(editionModeManager.getDefaultCursor());
         }
-    }
-    
-    // TODO OOPN start
-    public void markSelectedAsInput() throws DoEditException {
-        visualNetwork.markSelectedAsInput();
-        repaint();
-    }
-    
-    public void editClass() {
-        visualNetwork.editClass();
-    }
-    
-    public void setParameterArity(ParameterArity arity) throws DoEditException {
-        visualNetwork.setParameterArity(arity);
-    }
-    
-    public void editInstanceName() throws DoEditException {
-        visualNetwork.editInstanceName();
     }
     
     // TODO OOPN end

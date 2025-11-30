@@ -9,7 +9,6 @@ package org.openmarkov.gui.window;
 
 import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.core.ChangeNetworkTypeEdit;
-import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.UnreacheableException;
@@ -23,19 +22,12 @@ import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MIDType;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.core.oopn.OOPNet;
-import org.openmarkov.gui.graphic.VisualDecisionNode;
-import org.openmarkov.gui.graphic.VisualLink;
-import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.gui.graphic.VisualUtilityNode;
+import org.openmarkov.gui.graphic.*;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
-import org.openmarkov.gui.oopn.OOSelectionListener;
-import org.openmarkov.gui.oopn.VisualInstance;
-import org.openmarkov.gui.oopn.VisualReferenceLink;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.edition.Zoom;
@@ -49,7 +41,7 @@ import java.util.List;
  * @author jmendoza
  * @version 1.2.1 - cmyago - 20/10/2022; 09/11/2022 - disabling "Add Finding" for temporal nodes which are not the first in the temporal sequence and implementing "Temporal evolution by criterion"
  */
-public class MainPanelMenuAssistant extends MenuAssistant implements OOSelectionListener, PNUndoableEditListener {
+public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableEditListener, SelectionListener {
     /**
      * Composed action command that contains all the save and close actions
      * (except save).
@@ -63,11 +55,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
      */
     public static final ActionCommands[] EDITING_ACTION_COMMANDS = {ActionCommands.OBJECT_SELECTION,
             ActionCommands.CHANCE_CREATION, ActionCommands.DECISION_CREATION, ActionCommands.UTILITY_CREATION,
-            ActionCommands.LINK_CREATION, /*
-                                                                            * //TODO
-                                                                            * OOPN
-                                                                            */
-            ActionCommands.INSTANCE_CREATION};
+            ActionCommands.LINK_CREATION};
     /**
      * Composed action command that contains inference actions.
      */
@@ -423,9 +411,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
                        networkPanel.getProbNet().getPNESupport().getCanRedo());
         // updateUndoRedo(networkPanel.getUndoManager());
         mainPanel.setToolBarPanel(networkPanel.getWorkingMode());
-        // OOPN start
-        setOptionEnabled(ActionCommands.INSTANCE_CREATION, networkPanel.getProbNet() instanceof OOPNet);
-        // OOPN end
         
         checkInferenceOptions();
     }
@@ -732,180 +717,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
     }
     
     // TODO OOPN start
-    
-    /**
-     * This method activates o desactivates some options depending on the
-     * numbers of nodes or links selected or the expanded state of the specific
-     * nodes selected
-     *
-     * @param selectedNodes          list of selected nodes.
-     * @param selectedLinks          list of selected links.
-     * @param selectedInstances      list of selected instances.
-     * @param selectedReferenceLinks list of selected reference links
-     */
-    @Override public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks,
-                                          List<VisualInstance> selectedInstances, List<VisualReferenceLink> selectedReferenceLinks) {
-        boolean canCut = false;
-        boolean canCopy = false;
-        boolean canRemove = false;
-        boolean canNodeProperties = false;
-        boolean canNodeTable = false;
-        boolean canLinkProperties = false;
-        boolean canExpand = false;
-        boolean canContract = false;
-        boolean canAddFinding = false;
-        boolean canRemoveFinding = false;
-        boolean canLog = false;
-        boolean canImposePolicy = false;
-        boolean canEditPolicy = false;
-        boolean canRemovePolicy = false;
-        boolean canShowExpectedUtility = false;
-        boolean canShowOptimalPolicy = false;
-        boolean canTemporalEvolution = false;
-        boolean canCreateNextSliceNode = false;
-        NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
-        if (currentNetworkPanel != null) {
-            workingMode = currentNetworkPanel.getWorkingMode();
-        }
-        if (!selectedInstances.isEmpty()) {
-            canCopy = true;
-            if (workingMode == NetworkPanel.WorkingMode.EDITION) {
-                canRemove = true;
-                canCut = true;
-            }
-            boolean isInstanceInput = true;
-            for (VisualInstance instance : selectedInstances) {
-                isInstanceInput &= instance.isInput();
-            }
-            setOptionSelected(ActionCommands.MARK_AS_INPUT, isInstanceInput);
-        }
-        if (!selectedNodes.isEmpty()) {
-            canCopy = true;
-            if (workingMode == NetworkPanel.WorkingMode.EDITION) {
-                canRemove = true;
-                canCut = true;
-            }
-            if (selectedLinks.isEmpty()) {
-                // if we are in Inference Mode, options about expansion and
-                // contraction must be activated
-                if (workingMode == NetworkPanel.WorkingMode.INFERENCE) {
-                    VisualNode visualNode;
-                    for (int i = 0; i < selectedNodes.size(); i++) {
-                        visualNode = selectedNodes.get(i);
-                        // if at least one selected node is expanded,
-                        // 'contract node(s)' option must be active
-                        if (visualNode.isExpanded()) {
-                            canContract = true;
-                        }
-                        // if at least one selected node is contracted,
-                        // 'expand node(s)' option must be active
-                        if (!(visualNode.isExpanded())) {
-                            canExpand = true;
-                        }
-                    }
-                }
-                // if at least one selected node has a post-Resolution finding,
-                // 'remove finding' option must be active
-                VisualNode vNode;
-                for (int i = 0; i < selectedNodes.size(); i++) {
-                    vNode = selectedNodes.get(i);
-                    canRemoveFinding = switch (workingMode) {
-                        case EDITION -> vNode.isPreResolutionFinding();
-                        case INFERENCE -> vNode.isPostResolutionFinding();
-                    };
-                }
-                if (selectedNodes.size() == 1) {
-                    canNodeProperties = true;
-                    VisualNode visualNode = selectedNodes.get(0);
-                    if (visualNode.getNode().getVariable().isTemporal()) {
-                        canLog = true;
-                        canTemporalEvolution = true;
-                        canCreateNextSliceNode = !visualNode.getNode().getProbNet()
-                                                            .containsShiftedVariable(visualNode.getNode()
-                                                                                               .getVariable(), 1);
-                    }
-                    switch (visualNode.getNode().getNodeType()) {
-                        case CHANCE, UTILITY -> {
-                            canNodeTable = true;
-                        }
-                        case DECISION -> {
-                            switch (workingMode) {
-                                case EDITION -> {
-                                    if (((VisualDecisionNode) visualNode).isHasPolicy()) {
-                                        canEditPolicy = true;
-                                        canRemovePolicy = true;
-                                    } else {
-                                        canImposePolicy = true;
-                                    }
-                                }
-                                case INFERENCE -> {
-                                    canShowExpectedUtility = true;
-                                    canShowOptimalPolicy = true;
-                                }
-                            }
-                        }
-                        case SV_SUM, SV_PRODUCT -> {
-                        }
-                    }
-                    String label = StringDatabase.getUniqueInstance().getString(
-                            switch (visualNode.getNode().getNodeType()) {
-                                case CHANCE, DECISION -> switch (workingMode) {
-                                    case EDITION -> "Edit.NodePotential.Label";
-                                    case INFERENCE -> "Edit.ViewNodePotential.Label";
-                                };
-                                case UTILITY -> switch (workingMode) {
-                                    case EDITION -> "Edit.Utility.Label";
-                                    case INFERENCE -> "Edit.ViewUtility.Label";
-                                };
-                                case SV_SUM, SV_PRODUCT -> null;
-                            });
-                    setText(ActionCommands.EDIT_POTENTIAL.getCommandName(), label);
-                    canAddFinding = !visualNode.hasAnyFinding() || (workingMode == NetworkPanel.WorkingMode.EDITION)
-                            || (
-                            workingMode == NetworkPanel.WorkingMode.INFERENCE && visualNode.isPostResolutionFinding()
-                    );
-                    canAddFinding &= !(visualNode instanceof VisualUtilityNode);
-                    boolean addOrChange =
-                            (workingMode == NetworkPanel.WorkingMode.EDITION && !visualNode.isPreResolutionFinding())
-                                    || (
-                                    workingMode == NetworkPanel.WorkingMode.INFERENCE && !visualNode
-                                            .isPostResolutionFinding()
-                            );
-                    setText(ActionCommands.NODE_ADD_FINDING.getCommandName(), StringDatabase.getUniqueInstance()
-                                                                                            .getString((addOrChange) ? "Inference.AddFinding.Label" : "Inference.ChangeFinding.Label"));
-                }
-            }
-        } else {
-            if (!selectedLinks.isEmpty() || !selectedReferenceLinks.isEmpty()) {
-                if (workingMode == NetworkPanel.WorkingMode.EDITION) {
-                    canRemove = true;
-                }
-                if (selectedLinks.size() == 1) {
-                    if (workingMode == NetworkPanel.WorkingMode.EDITION) {
-                        canLinkProperties = true;
-                    }
-                }
-            }
-        }
-        setOptionEnabled(ActionCommands.CLIPBOARD_CUT, canCut);
-        setOptionEnabled(ActionCommands.CLIPBOARD_COPY, canCopy);
-        setOptionEnabled(ActionCommands.OBJECT_REMOVAL, canRemove);
-        setOptionEnabled(ActionCommands.NODE_PROPERTIES, canNodeProperties);
-        setOptionEnabled(ActionCommands.EDIT_POTENTIAL, canNodeTable);
-        setOptionEnabled(ActionCommands.LINK_PROPERTIES, canLinkProperties);
-        setOptionEnabled(ActionCommands.NODE_EXPANSION, canExpand);
-        setOptionEnabled(ActionCommands.NODE_CONTRACTION, canContract);
-        setOptionEnabled(ActionCommands.NODE_ADD_FINDING, canAddFinding);
-        setOptionEnabled(ActionCommands.NODE_REMOVE_FINDING, canRemoveFinding);
-        setOptionEnabled(ActionCommands.LOG, canLog);
-        setOptionEnabled(ActionCommands.DECISION_IMPOSE_POLICY, canImposePolicy);
-        setOptionEnabled(ActionCommands.DECISION_EDIT_POLICY, canEditPolicy);
-        setOptionEnabled(ActionCommands.DECISION_REMOVE_POLICY, canRemovePolicy);
-        setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, canShowExpectedUtility);
-        setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);
-        setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, canTemporalEvolution);
-        setOptionEnabled(ActionCommands.NEXT_SLICE_NODE, canCreateNextSliceNode);
-    }
     
     // TODO OOPN end
     

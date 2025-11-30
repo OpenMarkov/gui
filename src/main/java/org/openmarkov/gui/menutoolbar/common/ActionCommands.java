@@ -88,29 +88,12 @@ public enum ActionCommands {
     UTILITY_CREATION("Edit.Mode.Utility"),
     /** Action invoked when the user wants to activate the link creation option. */
     LINK_CREATION("Edit.Mode.Link"),
-    /** Action invoked when the user wants to mark an object as input parameter. */
-    INSTANCE_CREATION("Edit.Mode.Instance"),
-    /** Action invoked when the user wants to mark an object as input parameter. */
-    MARK_AS_INPUT("MarkAsInput"),
-    
-    //TODO OOPN start
-    /** Action invoked when the user wants to edit the class of the instance selected */
-    EDIT_CLASS("EditClass"),
-    /** Action invoked when the user wants to edit the name of an instance */
-    EDIT_INSTANCE_NAME("EditInstanceName"),
-    /** Action invoked when the user wants to set the arity of the selected parameter */
-    SET_ARITY("Arity"),
-    /** Action invoked when the user wants to set the arity of the selected parameter to one */
-    SET_ARITY_ONE("Arity.One"),
-    /** Action invoked when the user wants to set the arity of the selected parameter to one */
-    SET_ARITY_MANY("Arity.Many"),
     /**
      * Action invoked when the user wants to change the working mode by
      * pressing the button in the standard tool bar
      * (switching from Edition to Inference mode or vice versa).
      */
     CHANGE_WORKING_MODE("ChangeWorkingMode"),
-    //TODO OOPN end
     /**
      * Action invoked when the user wants to change to inference mode
      * using the option in the Edit menu

@@ -11,8 +11,6 @@ import org.openmarkov.core.action.base.*;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.oopn.Instance.ParameterArity;
-import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 import org.openmarkov.gui.exception.PreResolutionNodeInInferenceException;
 import org.openmarkov.gui.exception.ThereIsNoNextEvidenceCaseException;
@@ -23,12 +21,10 @@ import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
-import org.openmarkov.gui.oopn.VisualOONetwork;
 import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 
-import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import java.awt.*;
@@ -143,13 +139,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      */
     public EditorPanel getEditorPanel() {
         if (editorPanel == null) {
-            // TODO OOPN start
-            if (probNet instanceof OOPNet) {
-                editorPanel = new EditorPanel(this, new VisualOONetwork((OOPNet) probNet));
-            } else {
-                // TODO OOPN end
-                editorPanel = new EditorPanel(this, new VisualNetwork(probNet));
-            }
+            editorPanel = new EditorPanel(this, new VisualNetwork(probNet));
         }
         return editorPanel;
     }
@@ -286,11 +276,6 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     public void setWorkingMode(WorkingMode workingMode) {
         this.workingMode = workingMode;
         editorPanel.setWorkingMode(workingMode);
-        // TODO OOPN
-        if (probNet instanceof OOPNet) {
-            editorPanel.setProbNet(
-                    (workingMode == WorkingMode.INFERENCE) ? ((OOPNet) probNet).getPlainProbNet() : probNet);
-        }
     }
     
     /**
@@ -821,31 +806,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         // TODO Auto-generated method stub
     }
     
-    // TODO OOPN start
-    public void markSelectedAsInput() throws DoEditException {
-        editorPanel.markSelectedAsInput();
-    }
-    
-    public void editClass() {
-        editorPanel.editClass();
-    }
-    
-    public void editInstanceName() throws DoEditException {
-        editorPanel.editInstanceName();
-    }
     // TODO OOPN end
-    
-    public void setParameterArity(ParameterArity arity) throws DoEditException {
-        editorPanel.setParameterArity(arity);
-    }
-    
-    public void showPlainNetwork() {
-        if (probNet instanceof OOPNet) {
-            probNet = ((OOPNet) probNet).getPlainProbNet();
-            editorPanel.setProbNet(probNet);
-            repaint();
-        }
-    }
     
     public void createNextSliceNode() throws DoEditException {
         editorPanel.createNextSliceNode();

@@ -62,7 +62,7 @@ public class MoveNodeEdit extends PNEdit {
         }
     }
     
-    @Override public void doEdit() {
+    @Override protected void doEdit() {
         Node node;
         int i = 0;
         for (String name : namesNode) {

@@ -23,7 +23,7 @@ public class NullEdit extends PNEdit {
         this.numEdit = numEdit;
     }
     
-    @Override public void doEdit() {
+    @Override protected void doEdit() {
     }
     
     @Override public void undo() {

@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.PropertyNames;
@@ -242,9 +241,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
         if (newNetwork) {
             // TODO Create probNet instance
             NetworkType networkType = getNetworkDefinitionPanel().getNetworkType();
-            probNet = (getNetworkDefinitionPanel().isObjectOriented()) ?
-                    new OOPNet(networkType) :
-                    new ProbNet(networkType);
+            probNet = new ProbNet(networkType);
             probNet.setComment(getNetworkDefinitionPanel().getNetworkComment());
             probNet.setShowCommentWhenOpening(getNetworkDefinitionPanel().getShowComment());
             probNet.setDefaultStates(getNetworkVariablesPanel().getDefaultStates());

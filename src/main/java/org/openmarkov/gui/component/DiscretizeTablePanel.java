@@ -843,7 +843,17 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             getTableModel().insertRow(newIndex, new Object[]{getKeyString(newIndex), newStateName});
         }
         valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+        valuesTable.requestFocus();
         
+        
+        /*
+        int column = 1;
+        int row = newIndex;
+        valuesTable.editCellAt(row, column);
+        var editing = (JTextField) valuesTable.getEditorComponent();
+        editing.selectAll();
+        editing.requestFocus();
+        */
     }
     
     /**

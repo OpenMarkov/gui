@@ -189,7 +189,7 @@ import java.util.List;
         
     }
     
-    @Override public void doEdit() throws DoEditException {
+    @Override protected void doEdit() throws DoEditException {
         if (priorityList.isEmpty()) {
             //User is editing a new column of potentials //node
             priorityList = getPriorityListInitialization();

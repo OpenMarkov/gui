@@ -25,8 +25,8 @@ import org.openmarkov.core.model.network.StringWithProperties;
 		this.currentAgent = node.getVariable().getAgent();
 		this.newAgent = agent;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		node.getVariable().setAgent(newAgent);
 	}
     

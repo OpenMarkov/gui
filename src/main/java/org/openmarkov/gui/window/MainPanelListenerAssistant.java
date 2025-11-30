@@ -20,7 +20,6 @@ import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
-import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.gui.configuration.LastOpenFiles;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
@@ -532,35 +531,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 }
             }
             case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> this.getCurrentNetworkPanel().enableRevelationArc();
-            case ActionCommands.MARK_AS_INPUT -> {
-                try {
-                    this.getCurrentNetworkPanel().markSelectedAsInput();
-                } catch (DoEditException ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.EDIT_CLASS -> this.getCurrentNetworkPanel().editClass();
-            case ActionCommands.EDIT_INSTANCE_NAME -> {
-                try {
-                    this.getCurrentNetworkPanel().editInstanceName();
-                } catch (DoEditException ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.SET_ARITY_ONE -> {
-                try {
-                    this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
-                } catch (DoEditException ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.SET_ARITY_MANY -> {
-                try {
-                    this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
-                } catch (DoEditException ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
             case ActionCommands.DECISION_TREE -> {
                 try {
                     showDecisionTree(this.getCurrentNetworkPanel().getProbNet());
@@ -611,8 +581,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                  ActionCommands.LEARNING,
                  ActionCommands.VIEW_TOOLBARS, ActionCommands.LINK_PROPERTIES, ActionCommands.TEST,
                  ActionCommands.TREE_SAVE_GRAPHVIZ, ActionCommands.TREE_SHOW_CEP, ActionCommands.TREE_OPEN_NETWORK,
-                 ActionCommands.TREE_EXPAND_ALL, ActionCommands.TREE_EXPAND_NEXT, ActionCommands.SET_ARITY,
-                 ActionCommands.INSTANCE_CREATION, ActionCommands.LINK_CREATION, ActionCommands.UTILITY_CREATION,
+                 ActionCommands.TREE_EXPAND_ALL, ActionCommands.TREE_EXPAND_NEXT,
+                 ActionCommands.LINK_CREATION, ActionCommands.UTILITY_CREATION,
                  ActionCommands.DECISION_CREATION, ActionCommands.LOG, ActionCommands.CHANGE_ACTIVE_CLASS,
                  ActionCommands.ZOOM_PREFIX, ActionCommands.NODES, ActionCommands.ZOOM,
                  ActionCommands.OBJECT_SELECTION -> {

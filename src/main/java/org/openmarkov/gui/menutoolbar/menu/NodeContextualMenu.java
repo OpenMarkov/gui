@@ -13,7 +13,6 @@ import org.openmarkov.gui.validator.AbsorbParentsValidator;
 import org.openmarkov.gui.validator.AbsorbNodeValidator;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
-import org.openmarkov.gui.localize.MenuLocalizer;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.gui.window.edition.EditorPanel;
@@ -96,12 +95,7 @@ public class NodeContextualMenu extends ContextualMenu {
 	 * Object that represents the item 'removeFinding'.
 	 */
 	private JMenuItem removeFindingMenuItem = null;
-	// TODO OOPN start
-	/**
-	 * Object that represents the item 'Mark as Input'.
-	 */
-	private JMenuItem inputMenuItem = null;
-	// TODO OOPN end
+
 	private JMenuItem logMenuItem;
 
 	/**
@@ -177,10 +171,6 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getTemporalEvolutionMenuItem());
 		// addSeparator();
 		// add(getLogMenuItem());
-		// TODO OOPN start
-		addSeparator();
-		add(getInputMenuItem());
-		// TODO OOPN start
 	}
 
 	/**
@@ -549,21 +539,7 @@ public class NodeContextualMenu extends ContextualMenu {
 	}
 
 	// TODO OOPN start
-
-	/**
-	 * This method initialises inputMenuItem.
-	 *
-	 * @return a new 'Input' menu item.
-	 */
-	private JMenuItem getInputMenuItem() {
-		if (inputMenuItem == null) {
-			inputMenuItem = new JCheckBoxMenuItem(MenuLocalizer.getLabel(MenuItemNames.EDIT_MARKASINPUT_MENUITEM));
-            inputMenuItem.setActionCommand(ActionCommands.MARK_AS_INPUT.getCommandName());
-			inputMenuItem.addActionListener(listener);
-		}
-		return inputMenuItem;
-	}
-	
+    
     /**
      * This method initialises AbsorbParentsMenuItem.
      *
@@ -605,9 +581,6 @@ public class NodeContextualMenu extends ContextualMenu {
             case ActionCommands.NODE_ADD_FINDING -> addFindingMenuItem;
             case ActionCommands.NODE_REMOVE_FINDING -> removeFindingMenuItem;
             case ActionCommands.LOG -> logMenuItem;
-            // TODO OOPN start
-            case ActionCommands.MARK_AS_INPUT -> inputMenuItem;
-            // TODO OOPN end
             case ActionCommands.TEMPORAL_EVOLUTION_ACTION -> temporalEvolutionMenuItem;
             case ActionCommands.NEXT_SLICE_NODE -> nextSliceNodeMenuItem;
             case null, default -> null;

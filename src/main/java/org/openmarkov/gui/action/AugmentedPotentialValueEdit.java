@@ -179,7 +179,7 @@ import java.util.List;
     /*
      *
      */
-    @Override public void doEdit() throws DoEditException {
+    @Override protected void doEdit() throws DoEditException {
         PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(node, oldPotential, newPotential);
         changePotentialEdit.executeEdit();
     }

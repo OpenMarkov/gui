@@ -51,8 +51,8 @@ import java.util.List;
 		this.dataTable = dataTable;
 		this.oldNodes = new ArrayList<Node>(probNet.getNodes());
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		//StringsWithProperties agents = probNet.getAgents();
 		List<StringWithProperties> agents = probNet.getAgents();
 		StringWithProperties agent = null;

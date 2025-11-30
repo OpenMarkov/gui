@@ -23,7 +23,7 @@ public class RemoveFindingEdit extends PNEdit {
         this.variable = variable;
     }
     
-    @Override public void doEdit() {
+    @Override protected void doEdit() {
         finding = evidenceCase.getFinding(variable);
         evidenceCase.removeFinding(variable);
         visualNode.setPreResolutionFinding(false);

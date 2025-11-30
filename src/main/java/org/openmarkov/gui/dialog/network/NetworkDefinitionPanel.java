@@ -13,7 +13,6 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
-import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.localize.StringDatabase;
@@ -57,10 +56,6 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
      * The Network Comment Scroll Panel box
      */
     private CommentHTMLScrollPane commentHTMLScrollPaneNetworkDefinition = null;
-    /**
-     * Checkbox to define Object Orientedness of Network
-     */
-    private JCheckBox jcheckBoxIsObjectOriented = null;
     /**
      * Checkbox to define Object Orientedness of Network
      */
@@ -132,8 +127,6 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
                                                                                                             GroupLayout.PREFERRED_SIZE)
                                                                                               .addContainerGap())))
                                    .addGroup(groupLayout.createParallelGroup()
-                                                        .addComponent(getCheckBoxIsObjectOriented(), GroupLayout.PREFERRED_SIZE, 180,
-                                                                      GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(getCheckBoxShowCommentOnOpening(), GroupLayout.PREFERRED_SIZE,
                                                                       280, GroupLayout.PREFERRED_SIZE)))));
         groupLayout.setVerticalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
@@ -149,7 +142,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
                                                             117, Short.MAX_VALUE)).addGroup(
                                    groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                               .addComponent(getCheckBoxShowCommentOnOpening()))
-                           .addComponent(getCheckBoxIsObjectOriented()).addComponent(getCheckBoxShowCommentOnOpening())
+                           .addComponent(getCheckBoxShowCommentOnOpening())
                            .addContainerGap(189, Short.MAX_VALUE)));
         setLayout(groupLayout);
     }
@@ -249,16 +242,6 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
             }
         }
         return commentHTMLScrollPaneNetworkDefinition;
-    }
-    
-    private JCheckBox getCheckBoxIsObjectOriented() {
-        if (jcheckBoxIsObjectOriented == null) {
-            jcheckBoxIsObjectOriented = new JCheckBox(
-                    stringDatabase.getString("NetworkDefinitionPanel.IsObjectOriented.Text"), false);
-            jcheckBoxIsObjectOriented.setSelected(probNet != null && probNet instanceof OOPNet);
-            jcheckBoxIsObjectOriented.setEnabled(newNetwork);
-        }
-        return jcheckBoxIsObjectOriented;
     }
     
     private JCheckBox getCheckBoxShowCommentOnOpening() {
@@ -363,10 +346,6 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
     
     public String getNetworkComment() {
         return getCommentHTMLScrollPaneNetworkDefinition().getCommentText();
-    }
-    
-    public boolean isObjectOriented() {
-        return jcheckBoxIsObjectOriented.isSelected();
     }
     
     public boolean getShowComment() {

@@ -11,6 +11,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
+import org.openmarkov.gui.component.FrameMirror;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.openmarkov.gui.dialog.SplashScreenLoader;
@@ -39,6 +40,8 @@ import java.lang.reflect.InvocationTargetException;
      */
     MainPanel mainPanel = null;
     
+    private final FrameMirror frameMirror;
+    
     /**
      * Launch the MainGUIInit runnable process
      */
@@ -48,7 +51,6 @@ import java.lang.reflect.InvocationTargetException;
          * Splash Screen panel
          */
         SplashScreenLoader splash = new SplashScreenLoader();
-        
         configureUI();
         splash.splashScreenInit();
         
@@ -69,8 +71,16 @@ import java.lang.reflect.InvocationTargetException;
         splash.getSplash().setProgress("Completed", 100);
         // loading the application
         splash.splashScreenDestroy();
+        this.frameMirror = new FrameMirror(this);
     }
     
+    public void freeze() {
+        this.frameMirror.freeze();
+    }
+    
+    public void unfreeze() {
+        this.frameMirror.unfreeze();
+    }
     
     public void oldMainGUI() {
         

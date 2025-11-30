@@ -12,8 +12,6 @@ import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
-import org.openmarkov.gui.oopn.InstanceContextualMenu;
-import org.openmarkov.gui.oopn.VisualInstance;
 import org.openmarkov.gui.window.edition.EditorPanel;
 
 import java.awt.event.ActionListener;
@@ -64,13 +62,8 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * Contextual menu that has the options of a link.
 	 */
 	private ContextualMenu linkContextualMenu = null;
-
-	/**
-	 * Contextual menu that has the options of an instance.
-	 */
-	private ContextualMenu instanceContextualMenu = null;
-
-	/**
+    
+    /**
 	 * Contextual menu that has the options of a node in a decision tree.
 	 */
 	private ContextualMenu treeContextualMenu = null;
@@ -150,26 +143,8 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 		menuAssistant.addMenu(linkContextualMenu);
 		return linkContextualMenu;
 	}
-
-	/**
-	 * This method initialises instanceContextualMenu.
-	 *
-	 * @param panel
-	 * @param selectedInstance
-	 * @return the instance contextual menu .
-	 */
-	// TODO OOPN start
-	private ContextualMenu getInstanceContextualMenu(VisualInstance selectedInstance, EditorPanel panel) {
-
-		if (instanceContextualMenu == null) {
-			instanceContextualMenu = new InstanceContextualMenu(listener);
-			instanceContextualMenu.setName("instanceContextualMenu");
-			menuAssistant.addMenu(instanceContextualMenu);
-		}
-		return instanceContextualMenu;
-	}
-
-	/**
+    
+    /**
 	 * This method initialises treeContextualMenu. A menu for the nodes of a decision tree.
 	 * @param enableShowCEP 
 	 *
@@ -244,10 +219,6 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 			contextualMenu = getNodeContextualMenu((VisualNode) selectedElement, panel);
 		} else if (VisualLink.class.isAssignableFrom(selectedElement.getClass())) {
 			contextualMenu = getLinkContextualMenu((VisualLink) selectedElement, panel);
-			// TODO OOPN start
-		} else if (VisualInstance.class.isAssignableFrom(selectedElement.getClass())) {
-			contextualMenu = getInstanceContextualMenu((VisualInstance) selectedElement, panel);
-			// TODO OOPN end
 		}
 		return contextualMenu;
 	}

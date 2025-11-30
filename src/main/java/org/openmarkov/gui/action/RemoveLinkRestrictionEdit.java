@@ -28,7 +28,7 @@ public class RemoveLinkRestrictionEdit extends PNEdit {
     }
 
     @Override
-    public void doEdit() {
+    protected void doEdit() {
         if (!links.isEmpty()) {
             Link<Node> link = links.get(0).getLink();
             link.setRestrictionsPotential(null);
