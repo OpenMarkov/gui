@@ -35,7 +35,7 @@ import java.util.List;
  * @version 1.1 28/05/2016 - cmyago - Eliminated the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
  * - adding the attribute getExactDistrPotential
  */
-@SuppressWarnings("serial") public class TablePotentialValueEdit extends PNEdit {
+@SuppressWarnings("serial") public class TablePotentialValueEdit extends PotentialChangeEdit {
     /**
      * The column of the table where is the potential
      */
@@ -116,15 +116,16 @@ import java.util.List;
      */
     public TablePotentialValueEdit(Node node, Double newValue, int row, int col, List<Integer> priorityList,
                                    Object[][] notEditablePositions) throws ThereIsNoPotentialsInNodeException {
-        super(node.getProbNet());
+        super(node, null, null);
         this.node = node;
         Potential potential = node.getFirstPotential();
-        this.setExactDistrPotential(potential instanceof ExactDistrPotential);
+        this.isExactDistrPotential = potential instanceof ExactDistrPotential;
         if (getExactDistrPotential()) {
             this.oldExactDistrPotential = (ExactDistrPotential) (potential);
             this.oldTablePotential = ((ExactDistrPotential) potential).getTablePotential();
-        } else
+        } else {
             this.oldTablePotential = (TablePotential) potential;
+        }
         this.row = row;
         this.col = col;
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
@@ -153,15 +154,10 @@ import java.util.List;
         // Get the potential index
         this.potentialSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, node);
         
-    }
-    
-    /**
-     * This method fills the new table of tablePotential with the new values calculated after the edition of a cell
-     * and updates the probNet
-     * In case the potential is ExactDistrPotential...
-     * Carmen Yago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
-     */
-    @Override public void doEdit() throws DoEditException {
+        ////////////////////////////////////////
+        
+        
+        
         PotentialChangeEdit changePotentialEdit;
         if (!getExactDistrPotential()) {
             if (priorityList.isEmpty()) {
@@ -216,14 +212,35 @@ import java.util.List;
                     }
                 }
             }
+            this.oldPotential = oldTablePotential;
+            this.newPotential = tablePotential;
             changePotentialEdit = new PotentialChangeEdit(node, oldTablePotential, tablePotential);
         } else {
             newTable[potentialSelected] = newValue;
             tablePotential.getValues()[potentialSelected] = newValue;
-            changePotentialEdit = new PotentialChangeEdit(node, oldExactDistrPotential, exactDistrPotential);
+            this.oldPotential = oldExactDistrPotential;
+            this.newPotential = exactDistrPotential;
         }
-        
-        changePotentialEdit.executeEdit();
+    }
+    
+    /***
+     * Checks if the position in the table of tablePotential corresponds to an editable cell if there is a priority list
+     * UNCLEAR --&gt; Have I to change the behaviour; depends on doEdit()
+     * @param position the position
+     * @return true if the cell is editable
+     * revised --&gt; not changed
+     */
+    private boolean isEditablePosition(int position) {
+        boolean editable = false;
+        int row = getRowPosition(position);
+        if (this.notEditablePostitions.length > row && this.notEditablePostitions[0].length > col) {
+            if (this.notEditablePostitions[row][col] == null) {
+                editable = true;
+            }
+        } else {
+            editable = true;
+        }
+        return editable;
     }
     
     /**
@@ -304,35 +321,13 @@ import java.util.List;
         return col;
     }
     
-    /***
-     * Checks if the position in the table of tablePotential corresponds to an editable cell if there is a priority list
-     * UNCLEAR --&gt; Have I to change the behaviour; depends on doEdit()
-     * @param position the position
-     * @return true if the cell is editable
-     * revised --&gt; not changed
-     */
-    private boolean isEditablePosition(int position) {
-        boolean editable = false;
-        int row = getRowPosition(position);
-        if (this.notEditablePostitions.length > row && this.notEditablePostitions[0].length > col) {
-            if (this.notEditablePostitions[row][col] == null) {
-                editable = true;
-            }
-        } else {
-            editable = true;
-        }
-        return editable;
-    }
+
     
     /**
      * @return true if tablePotential comes from a ExactDistrPotential
      */
     public boolean getExactDistrPotential() {
         return isExactDistrPotential;
-    }
-    
-    private void setExactDistrPotential(boolean isExactDistrPotential) {
-        this.isExactDistrPotential = isExactDistrPotential;
     }
     
 }

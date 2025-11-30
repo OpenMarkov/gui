@@ -626,8 +626,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         }
         SetPotentialEdit setPotentialEdit;
         setPotentialEdit = new SetPotentialEdit(node, lastPotential, node.getPotential());
-        setPotentialEdit.executeEdit();
         node.getProbNet().getPNESupport().closeParenthesis();
+        node.getProbNet().getPNESupport().undo();
+        setPotentialEdit.executeEdit();
         return true;
     }
     
