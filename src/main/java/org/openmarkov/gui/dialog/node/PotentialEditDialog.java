@@ -67,7 +67,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * Relation Type Manager
      */
-    private PotentialManager potentialManager;
+    protected PotentialManager potentialManager;
     /**
      * Panel of the graphic editor
      */
@@ -161,7 +161,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         this.node = visualNode.getNode();
         node.getProbNet().getPNESupport().setWithUndo(true);
         node.getProbNet().getPNESupport().openParenthesis();
-        initialize();
         List<Potential> potentials = node.getPotentials();
         if (!potentials.isEmpty() && potentials.get(0).getComment() != null && !potentials.get(0).getComment()
                 .isEmpty()) {
@@ -197,7 +196,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * Sets up the panel where all components, except the buttons of the buttons
      * panel, will be appear.
      */
-    private void configureComponentsPanel() {
+    protected void configureComponentsPanel() {
         getComponentsPanel().setLayout(new BorderLayout(5, 5));
         // getComponentsPanel().setSize(294, 29);
         getComponentsPanel().setMaximumSize(new Dimension(180, 40));
@@ -261,21 +260,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                 tableColumns *= parent.getVariable().getNumStates();
             }
             System.out.println(tableColumns);
-            // Show small uniform potentials as table potentials. Saves clicks
-            /*if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
-
-                Potential newPotential = stringToPotential("Table");
-                node.setPotentialConsistently(newPotential);
-                
-            }
-            // Show small uniform potentials as 'Exact' potentials. Saves clicks
-            if (node.getNodeType() == NodeType.UTILITY && currentPotentialType.equals("Uniform") && tableColumns <= 128) {
-
-                Potential newPotential = stringToPotential("Exact");
-                node.setPotentialConsistently(newPotential);
-
-            }*/
-            
             
             potentialTypeComboBox.setSelectedItem(currentPotentialType);
             potentialTypeComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
@@ -306,7 +290,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      *
      * @return the potential panel matching the potential edited.
      */
-    private PotentialPanel getPotentialPanel() {
+    protected PotentialPanel getPotentialPanel() {
         if (potentialPanel == null) {
             String potentialName = (String) potentialTypeComboBox.getSelectedItem();
             String potentialFamily = potentialManager.getPotentialsFamily(potentialName);
@@ -564,7 +548,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      *
      * @return a new comment HTML scroll pane.
      */
-    private CommentHTMLScrollPane getCommentPane() {
+    protected CommentHTMLScrollPane getCommentPane() {
         
         if (commentPane == null) {
             commentPane = new CommentHTMLScrollPane();
@@ -803,5 +787,14 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         return newPotential;
 
     }
+
+    protected String getPreviouslySelectedPotentialType(){
+        return this.previouslySelectedPotentialType;
+    }
+
+    protected int getOptionPreviouslySelected(){
+        return this.optionPreviouslySelected;
+    }
+
     
 }

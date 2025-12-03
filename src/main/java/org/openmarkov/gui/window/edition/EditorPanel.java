@@ -939,20 +939,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
             visualNode = selectedNode.get(0);
-            Node node = visualNode.getNode();
-            // TODO manage other kind of policy types from the interface
-            node.setPolicyType(PolicyType.OPTIMAL);
-            List<Variable> variables = new ArrayList<Variable>();
-            // it is added first conditioned variable
-            variables.add(node.getVariable());
-            for (Node parent : node.getParents()) {
-                variables.add(parent.getVariable());
-            }
-            UniformPotential policy = new UniformPotential(variables, PotentialRole.POLICY);
-            List<Potential> policies = new ArrayList<Potential>();
-            policies.add(policy);
-            node.setPotentials(policies);
-
             if (!requestImposePolicyValues(Utilities.getOwner(this), visualNode)) {
                 // if user cancels policy imposition then no potential is
                 // restored to the node
@@ -995,9 +981,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         if (selectedNode.size() == 1) {
             visualNode = selectedNode.get(0);
             if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
-                RemovePolicyEdit removePolicyEdit = new RemovePolicyEdit(visualNode.getNode(), (VisualDecisionNode) visualNode);
+                RemovePolicyEdit removePolicyEdit = new RemovePolicyEdit(visualNode.getNode());
                 try {
-                    ProbNet probNet1 = visualNode.getNode().getProbNet();
                     removePolicyEdit.executeEdit();
                 } catch (ConstraintViolatedException e) {
                     throw new UnreacheableException(e);
@@ -2175,58 +2160,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         repaint();
     }
     
-    /**
-     * This methods evaluates a POMDP or dLIMID strategy, for a predetermined 60000 strategies first with brute force
-     * and then with random walk.
-     **/
-    /*
-     * This method works with StrategyManager of the dlimidEvaluation package. That package is not completed (and
-     * will remain like that for a long time). As for now, the method is not called from anywhere.
-     * Ask {@author IagoParis} about details.
-     */
-    public void evaluatePolicy() throws NonProjectablePotentialException {
-        
-        // Network is expanded before calling to evaluatePolicy
-        
-        // TODO: To test if the network is expanded it uses the file name. This produces a lot of false negatives and should
-        //  be changed. Also, it should not use JOptionPane.showMessageDialog, but throw an exception instead.
-        /*
-        if (!networkPanel.getNetworkFile().endsWith("_expanded.pgmx") && !networkPanel.getNetworkFile()
-                                                                                      .endsWith("_expanded")) {
-            JOptionPane.showMessageDialog(this, "Did you expand the network?");
-            return;
-        }
-        */
-        
-        int horizon = probNet.getInferenceOptions().getTemporalOptions().getHorizon();
-        System.out.println("Horizon: " + horizon);
-        
-        
-        // Create a strategy manager and random walk for the best strategy of the net
-        StrategyManager strategyManager = new StrategyManager(probNet, horizon);
-        List<Potential> bestStrategy = strategyManager.randomWalk(60000);
-        
-        
-        /* Set the strategy into the nodes */
-        
-        Map<Variable, VisualNode> visualDecisionNodes = new HashMap<>();
-        for (VisualNode visualNode : visualNetwork.getAllNodes()) {
-            if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
-                visualDecisionNodes.put(visualNode.getNode().getVariable(), visualNode);
-            }
-        }
-        // Use the variable of the potential to know which policy goes into which node
-        for (int policy = 0; policy < bestStrategy.size(); policy++) {
-            Variable decisionVariable = bestStrategy.get(policy).getVariable(0);
-            visualDecisionNodes.get(decisionVariable).getNode().
-                               setPotentials(bestStrategy.subList(policy, policy + 1));
-            ((VisualDecisionNode) visualDecisionNodes.get(decisionVariable)).setHasPolicy(true);
-        }
-        
-        // Recreate the visual net to see the changes
-        setNetworkChangedWithOutEdit(true);
-        repaint();
-    }
+
     
     
     /**

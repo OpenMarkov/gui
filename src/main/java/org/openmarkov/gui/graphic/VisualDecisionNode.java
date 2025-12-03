@@ -7,10 +7,10 @@
 
 package org.openmarkov.gui.graphic;
 
-import org.openmarkov.core.action.base.VisualDecisionNodePolicyChangeListener;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.PolicyType;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.openmarkov.gui.window.edition.NetworkPanel;
@@ -24,7 +24,7 @@ import java.awt.geom.Rectangle2D;
  * @author jmendoza
  * @version 1.2 asaez - add expanded representation
  */
-public class VisualDecisionNode extends VisualNode implements VisualDecisionNodePolicyChangeListener {
+public class VisualDecisionNode extends VisualNode{
 
 	/**
 	 * Internal color of the visual node when there is no finding established.
@@ -105,7 +105,7 @@ public class VisualDecisionNode extends VisualNode implements VisualDecisionNode
 	 *
 	 * @param hasPolicy new value for the hasPolicy attribute.
 	 */
-	public void setHasPolicy(boolean hasPolicy) {
+	private void setHasPolicy(boolean hasPolicy) {
 		this.hasPolicy = hasPolicy;
 	}
 
@@ -264,15 +264,15 @@ public class VisualDecisionNode extends VisualNode implements VisualDecisionNode
 
 	}
 
-	@Override
-	public void onNodeValueChanged() {
+    public void setPolicy(Potential policy){
+        node.setPotential(policy);
+        setHasPolicy(true);
+    }
 
-		setHasPolicy(true);
+    public void removePolicy(){
+        node.clearPotentials();
+        setHasPolicy(false);
+    }
 
-	}
 
-	@Override
-	public void removePolicy() {
-		setHasPolicy(false);
-	}
 }
