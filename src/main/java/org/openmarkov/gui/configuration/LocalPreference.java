@@ -5,10 +5,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 
-import java.io.*;
-import java.util.Base64;
-import java.util.Objects;
+import java.io.Serializable;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
@@ -50,43 +51,44 @@ import java.util.prefs.Preferences;
  * </ul>
  *
  * @param <T> The type of the Value.
+ *
  * @author jrico
  */
-public final class LocalPreference<T extends Serializable> {
+public final class LocalPreference<T> {
     
-    private final @NotNull Preferences node;
-    private final @NotNull String key;
-    private final @Nullable Class<? extends T> valueClass;
-    private final @NotNull Supplier<? extends @NotNull T> defaultValue;
+    private final @NotNull List<String> preferencePath;
+    private final @NotNull Supplier<? extends T> defaultValue;
+    private final @NotNull Predicate<Object> verifyIsInstance;
+    private final @NotNull Class<T> tClass;
+    private final @NotNull Function<String, T> deserializeWith;
+    private final @NotNull Function<T, String> serializeWith;
+    
     private @Nullable T value;
+    private boolean isInitialized;
+    private boolean modified;
     
-    /**
-     * When possible, using the constructor receiving a {@link Class}{@code <T>} over this constructor is preferred
-     * ({@link LocalPreference#LocalPreference(Preferences, String, Class, Supplier)}), as that {@link Class} is used to
-     * verify the node's value.
-     *
-     * @param node Node where the properties are written.
-     * @param key The exact key in the node where the value is written
-     * @param defaultValue A function returning a default value for when the preference's node isn't set.<br>
-     *                     It is intended to be a function, so the default value is only loaded when needed.
-     */
-    public LocalPreference(@NotNull Preferences node, @NotNull String key, @NotNull Supplier<? extends @NotNull T> defaultValue) {
-        this(node, key, null, defaultValue);
+    public static <T extends Serializable> LocalPreference<T> of(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @NotNull Predicate<Object> verifyIsInstance) {
+        return new LocalPreference<>(preferencePath, defaultValue, null, verifyIsInstance, null, null);
     }
     
-    /**
-     * @param node Node where the properties are written.
-     * @param key The exact key in the node where the value is written.
-     * @param valueClass The class of the value, this is used to verify the contents of the node match this class.
-     * @param defaultValue A function returning a default value for when the preference's node isn't set.<br>
-     *                     It is intended to be a function, so the default value is only loaded when needed.
-     */
-    public LocalPreference(@NotNull Preferences node, @NotNull String key, @Nullable Class<? extends T> valueClass, @NotNull Supplier<? extends @NotNull T> defaultValue) {
-        this.node = Objects.requireNonNull(node);
-        this.key = Objects.requireNonNull(key);
-        this.valueClass = valueClass;
-        this.defaultValue = Objects.requireNonNull(defaultValue);
+    public static <T extends Serializable> LocalPreference<T> of(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @Nullable Class<T> tClass) {
+        return new LocalPreference<>(preferencePath, defaultValue, tClass, null, null, null);
     }
+    
+    LocalPreference(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @Nullable Class<T> tClass, @Nullable Predicate<Object> verifyIsInstance, Function<String, T> deserializeWith, Function<T, String> serializeWith) {
+        deserializeWith = deserializeWith != null ? deserializeWith : LocalPreferencesUtils::javaDeserialize;
+        serializeWith = serializeWith != null ? serializeWith : LocalPreferencesUtils::javaSerialize;
+        verifyIsInstance = verifyIsInstance != null ? verifyIsInstance : o -> true;
+        tClass = tClass != null ? tClass : (Class<T>) Object.class;
+        
+        this.preferencePath = List.of(preferencePath.split("/"));
+        this.defaultValue = defaultValue;
+        this.tClass = tClass;
+        this.verifyIsInstance = verifyIsInstance;
+        this.deserializeWith = deserializeWith;
+        this.serializeWith = serializeWith;
+    }
+    
     
     /**
      * Gets the value corresponding to the node.
@@ -99,22 +101,42 @@ public final class LocalPreference<T extends Serializable> {
      *
      * @return the value corresponding to the node.
      */
-    public @NotNull T get() {
-        if (this.value == null) {
-            String nodeValue = this.node.get(this.key, null);
-            if (nodeValue == null) {
-                this.set(this.defaultValue.get());
-                return this.value;
-            }
-            byte[] data = Base64.getDecoder().decode(nodeValue);
-            try (ObjectInput in = new ObjectInputStream(new ByteArrayInputStream(data))) {
-                T value = this.valueClass != null ? this.valueClass.cast(in.readObject()) : (T) in.readObject();
-                this.value = Objects.requireNonNull(value);
-            } catch (IOException | ClassNotFoundException | ClassCastException e) {
-                this.set(this.defaultValue.get());
-            }
-        }
+    public T get() {
+        this.initialize();
         return this.value;
+    }
+    
+    public void initialize() {
+        if (this.isInitialized) return;
+        String nodeValue = LocalPreferenceResolveStrategy.get(this.preferencePath);
+        if (nodeValue == null) {
+            this.isInitialized = true;
+            this.value = this.defaultValue.get();
+            return;
+        }
+        T value;
+        try {
+            value = this.deserializeWith.apply(nodeValue);
+            boolean isInvalid = !this.verifyIsInstance.test(value) || !this.tClass.isInstance(value);
+            if (isInvalid) {
+                value = this.defaultValue.get();
+            }
+        } catch (RuntimeException e) {
+            value = this.defaultValue.get();
+        }
+        this.value = value;
+        this.isInitialized = true;
+    }
+    
+    /**
+     * Gets whether the node contains a value or not.
+     * <p>
+     * This does not trigger initialization of the value.
+     *
+     * @return whether the node contains a value or not.
+     */
+    public boolean isSet() {
+        return this.modified || LocalPreferenceResolveStrategy.isSet(this.preferencePath);
     }
     
     /**
@@ -124,7 +146,9 @@ public final class LocalPreference<T extends Serializable> {
      * @param newValue the new value, it must not be null.
      */
     public void set(@NotNull T newValue) {
-        this.value = Objects.requireNonNull(newValue);
+        this.value = newValue;
+        this.isInitialized = true;
+        this.modified = true;
         this.save();
     }
     
@@ -138,15 +162,13 @@ public final class LocalPreference<T extends Serializable> {
                     "bombarded with exceptions happening if their OS doesn't allow to use Backing Stores. But, do we " +
                     "want them to be logged nevertheless")
     public void save() {
-        if (this.value == null) {
+        if (!this.isInitialized) {
             return;
         }
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        try (ObjectOutput out = new ObjectOutputStream(byteOut)) {
-            out.writeObject(this.value);
-            String newNodeValue = Base64.getEncoder().encodeToString(byteOut.toByteArray());
-            this.node.put(this.key, newNodeValue);
-        } catch (IOException e) {
+        try {
+            String serialized = this.serializeWith.apply(this.value);
+            LocalPreferenceResolveStrategy.put(this.preferencePath, serialized);
+        } catch (RuntimeException ignored) {
         }
     }
     
@@ -157,8 +179,10 @@ public final class LocalPreference<T extends Serializable> {
      * {@link LocalPreference#get()}, you will get the {@link LocalPreference#defaultValue}.
      */
     public void clear() {
-        this.node.remove(this.key);
+        LocalPreferenceResolveStrategy.clear(this.preferencePath);
         this.value = null;
+        this.isInitialized = false;
+        this.modified = false;
     }
     
     /**
@@ -171,4 +195,21 @@ public final class LocalPreference<T extends Serializable> {
         onValue.accept(this.get());
         this.save();
     }
+    
+    public @NotNull List<String> getPreferencePath() {
+        return this.preferencePath;
+    }
+    
+    /**
+     * This is a shortcut method intended to be used for simple operations where you need to get the value, modify it,
+     * and save it, all of it consecutively.
+     *
+     * @param onValue action to trigger over the value.
+     */
+    public <V> V use(@NotNull Function<? super @NotNull T, V> onValue) {
+        V returnValue = onValue.apply(this.get());
+        this.save();
+        return returnValue;
+    }
+    
 }

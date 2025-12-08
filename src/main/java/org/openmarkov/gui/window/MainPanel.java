@@ -7,8 +7,11 @@
 
 package org.openmarkov.gui.window;
 
+import com.sun.tools.javac.Main;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.ParserException;
+import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
@@ -20,15 +23,27 @@ import org.openmarkov.gui.menutoolbar.plugin.ToolbarManager;
 import org.openmarkov.gui.menutoolbar.toolbar.EditionToolBar;
 import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
 import org.openmarkov.gui.menutoolbar.toolbar.StandardToolBar;
+import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.mdi.MDI;
 import org.openmarkov.gui.window.message.MessageWindow;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * This is the main panel of the OpenMarkov interface. It contains all the menu
@@ -92,6 +107,170 @@ public class MainPanel extends JPanel {
      */
     private JFrame mainFrame;
     
+    public JTabbedPane getNetworksTabPanel() {
+        return this.networksTabPanel;
+    }
+    
+    public void addCloseableTab(String title, Component component) {
+        var uniqueTitle = title;
+        var presentNames = IntStream.range(0, this.networksTabPanel.getTabCount())
+                                    .mapToObj(this.networksTabPanel::getTitleAt)
+                                    .collect(Collectors.toSet());
+        
+        int appendedIndex = 2;
+        while (presentNames.contains(uniqueTitle)) {
+            uniqueTitle = title + " (" + appendedIndex + ")";
+            appendedIndex++;
+        }
+        this.networksTabPanel.addTab(uniqueTitle, component);
+        JPanel tabPanel = new JPanel(new FlowLayout());
+        tabPanel.setOpaque(false);
+        tabPanel.add(new JLabel(uniqueTitle));
+        if (component instanceof NetworkPanel networkPanel) {
+            JButton saveButton = new JButton("\uD83D\uDCBE");
+            saveButton.setMargin(new Insets(0, 0, 0, 0));
+            tabPanel.add(saveButton);
+            saveButton.setEnabled(networkPanel.getModified());
+            networkPanel.addOnModification(networkP -> {
+                saveButton.setEnabled(networkP.getModified());
+            });
+            saveButton.addActionListener(e -> {
+                try {
+                    this.mainPanelListenerAssistant.saveNetwork(networkPanel);
+                } catch (WriterException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            });
+        }
+        
+        JButton closeButton = new JButton("✖");
+        closeButton.setMargin(new Insets(0, 0, 0, 0));
+        closeButton.addActionListener(e -> {
+            var tabIndex = this.networksTabPanel.indexOfTabComponent(tabPanel);
+            try {
+                this.mainPanelListenerAssistant.closePanel(tabIndex);
+            } catch (WriterException ex) {
+                throw new UnrecoverableException(ex);
+            }
+        });
+        tabPanel.add(closeButton);
+        this.networksTabPanel.setTabComponentAt(this.networksTabPanel.getTabCount() - 1, tabPanel);
+        Component tabComponent = this.networksTabPanel.getTabComponentAt(this.networksTabPanel.getTabCount() - 1);
+        
+        tabComponent.addMouseListener(new MouseListener() {
+            @Override public void mouseClicked(MouseEvent e) {
+            
+            }
+            
+            @Override public void mousePressed(MouseEvent e) {
+                MainPanel mainPanel = MainPanel.this;
+                int tabIndex = mainPanel.networksTabPanel.indexOfTabComponent(tabComponent);
+                switch (e.getButton()) {
+                    //LEFT_CLICK
+                    case 1 -> {
+                        mainPanel.networksTabPanel.setSelectedIndex(tabIndex);
+                    }
+                    //RIGHT_CLICK
+                    case 3 -> {
+                        JPopupMenu tabContextMenu = new JPopupMenu();
+                        
+                        if (component instanceof NetworkPanel networkPanel) {
+                            JMenuItem saveButton = new JMenuItem("Save");
+                            saveButton.addActionListener(e1 -> {
+                                try {
+                                    MainPanel.this.mainPanelListenerAssistant.saveNetwork(networkPanel);
+                                } catch (WriterException ex) {
+                                    throw new UnrecoverableException(ex);
+                                }
+                            });
+                            tabContextMenu.add(saveButton);
+                            JMenuItem saveAsButton = new JMenuItem("Save as");
+                            saveAsButton.addActionListener(e1 -> {
+                                try {
+                                    MainPanel.this.mainPanelListenerAssistant.saveNetworkAs(networkPanel);
+                                } catch (WriterException ex) {
+                                    throw new UnrecoverableException(ex);
+                                }
+                            });
+                            tabContextMenu.add(saveAsButton);
+                            
+                        }
+                        
+                        JMenuItem closeThisTab = new JMenuItem("Close this tab");
+                        closeThisTab.addActionListener(e2 -> multiClose(List.of(tabIndex)));
+                        tabContextMenu.add(closeThisTab);
+                        
+                        
+                        tabContextMenu.add(new JSeparator());
+                        JMenuItem closeAllTab = new JMenuItem("Close all tabs");
+                        closeAllTab.addActionListener(e2 -> multiClose(IntStream.range(0, MainPanel.this.networksTabPanel.getTabCount())
+                                                                                .boxed()
+                                                                                .toList()));
+                        tabContextMenu.add(closeAllTab);
+                        
+                        JMenuItem closeAllTabsButThis = new JMenuItem("Close all tabs but this");
+                        closeAllTabsButThis.addActionListener(e2 -> multiClose(Stream.concat(
+                                IntStream.range(0, tabIndex).boxed(),
+                                IntStream.range(tabIndex + 1, MainPanel.this.networksTabPanel.getTabCount()).boxed()
+                        ).toList()));
+                        tabContextMenu.add(closeAllTabsButThis);
+                        JMenuItem closeTabsToTheLeft = new JMenuItem("Close tabs to the left");
+                        closeTabsToTheLeft.addActionListener(e2 -> {
+                            multiClose(IntStream.range(0, tabIndex).boxed().toList());
+                        });
+                        tabContextMenu.add(closeTabsToTheLeft);
+                        JMenuItem closeTabsToTheRight = new JMenuItem("Close tabs to the right");
+                        closeTabsToTheRight.addActionListener(e2 -> {
+                            multiClose(IntStream.range(tabIndex + 1, MainPanel.this.networksTabPanel.getTabCount())
+                                                .boxed()
+                                                .toList());
+                        });
+                        tabContextMenu.add(closeTabsToTheRight);
+                        tabContextMenu.show(tabComponent, e.getX(), e.getY());
+                    }
+                }
+            }
+            
+            public void multiClose(List<Integer> tabIndexesToClose) {
+                tabIndexesToClose = tabIndexesToClose.stream().distinct().sorted(Comparator.reverseOrder()).toList();
+                int initialTab = MainPanel.this.networksTabPanel.getSelectedIndex();
+                boolean initialTabClosed = false;
+                try {
+                    for (int tabIndexToClose : tabIndexesToClose) {
+                        MainPanel.this.networksTabPanel.setSelectedIndex(tabIndexToClose);
+                        if (!MainPanel.this.mainPanelListenerAssistant.closePanel(tabIndexToClose)) {
+                            return;
+                        }
+                        initialTabClosed = initialTabClosed || initialTab == tabIndexToClose;
+                    }
+                    if (!initialTabClosed) {
+                        MainPanel.this.networksTabPanel.setSelectedIndex(initialTab);
+                    }
+                } catch (WriterException e) {
+                    throw new UnrecoverableException(e);
+                }
+            }
+            
+            @Override public void mouseReleased(MouseEvent e) {
+            
+            }
+            
+            @Override public void mouseEntered(MouseEvent e) {
+            
+            }
+            
+            @Override public void mouseExited(MouseEvent e) {
+            
+            }
+        });
+    }
+    
+    
+    /**
+     * Networks tabs come from here.
+     */
+    private JTabbedPane networksTabPanel;
+    
     private ToolbarManager toolbarManager;
     
     /**
@@ -100,14 +279,30 @@ public class MainPanel extends JPanel {
      * @param parentFrame the parent Frame of the Main Panel
      */
     public MainPanel(JFrame parentFrame) {
-        
         MAIN_PANEL = this;
         MAIN_PANEL.setName("MainPanel");
         mainFrame = parentFrame;
         mainFrame.setName(parentFrame.getName());
         toolbarManager = new ToolbarManager(this);
-        
-        initialize();
+        this.networksTabPanel = new JTabbedPane();
+        this.networksTabPanel.addChangeListener(e -> {
+            var selectedComponent = this.networksTabPanel.getSelectedComponent();
+            switch (selectedComponent) {
+                case NetworkPanel networkPanel -> {
+                    this.getMainPanelMenuAssistant().updateOptionsNetworkDependent(networkPanel);
+                    this.getInferenceToolBar().setCurrentEvidenceCaseName(networkPanel.getCurrentCase());
+                    this.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);
+                }
+                case DecisionTreeWindow decisionTreeWindow -> {
+                    this.getMainPanelMenuAssistant().updateOptionsWindowSelected(false);
+                }
+                case null, default -> {
+                
+                }
+            }
+            
+        });
+        this.initialize();
     }
     
     /**
@@ -163,13 +358,13 @@ public class MainPanel extends JPanel {
      */
     private void initialize() {
         
-        getMainPanelListenerAssistant();
-        getMainMenu();
-        getContextualMenuFactory();
-        setLayout(new BorderLayout());
-        setSize(new Dimension(500, 500));
-        add(getToolBarPanel(), BorderLayout.NORTH);
-        getMainPanelMenuAssistant();
+        this.getMainPanelListenerAssistant();
+        this.getMainMenu();
+        this.getContextualMenuFactory();
+        this.setLayout(new BorderLayout());
+        this.setSize(new Dimension(500, 500));
+        this.add(this.getToolBarPanel(), BorderLayout.NORTH);
+        this.getMainPanelMenuAssistant();
 		/*JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
 		splitPane.setDividerLocation(770);
@@ -178,7 +373,10 @@ public class MainPanel extends JPanel {
 
 		splitPane.setOneTouchExpandable(true);*/
         
-        add(getMdi(), BorderLayout.CENTER);
+        this.add(networksTabPanel, BorderLayout.CENTER);
+        
+        //add(getMdi(), BorderLayout.CENTER);
+        
         //add(splitPane);//, BorderLayout.CENTER);
         //ClipboardManager.addClipboardListener(getMainPanelMenuAssistant());
         //add(getMessageWindow(), BorderLayout.SOUTH);
@@ -195,15 +393,15 @@ public class MainPanel extends JPanel {
         JFrame frame;
         
         super.addNotify();
-        Component container = getTopLevelAncestor();
+        Component container = this.getTopLevelAncestor();
         if (container != null) {
             if (container instanceof JFrame) {
                 frame = (JFrame) container;
-                frame.setJMenuBar(getMainMenu());
+                frame.setJMenuBar(this.getMainMenu());
                 frame.addWindowListener(mainPanelListenerAssistant);
                 frame.addComponentListener(mainPanelListenerAssistant);
             } else if (container instanceof JApplet) {
-                ((JApplet) container).setJMenuBar(getMainMenu());
+                ((JApplet) container).setJMenuBar(this.getMainMenu());
             }
         }
         
@@ -215,14 +413,11 @@ public class MainPanel extends JPanel {
      * @return a new message window.
      */
     public MessageWindow getMessageWindow() {
-        
         if (messageWindow == null) {
             messageWindow = new MessageWindow(mainFrame);
             messageWindow.setVisible(true);
         }
-        
         return messageWindow;
-        
     }
     
     /**
@@ -272,8 +467,8 @@ public class MainPanel extends JPanel {
 				*/
             // This way, the main toolbar and the secondary are in the same line
             toolBarPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-            toolBarPanel.add(getStandardToolBar());
-            toolBarPanel.add(getEditionToolBar());
+            toolBarPanel.add(this.getStandardToolBar());
+            toolBarPanel.add(this.getEditionToolBar());
         }
         
         return toolBarPanel;
@@ -294,9 +489,9 @@ public class MainPanel extends JPanel {
             }
             case INFERENCE -> {
                 MAIN_PANEL.getToolBarPanel().remove(MAIN_PANEL.getEditionToolBar());
-                MAIN_PANEL.getInferenceToolBar().setExpansionThreshold(getMainPanelListenerAssistant().
-                                                                               getCurrentNetworkPanel()
-                                                                               .getExpansionThreshold());
+                MAIN_PANEL.getInferenceToolBar().setExpansionThreshold(this.getMainPanelListenerAssistant().
+                                                                           getCurrentNetworkPanel()
+                                                                           .getExpansionThreshold());
                 MAIN_PANEL.getToolBarPanel().add(MAIN_PANEL.getInferenceToolBar(), 1);
             }
         }
@@ -312,7 +507,7 @@ public class MainPanel extends JPanel {
      *                    Depending on this value, the button will be set pressed or not.
      */
     public void changeWorkingModeButton(NetworkPanel.WorkingMode workingMode) {
-        getStandardToolBar().changeWorkingModeButton(workingMode);
+        this.getStandardToolBar().changeWorkingModeButton(workingMode);
     }
     
     /**
@@ -326,7 +521,6 @@ public class MainPanel extends JPanel {
             mdi = new MDI(mainMenu.getMenuMDI());
             mdi.addFrameStateListener(mainPanelListenerAssistant);
             mdi.setPreferredSize(new Dimension(400, 600));
-            mdi.createNewFrame(getMessageWindow(), false);
         }
         
         return mdi;
@@ -384,7 +578,7 @@ public class MainPanel extends JPanel {
         
         if (mainPanelMenuAssistant == null) {
             mainPanelMenuAssistant = new MainPanelMenuAssistant(
-                    new MenuToolBarBasic[]{mainMenu, standardToolBar, editionToolBar, getInferenceToolBar(),
+                    new MenuToolBarBasic[]{mainMenu, standardToolBar, editionToolBar, this.getInferenceToolBar(),
                             contextualMenuFactory}, new ZoomMenuToolBar[]{mainMenu, standardToolBar}, this);
             mainPanelMenuAssistant.updateOptionsAllNetworkClosed();
         }
@@ -422,7 +616,7 @@ public class MainPanel extends JPanel {
      * @param fileName
      */
     public void openNetwork(String fileName) throws ParserException, IOException, SAXException, NoReaderForFileException, CorruptNetworkFile {
-        getMainPanelListenerAssistant().openNetwork(fileName);
+        this.getMainPanelListenerAssistant().openNetwork(fileName);
     }
     
     /**
@@ -447,27 +641,29 @@ public class MainPanel extends JPanel {
         int safetyHeight = 15;
         // When changing the working mode, sometimes the values of the size of the window are not accurate
         int currentNetworkPanelWidth = Integer.MAX_VALUE;
-        if (getMainPanelListenerAssistant().getCurrentNetworkPanel() != null) {
-            currentNetworkPanelWidth = getMainPanelListenerAssistant().getCurrentNetworkPanel().getWidth();
+        if (this.getMainPanelListenerAssistant().getCurrentNetworkPanel() != null) {
+            currentNetworkPanelWidth = this.getMainPanelListenerAssistant().getCurrentNetworkPanel().getWidth();
         }
         // We sum the width and height of every component present in the toolbar
-        for (Component toolBarComponent : getToolBarPanel().getComponents()) {
+        for (Component toolBarComponent : this.getToolBarPanel().getComponents()) {
             toolBarComponentsWidth += toolBarComponent.getWidth();
             toolBarComponentsHeight += toolBarComponent.getHeight();
         }
         
         // If the toolbar cannot show them in one single line
-        if ((getToolBarPanel().getWidth() < toolBarComponentsWidth + safetyWidth) || (
+        if ((this.getToolBarPanel().getWidth() < toolBarComponentsWidth + safetyWidth) || (
                 currentNetworkPanelWidth < currentNetworkPanelMaxWidth
         )) {
             // we increase the height of the toolbar accordingly
-            getToolBarPanel()
-                    .setPreferredSize(new Dimension(getWidth() + safetyWidth, toolBarComponentsHeight + safetyHeight));
+            this.getToolBarPanel()
+                .setPreferredSize(new Dimension(this.getWidth() + safetyWidth, toolBarComponentsHeight + safetyHeight));
         }
         // and if the toolbar can show them in one line
         else {
             // we request the Layout manager to choose the preferred size
-            getToolBarPanel().setPreferredSize(null);
+            this.getToolBarPanel().setPreferredSize(null);
         }
     }
+    
+    
 }

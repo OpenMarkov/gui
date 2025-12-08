@@ -9,8 +9,7 @@ package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -30,9 +29,7 @@ public class VisualChanceNode extends VisualNode{
 	/**
 	 * Internal color of the visual node when there is no finding established.
 	 */
-	private static final Color BACKGROUND_COLOR = OpenMarkovPreferences
-            .getColor(OpenMarkovPreferencesKeys.NODECHANCE_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-                      new Color(251, 249, 153));
+    private static final Color BACKGROUND_COLOR = OpenMarkovLocalPreferences.NODECHANCE_BACKGROUND_COLOR.get();
 
 	/**
 	 * Internal color of the visual node when there is a preResolution
@@ -49,23 +46,17 @@ public class VisualChanceNode extends VisualNode{
 	/**
 	 * Color of lines and letters.
 	 */
-	private static final Color FOREGROUND_COLOR = OpenMarkovPreferences
-            .getColor(OpenMarkovPreferencesKeys.NODECHANCE_FOREGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-                      Color.BLACK);
+    private static final Color FOREGROUND_COLOR = OpenMarkovLocalPreferences.NODECHANCE_FOREGROUND_COLOR.get();
 
 	/**
 	 * Color of the border when the node is alwaysObserved.
 	 */
-	private static final Color ALWAYS_OBSERVED_COLOR = OpenMarkovPreferences
-            .getColor(OpenMarkovPreferencesKeys.ALWAYS_OBSERVED_VARIABLE, OpenMarkovPreferences.OPENMARKOV_COLORS,
-                      new Color(128, 0, 0));
+    private static final Color ALWAYS_OBSERVED_COLOR = OpenMarkovLocalPreferences.ALWAYS_OBSERVED_VARIABLE.get();
 
 	/**
 	 * Color of the letters
 	 */
-	private static final Color TEXT_FOREGROUND_COLOR = OpenMarkovPreferences
-            .getColor(OpenMarkovPreferencesKeys.NODECHANCE_TEXT_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-                      Color.BLACK);
+    private static final Color TEXT_FOREGROUND_COLOR = OpenMarkovLocalPreferences.NODECHANCE_TEXT_COLOR.get();
 
 	/**
 	 * Width of a the arc of the rounded rectangle.

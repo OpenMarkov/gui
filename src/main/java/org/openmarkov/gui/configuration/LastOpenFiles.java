@@ -27,20 +27,14 @@ public class LastOpenFiles {
 	 * @param index - the position of file in the list of last open files
 	 * @return the fileName or empty
 	 */
-    public static String getFileNameAt(int index) {
-        
-        return OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + index, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "");
+	public static String getFilePathAt(int index) {
+		try {
+			return OpenMarkovLocalPreferences.LAST_OPEN_NETWORKS_FILES.get().get(index);
+		} catch (IndexOutOfBoundsException ex) {
+			return "";
+		}
 	}
-
-	/**
-	 * @param fileName the FileName to set
-	 * @param index    position of the file
-	 */
-    public static void setFileNameAt(String fileName, int index) {
-        
-        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + index, fileName, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-	}
-
+	
 	/**
 	 * reorder the list of last open files considering that if the file was
 	 * already open, only some of the files must be reorder
@@ -48,27 +42,19 @@ public class LastOpenFiles {
 	 * @param fileName - name of the file to find
 	 */
     public static void setLastFileName(String fileName) {
-        
-        int aux;
-        int index;
-        int lastIndex;
-		if (existLastOpenFiles()) {
-			index = getIndexForFilename(fileName);
-			lastIndex = getOldestOpenFileIndex();
-			if (lastIndex < MAX_LAST_OPEN_FILES) {
-				lastIndex++;
+		OpenMarkovLocalPreferences.LAST_OPEN_NETWORKS_FILES.use(latestOpenFiles -> {
+			int index = getIndexForFilename(fileName);
+			if (index == -1) {
+				latestOpenFiles.add(0, fileName);
+				while (latestOpenFiles.size() > MAX_LAST_OPEN_FILES) {
+					latestOpenFiles.removeLast();
+				}
 			} else {
-				lastIndex = MAX_LAST_OPEN_FILES;
+				latestOpenFiles.remove(index);
+				latestOpenFiles.add(0, fileName);
 			}
-			index = (index == -1 ? lastIndex : index);
-			for (int i = index; i > 1; i--) {
-				aux = i - 1;
-                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + i, OpenMarkovPreferences
-                                                  .get(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + aux, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, ""),
-                                          OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-			}
-		}
-        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + 1, fileName, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+			
+		});
 	}
 
 	/**
@@ -78,48 +64,20 @@ public class LastOpenFiles {
 	 * @return index for the filename if exist; otherwise, return -1
 	 */
     public static int getIndexForFilename(String fileName) {
-
-		int result = -1;
-        int index;
-
-		for (index = 1; index <= MAX_LAST_OPEN_FILES; index++) {
-			if (fileName.equals(OpenMarkovPreferences
-                                        .get(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + index, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, ""))) {
-				result = index;
-				break;
-			}
-		}
-		return result;
+		return OpenMarkovLocalPreferences.LAST_OPEN_NETWORKS_FILES.get().indexOf(fileName);
 	}
 
 	/**
 	 * @return true if there are some last open files; false otherwise
 	 */
     public static boolean existLastOpenFiles() {
-
-		boolean result = false;
-        String fileName = OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + 1, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "");
-        if (!fileName.isEmpty()) {
-			result = true;
-		}
-
-		return result;
+		return !OpenMarkovLocalPreferences.LAST_OPEN_NETWORKS_FILES.get().isEmpty();
 	}
 
 	/**
 	 * @return index the index for the oldest open file
 	 */
     public static int getOldestOpenFileIndex() {
-        
-        int index;
-
-		for (index = 1; index < MAX_LAST_OPEN_FILES; index++) {
-            if (OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_OPEN_FILE + index, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "")
-                                     .isEmpty()) {
-				index--; // the last one is the previous index
-				break;
-			}
-		}
-		return index;
+		return OpenMarkovLocalPreferences.LAST_OPEN_NETWORKS_FILES.get().size() - 1;
 	}
 }

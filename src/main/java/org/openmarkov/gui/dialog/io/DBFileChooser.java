@@ -7,8 +7,7 @@
 package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
-import org.openmarkov.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,16 +18,14 @@ import java.io.File;
 
 	public DBFileChooser(boolean acceptAllFiles) {
 		super(acceptAllFiles);
-		File currentDirectory = new File(OpenMarkovPreferences
-                                                 .get(OpenMarkovPreferencesKeys.LATEST_OPEN_DATASET_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+        File currentDirectory = OpenMarkovLocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.get();
 		setCurrentDirectory(currentDirectory);
 	}
 
 	@Override public int showOpenDialog(Component parent) {
 		int result = super.showOpenDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DATASET_DIRECTORY, getSelectedFile().getAbsolutePath(),
-                                      OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+            OpenMarkovLocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.set(getSelectedFile().getAbsoluteFile());
 		}
 		return result;
 	}
@@ -36,10 +33,8 @@ import java.io.File;
 	@Override public int showSaveDialog(Component parent) {
 		int result = super.showSaveDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_SAVED_DATASET_FORMAT, ((FileFilterAll) getFileFilter()).getFileDescription(),
-                                      OpenMarkovPreferences.OPENMARKOV_FORMATS);
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_SAVED_DATASET_DIRECTORY, ((FileFilterAll) getFileFilter()).getFileDescription(),
-                                      OpenMarkovPreferences.OPENMARKOV_FORMATS);
+            OpenMarkovLocalPreferences.LATEST_SAVED_DATASET_FORMAT.set(((FileFilterAll) getFileFilter()).getFileDescription());
+            OpenMarkovLocalPreferences.LATEST_SAVED_DATASET_DIRECTORY.set(getSelectedFile().getParentFile());
 		}
 		return result;
 	}

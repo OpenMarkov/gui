@@ -21,8 +21,7 @@ import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.gui.configuration.LastOpenFiles;
-import org.openmarkov.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 import org.openmarkov.gui.dialog.*;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
@@ -171,7 +170,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.OPEN_LAST_1_FILE -> {
                 try {
-                    openNetwork(LastOpenFiles.getFileNameAt(1));
+                    openNetwork(LastOpenFiles.getFilePathAt(0));
                 } catch (ParserException | IOException | SAXException | NoReaderForFileException |
                          CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
@@ -179,7 +178,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.OPEN_LAST_2_FILE -> {
                 try {
-                    openNetwork(LastOpenFiles.getFileNameAt(2));
+                    openNetwork(LastOpenFiles.getFilePathAt(1));
                 } catch (ParserException | IOException | SAXException | NoReaderForFileException |
                          CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
@@ -187,7 +186,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.OPEN_LAST_3_FILE -> {
                 try {
-                    openNetwork(LastOpenFiles.getFileNameAt(3));
+                    openNetwork(LastOpenFiles.getFilePathAt(2));
                 } catch (ParserException | IOException | SAXException | NoReaderForFileException |
                          CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
@@ -195,7 +194,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.OPEN_LAST_4_FILE -> {
                 try {
-                    openNetwork(LastOpenFiles.getFileNameAt(4));
+                    openNetwork(LastOpenFiles.getFilePathAt(3));
                 } catch (ParserException | IOException | SAXException | NoReaderForFileException |
                          CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
@@ -203,7 +202,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.OPEN_LAST_5_FILE -> {
                 try {
-                    openNetwork(LastOpenFiles.getFileNameAt(5));
+                    openNetwork(LastOpenFiles.getFilePathAt(4));
                 } catch (ParserException | IOException | SAXException | NoReaderForFileException |
                          CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
@@ -211,7 +210,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.OPEN_LAST_6_FILE -> {
                 try {
-                    openNetwork(LastOpenFiles.getFileNameAt(6));
+                    openNetwork(LastOpenFiles.getFilePathAt(5));
                 } catch (ParserException | IOException | SAXException | NoReaderForFileException |
                          CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
@@ -219,7 +218,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.OPEN_LAST_7_FILE -> {
                 try {
-                    openNetwork(LastOpenFiles.getFileNameAt(7));
+                    openNetwork(LastOpenFiles.getFilePathAt(6));
                 } catch (ParserException | IOException | SAXException | NoReaderForFileException |
                          CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
@@ -227,7 +226,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.OPEN_LAST_8_FILE -> {
                 try {
-                    openNetwork(LastOpenFiles.getFileNameAt(8));
+                    openNetwork(LastOpenFiles.getFilePathAt(7));
                 } catch (ParserException | IOException | SAXException | NoReaderForFileException |
                          CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
@@ -235,7 +234,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.OPEN_LAST_9_FILE -> {
                 try {
-                    openNetwork(LastOpenFiles.getFileNameAt(9));
+                    openNetwork(LastOpenFiles.getFilePathAt(8));
                 } catch (ParserException | IOException | SAXException | NoReaderForFileException |
                          CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
@@ -501,7 +500,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.ZOOM_IN -> incrementZoom(getCurrentPanel());
             case ActionCommands.ZOOM_OUT -> decrementZoom(getCurrentPanel());
             case ActionCommands.ZOOM_OTHER -> setZoom(true, getCurrentPanel(), 0);
-            case ActionCommands.MESSAGE_WINDOW -> showMessageWindow();
             case ActionCommands.CONFIGURATION -> {
                 try {
                     showUserConfigurationDialog();
@@ -656,7 +654,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return the current network panel.
      */
     public FrameContentPanel getCurrentPanel() {
-        return mainPanel.getMdi().getCurrentPanel();
+        return (FrameContentPanel) mainPanel.getNetworksTabPanel().getSelectedComponent();
     }
     
     /**
@@ -820,8 +818,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return true if the network could be saved; otherwise, false.
      */
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat) throws WriterException {
-        mainPanel.getMessageWindow().getNormalMessageStream()
-                 .println(stringDatabase.getString("SavingNetwork.Text.Label") + " " + fileName);
+        System.out.println(stringDatabase.getString("SavingNetwork.Text.Label") + " " + fileName);
         NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidence(), fileName,
                                fileFormat);
         
@@ -831,10 +828,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
         networkPanel.setNetworkFileFormat(fileFormat);
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
         LastOpenFiles.setLastFileName(fileName);
-        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_SAVED_DIRECTORY, getDirectoryFileName(fileName),
-                                  OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-        mainPanel.getMessageWindow().getNormalMessageStream()
-                 .println(stringDatabase.getString("NetworkSaved.Text.Label"));
+        OpenMarkovLocalPreferences.LATEST_SAVED_DIRECTORY.set(new File(fileName).getAbsoluteFile());
+        System.out.println(stringDatabase.getString("NetworkSaved.Text.Label"));
         mainPanel.getMainMenu().rechargeLastOpenFiles();
         return true;
     }
@@ -849,9 +844,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) throws WriterException {
-        String fileFormat = OpenMarkovPreferences
-                .get(OpenMarkovPreferencesKeys.LATEST_NETWORK_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
-                     FileChooser.DEFAULT_FILE_FORMAT);
+        String fileFormat = OpenMarkovLocalPreferences.LATEST_NETWORK_FORMAT.get();
         return saveNetworkActions(networkPanel, fileName, fileFormat);
     }
     
@@ -863,7 +856,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return true if the network has been saved; otherwise, false.
      */
-    private boolean saveNetwork(NetworkPanel networkPanel) throws WriterException {
+    public boolean saveNetwork(NetworkPanel networkPanel) throws WriterException {
         String fileName = networkPanel.getNetworkFile();
         if (fileName != null) {
             createBackUpNetworkFile(fileName, toBakExtension(networkPanel.getNetworkFile()));
@@ -900,11 +893,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
             in.close();
             out.close();
         } catch (IOException e) {
-            mainPanel.getMessageWindow().getNormalMessageStream()
-                     .println(stringDatabase.getString("NetworkBackupError.Text.Label"));
+            System.out.println(stringDatabase.getString("NetworkBackupError.Text.Label"));
         }
-        mainPanel.getMessageWindow().getNormalMessageStream()
-                 .println(stringDatabase.getString("NetworkBackup.Text.Label"));
+        System.out.println(stringDatabase.getString("NetworkBackup.Text.Label"));
     }
     
     private static String toBakExtension(String nameFile) {
@@ -925,7 +916,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return true if the network has been saved; otherwise, false.
      */
-    private boolean saveNetworkAs(NetworkPanel networkPanel) throws WriterException {
+    public boolean saveNetworkAs(NetworkPanel networkPanel) throws WriterException {
         String fileName = networkPanel.getNetworkFile();
         /*
         fileName = requestNetworkFileToSave((fileName != null) ? fileName
@@ -979,7 +970,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         String title = stringDatabase.getString("SaveNetwork.Title.Label");
         fileChooser.setDialogTitle(title);
         fileChooser.setSelectedFile(new File(suggestedFileName));
-        fileChooser.setCurrentDirectory(new File(OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_SAVED_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, ".")));
+        fileChooser.setCurrentDirectory(OpenMarkovLocalPreferences.LATEST_SAVED_DIRECTORY.get());
         ArrayList<String> fileNameAndFormat = new ArrayList<String>();
         String filename = null;
         String fileFormat = null;
@@ -1046,7 +1037,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     public NetworkPanel createNewFrame(ProbNet probNet) {
         NetworkPanel networkPanel = new NetworkPanel(probNet, mainPanel);
-        mainPanel.getMdi().createNewFrame(networkPanel);
+        mainPanel.addCloseableTab(probNet.getName(), networkPanel);
         networkPanel.setContextualMenuFactory(mainPanel.getContextualMenuFactory());
         // networkPanel.addEditionListener( mainPanel
         // .getMainPanelMenuAssistant() );
@@ -1077,8 +1068,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             fileName = requestNetworkFileToOpen();
         }
         if (fileName == null) return;
-        mainPanel.getMessageWindow().getNormalMessageStream()
-                 .println(stringDatabase.getString("LoadingNetwork.Text.Label") + " " + fileName);
+        System.out.println(stringDatabase.getString("LoadingNetwork.Text.Label") + " " + fileName);
         //TODO Performance issue here on first call
         ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
         ProbNet netReadFromFile = probNetInfo.getProbNet();
@@ -1099,13 +1089,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
         networkPanels.add(networkPanel);
         LastOpenFiles.setLastFileName(fileName);
         getDirectoryFileName(fileName);
-        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
-                                  OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+        OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.set(new File(fileName).getAbsoluteFile());
         // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
         // but it is not longer the scenario
         //mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
-        mainPanel.getMessageWindow().getNormalMessageStream()
-                 .println(stringDatabase.getString("NetworkLoaded.Text.Label"));
+        System.out.println(stringDatabase.getString("NetworkLoaded.Text.Label"));
         mainPanel.getMainMenu().rechargeLastOpenFiles();
         
         if (netReadFromFile.getShowCommentWhenOpening()) {
@@ -1140,8 +1128,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             return;
         }
         String urlFile = url.getFile();
-        mainPanel.getMessageWindow().getNormalMessageStream()
-                 .println(stringDatabase.getString("LoadingNetworkURL.Text.Label") + " " + url);
+        System.out.println(stringDatabase.getString("LoadingNetworkURL.Text.Label") + " " + url);
         ProbNetInfo probNetInfo = NetsIO.openNetworkURL(url);
         ProbNet netReadFromURL = probNetInfo.getProbNet();
         netReadFromURL.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
@@ -1159,8 +1146,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         LastOpenFiles.setLastFileName(urlFile);
         // If the file was opened from a URL, the 'save' and 'save and reopen' buttons have to be disabled
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(true);
-        mainPanel.getMessageWindow().getNormalMessageStream()
-                 .println(stringDatabase.getString("NetworkLoaded.Text.Label"));
+        System.out.println(stringDatabase.getString("NetworkLoaded.Text.Label"));
         mainPanel.getMainMenu().rechargeLastOpenFiles();
         
         if (netReadFromURL.getShowCommentWhenOpening()) {
@@ -1215,16 +1201,43 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return true if the network has been closed; otherwise, false.
      */
     private boolean closeCurrentNetwork() throws WriterException {
-        if (getCurrentNetworkPanel() == null) {
+        return closeNetwork(getCurrentNetworkPanel());
+    }
+    
+    /**
+     * Closes the selected network frame.
+     *
+     * @return true if the network has been closed; otherwise, false.
+     */
+    private boolean closeNetwork(NetworkPanel currentNetworkPanel) throws WriterException {
+        if (currentNetworkPanel == null) {
             return true;
         }
-        boolean canClose = networkCanBeClosed(getCurrentNetworkPanel());
+        boolean canClose = networkCanBeClosed(currentNetworkPanel);
         if (canClose) {
-            mainPanel.getMdi().closeCurrentFrame();
+            mainPanel.getNetworksTabPanel().remove(currentNetworkPanel);
             if (networkPanels.isEmpty()) {
                 mainPanel.setToolBarPanel(NetworkPanel.WorkingMode.EDITION);
                 mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
             }
+        }
+        return canClose;
+    }
+    
+    /**
+     * Closes the selected network frame.
+     *
+     * @return true if the network has been closed; otherwise, false.
+     */
+    public boolean closePanel(int panelIndex) throws WriterException {
+        var componentToClose = mainPanel.getNetworksTabPanel().getComponentAt(panelIndex);
+        boolean canClose = !(componentToClose instanceof NetworkPanel networkPanel) || networkCanBeClosed(networkPanel);
+        if (canClose) {
+            mainPanel.getNetworksTabPanel().removeTabAt(panelIndex);
+        }
+        if (networkPanels.isEmpty()) {
+            mainPanel.setToolBarPanel(NetworkPanel.WorkingMode.EDITION);
+            mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
         }
         return canClose;
     }
@@ -1378,8 +1391,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
         List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel().getEvidence();
         evidence.add(0, currentNetworkPanel.getEditorPanel().getPreResolutionEvidence());
         JFileChooser fileChooser = new JFileChooser();
-        File currentDirectory = new File(OpenMarkovPreferences
-                                                 .get(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+        
+        
+        File currentDirectory = OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.get();
         fileChooser.setCurrentDirectory(currentDirectory);
         String suggestedFileName = currentNetworkPanel.getTitle().replaceFirst("^*", "");
         fileChooser.setSelectedFile(new File(suggestedFileName));
@@ -1399,9 +1413,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         FileChooser evidenceFileChooser = new DBReaderFileChooser();
         evidenceFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
         // Set last used evidence format as default
-        String lastFileFilter = OpenMarkovPreferences
-                .get(OpenMarkovPreferencesKeys.LATEST_LOADED_EVIDENCE_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
-                     "xls");
+        String lastFileFilter = OpenMarkovLocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.get();
         evidenceFileChooser.setFileFilter(lastFileFilter);
         if ((evidenceFileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)) {
             // load the selected file
@@ -1435,12 +1447,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
             }
             // save format extension in preferences
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_LOADED_EVIDENCE_FORMAT,
-                                      ((FileFilterBasic) evidenceFileChooser.getFileFilter()).getFilterExtension(),
-                                      OpenMarkovPreferences.OPENMARKOV_FORMATS);
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY,
-                                      getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
-                                      OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+            OpenMarkovLocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.set(((FileFilterBasic) evidenceFileChooser.getFileFilter()).getFilterExtension());
+            OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.set(evidenceFileChooser.getSelectedFile());
             
         }
     }
@@ -1623,18 +1631,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
     }
     
     /**
-     * This method restores (if minimized) and shows the message window.
-     */
-    private void showMessageWindow() {
-        if (!mainPanel.getMessageWindow().isVisible()) {
-            mainPanel.getMdi().createNewFrame(mainPanel.getMessageWindow(), false);
-            mainPanel.getMessageWindow().setVisible(true);
-        } else {
-            mainPanel.getMdi().selectFrame(mainPanel.getMessageWindow());
-        }
-    }
-    
-    /**
      * This method increments the zoom of the current panel.
      *
      * @param frameContentPanel network whose zoom will be changed.
@@ -1716,7 +1712,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 }
             }
             DecisionTreeWindow decisionTree = new DecisionTreeWindow(probNet);
-            mainPanel.getMdi().createNewFrame(decisionTree);
+            mainPanel.addCloseableTab("Decision tree of " + probNet.getName(), decisionTree);
             mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
         } catch (OutOfMemoryError e) {
             throw new NotEnoughtMemoryException(e);

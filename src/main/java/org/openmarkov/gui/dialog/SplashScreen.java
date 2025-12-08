@@ -25,42 +25,39 @@ import java.awt.*;
  * @version 1.0 22/11/2008
  */
 public class SplashScreen extends JFrame {
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -6227174335233774982L;
-	/**
-	 * Component to store the image to splash
-	 */
-	JLabel imageLabel = new JLabel();
-	/**
-	 * Component to present the progress of the loading
-	 */
-	JProgressBar progressBar = new JProgressBar();
-	/**
-	 * Image to be displayed
-	 */
-	ImageIcon imageIcon;
-
-	private Logger logger;
-
-	/**
-	 * Constructor
-	 *
-	 * @param imageIcon The image to be used as Splash Screen
-	 */
-	public SplashScreen(ImageIcon imageIcon) {
-		this.logger = LogManager.getLogger(SplashScreen.class);
-		this.imageIcon = imageIcon;
-			jbInit();
-	}
-
-	/**
-	 * Main initialization method to display visual components
-	 *
-	 */
-	void jbInit() {
+    
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6227174335233774982L;
+    /**
+     * Component to store the image to splash
+     */
+    JLabel imageLabel = new JLabel();
+    /**
+     * Component to present the progress of the loading
+     */
+    JProgressBar progressBar = new JProgressBar();
+    /**
+     * Image to be displayed
+     */
+    ImageIcon imageIcon;
+    
+    /**
+     * Constructor
+     *
+     * @param imageIcon The image to be used as Splash Screen
+     */
+    public SplashScreen(ImageIcon imageIcon) {
+        this.imageIcon = imageIcon;
+        jbInit();
+    }
+    
+    /**
+     * Main initialization method to display visual components
+     *
+     */
+    void jbInit() {
         
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         this.setUndecorated(true);
@@ -76,69 +73,69 @@ public class SplashScreen extends JFrame {
         this.pack();
         this.setVisible(true);
     }
-
-	/**
-	 * States which will be the maximum progress to be displayed
-	 *
-	 * @param maxProgress
-	 */
-	public void setProgressMax(int maxProgress) {
-
-		progressBar.setMaximum(maxProgress);
-	}
-
-	/**
-	 * Update the progress of the loading of the main program
-	 *
-	 * @param progress
-	 */
-	public void setProgress(int progress) {
-
-		final int theProgress = progress;
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override public void run() {
-
-				progressBar.setValue(theProgress);
-			}
-		});
-	}
-
-	/**
-	 * Display the progress of the loading in a Progress Bar
-	 *
-	 * @param message  The underlying message with the progress
-	 * @param progress The graphical bar with the progress
-	 */
-	public void setProgress(String message, int progress) {
-
-		final int theProgress = progress;
-		final String theMessage = message;
-		setProgress(progress);
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override public void run() {
-
-				progressBar.setValue(theProgress);
-				progressBar.setString(theMessage);
-			}
-		});
-	}
-
-	/**
-	 * Show SplashScreen
-	 *
-	 * @param b True to put SplashScreen visible, false otherwise
-	 */
-	public void setScreenVisible(boolean b) {
-
-		final boolean boo = b;
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override public void run() {
-
-				setVisible(boo);
-			}
-		});
-	}
+    
+    /**
+     * States which will be the maximum progress to be displayed
+     *
+     * @param maxProgress
+     */
+    public void setProgressMax(int maxProgress) {
+        
+        progressBar.setMaximum(maxProgress);
+    }
+    
+    /**
+     * Update the progress of the loading of the main program
+     *
+     * @param progress
+     */
+    public void setProgress(int progress) {
+        
+        final int theProgress = progress;
+        SwingUtilities.invokeLater(new Runnable() {
+            
+            @Override public void run() {
+                
+                progressBar.setValue(theProgress);
+            }
+        });
+    }
+    
+    /**
+     * Display the progress of the loading in a Progress Bar
+     *
+     * @param message  The underlying message with the progress
+     * @param progress The graphical bar with the progress
+     */
+    public void setProgress(String message, int progress) {
+        
+        final int theProgress = progress;
+        final String theMessage = message;
+        setProgress(progress);
+        SwingUtilities.invokeLater(new Runnable() {
+            
+            @Override public void run() {
+                
+                progressBar.setValue(theProgress);
+                progressBar.setString(theMessage);
+            }
+        });
+    }
+    
+    /**
+     * Show SplashScreen
+     *
+     * @param b True to put SplashScreen visible, false otherwise
+     */
+    public void setScreenVisible(boolean b) {
+        
+        final boolean boo = b;
+        SwingUtilities.invokeLater(new Runnable() {
+            
+            @Override public void run() {
+                
+                setVisible(boo);
+            }
+        });
+    }
 }

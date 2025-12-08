@@ -309,10 +309,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      */
     private ButtonGroup groupZoom = new ButtonGroup();
     /**
-     * Object that represents the item 'View - Message window'.
-     */
-    private JMenuItem viewMessageWindowMenuItem = null;
-    /**
      * Object that represents the menu 'Tools'.
      */
     private JMenu toolsMenu = null;
@@ -627,40 +623,24 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             fileMenu.addSeparator();
             lastIndex = LastOpenFiles.getOldestOpenFileIndex();
             // lastOpenFileIndex = lastIndex;
-            for (index = 1; index <= lastIndex; index++) {
+            for (index = 0; index <= lastIndex; index++) {
                 item = new LastRecentFilesMenuItem();
                 item.setName("lastRecentFilesMenuItem" + index);
-                item.setText(index + " - " + LastOpenFiles.getFileNameAt(index));
-                switch (index) {
-                    case 1:
-                        item.setActionCommand(ActionCommands.OPEN_LAST_1_FILE.getCommandName());
-                        break;
-                    case 2:
-                        item.setActionCommand(ActionCommands.OPEN_LAST_2_FILE.getCommandName());
-                        break;
-                    case 3:
-                        item.setActionCommand(ActionCommands.OPEN_LAST_3_FILE.getCommandName());
-                        break;
-                    case 4:
-                        item.setActionCommand(ActionCommands.OPEN_LAST_4_FILE.getCommandName());
-                        break;
-                    case 5:
-                        item.setActionCommand(ActionCommands.OPEN_LAST_5_FILE.getCommandName());
-                        break;
-                    case 6:
-                        item.setActionCommand(ActionCommands.OPEN_LAST_6_FILE.getCommandName());
-                        break;
-                    case 7:
-                        item.setActionCommand(ActionCommands.OPEN_LAST_7_FILE.getCommandName());
-                        break;
-                    case 8:
-                        item.setActionCommand(ActionCommands.OPEN_LAST_8_FILE.getCommandName());
-                        break;
-                    case 9:
-                        item.setActionCommand(ActionCommands.OPEN_LAST_9_FILE.getCommandName());
-                        break;
-                    default:
-                    
+                item.setText((index + 1) + " - " + LastOpenFiles.getFilePathAt(index));
+                ActionCommands command = switch (index) {
+                    case 0 -> ActionCommands.OPEN_LAST_1_FILE;
+                    case 1 -> ActionCommands.OPEN_LAST_2_FILE;
+                    case 2 -> ActionCommands.OPEN_LAST_3_FILE;
+                    case 3 -> ActionCommands.OPEN_LAST_4_FILE;
+                    case 4 -> ActionCommands.OPEN_LAST_5_FILE;
+                    case 5 -> ActionCommands.OPEN_LAST_6_FILE;
+                    case 6 -> ActionCommands.OPEN_LAST_7_FILE;
+                    case 7 -> ActionCommands.OPEN_LAST_8_FILE;
+                    case 8 -> ActionCommands.OPEN_LAST_9_FILE;
+                    default -> null;
+                };
+                if (command != null) {
+                    item.setActionCommand(command.getCommandName());
                 }
                 item.addActionListener(listener);
                 fileMenu.add(item);
@@ -1314,8 +1294,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             // required in OpenMarkov
             viewMenu.add(getViewToolbarsMenu());
             viewMenu.add(getViewZoomMenu());
-            viewMenu.addSeparator();
-            viewMenu.add(getViewMessageWindowMenuItem());
         }
         
         return viewMenu;
@@ -1635,23 +1613,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         }
         
         return viewZoomOtherMenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewMessageWindowMenuItem.
-     *
-     * @return a new item 'View - Message item'.
-     */
-    private JMenuItem getViewMessageWindowMenuItem() {
-        
-        if (viewMessageWindowMenuItem == null) {
-            viewMessageWindowMenuItem = new LocalizedMenuItem(MenuItemNames.VIEW_MESSAGEWINDOW_MENUITEM,
-                                                              ActionCommands.MESSAGE_WINDOW.getCommandName());
-            viewMessageWindowMenuItem.addActionListener(listener);
-        }
-        
-        return viewMessageWindowMenuItem;
         
     }
     

@@ -64,30 +64,12 @@ public class SplashScreenLoader {
 		splash.setScreenVisible(true);
 
 	}
-
-	/**
-	 * simulate the main program is being loaded
-	 */
-	public void doingWork() {
-
-		// do something here to simulate the program doing something that
-		// is time consuming
-		/*String poop = "";
-		for (int i = 0; i <= 1000; i++) {
-			for (long j = 0; j < 2000; ++j) {
-				poop = " " + (j + i);
-			}
-			
-		}
-		*/
-
-	}
-
-	/**
+    
+    
+    /**
 	 * destroy the splash Screen turning not visible
 	 */
 	public void splashScreenDestroy() {
-
 		splash.setScreenVisible(false);
 	}
 

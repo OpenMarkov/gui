@@ -11,8 +11,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -29,9 +28,7 @@ public class VisualDecisionNode extends VisualNode{
 	/**
 	 * Internal color of the visual node when there is no finding established.
 	 */
-	private static final Color BACKGROUND_COLOR = OpenMarkovPreferences
-            .getColor(OpenMarkovPreferencesKeys.NODEDECISION_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-                      new Color(207, 227, 253));
+    private static final Color BACKGROUND_COLOR = OpenMarkovLocalPreferences.NODEDECISION_BACKGROUND_COLOR.get();
 
 	/**
 	 * Internal color of the visual node when there is a preResolution finding
@@ -54,16 +51,12 @@ public class VisualDecisionNode extends VisualNode{
 	/**
 	 * Color of lines and letters.
 	 */
-	private static final Color FOREGROUND_COLOR = OpenMarkovPreferences
-            .getColor(OpenMarkovPreferencesKeys.NODEDECISION_FOREGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-                      Color.BLACK);
+    private static final Color FOREGROUND_COLOR = OpenMarkovLocalPreferences.NODEDECISION_FOREGROUND_COLOR.get();
 
 	/**
 	 * Color of the letters
 	 */
-	private static final Color TEXT_FOREGROUND_COLOR = OpenMarkovPreferences
-            .getColor(OpenMarkovPreferencesKeys.NODEDECISION_TEXT_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-                      Color.BLACK);
+    private static final Color TEXT_FOREGROUND_COLOR = OpenMarkovLocalPreferences.NODEDECISION_TEXT_COLOR.get();
 
 	/**
 	 * This attribute indicates if the node has an imposed policy

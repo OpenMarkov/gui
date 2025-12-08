@@ -6,8 +6,7 @@
  */
 package org.openmarkov.gui.dialog.io;
 
-import org.openmarkov.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 
 import java.io.File;
 import java.util.HashMap;
@@ -19,11 +18,8 @@ import java.util.HashMap;
 		for (String extension : writersInfo.keySet()) {
 			addChoosableFileFilter(new FileFilterAll(extension, writersInfo.get(extension)));
 		}
-        setFileFilter(OpenMarkovPreferences
-                              .get(OpenMarkovPreferencesKeys.LATEST_SAVED_DATASET_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
-                                   FileChooser.DEFAULT_FILE_FORMAT));
-        File currentDirectory = new File(OpenMarkovPreferences
-                                                 .get(OpenMarkovPreferencesKeys.LATEST_SAVED_DATASET_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+        setFileFilter(OpenMarkovLocalPreferences.LATEST_SAVED_DATASET_FORMAT.get());
+        File currentDirectory = OpenMarkovLocalPreferences.LATEST_SAVED_DATASET_DIRECTORY.get();
         setCurrentDirectory(currentDirectory);
 	}
 

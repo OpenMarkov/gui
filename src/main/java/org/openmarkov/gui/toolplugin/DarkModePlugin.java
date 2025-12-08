@@ -3,13 +3,15 @@ package org.openmarkov.gui.toolplugin;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 import org.openmarkov.gui.window.MainPanel;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class DarkModePlugin implements ToolPlugin {
     
-    private static boolean isLightMode = true; //!com.jthemedetecor.OsThemeDetector.getDetector().isDark();
+    //!com.jthemedetecor.OsThemeDetector.getDetector().isDark();
     /*
         The user's theme can be detected using com.jthemedetecor.OsThemeDetector.getDetector().isDark(). But this
         requires the dependency:
@@ -33,17 +35,21 @@ public class DarkModePlugin implements ToolPlugin {
     }
     
     @Override public void showDialog(@Nullable JFrame parent) throws Exception {
-        DarkModePlugin.isLightMode = !DarkModePlugin.isLightMode;
+        OpenMarkovLocalPreferences.PREFERS_DARK_THEME.set(!OpenMarkovLocalPreferences.PREFERS_DARK_THEME.get());
         updateInterfaceToLook(parent);
     }
     
-    public static void updateInterfaceToLook(@Nullable JFrame parent) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
-        if (DarkModePlugin.isLightMode) {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } else {
+    public static void updateInterfaceToLook(@Nullable Container parent) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+        if (OpenMarkovLocalPreferences.PREFERS_DARK_THEME.get()) {
             UIManager.setLookAndFeel(new FlatDarculaLaf());
+        } else {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         }
         if (parent != null) {
+            while (true) {
+                if (parent.getParent() == null) break;
+                parent = parent.getParent();
+            }
             SwingUtilities.updateComponentTreeUI(parent);
         }
     }

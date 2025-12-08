@@ -10,8 +10,7 @@
 
 package org.openmarkov.gui.component;
 
-import org.openmarkov.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 import org.openmarkov.gui.loader.element.IconLoader;
 
 import javax.swing.*;
@@ -32,21 +31,15 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     /**
      * first color to use in header rows
      */
-    protected static final Color TABLE_HEADER_TEXT_COLOR_1 = OpenMarkovPreferences
-            .getColor(OpenMarkovPreferencesKeys.TABLE_HEADER_TEXT_COLOR_1, OpenMarkovPreferences.OPENMARKOV_COLORS,
-                      Color.BLACK);
+    protected static final Color TABLE_HEADER_TEXT_COLOR_1 = OpenMarkovLocalPreferences.TABLE_HEADER_TEXT_COLOR_1.get();
     /**
      * second color to use in header rows
      */
-    protected static final Color TABLE_HEADER_TEXT_COLOR_2 = OpenMarkovPreferences
-            .getColor(OpenMarkovPreferencesKeys.TABLE_HEADER_TEXT_COLOR_2, OpenMarkovPreferences.OPENMARKOV_COLORS,
-                      Color.BLACK);
+    protected static final Color TABLE_HEADER_TEXT_COLOR_2 = OpenMarkovLocalPreferences.TABLE_HEADER_TEXT_COLOR_2.get();
     /**
      * third color to use in header rows
      */
-    protected static final Color TABLE_HEADER_TEXT_COLOR_3 = OpenMarkovPreferences
-            .getColor(OpenMarkovPreferencesKeys.TABLE_HEADER_TEXT_COLOR_3, OpenMarkovPreferences.OPENMARKOV_COLORS,
-                      Color.BLACK);
+    protected static final Color TABLE_HEADER_TEXT_COLOR_3 = OpenMarkovLocalPreferences.TABLE_HEADER_TEXT_COLOR_3.get();
     /**
      * color to use in the background of header rows
      */

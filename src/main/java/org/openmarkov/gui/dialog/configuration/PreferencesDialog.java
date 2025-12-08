@@ -13,13 +13,13 @@ package org.openmarkov.gui.dialog.configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.gui.configuration.LocalPreference;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -80,7 +80,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * @param owner owner JFrame
      */
     public PreferencesDialog(JFrame owner) throws BackingStoreException {
-        this(owner, "OPENMARKOV User Preferences", OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES, true/*
+        this(owner, "OPENMARKOV User Preferences", OPENMARKOV_NODE_PREFERENCES, true/*
          * ,
          * OpenMarkovPreferences
          * .
@@ -97,7 +97,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * @param title title of dialog
      */
     public PreferencesDialog(JFrame owner, String title) throws BackingStoreException {
-        this(owner, title, OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES, true/*
+        this(owner, title, OPENMARKOV_NODE_PREFERENCES, true/*
          * ,
          * OpenMarkovPreferences
          * .
@@ -333,7 +333,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      */
     protected void actionPerformedExport() throws BackingStoreException, IOException {
         Preferences root = Preferences.userRoot();
-        Preferences node = root.node(OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES);
+        Preferences node = root.node(OPENMARKOV_NODE_PREFERENCES);
         System.out.println("Export selected");
         if (chooser.showSaveDialog(PreferencesDialog.this) != JFileChooser.APPROVE_OPTION) {
             return;
@@ -364,7 +364,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * execute the Reset action by cleaning preferences in the user preferences
      */
     protected void actionPerformedReset() {
-        OpenMarkovPreferences.setDefaultPreferences();
+        OpenMarkovLocalPreferences.getAllPreferences().forEach(LocalPreference::clear);
+        OpenMarkovLocalPreferences.getAllPreferences().forEach(LocalPreference::initialize);
         this.jTableEdition.repaint();
         this.jTreePreferences.repaint();
         this.repaint();
@@ -404,4 +405,9 @@ public class PreferencesDialog extends JDialog implements ActionListener {
             }
         }
     }
+    
+    /**
+     * the package nodes in the Preferences
+     */
+    public static final String OPENMARKOV_NODE_PREFERENCES = "OPENMARKOV";
 }

@@ -8,13 +8,11 @@
 package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 import org.openmarkov.core.io.format.annotation.FormatManager;
-import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
-import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -63,12 +61,10 @@ import java.util.List;
 		//UNCLEAR Where is set pgmx? By default LAST_OPENED_FORMAT=pgmx
 
 		if (isOpening) {
-            currentDirectory = new File(OpenMarkovPreferences.get(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+            currentDirectory = OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.get();
             setFileFilter("OpenMarkov");
 		} else {
-            setFileFilter(OpenMarkovPreferences
-                                  .get(OpenMarkovPreferencesKeys.LATEST_SAVED_NETWORK_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
-                                       FileChooser.DEFAULT_FILE_FORMAT));
+            setFileFilter(OpenMarkovLocalPreferences.LATEST_SAVED_NETWORK_FORMAT.get());
 		}
 
         setCurrentDirectory(currentDirectory);
@@ -81,16 +77,14 @@ import java.util.List;
 	@Override public int showOpenDialog(Component parent) {
 		int result = super.showOpenDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
-                                      OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+            OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.set(getSelectedFile());
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
             try {
-                OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_NETWORK_FORMAT, getPgmxFileFormat(),
-                                          OpenMarkovPreferences.OPENMARKOV_FORMATS);
+                OpenMarkovLocalPreferences.LATEST_NETWORK_FORMAT.set(getPgmxFileFormat());
             } catch (SAXException | IOException e) {
                 throw new UnrecoverableException(e);
             }
@@ -101,18 +95,13 @@ import java.util.List;
 	@Override public int showSaveDialog(Component parent) {
 		int result = super.showSaveDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
-                                      OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+            OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.set(getSelectedFile());
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
-            
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_SAVED_NETWORK_FORMAT,
-                                      ((FileFilterAll) getFileFilter()).getFileDescription(), OpenMarkovPreferences.OPENMARKOV_FORMATS);
-
-
+            OpenMarkovLocalPreferences.LATEST_SAVED_NETWORK_FORMAT.set(((FileFilterAll) getFileFilter()).getFileDescription());
 		}
 		return result;
 	}

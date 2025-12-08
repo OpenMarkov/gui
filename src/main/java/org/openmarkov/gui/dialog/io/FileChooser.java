@@ -8,15 +8,13 @@
 package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.core.exception.UnreacheableException;
-import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -123,8 +121,7 @@ public abstract class FileChooser extends JFileChooser {
 		}
 		// In case there is an outdated value in the register
 		if (!isSet) {
-            OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_NETWORK_FORMAT, FileChooser.DEFAULT_FILE_FORMAT,
-                                      OpenMarkovPreferences.OPENMARKOV_FORMATS);
+            OpenMarkovLocalPreferences.LATEST_NETWORK_FORMAT.set(FileChooser.DEFAULT_FILE_FORMAT);
 			description = FileChooser.DEFAULT_FILE_FORMAT;
 			for (FileFilter filter : getChoosableFileFilters()) {
 				if (filter instanceof FileFilterAll && ((FileFilterAll) filter).getFileDescription()

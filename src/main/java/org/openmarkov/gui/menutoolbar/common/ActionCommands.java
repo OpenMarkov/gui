@@ -72,8 +72,6 @@ public enum ActionCommands {
     NODES("Nodes"),
     /** Represents all the actions related to the variable zoom options. */
     ZOOM("Zoom"),
-    /** Action invoked when the user wants to view the message window. */
-    MESSAGE_WINDOW("MessageWindow"),
     /** Action invoked when the user wants to select all the objects. */
     SELECT_ALL("SelectAll"),
     /** Prefix used for edition mode changes */

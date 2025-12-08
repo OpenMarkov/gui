@@ -28,7 +28,9 @@ import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 // ESCA-JAVA0136: allows more than 30 methods in the class
 
@@ -82,6 +84,8 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         EDITION, INFERENCE;
     }
     
+    private final List<Consumer<NetworkPanel>> onModificationListener;
+    
     /**
      * Constructor that creates the instance.
      *
@@ -91,17 +95,8 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     public NetworkPanel(ProbNet probNet, MainPanel mainPanel) {
         this.probNet = probNet;
         this.mainPanel = mainPanel;
+        this.onModificationListener = new ArrayList<>();
         probNet.getPNESupport().addListener(this);
-        initialize();
-    }
-    
-    /**
-     * Constructor that creates the instance.
-     *
-     * @param mainPanel application main panel.
-     */
-    public NetworkPanel(MainPanel mainPanel) {
-        this.mainPanel = mainPanel;
         initialize();
     }
     
@@ -171,6 +166,10 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         return modified;
     }
     
+    public void addOnModification(Consumer<NetworkPanel> action) {
+        this.onModificationListener.add(action);
+    }
+    
     /**
      * Sets the modification state of the network to a new value.
      *
@@ -178,24 +177,9 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      */
     public void setModified(boolean value) {
         modified = value;
-        refreshContainerTitle();
-    }
-    
-    /**
-     * This method sets the title of the container of the network panel to the
-     * name of the file where the network is saved. If the network has been
-     * modified, an asterisk appears before the name of the file. If the name of
-     * the file is null, then the title of the container is used.
-     */
-    private void refreshContainerTitle() {
-        String newTitle = "";
-        if (modified) {
-            newTitle = "* ";
+        for (Consumer<NetworkPanel> onModification : this.onModificationListener) {
+            onModification.accept(this);
         }
-        newTitle += (getProbNet().getName() == null) ?
-                StringDatabase.getUniqueInstance().getString("InternalFrame.Title.Label") :
-                getProbNet().getName();
-        container.setTitle(newTitle);
     }
     
     /**

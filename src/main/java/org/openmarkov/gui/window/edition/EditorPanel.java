@@ -2282,7 +2282,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void setZoomToFitNetwork() {
         double[] networkBounds = getBounds((Graphics2D) getGraphics());
-        Dimension panelBounds = networkPanel.getMainPanel().getMdi().getSize();
+        Dimension panelBounds = networkPanel.getMainPanel().getNetworksTabPanel().getSize();
         double zoom = 1;
         
         while (((networkBounds[1] * zoom) > panelBounds.getWidth())

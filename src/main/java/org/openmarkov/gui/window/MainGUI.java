@@ -7,23 +7,24 @@
 
 package org.openmarkov.gui.window;
 
-import com.formdev.flatlaf.FlatDarkLaf;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.component.FrameMirror;
-import org.openmarkov.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys;
+import org.openmarkov.gui.configuration.LocalPreference;
+import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
 import org.openmarkov.gui.dialog.SplashScreenLoader;
+import org.openmarkov.gui.dialog.common.WindowDimensions;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
-import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class constructs the main GUI in a frame with a splash screen during the
@@ -53,32 +54,69 @@ import java.lang.reflect.InvocationTargetException;
         SplashScreenLoader splash = new SplashScreenLoader();
         configureUI();
         splash.splashScreenInit();
-        
-        splash.getSplash().setProgress("Loading OpenMarkov preferences", 0);
+        splash.getSplash().setProgress("Loading preferences", 0);
         doReadPreferences();
-        splash.doingWork();
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("OpenMarkov");
-        setName("MainGUI");
+        splash.getSplash().setProgress("Loading resources", 25);
+        // TODO here will be the plug-in loaders in future
+        setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
+        StringDatabase.getUniqueInstance().getAllBundles();
+        splash.getSplash().setProgress("Loading interface", 75);
         Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
         setSize(screenPortionSize(screenInsets));
         setLocation(screenInsets.left, screenInsets.top);
-        splash.getSplash().setProgress("Loading Resources", 25);
-        // TODO here will be the plug-in loaders in future
-        setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
-        splash.getSplash().setProgress("Loading Main Panel", 50);
         setContentPane(getMainPanel());
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("OpenMarkov");
+        setName("MainGUI");
+        this.frameMirror = new FrameMirror(this);
+        if (OpenMarkovLocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.isSet()) {
+            var dimensions = OpenMarkovLocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get();
+            setLocation(dimensions.location());
+            setSize(dimensions.size());
+            setExtendedState(dimensions.extendedState());
+        }
+        addComponentListener(new ComponentListener() {
+            
+            @Override public void componentResized(ComponentEvent e) {
+                updatePreferenceDimensions();
+            }
+            
+            @Override public void componentMoved(ComponentEvent e) {
+                updatePreferenceDimensions();
+            }
+            
+            @Override public void componentShown(ComponentEvent e) {
+            
+            }
+            
+            @Override public void componentHidden(ComponentEvent e) {
+            
+            }
+        });
         splash.getSplash().setProgress("Completed", 100);
         // loading the application
         splash.splashScreenDestroy();
-        this.frameMirror = new FrameMirror(this);
     }
     
+    private void updatePreferenceDimensions() {
+        var isMaximized = getExtendedState() == Frame.MAXIMIZED_BOTH;
+        var originalDimensions = OpenMarkovLocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get();
+        Point location = isMaximized ? originalDimensions.location() : getLocation();
+        Dimension size = isMaximized ? originalDimensions.size() : getSize();
+        int extendedState = getExtendedState();
+        WindowDimensions newDimensions = new WindowDimensions(location, size, extendedState);
+        OpenMarkovLocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.set(newDimensions);
+    }
+    
+    //Conditionally disabled
     public void freeze() {
+        if (true) return;
         this.frameMirror.freeze();
     }
     
+    //Conditionally disabled
     public void unfreeze() {
+        if (true) return;
         this.frameMirror.unfreeze();
     }
     
@@ -94,7 +132,6 @@ import java.lang.reflect.InvocationTargetException;
         
         splash.getSplash().setProgress("Loading OpenMarkov preferences", 0);
         doReadPreferences();
-        splash.doingWork();
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("OpenMarkov");
         setName("MainGUI");
@@ -135,12 +172,9 @@ import java.lang.reflect.InvocationTargetException;
      * LastConnection preference to current Time
      */
     private static void doReadPreferences() {
-        OpenMarkovPreferences.ensurePreferenceAreInitialized();
-        OpenMarkovPreferences
-                .set(OpenMarkovPreferencesKeys.LATEST_CONNECTION, Double.toString(System.currentTimeMillis()),
-                     OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
-        OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LATEST_USER_CONNECTED, System.getProperty("user.name"),
-                                  OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
+        OpenMarkovLocalPreferences.getAllPreferences().forEach(LocalPreference::initialize);
+        OpenMarkovLocalPreferences.LATEST_CONNECTION.set(System.currentTimeMillis());
+        OpenMarkovLocalPreferences.LATEST_USER_CONNECTED.set(System.getProperty("user.name"));
     }
     
     /**

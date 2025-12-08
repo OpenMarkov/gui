@@ -32,8 +32,10 @@ import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.edition.Zoom;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * This class assists to the class MainPanel to manage the menus and toolbars.
@@ -171,6 +173,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
      */
     public void updateOptionsNewNetworkOpen() {
         NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
+        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
         if (currentNetworkPanel != null) {
             workingMode = currentNetworkPanel.getWorkingMode();
             boolean enable = currentNetworkPanel.getProbNet().getNetworkType() instanceof InfluenceDiagramType
@@ -197,6 +200,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
     }
     
     private void checkInferenceOptions() {
+        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
         if (currentNetworkPanel.getProbNet()
                                .hasConstraintOfClass(OnlyChanceNodes.class) && currentNetworkPanel.getProbNet()
                                                                                                   .hasConstraintOfClass(OnlyAtemporalVariables.class)) {
@@ -211,8 +215,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
     }
     
     private boolean getEnableWorkingModeButton() {
-        NetworkType networkType = currentNetworkPanel.getProbNet()
-                                                     .getNetworkType();
+        NetworkType networkType = getCurrentNetworkPanel().getProbNet().getNetworkType();
         return networkType instanceof InfluenceDiagramType || networkType instanceof BayesianNetworkType
                 || networkType instanceof MIDType
                 ;
@@ -302,18 +305,13 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
      * @param networkPanel
      */
     public void updateNetworkAgents(NetworkPanel networkPanel) {
+        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
         if (currentNetworkPanel.getProbNet().isMultiagent()) {
             ArrayList<StringWithProperties> agents = new ArrayList<StringWithProperties>();
             agents.add(new StringWithProperties(StringDatabase.getUniqueInstance().getString("Network.Agent1")));
             agents.add(new StringWithProperties(StringDatabase.getUniqueInstance().getString("Network.Agent2")));
             currentNetworkPanel.getProbNet().setAgents(agents);
-        } /*
-         * else if (!currentNetworkPanel.getProbNet().isMultiagent()) { if
-         * (currentNetworkPanel.getProbNet().getAgents() != null) {
-         * currentNetworkPanel.getProbNet().setAgents(null); } for (Node
-         * node : currentNetworkPanel.getProbNet().getNodes()) {
-         * node.getVariable().setAgent(null); } }
-         */
+        }
     }
     
     /**
@@ -323,10 +321,18 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
      * @param networkPanel information of the network panel.
      */
     public void updateOptionsNetworkDependent(NetworkPanel networkPanel) {
-        currentNetworkPanel = networkPanel;
-        ProbNet currentProbNet = currentNetworkPanel.getProbNet();
+        int tabCount = mainPanel.getNetworksTabPanel().getTabCount();
+        var networkIndex = IntStream.range(0, tabCount)
+                                    .filter(tabIndex -> {
+                                        Component component = mainPanel.getNetworksTabPanel().getComponentAt(tabIndex);
+                                        return component == networkPanel;
+                                    })
+                                    .findFirst().getAsInt();
+        mainPanel.getNetworksTabPanel().setSelectedIndex(networkIndex);
+        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
+        ProbNet currentProbNet = currentNetworkPanel.probNet;
         NetworkPanel.WorkingMode workingMode = currentNetworkPanel.getWorkingMode();
-        if (networkPanel.getByTitle()) {
+        if (currentNetworkPanel.getByTitle()) {
             setOptionSelected(ActionCommands.BYTITLE_NODES, true);
         } else {
             setOptionSelected(ActionCommands.BYNAME_NODES, true);
@@ -378,15 +384,15 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
                 
                 setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
                 setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
-                updateOptionsEvidenceCasesNavigation(networkPanel);
-                setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, !networkPanel.isPropagationActive());
-                if (!networkPanel.getProbNet().hasConstraintOfClass(OnlyChanceNodes.class)) {
+                updateOptionsEvidenceCasesNavigation(currentNetworkPanel);
+                setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, !currentNetworkPanel.isPropagationActive());
+                if (!currentNetworkPanel.getProbNet().hasConstraintOfClass(OnlyChanceNodes.class)) {
                     setOptionEnabled(ActionCommands.DECISION_TREE, true);
                     setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
                 }
             }
         }
-        updateOptionsFindingsDependent(networkPanel);
+        updateOptionsFindingsDependent(currentNetworkPanel);
         updatePropagateEvidenceButton();
         mainPanel.changeWorkingModeButton(workingMode);
         mainPanel.getStandardToolBar().getDecisionTreeButton().setSelected(false);
@@ -400,17 +406,17 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
          * default: { setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
          * break; } } }
          */
-        setOptionEnabled(ActionCommands.SAVE_NETWORK, networkPanel.getModified());
-        objectsSelected(networkPanel.getSelectedNodes(), networkPanel.getSelectedLinks());
-        setZoom(networkPanel.getZoom());
+        setOptionEnabled(ActionCommands.SAVE_NETWORK, currentNetworkPanel.getModified());
+        objectsSelected(currentNetworkPanel.getSelectedNodes(), currentNetworkPanel.getSelectedLinks());
+        setZoom(currentNetworkPanel.getZoom());
         /*
          * updateUndoRedo(networkPanel.getUndoManager().canUndo(),
          * networkPanel.getUndoManager().canUndo());
          */
-        updateUndoRedo(networkPanel.getProbNet().getPNESupport().getCanUndo(),
-                       networkPanel.getProbNet().getPNESupport().getCanRedo());
+        updateUndoRedo(currentNetworkPanel.getProbNet().getPNESupport().getCanUndo(),
+                       currentNetworkPanel.getProbNet().getPNESupport().getCanRedo());
         // updateUndoRedo(networkPanel.getUndoManager());
-        mainPanel.setToolBarPanel(networkPanel.getWorkingMode());
+        mainPanel.setToolBarPanel(currentNetworkPanel.getWorkingMode());
         
         checkInferenceOptions();
     }
@@ -565,8 +571,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
         boolean canTemporalEvolution = false;
         boolean canCreateNextSliceNode = false;
         NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
-        if (currentNetworkPanel != null) {
-            workingMode = currentNetworkPanel.getWorkingMode();
+        if (getCurrentNetworkPanel() != null) {
+            workingMode = getCurrentNetworkPanel().getWorkingMode();
         }
         if (selectedNodes.isEmpty()) {
             if (!selectedLinks.isEmpty()) {
@@ -737,11 +743,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
     }
     
     @Override public void afterEditHappens(PNUndoableEditEvent e) {
-        ProbNet probNet = currentNetworkPanel.getProbNet();
+        ProbNet probNet = getCurrentNetworkPanel().getProbNet();
         // update menu options and network agents when network type has been
         // modified
         if (e.getEdit() instanceof ChangeNetworkTypeEdit) {
-            updateOptionsNetworkDependent(currentNetworkPanel);
+            updateOptionsNetworkDependent(getCurrentNetworkPanel());
             // updateNetworkAgents(currentNetworkPanel);
         }
         updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo(), probNet.getPNESupport().getCanRedo());
@@ -761,7 +767,13 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
     }
     
     public NetworkPanel getCurrentNetworkPanel() {
-        return currentNetworkPanel;
+        int selectedIndex = mainPanel.getNetworksTabPanel().getSelectedIndex();
+        if (selectedIndex == -1) return null;
+        Component componentAt = mainPanel.getNetworksTabPanel().getComponentAt(selectedIndex);
+        if (componentAt instanceof NetworkPanel networkPanel) {
+            return networkPanel;
+        }
+        return null;
     }
     
     /**
