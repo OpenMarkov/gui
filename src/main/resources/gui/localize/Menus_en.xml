@@ -102,7 +102,7 @@
         </Cut>
         <Label value="Edit"/>
         <SwitchToInference>
-            <Label value="Switch to Inference mode"/>
+            <Label value="Switch to inference mode"/>
             <Mnemonic value="s"/>
         </SwitchToInference>
         <InstanceInput>
@@ -214,7 +214,7 @@
         </ClearOutAllEvidenceCases>
         <SwitchToEdition>
             <Mnemonic value="s"/>
-            <Label value="Switch to Edition mode"/>
+            <Label value="Switch to edition mode"/>
         </SwitchToEdition>
         <Expansion>
             <Mnemonic value="x"/>
