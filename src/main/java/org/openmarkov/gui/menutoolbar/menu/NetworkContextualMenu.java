@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.menutoolbar.menu;
 
-import org.openmarkov.gui.loader.element.IconLoader;
+import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
@@ -127,7 +127,7 @@ class NetworkContextualMenu extends ContextualMenu {
 	private JMenuItem getPasteMenuItem() {
 		if (pasteMenuItem == null) {
             pasteMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_PASTE_MENUITEM, ActionCommands.CLIPBOARD_PASTE.getCommandName(),
-					IconLoader.ICON_PASTE_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
+                                                  IconBind.PASTE_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
 			pasteMenuItem.addActionListener(listener);
 		}
 		return pasteMenuItem;

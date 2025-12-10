@@ -32,7 +32,6 @@ import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.exception.FamilyDistributionRuleBrokenException;
-import org.openmarkov.gui.loader.element.IconLoader;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -432,7 +431,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      */
     private void initialize() {
         setName("UncertainValuesDialog");
-        iconLoader = new IconLoader();
         configureButtonsPanel();
         setDefaultButton(getJButtonOK());
         quitIconsOfButtons();

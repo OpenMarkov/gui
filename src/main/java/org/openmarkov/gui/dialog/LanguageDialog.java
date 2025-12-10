@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
+import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
 import org.openmarkov.core.localize.Languages;
 import org.openmarkov.core.localize.LocaleChangeEvent;
@@ -197,7 +197,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 				@Override public void actionPerformed(final ActionEvent e) {
 					String newLanguage = Languages.getShortNameByIndex(jComboBoxLanguages.getSelectedIndex());
 					stringDatabase.setLanguage(newLanguage);
-                    OpenMarkovLocalPreferences.PREFERENCE_LANGUAGE.set(newLanguage);
+                    LocalPreferences.PREFERENCE_LANGUAGE.set(newLanguage);
 					// next line must be re-written to use some Event method
 					// to notify visibility to false instead calling
 					// getParent()
@@ -243,7 +243,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 				@Override public void actionPerformed(final ActionEvent arg0) {
 					String newLanguage = Languages.getShortNameByIndex(jComboBoxLanguages.getSelectedIndex());
 					StringDatabase.getUniqueInstance().setLanguage(newLanguage);
-                    OpenMarkovLocalPreferences.PREFERENCE_LANGUAGE.set(newLanguage);
+                    LocalPreferences.PREFERENCE_LANGUAGE.set(newLanguage);
 				}
 			});
 			jButtonApply.setName("Apply");

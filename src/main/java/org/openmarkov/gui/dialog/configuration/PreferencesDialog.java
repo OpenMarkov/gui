@@ -14,8 +14,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.configuration.LocalPreference;
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
+import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.dialog.io.OMFileChooser;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -53,7 +54,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     /**
      * file chooser for export/import options
      */
-    final private JFileChooser chooser = new JFileChooser();
+    final private OMFileChooser chooser = new OMFileChooser();
     /**
      * String database
      */
@@ -364,8 +365,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
      * execute the Reset action by cleaning preferences in the user preferences
      */
     protected void actionPerformedReset() {
-        OpenMarkovLocalPreferences.getAllPreferences().forEach(LocalPreference::clear);
-        OpenMarkovLocalPreferences.getAllPreferences().forEach(LocalPreference::initialize);
+        LocalPreferences.getAllPreferences().forEach(LocalPreference::clear);
+        LocalPreferences.getAllPreferences().forEach(LocalPreference::initialize);
         this.jTableEdition.repaint();
         this.jTreePreferences.repaint();
         this.repaint();

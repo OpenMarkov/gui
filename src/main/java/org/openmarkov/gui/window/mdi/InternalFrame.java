@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.window.mdi;
 
-import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
+import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -60,7 +60,7 @@ public class InternalFrame extends JInternalFrame implements FrameContentPanelCo
 		setMaximizable(true);
 		setIconifiable(true);
 		setClosable(true);
-        this.setFrameIcon(OpenMarkovLogoIcon.getOpenMarkovLogoIcon16());
+        this.setFrameIcon(IconBind.OPENMARKOV_LOGO_16.icon());
 		setLayout(new BorderLayout());
 		setContentPane(contentPanel);
 		contentPanel.setFrameContentPanelContainer(this);

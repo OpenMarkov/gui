@@ -33,6 +33,7 @@ import org.openmarkov.core.inference.tasks.TemporalEvolution;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.dialog.io.OMFileChooser;
 import org.openmarkov.inference.algorithm.temporalevaluation.tasks.MIDTemporalEvolution;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VETemporalEvolution;
 
@@ -660,15 +661,15 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     
     
     private void createExcel(ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) throws IOException, NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
-        JFileChooser fileChooser = new JFileChooser();
+        OMFileChooser omFileChooser = new OMFileChooser();
         String netName = probNet.getName();
-        fileChooser.setSelectedFile(new File(netName + "-temporal_evolution.xlsx"));
-        if (fileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+        omFileChooser.setSelectedFile(new File(netName + "-temporal_evolution.xlsx"));
+        if (omFileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
             return;
         }
-        String targetFilename = fileChooser.getSelectedFile().getAbsolutePath().endsWith(".xlsx") ?
-                fileChooser.getSelectedFile().getAbsolutePath() :
-                fileChooser.getSelectedFile().getAbsolutePath() + ".xlsx";
+        String targetFilename = omFileChooser.getSelectedFile().getAbsolutePath().endsWith(".xlsx") ?
+                omFileChooser.getSelectedFile().getAbsolutePath() :
+                omFileChooser.getSelectedFile().getAbsolutePath() + ".xlsx";
         List<Variable> temporalVariables = new ArrayList<>();
         for (Variable variable : probNet.getVariables()) {
             if (variable.isTemporal()) {
@@ -1668,20 +1669,21 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      */
     private void saveReport() throws IOException {
         Preferences prefs = Preferences.userRoot().node(getClass().getSimpleName());
-        JFileChooser fileChooser = new JFileChooser(prefs.get("LAST_FOLDER_TEMPEVO", new File(".").getAbsolutePath()));
+        OMFileChooser omFileChooser = new OMFileChooser();
+        omFileChooser.setCurrentDirectory(new File(prefs.get("LAST_FOLDER_TEMPEVO", ".")));
         String netName = FilenameUtils.getBaseName(expandedNetwork.getName());
         if (tabbedPane.getSelectedIndex() == 0) {
-            fileChooser.setSelectedFile(
+            omFileChooser.setSelectedFile(
                     new File(netName + "-" + variableOfInterest.getBaseName() + "-temporal_evolution.png"));
         } else {
-            fileChooser.setSelectedFile(
+            omFileChooser.setSelectedFile(
                     new File(netName + "-" + variableOfInterest.getBaseName() + "-temporal_evolution.xlsx"));
         }
-        if (fileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+        if (omFileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
             return;
         }
-        String filename = fileChooser.getSelectedFile().getAbsolutePath();
-        if (fileChooser.getSelectedFile().exists()) {
+        String filename = omFileChooser.getSelectedFile().getAbsolutePath();
+        if (omFileChooser.getSelectedFile().exists()) {
             int result = JOptionPane.showConfirmDialog(this,
                                                        stringDatabase.getString("OverwriteFile.Text.Label"),
                                                        stringDatabase.getString("OverwriteFile.Title.Label"),
@@ -1690,7 +1692,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 return;
             }
         }
-        prefs.put("LAST_FOLDER_TEMPEVO", fileChooser.getSelectedFile().getParent());
+        prefs.put("LAST_FOLDER_TEMPEVO", omFileChooser.getSelectedFile().getParent());
         if (tabbedPane.getSelectedIndex() != 0) {
             createExcel(filename);
             return;

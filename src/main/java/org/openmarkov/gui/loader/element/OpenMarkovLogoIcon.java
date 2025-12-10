@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.loader.element;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -20,13 +19,11 @@ import java.awt.*;
 public class OpenMarkovLogoIcon {
 
 	/**
-	 * Icon for the Main OpenMarkov Frame
+     * IconBind for the Main OpenMarkov Frame
 	 */
 	static final String OPENMARKOV_LOGO_IMAGEICON_16 = "/images/OM_16p4.png";
-	static final String OPENMARKOV_LOGO_IMAGEICON_32 = "/images/C2_32.jpg";
-	static final String OPENMARKOV_LOGO_IMAGEICON_64 = "/images/C2_64.jpg";
-
-	/**
+    
+    /**
 	 * OpenMarkovLogoIcon unique instance. Used in singleton pattern.
 	 */
     private static final OpenMarkovLogoIcon INSTANCE = new OpenMarkovLogoIcon();
@@ -53,62 +50,7 @@ public class OpenMarkovLogoIcon {
 	 * @return the image for 16 points
 	 */
 	public Image getOpenMarkovLogoIconImage16() {
-
-		Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource(OPENMARKOV_LOGO_IMAGEICON_16));
-
-		return icon;
+        return Toolkit.getDefaultToolkit().getImage(getClass().getResource(OPENMARKOV_LOGO_IMAGEICON_16));
 	}
-
-	/**
-	 * retrieves the openmarkov logo image for 32 points
-	 *
-	 * @return the image for 32 points
-	 */
-	public Image getOpenMarkovLogoIconImage32() {
-
-		Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource(OPENMARKOV_LOGO_IMAGEICON_32));
-		return icon;
-	}
-
-	/**
-	 * retrieves the openmarkov logo image for 64 points
-	 *
-	 * @return the image for 64 points
-	 */
-	public Image getOpenMarkovLogoIconImage64() {
-
-		Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource(OPENMARKOV_LOGO_IMAGEICON_64));
-		return icon;
-	}
-
-	/**
-	 * retrieves the openmarkov logo icon for 16 points
-	 *
-	 * @return the icon for 16 points
-	 */
-    public static ImageIcon getOpenMarkovLogoIcon16() {
-
-		return new IconLoader().load(IconLoader.OPENMARKOV_LOGO_ICON_16);
-	}
-
-	/**
-	 * retrieves the openmarkov logo icon for 32 points
-	 *
-	 * @return the icon for 32 points
-	 */
-    public static ImageIcon getOpenMarkovLogoIcon32() {
-
-		return new IconLoader().load(IconLoader.OPENMARKOV_LOGO_ICON_32);
-	}
-
-	/**
-	 * retrieves the openmarkov logo icon for 64 points
-	 *
-	 * @return the icon for 64 points
-	 */
-    public static ImageIcon getOpenMarkovLogoIcon64() {
-
-		return new IconLoader().load(IconLoader.OPENMARKOV_LOGO_ICON_64);
-	}
-
+ 
 }

@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.menutoolbar.toolbar;
 
-import org.openmarkov.gui.loader.element.IconLoader;
+import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.gui.window.edition.NetworkPanel;
@@ -76,10 +76,6 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
      * Button to perform a sensitivity analysis.
      */
     private JButton sensAnalysisButton = null;
-    /**
-     * Icon loader.
-     */
-    private IconLoader iconLoader = null;
     
     /**
      * This method initialises this instance.
@@ -95,11 +91,9 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
      * This method configures the toolbar.
      */
     private void initialize() {
-        iconLoader = new IconLoader();
         add(getNewNetworkButton());
         add(getOpenNetworkButton());
         add(getSaveNetworkButton());
-        add(getCloseNetworkButton());
         addSeparator();
         add(getZoomOutButton());
         add(getZoomComboBox());
@@ -121,7 +115,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     private JButton getNewNetworkButton() {
         if (newNetworkButton == null) {
             newNetworkButton = new JButton();
-            newNetworkButton.setIcon(iconLoader.load(IconLoader.ICON_NEW_ENABLED));
+            newNetworkButton.setIcon(IconBind.NEW_ENABLED.icon());
             newNetworkButton.setActionCommand(ActionCommands.NEW_NETWORK.getCommandName());
             newNetworkButton.setFocusable(false);
             newNetworkButton
@@ -140,7 +134,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     private JButton getOpenNetworkButton() {
         if (openNetworkButton == null) {
             openNetworkButton = new JButton();
-            openNetworkButton.setIcon(iconLoader.load(IconLoader.ICON_OPEN_ENABLED));
+            openNetworkButton.setIcon(IconBind.OPEN_ENABLED.icon());
             openNetworkButton.setActionCommand(ActionCommands.OPEN_NETWORK.getCommandName());
             openNetworkButton.setFocusable(false);
             openNetworkButton
@@ -159,7 +153,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     private JButton getSaveNetworkButton() {
         if (saveNetworkButton == null) {
             saveNetworkButton = new JButton();
-            saveNetworkButton.setIcon(iconLoader.load(IconLoader.ICON_SAVE_ENABLED));
+            saveNetworkButton.setIcon(IconBind.SAVE_ENABLED.icon());
             saveNetworkButton.setActionCommand(ActionCommands.SAVE_NETWORK.getCommandName());
             saveNetworkButton.setFocusable(false);
             saveNetworkButton
@@ -171,25 +165,6 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     }
     
     /**
-     * This method initialises closeNetworkButton.
-     *
-     * @return a new button.
-     */
-    private JButton getCloseNetworkButton() {
-        if (closeNetworkButton == null) {
-            closeNetworkButton = new JButton();
-            closeNetworkButton.setIcon(iconLoader.load(IconLoader.ICON_CLOSE_ENABLED));
-            closeNetworkButton.setActionCommand(ActionCommands.CLOSE_NETWORK.getCommandName());
-            closeNetworkButton.setFocusable(false);
-            closeNetworkButton
-                    .setToolTipText(stringDatabase.getString(ActionCommands.CLOSE_NETWORK + STRING_TOOLTIP_SUFFIX));
-            closeNetworkButton.addActionListener(listener);
-            closeNetworkButton.addMouseMotionListener(this);
-        }
-        return closeNetworkButton;
-    }
-    
-    /**
      * This method initialises zoomInButton.
      *
      * @return a new button.
@@ -197,7 +172,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     private JButton getZoomInButton() {
         if (zoomInButton == null) {
             zoomInButton = new JButton();
-            zoomInButton.setIcon(iconLoader.load(IconLoader.ICON_ZOOM_IN_ENABLED));
+            zoomInButton.setIcon(IconBind.ZOOM_IN_ENABLED.icon());
             zoomInButton.setActionCommand(ActionCommands.ZOOM_IN.getCommandName());
             zoomInButton.setFocusable(false);
             zoomInButton.setToolTipText(stringDatabase.getString(ActionCommands.ZOOM_IN + STRING_TOOLTIP_SUFFIX));
@@ -215,7 +190,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     private JButton getZoomOutButton() {
         if (zoomOutButton == null) {
             zoomOutButton = new JButton();
-            zoomOutButton.setIcon(iconLoader.load(IconLoader.ICON_ZOOM_OUT_ENABLED));
+            zoomOutButton.setIcon(IconBind.ZOOM_OUT_ENABLED.icon());
             zoomOutButton.setActionCommand(ActionCommands.ZOOM_OUT.getCommandName());
             zoomOutButton.setFocusable(false);
             zoomOutButton.setToolTipText(stringDatabase.getString(ActionCommands.ZOOM_OUT + STRING_TOOLTIP_SUFFIX));
@@ -254,7 +229,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     private JToggleButton getWorkingModeButton() {
         if (workingModeButton == null) {
             workingModeButton = new JToggleButton();
-            workingModeButton.setIcon(iconLoader.load(IconLoader.ICON_INFERENCE_MODE_ENABLED));
+            workingModeButton.setIcon(IconBind.INFERENCE_MODE_ENABLED.icon());
             workingModeButton.setFocusable(false);
             workingModeButton.setActionCommand(ActionCommands.CHANGE_WORKING_MODE.getCommandName());
             workingModeButton.setToolTipText(
@@ -273,7 +248,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     public JButton getShowOptimalStrategyButton() {
         if (showOptimalStrategyButton == null) {
             showOptimalStrategyButton = new JButton();
-            showOptimalStrategyButton.setIcon(iconLoader.load(IconLoader.ICON_OPTIMAL_STRATEGY));
+            showOptimalStrategyButton.setIcon(IconBind.OPTIMAL_STRATEGY.icon());
             showOptimalStrategyButton.setActionCommand(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY.getCommandName());
             showOptimalStrategyButton.setFocusable(false);
             showOptimalStrategyButton.setToolTipText(
@@ -292,7 +267,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     public JButton getDecisionTreeButton() {
         if (decisionTreeButton == null) {
             decisionTreeButton = new JButton();
-            decisionTreeButton.setIcon(iconLoader.load(IconLoader.ICON_DECISION_TREE));
+            decisionTreeButton.setIcon(IconBind.DECISION_TREE.icon());
             decisionTreeButton.setActionCommand(ActionCommands.DECISION_TREE.getCommandName());
             decisionTreeButton.setFocusable(false);
             decisionTreeButton
@@ -311,7 +286,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     public JButton getCostEffectivenessButton() {
         if (costEffectivenessButton == null) {
             costEffectivenessButton = new JButton();
-            costEffectivenessButton.setIcon(iconLoader.load(IconLoader.ICON_COST_EFFECTIVENESS));
+            costEffectivenessButton.setIcon(IconBind.COST_EFFECTIVENESS.icon());
             costEffectivenessButton.setActionCommand(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC.getCommandName());
             costEffectivenessButton.setFocusable(false);
             costEffectivenessButton.setToolTipText(
@@ -332,7 +307,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     public JButton getSensAnalysisButton() {
         if (sensAnalysisButton == null) {
             sensAnalysisButton = new JButton();
-            sensAnalysisButton.setIcon(iconLoader.load(IconLoader.ICON_SENS_ANALYSIS));
+            sensAnalysisButton.setIcon(IconBind.SENS_ANALYSIS.icon());
             sensAnalysisButton.setActionCommand(ActionCommands.SENSITIVITY_ANALYSIS.getCommandName());
             sensAnalysisButton.setFocusable(false);
             sensAnalysisButton.setToolTipText(stringDatabase.getString("SensitivityAnalysis.ToolTip.Label"));
@@ -369,11 +344,13 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
             case ActionCommands.SAVE_NETWORK -> saveNetworkButton;
             case ActionCommands.ZOOM_IN -> zoomInButton;
             case ActionCommands.ZOOM_OUT -> zoomOutButton;
-            case ActionCommands.ZOOM_OTHER -> zoomComboBox;
+            case ActionCommands.ZOOM -> zoomComboBox;
             case ActionCommands.DECISION_TREE -> decisionTreeButton;
             case ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC -> costEffectivenessButton;
             case ActionCommands.SENSITIVITY_ANALYSIS -> sensAnalysisButton;
             case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY -> showOptimalStrategyButton;
+            case ActionCommands.CHANGE_TO_EDITION_MODE, ActionCommands.CHANGE_TO_INFERENCE_MODE,
+                 ActionCommands.CHANGE_WORKING_MODE -> workingModeButton;
             case null, default -> null;
         };
     }
@@ -392,9 +369,6 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
         } else if (e.getSource().equals(getSaveNetworkButton())) {
             getSaveNetworkButton()
                     .setToolTipText(stringDatabase.getString(ActionCommands.SAVE_NETWORK + STRING_TOOLTIP_SUFFIX));
-        } else if (e.getSource().equals(getCloseNetworkButton())) {
-            getCloseNetworkButton()
-                    .setToolTipText(stringDatabase.getString(ActionCommands.CLOSE_NETWORK + STRING_TOOLTIP_SUFFIX));
         } else if (e.getSource().equals(getZoomInButton())) {
             getZoomInButton().setToolTipText(stringDatabase.getString(ActionCommands.ZOOM_IN + STRING_TOOLTIP_SUFFIX));
         } else if (e.getSource().equals(getZoomOutButton())) {

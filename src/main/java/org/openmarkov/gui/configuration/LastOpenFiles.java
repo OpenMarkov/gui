@@ -29,7 +29,7 @@ public class LastOpenFiles {
 	 */
 	public static String getFilePathAt(int index) {
 		try {
-			return OpenMarkovLocalPreferences.LAST_OPEN_NETWORKS_FILES.get().get(index);
+            return LocalPreferences.LAST_OPEN_NETWORKS_FILES.get().get(index);
 		} catch (IndexOutOfBoundsException ex) {
 			return "";
 		}
@@ -42,7 +42,7 @@ public class LastOpenFiles {
 	 * @param fileName - name of the file to find
 	 */
     public static void setLastFileName(String fileName) {
-		OpenMarkovLocalPreferences.LAST_OPEN_NETWORKS_FILES.use(latestOpenFiles -> {
+        LocalPreferences.LAST_OPEN_NETWORKS_FILES.use(latestOpenFiles -> {
 			int index = getIndexForFilename(fileName);
 			if (index == -1) {
 				latestOpenFiles.add(0, fileName);
@@ -64,20 +64,20 @@ public class LastOpenFiles {
 	 * @return index for the filename if exist; otherwise, return -1
 	 */
     public static int getIndexForFilename(String fileName) {
-		return OpenMarkovLocalPreferences.LAST_OPEN_NETWORKS_FILES.get().indexOf(fileName);
+        return LocalPreferences.LAST_OPEN_NETWORKS_FILES.get().indexOf(fileName);
 	}
 
 	/**
 	 * @return true if there are some last open files; false otherwise
 	 */
     public static boolean existLastOpenFiles() {
-		return !OpenMarkovLocalPreferences.LAST_OPEN_NETWORKS_FILES.get().isEmpty();
+        return !LocalPreferences.LAST_OPEN_NETWORKS_FILES.get().isEmpty();
 	}
 
 	/**
 	 * @return index the index for the oldest open file
 	 */
     public static int getOldestOpenFileIndex() {
-		return OpenMarkovLocalPreferences.LAST_OPEN_NETWORKS_FILES.get().size() - 1;
+        return LocalPreferences.LAST_OPEN_NETWORKS_FILES.get().size() - 1;
 	}
 }

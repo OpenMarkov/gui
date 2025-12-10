@@ -22,6 +22,8 @@ open module org.openmarkov.gui {
     requires org.apache.commons.compress;
     requires com.formdev.flatlaf;
     requires jdk.compiler;
+    requires com.google.gson;
+    requires java.xml;
     
     
     exports org.openmarkov.gui.action;

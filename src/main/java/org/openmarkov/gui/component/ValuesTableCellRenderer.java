@@ -10,8 +10,8 @@
 
 package org.openmarkov.gui.component;
 
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
-import org.openmarkov.gui.loader.element.IconLoader;
+import org.openmarkov.gui.configuration.LocalPreferences;
+import org.openmarkov.gui.loader.element.IconBind;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -31,15 +31,15 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     /**
      * first color to use in header rows
      */
-    protected static final Color TABLE_HEADER_TEXT_COLOR_1 = OpenMarkovLocalPreferences.TABLE_HEADER_TEXT_COLOR_1.get();
+    protected static final Color TABLE_HEADER_TEXT_COLOR_1 = LocalPreferences.TABLE_HEADER_TEXT_COLOR_1.get();
     /**
      * second color to use in header rows
      */
-    protected static final Color TABLE_HEADER_TEXT_COLOR_2 = OpenMarkovLocalPreferences.TABLE_HEADER_TEXT_COLOR_2.get();
+    protected static final Color TABLE_HEADER_TEXT_COLOR_2 = LocalPreferences.TABLE_HEADER_TEXT_COLOR_2.get();
     /**
      * third color to use in header rows
      */
-    protected static final Color TABLE_HEADER_TEXT_COLOR_3 = OpenMarkovLocalPreferences.TABLE_HEADER_TEXT_COLOR_3.get();
+    protected static final Color TABLE_HEADER_TEXT_COLOR_3 = LocalPreferences.TABLE_HEADER_TEXT_COLOR_3.get();
     /**
      * color to use in the background of header rows
      */
@@ -55,7 +55,6 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     protected int firstEditableRow;
     private boolean[] uncertaintyInColumns;
     private JLabel jUncertaintyIcon;
-    private IconLoader iconLoader;
     
     /**
      * constructor for the renderer
@@ -271,11 +270,10 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     
     protected JLabel getUncertaintyIcon() {
         if (jUncertaintyIcon == null) {
-            iconLoader = new IconLoader();
             jUncertaintyIcon = new JLabel();
             jUncertaintyIcon.setName("jUncertaintyIcon");
             jUncertaintyIcon.setOpaque(true);
-            jUncertaintyIcon.setIcon(iconLoader.load(IconLoader.ICON_UNCERTAINTY));
+            jUncertaintyIcon.setIcon(IconBind.UNCERTAINTY.icon());
             jUncertaintyIcon.setText("Uncertainty");
             jUncertaintyIcon.setHorizontalAlignment(SwingConstants.RIGHT);
             jUncertaintyIcon.setHorizontalTextPosition(SwingConstants.LEFT);

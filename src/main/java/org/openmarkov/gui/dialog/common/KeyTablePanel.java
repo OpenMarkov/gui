@@ -7,11 +7,10 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.exception.ThereIsNoNodeInDataException;
-import org.openmarkov.gui.loader.element.IconLoader;
+import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -89,10 +88,6 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      */
     protected JButton removeValueButton = null;
     /**
-     * Icon loader.
-     */
-    protected IconLoader iconLoader;
-    /**
      * String Database
      */
     protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
@@ -109,8 +104,6 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      * this is a default constructor with no construction parameters
      */
     public KeyTablePanel() {
-        
-        iconLoader = new IconLoader();
         reorderable = false;
         modifiable = false;
         showHeader = false;
@@ -127,8 +120,6 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      */
     public KeyTablePanel(String[] columns, Object[][] data, boolean reorderable, boolean modifiable,
                          boolean showHeader) {
-        
-        iconLoader = new IconLoader();
         this.columns = columns.clone();
         this.data = data.clone();
         this.reorderable = reorderable;
@@ -256,7 +247,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
             upValueButton.setName("KeyTablePanel.upValueButton");
             upValueButton.setText(stringDatabase.getString("Up.Text.Label"));
             upValueButton.setMnemonic(stringDatabase.getString("Up.Text.Mnemonic").charAt(0));
-            upValueButton.setIcon(iconLoader.load(IconLoader.ICON_ARROW_UP_ENABLED));
+            upValueButton.setIcon(IconBind.ARROW_UP_ENABLED.icon());
             upValueButton.setVisible(reorderable);
             upValueButton.setEnabled(false);
             upValueButton.addActionListener(this);
@@ -276,7 +267,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
             downValueButton.setName("KeyTablePanel.downValueButton");
             downValueButton.setText(stringDatabase.getString("Down.Text.Label"));
             downValueButton.setMnemonic(stringDatabase.getString("Down.Text.Mnemonic").charAt(0));
-            downValueButton.setIcon(iconLoader.load(IconLoader.ICON_ARROW_DOWN_ENABLED));
+            downValueButton.setIcon(IconBind.ARROW_DOWN_ENABLED.icon());
             downValueButton.setVisible(reorderable);
             downValueButton.setEnabled(false);
             downValueButton.addActionListener(this);
@@ -296,7 +287,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
             addValueButton.setName("KeyTablePanel.addValueButton");
             addValueButton.setText(stringDatabase.getString("Add.Text.Label"));
             addValueButton.setMnemonic(stringDatabase.getString("Add.Text.Mnemonic").charAt(0));
-            addValueButton.setIcon(iconLoader.load(IconLoader.ICON_PLUS_ENABLED));
+            addValueButton.setIcon(IconBind.PLUS_ENABLED.icon());
             addValueButton.addActionListener(this);
         }
         return addValueButton;
@@ -351,7 +342,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
             removeValueButton.setName("KeyTablePanel.removeValueButton");
             removeValueButton.setText(stringDatabase.getString("Delete.Text.Label"));
             removeValueButton.setMnemonic(stringDatabase.getString("Delete.Text.Mnemonic").charAt(0));
-            removeValueButton.setIcon(iconLoader.load(IconLoader.ICON_MINUS_ENABLED));
+            removeValueButton.setIcon(IconBind.MINUS_ENABLED.icon());
             removeValueButton.setEnabled(false);
             removeValueButton.addActionListener(this);
         }

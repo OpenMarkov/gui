@@ -9,7 +9,8 @@ package org.openmarkov.gui.menutoolbar.menu;
 
 import org.openmarkov.gui.component.LastRecentFilesMenuItem;
 import org.openmarkov.gui.configuration.LastOpenFiles;
-import org.openmarkov.gui.loader.element.IconLoader;
+import org.openmarkov.gui.configuration.LocalPreferences;
+import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.localize.LocalizedCheckBoxMenuItem;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.localize.MenuLocalizer;
@@ -17,20 +18,14 @@ import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasicImpl;
-import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
-import org.openmarkov.gui.menutoolbar.plugin.ToolbarManager;
 import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.toolplugin.ToolPluginManager;
-import org.openmarkov.gui.window.MainPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +35,7 @@ import java.util.stream.Collectors;
  * @author jmendoza
  * @version 1.3 gobispo Add Sensitiviy Analysis tools menu
  */
-public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuToolBar {
+public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     
     /**
      * Static field for serializable class.
@@ -171,17 +166,13 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      */
     private JMenuItem editLinkPropertiesMenuItem = null;
     /**
-     * Object that represents the item 'Edit - Switch to Inference mode'.
-     */
-    private JMenuItem editSwitchToInferenceModeMenuItem = null;
-    /**
      * Object that represents the menu 'Inference'.
      */
     private JMenu inferenceMenu = null;
     /**
      * Object that represents the item 'Inference - Switch to Edition mode'.
      */
-    private JMenuItem inferenceSwitchToEditionModeMenuItem = null;
+    private JMenuItem switchWorkingMode = null;
     /**
      * Object that represents the item 'Inference - Propagation Options'.
      */
@@ -232,10 +223,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      * Object that represents the item 'Inference - RemoveAllFindings'.
      */
     private JMenuItem inferenceRemoveAllFindingsMenuItem = null;
-    /**
-     * Object that represents the menu 'View'.
-     */
-    private JMenu viewMenu = null;
+    
     /**
      * Object that represents the menu 'View - Nodes'.
      */
@@ -252,62 +240,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      * Object used to make autoexclusive the options 'ByName' and 'ByTitle'.
      */
     private ButtonGroup groupByNameByTitle = new ButtonGroup();
-    /**
-     * Object that represents the menu 'View - Zoom'.
-     */
-    private JMenu viewZoomMenu = null;
-    /**
-     * Object that represents the menu 'View - Toolbars'.
-     */
-    private JMenu viewToolbarsMenu = null;
-    /**
-     * Object that represents the item 'View - Zoom - Zoom in'.
-     */
-    private JMenuItem viewZoomInMenuItem = null;
-    /**
-     * Object that represents the item 'View - Zoom - Zoom out'.
-     */
-    private JMenuItem viewZoomOutMenuItem = null;
-    /**
-     * Object that represents the item 'View - Zoom - 500%'.
-     */
-    private JCheckBoxMenuItem viewZoom500MenuItem = null;
-    /**
-     * Object that represents the item 'View - Zoom - 200%'.
-     */
-    private JCheckBoxMenuItem viewZoom200MenuItem = null;
-    /**
-     * Object that represents the item 'View - Zoom - 150%'.
-     */
-    private JCheckBoxMenuItem viewZoom150MenuItem = null;
-    /**
-     * Object that represents the item 'View - Zoom - 100%'.
-     */
-    private JCheckBoxMenuItem viewZoom100MenuItem = null;
-    /**
-     * Object that represents the item 'View - Zoom - 75%'.
-     */
-    private JCheckBoxMenuItem viewZoom75MenuItem = null;
-    /**
-     * Object that represents the item 'View - Zoom - 50%'.
-     */
-    private JCheckBoxMenuItem viewZoom50MenuItem = null;
-    /**
-     * Object that represents the item 'View - Zoom - 25%'.
-     */
-    private JCheckBoxMenuItem viewZoom25MenuItem = null;
-    /**
-     * Object that represents the item 'View - Zoom - 10%'.
-     */
-    private JCheckBoxMenuItem viewZoom10MenuItem = null;
-    /**
-     * Object that represents the item 'View - Zoom - Other'.
-     */
-    private JCheckBoxMenuItem viewZoomOtherMenuItem = null;
-    /**
-     * Object used to make autoexclusive the zoom values.
-     */
-    private ButtonGroup groupZoom = new ButtonGroup();
+    
     /**
      * Object that represents the menu 'Tools'.
      */
@@ -336,10 +269,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      * Object that represents the item 'Help - Shortcuts'.
      */
     private JMenuItem helpOpenShortcutsMenuItem = null;
-    /**
-     * Object that is filled the MDI class.
-     */
-    private JMenu menuMDI = null;
+    
     /**
      * Object that listen to the user's actions.
      */
@@ -373,8 +303,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         add(getFileMenu());
         add(getEditMenu());
         add(getInferenceMenu());
-        add(getViewMenu());
-        add(getMenuMDI());
         add(getToolsMenu());
         // add(getOptionsMenu()); //FOR FUTURE USE
         add(getHelpingMenu());
@@ -393,35 +321,11 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             fileMenu.setName(MenuItemNames.FILE_MENU);
             fileMenu.setText(MenuLocalizer.getLabel(MenuItemNames.FILE_MENU));
             fileMenu.setMnemonic(MenuLocalizer.getMnemonic(MenuItemNames.FILE_MENU).charAt(0));
-            getBasicFileMenu();
-            getLastOpenFiles();
-            
         }
+        rechargeFileMenu();
         
         return fileMenu;
         
-    }
-    
-    /**
-     * get all the menu items for the basic File Menu (without Last Open Files)
-     */
-    private void getBasicFileMenu() {
-        fileMenu.add(getFileNewMenuItem());
-        fileMenu.add(getFileOpenMenuItem());
-        fileMenu.add(getFileOpenURLMenuItem());
-        fileMenu.addSeparator();
-        fileMenu.add(getFileSaveMenuItem());
-        fileMenu.add(getFileSaveOpenMenuItem());
-        fileMenu.add(getFileSaveAsMenuItem());
-        fileMenu.addSeparator();
-        fileMenu.add(getFileCloseMenuItem());
-        fileMenu.addSeparator();
-        fileMenu.add(getFileLoadEvidenceMenuItem());
-        // fileMenu.add(getFileSaveEvidenceMenuItem ());
-        fileMenu.addSeparator();
-        fileMenu.add(getFileNetworkPropertiesMenuItem());
-        fileMenu.addSeparator();
-        fileMenu.add(getFileExitMenuItem());
     }
     
     /**
@@ -433,7 +337,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (fileNewMenuItem == null) {
             fileNewMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_NEW_MENUITEM, ActionCommands.NEW_NETWORK.getCommandName(),
-                                                    IconLoader.ICON_NEW_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+                                                    IconBind.NEW_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
             fileNewMenuItem.addActionListener(listener);
         }
         
@@ -450,7 +354,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (fileOpenMenuItem == null) {
             fileOpenMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_OPEN_MENUITEM, ActionCommands.OPEN_NETWORK.getCommandName(),
-                                                     IconLoader.ICON_OPEN_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+                                                     IconBind.OPEN_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
             fileOpenMenuItem.addActionListener(listener);
         }
         
@@ -467,7 +371,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (fileOpenURLMenuItem == null) {
             fileOpenURLMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_OPEN_URL_MENUITEM,
-                                                        ActionCommands.OPEN_NETWORK_URL.getCommandName(), IconLoader.ICON_OPEN_URL_ENABLED,
+                                                        ActionCommands.OPEN_NETWORK_URL.getCommandName(), IconBind.OPEN_URL_ENABLED,
                                                         KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK));
             fileOpenURLMenuItem.addActionListener(listener);
         }
@@ -485,7 +389,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (fileSaveMenuItem == null) {
             fileSaveMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_SAVE_MENUITEM, ActionCommands.SAVE_NETWORK.getCommandName(),
-                                                     IconLoader.ICON_SAVE_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+                                                     IconBind.SAVE_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
             fileSaveMenuItem.addActionListener(listener);
         }
         
@@ -502,8 +406,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (fileSaveOpenMenuItem == null) {
             fileSaveOpenMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_SAVE_OPEN_MENUITEM,
-                                                         ActionCommands.SAVE_OPEN_NETWORK.getCommandName(), IconLoader.ICON_SAVE_ENABLED,
-                                                         KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
+                                                         ActionCommands.SAVE_OPEN_NETWORK.getCommandName(), IconBind.SAVE_ENABLED,
+                                                         KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
             fileSaveOpenMenuItem.addActionListener(listener);
         }
         
@@ -520,8 +424,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (fileSaveAsMenuItem == null) {
             fileSaveAsMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_SAVEAS_MENUITEM,
-                                                       ActionCommands.SAVEAS_NETWORK.getCommandName(), IconLoader.ICON_SAVE_ENABLED,
-                                                       KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK));
+                                                       ActionCommands.SAVEAS_NETWORK.getCommandName(), IconBind.SAVE_ENABLED,
+                                                       KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
             fileSaveAsMenuItem.addActionListener(listener);
         }
         
@@ -538,7 +442,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (fileCloseMenuItem == null) {
             fileCloseMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_CLOSE_MENUITEM, ActionCommands.CLOSE_NETWORK.getCommandName(),
-                                                      IconLoader.ICON_CLOSE_ENABLED);
+                                                      IconBind.CLOSE_ENABLED,
+                                                      KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
             fileCloseMenuItem.addActionListener(listener);
         }
         
@@ -586,13 +491,13 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      * @return a new item 'File - Network additionalProperties'.
      */
     private JMenuItem getFileNetworkPropertiesMenuItem() {
-        
         if (fileNetworkPropertiesMenuItem == null) {
             fileNetworkPropertiesMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_NETWORKPROPERTIES_MENUITEM,
-                                                                  ActionCommands.NETWORK_PROPERTIES.getCommandName());
+                                                                  ActionCommands.NETWORK_PROPERTIES.getCommandName(), null,
+                                                                  KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK)
+            );
             fileNetworkPropertiesMenuItem.addActionListener(listener);
         }
-        
         return fileNetworkPropertiesMenuItem;
         
     }
@@ -605,7 +510,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
     private JMenuItem getFileExitMenuItem() {
         
         if (fileExitMenuItem == null) {
-            fileExitMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_EXIT_MENUITEM, ActionCommands.EXIT_APPLICATION.getCommandName());
+            fileExitMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_EXIT_MENUITEM, ActionCommands.EXIT_APPLICATION.getCommandName(), null,
+                                                     KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
             fileExitMenuItem.addActionListener(listener);
         }
         
@@ -615,47 +521,64 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
     
     /**
      * This method retrieves the LastOpenFiles and show them in the File Menu
+     *
+     * @return
      */
-    private void getLastOpenFiles() {
-        int index, lastIndex;
-        LastRecentFilesMenuItem item;
-        if (LastOpenFiles.existLastOpenFiles()) {
-            fileMenu.addSeparator();
-            lastIndex = LastOpenFiles.getOldestOpenFileIndex();
-            // lastOpenFileIndex = lastIndex;
-            for (index = 0; index <= lastIndex; index++) {
-                item = new LastRecentFilesMenuItem();
-                item.setName("lastRecentFilesMenuItem" + index);
-                item.setText((index + 1) + " - " + LastOpenFiles.getFilePathAt(index));
-                ActionCommands command = switch (index) {
-                    case 0 -> ActionCommands.OPEN_LAST_1_FILE;
-                    case 1 -> ActionCommands.OPEN_LAST_2_FILE;
-                    case 2 -> ActionCommands.OPEN_LAST_3_FILE;
-                    case 3 -> ActionCommands.OPEN_LAST_4_FILE;
-                    case 4 -> ActionCommands.OPEN_LAST_5_FILE;
-                    case 5 -> ActionCommands.OPEN_LAST_6_FILE;
-                    case 6 -> ActionCommands.OPEN_LAST_7_FILE;
-                    case 7 -> ActionCommands.OPEN_LAST_8_FILE;
-                    case 8 -> ActionCommands.OPEN_LAST_9_FILE;
-                    default -> null;
-                };
-                if (command != null) {
-                    item.setActionCommand(command.getCommandName());
-                }
-                item.addActionListener(listener);
-                fileMenu.add(item);
+    private List<LastRecentFilesMenuItem> getLastOpenFiles() {
+        var lastOpenFilesItems = new ArrayList<LastRecentFilesMenuItem>(LocalPreferences.LAST_OPEN_NETWORKS_FILES.get()
+                                                                                                                 .size());
+        int index = 0;
+        for (String recentFile : LocalPreferences.LAST_OPEN_NETWORKS_FILES.get()) {
+            LastRecentFilesMenuItem item = new LastRecentFilesMenuItem();
+            item.setName("lastRecentFilesMenuItem" + index);
+            item.setText(recentFile);
+            ActionCommands command = switch (index) {
+                case 0 -> ActionCommands.OPEN_LAST_1_FILE;
+                case 1 -> ActionCommands.OPEN_LAST_2_FILE;
+                case 2 -> ActionCommands.OPEN_LAST_3_FILE;
+                case 3 -> ActionCommands.OPEN_LAST_4_FILE;
+                case 4 -> ActionCommands.OPEN_LAST_5_FILE;
+                case 5 -> ActionCommands.OPEN_LAST_6_FILE;
+                case 6 -> ActionCommands.OPEN_LAST_7_FILE;
+                case 7 -> ActionCommands.OPEN_LAST_8_FILE;
+                case 8 -> ActionCommands.OPEN_LAST_9_FILE;
+                default -> null;
+            };
+            if (command != null) {
+                item.setActionCommand(command.getCommandName());
             }
+            item.addActionListener(listener);
+            lastOpenFilesItems.add(item);
+            index += 1;
         }
-        
+        return lastOpenFilesItems;
     }
     
     /**
      * This method resets the LastOpenFiles set of items in the File Menu
      */
-    public void rechargeLastOpenFiles() {
+    public void rechargeFileMenu() {
         fileMenu.removeAll();
-        getBasicFileMenu();
-        getLastOpenFiles();
+        fileMenu.add(getFileNewMenuItem());
+        fileMenu.add(getFileOpenMenuItem());
+        fileMenu.add(getFileOpenURLMenuItem());
+        fileMenu.addSeparator();
+        fileMenu.add(getFileSaveMenuItem());
+        fileMenu.add(getFileSaveOpenMenuItem());
+        fileMenu.add(getFileSaveAsMenuItem());
+        fileMenu.add(getFileCloseMenuItem());
+        fileMenu.addSeparator();
+        fileMenu.add(getFileNetworkPropertiesMenuItem());
+        fileMenu.add(getFileLoadEvidenceMenuItem());
+        //fileMenu.add(getFileSaveEvidenceMenuItem ());
+        if (LastOpenFiles.existLastOpenFiles()) {
+            var lastOpenFilesItems = getLastOpenFiles();
+            fileMenu.addSeparator();
+            lastOpenFilesItems.forEach(fileMenu::add);
+        }
+        fileMenu.addSeparator();
+        fileMenu.add(getFileExitMenuItem());
+        
         fileMenu.repaint();
     }
     
@@ -691,8 +614,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             editMenu.add(getEditRelationMenuItem());
             // Menu option for test
             editMenu.add(getTestMenuItem());
-            editMenu.addSeparator();
-            editMenu.add(getEditSwitchToInferenceModeMenuItem());
             
             /*
              * This item must be added to the menu when is active the
@@ -716,7 +637,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editCutMenuItem == null) {
             editCutMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_CUT_MENUITEM, ActionCommands.CLIPBOARD_CUT.getCommandName(),
-                                                    IconLoader.ICON_CUT_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
+                                                    IconBind.CUT_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
             editCutMenuItem.addActionListener(listener);
         }
         
@@ -733,7 +654,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editCopyMenuItem == null) {
             editCopyMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_COPY_MENUITEM, ActionCommands.CLIPBOARD_COPY.getCommandName(),
-                                                     IconLoader.ICON_COPY_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+                                                     IconBind.COPY_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
             editCopyMenuItem.addActionListener(listener);
         }
         
@@ -750,7 +671,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editPasteMenuItem == null) {
             editPasteMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_PASTE_MENUITEM, ActionCommands.CLIPBOARD_PASTE.getCommandName(),
-                                                      IconLoader.ICON_PASTE_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
+                                                      IconBind.PASTE_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
             editPasteMenuItem.addActionListener(listener);
         }
         
@@ -767,7 +688,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editRemoveMenuItem == null) {
             editRemoveMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REMOVE_MENUITEM,
-                                                       ActionCommands.OBJECT_REMOVAL.getCommandName(), IconLoader.ICON_REMOVE_ENABLED,
+                                                       ActionCommands.OBJECT_REMOVAL.getCommandName(), IconBind.REMOVE_ENABLED,
                                                        KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
             editRemoveMenuItem.addActionListener(listener);
         }
@@ -785,7 +706,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editUndoMenuItem == null) {
             editUndoMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_UNDO_MENUITEM, ActionCommands.UNDO.getCommandName(),
-                                                     IconLoader.ICON_UNDO_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK));
+                                                     IconBind.UNDO_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK));
             editUndoMenuItem.addActionListener(listener);
         }
         
@@ -802,7 +723,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editRedoMenuItem == null) {
             editRedoMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REDO_MENUITEM, ActionCommands.REDO.getCommandName(),
-                                                     IconLoader.ICON_REDO_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK));
+                                                     IconBind.REDO_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK));
             editRedoMenuItem.addActionListener(listener);
         }
         
@@ -837,7 +758,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editObjectSelectionMenuItem == null) {
             editObjectSelectionMenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.EDIT_MODE_SELECTION_MENUITEM,
-                                                                        ActionCommands.OBJECT_SELECTION.getCommandName(), IconLoader.ICON_SELECTION_ENABLED);
+                                                                        ActionCommands.OBJECT_SELECTION.getCommandName(), IconBind.SELECTION_ENABLED);
             editObjectSelectionMenuItem.addActionListener(listener);
             groupEditOptions.add(editObjectSelectionMenuItem);
         }
@@ -855,7 +776,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editChanceCreationMenuItem == null) {
             editChanceCreationMenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.EDIT_MODE_CHANCE_MENUITEM,
-                                                                       ActionCommands.CHANCE_CREATION.getCommandName(), IconLoader.ICON_CHANCE_ENABLED);
+                                                                       ActionCommands.CHANCE_CREATION.getCommandName(), IconBind.CHANCE_ENABLED);
             editChanceCreationMenuItem.addActionListener(listener);
             groupEditOptions.add(editChanceCreationMenuItem);
         }
@@ -873,7 +794,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editDecisionCreationMenuItem == null) {
             editDecisionCreationMenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.EDIT_MODE_DECISION_MENUITEM,
-                                                                         ActionCommands.DECISION_CREATION.getCommandName(), IconLoader.ICON_DECISION_ENABLED);
+                                                                         ActionCommands.DECISION_CREATION.getCommandName(), IconBind.DECISION_ENABLED);
             editDecisionCreationMenuItem.addActionListener(listener);
             groupEditOptions.add(editDecisionCreationMenuItem);
         }
@@ -891,7 +812,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editUtilityCreationMenuItem == null) {
             editUtilityCreationMenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.EDIT_MODE_UTILITY_MENUITEM,
-                                                                        ActionCommands.UTILITY_CREATION.getCommandName(), IconLoader.ICON_UTILITY_ENABLED);
+                                                                        ActionCommands.UTILITY_CREATION.getCommandName(), IconBind.UTILITY_ENABLED);
             editUtilityCreationMenuItem.addActionListener(listener);
             groupEditOptions.add(editUtilityCreationMenuItem);
         }
@@ -909,7 +830,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         
         if (editLinkCreationMenuItem == null) {
             editLinkCreationMenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.EDIT_MODE_LINK_MENUITEM,
-                                                                     ActionCommands.LINK_CREATION.getCommandName(), IconLoader.ICON_LINK_ENABLED);
+                                                                     ActionCommands.LINK_CREATION.getCommandName(), IconBind.LINK_ENABLED);
             editLinkCreationMenuItem.addActionListener(listener);
             groupEditOptions.add(editLinkCreationMenuItem);
         }
@@ -980,25 +901,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
                                                                ActionCommands.LINK_PROPERTIES.getCommandName());
             editLinkPropertiesMenuItem.addActionListener(listener);
         }
-        
         return editLinkPropertiesMenuItem;
-        
-    }
-    
-    /**
-     * This method initializes editSwitchToInferenceModeMenuItem.
-     *
-     * @return a new item 'Edit - Switch to Inference mode'.
-     */
-    private JMenuItem getEditSwitchToInferenceModeMenuItem() {
-        if (editSwitchToInferenceModeMenuItem == null) {
-            editSwitchToInferenceModeMenuItem = new LocalizedMenuItem(
-                    MenuItemNames.EDIT_SWITCH_TO_INFERENCE_MODE_MENUITEM, ActionCommands.CHANGE_TO_INFERENCE_MODE.getCommandName(),
-                    IconLoader.ICON_INFERENCE_MODE_ENABLED,
-                    KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK));
-            editSwitchToInferenceModeMenuItem.addActionListener(listener);
-        }
-        return editSwitchToInferenceModeMenuItem;
     }
     
     /**
@@ -1012,7 +915,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             inferenceMenu.setName(MenuItemNames.INFERENCE_MENU);
             inferenceMenu.setText(MenuLocalizer.getLabel(MenuItemNames.INFERENCE_MENU));
             inferenceMenu.setMnemonic(MenuLocalizer.getMnemonic(MenuItemNames.INFERENCE_MENU).charAt(0));
-            inferenceMenu.add(getInferenceSwitchToEditionModeMenuItem());
+            inferenceMenu.add(getSwitchWorkingMode());
             inferenceMenu.addSeparator();
             inferenceMenu.add(getPropagationOptionsMenuItem());
             
@@ -1050,7 +953,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
     public void addPropagateNowItem() {
         if (inferenceMenu != null) {
             inferenceMenu.removeAll();
-            inferenceMenu.add(getInferenceSwitchToEditionModeMenuItem());
+            inferenceMenu.add(getSwitchWorkingMode());
             inferenceMenu.addSeparator();
             inferenceMenu.add(getPropagationOptionsMenuItem());
             inferenceMenu.add(getInferenceOptionsItem());
@@ -1079,7 +982,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
     public void removePropagateNowItem() {
         if (inferenceMenu != null) {
             inferenceMenu.removeAll();
-            inferenceMenu.add(getInferenceSwitchToEditionModeMenuItem());
+            inferenceMenu.add(getSwitchWorkingMode());
             inferenceMenu.addSeparator();
             inferenceMenu.add(getPropagationOptionsMenuItem());
             inferenceMenu.add(getInferenceOptionsItem());
@@ -1105,15 +1008,15 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      *
      * @return a new item 'Inference - Switch to Edition mode'.
      */
-    private JMenuItem getInferenceSwitchToEditionModeMenuItem() {
-        if (inferenceSwitchToEditionModeMenuItem == null) {
-            inferenceSwitchToEditionModeMenuItem = new LocalizedMenuItem(
+    public JMenuItem getSwitchWorkingMode() {
+        if (switchWorkingMode == null) {
+            switchWorkingMode = new LocalizedMenuItem(
                     MenuItemNames.INFERENCE_SWITCH_TO_EDITION_MODE_MENUITEM, ActionCommands.CHANGE_TO_EDITION_MODE.getCommandName(),
-                    IconLoader.ICON_EDITION_MODE_ENABLED,
+                    null,
                     KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK));
-            inferenceSwitchToEditionModeMenuItem.addActionListener(listener);
+            switchWorkingMode.addActionListener(listener);
         }
-        return inferenceSwitchToEditionModeMenuItem;
+        return switchWorkingMode;
     }
     
     /**
@@ -1139,7 +1042,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         if (inferenceCreateNewEvidenceCaseMenuItem == null) {
             inferenceCreateNewEvidenceCaseMenuItem = new LocalizedMenuItem(
                     MenuItemNames.INFERENCE_CREATE_NEW_EVIDENCE_CASE_MENUITEM, ActionCommands.CREATE_NEW_EVIDENCE_CASE.getCommandName(),
-                    IconLoader.ICON_CREATE_NEW_EVIDENCE_CASE_ENABLED);
+                    IconBind.CREATE_NEW_EVIDENCE_CASE_ENABLED, null);
             inferenceCreateNewEvidenceCaseMenuItem.addActionListener(listener);
         }
         return inferenceCreateNewEvidenceCaseMenuItem;
@@ -1154,7 +1057,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         if (inferenceGoToFirstEvidenceCaseMenuItem == null) {
             inferenceGoToFirstEvidenceCaseMenuItem = new LocalizedMenuItem(
                     MenuItemNames.INFERENCE_GO_TO_FIRST_EVIDENCE_CASE_MENUITEM,
-                    ActionCommands.GO_TO_FIRST_EVIDENCE_CASE.getCommandName(), IconLoader.ICON_GO_TO_FIRST_EVIDENCE_CASE_ENABLED);
+                    ActionCommands.GO_TO_FIRST_EVIDENCE_CASE.getCommandName(), IconBind.GO_TO_FIRST_EVIDENCE_CASE_ENABLED, null);
             inferenceGoToFirstEvidenceCaseMenuItem.addActionListener(listener);
         }
         return inferenceGoToFirstEvidenceCaseMenuItem;
@@ -1169,7 +1072,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         if (inferenceGoToPreviousEvidenceCaseMenuItem == null) {
             inferenceGoToPreviousEvidenceCaseMenuItem = new LocalizedMenuItem(
                     MenuItemNames.INFERENCE_GO_TO_PREVIOUS_EVIDENCE_CASE_MENUITEM,
-                    ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE.getCommandName(), IconLoader.ICON_GO_TO_PREVIOUS_EVIDENCE_CASE_ENABLED);
+                    ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE.getCommandName(), IconBind.GO_TO_PREVIOUS_EVIDENCE_CASE_ENABLED, null);
             inferenceGoToPreviousEvidenceCaseMenuItem.addActionListener(listener);
         }
         return inferenceGoToPreviousEvidenceCaseMenuItem;
@@ -1184,7 +1087,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         if (inferenceGoToNextEvidenceCaseMenuItem == null) {
             inferenceGoToNextEvidenceCaseMenuItem = new LocalizedMenuItem(
                     MenuItemNames.INFERENCE_GO_TO_NEXT_EVIDENCE_CASE_MENUITEM, ActionCommands.GO_TO_NEXT_EVIDENCE_CASE.getCommandName(),
-                    IconLoader.ICON_GO_TO_NEXT_EVIDENCE_CASE_ENABLED);
+                    IconBind.GO_TO_NEXT_EVIDENCE_CASE_ENABLED, null);
             inferenceGoToNextEvidenceCaseMenuItem.addActionListener(listener);
         }
         return inferenceGoToNextEvidenceCaseMenuItem;
@@ -1199,7 +1102,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         if (inferenceGoToLastEvidenceCaseMenuItem == null) {
             inferenceGoToLastEvidenceCaseMenuItem = new LocalizedMenuItem(
                     MenuItemNames.INFERENCE_GO_TO_LAST_EVIDENCE_CASE_MENUITEM, ActionCommands.GO_TO_LAST_EVIDENCE_CASE.getCommandName(),
-                    IconLoader.ICON_GO_TO_LAST_EVIDENCE_CASE_ENABLED);
+                    IconBind.GO_TO_LAST_EVIDENCE_CASE_ENABLED, null);
             inferenceGoToLastEvidenceCaseMenuItem.addActionListener(listener);
         }
         return inferenceGoToLastEvidenceCaseMenuItem;
@@ -1214,7 +1117,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         if (inferenceClearEvidenceCasesMenuItem == null) {
             inferenceClearEvidenceCasesMenuItem = new LocalizedMenuItem(
                     MenuItemNames.INFERENCE_CLEAR_OUT_ALL_EVIDENCE_CASES_MENUITEM,
-                    ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES.getCommandName(), IconLoader.ICON_CLEAR_OUT_ALL_EVIDENCE_CASES_ENABLED);
+                    ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES.getCommandName(), IconBind.CLEAR_OUT_ALL_EVIDENCE_CASES_ENABLED, null);
             inferenceClearEvidenceCasesMenuItem.addActionListener(listener);
         }
         return inferenceClearEvidenceCasesMenuItem;
@@ -1229,7 +1132,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         if (inferencePropagateEvidenceMenuItem == null) {
             inferencePropagateEvidenceMenuItem = new LocalizedMenuItem(
                     MenuItemNames.INFERENCE_PROPAGATE_EVIDENCE_MENUITEM, ActionCommands.PROPAGATE_EVIDENCE.getCommandName(),
-                    IconLoader.ICON_PROPAGATE_EVIDENCE_ENABLED,
+                    IconBind.PROPAGATE_EVIDENCE_ENABLED,
                     KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
             inferencePropagateEvidenceMenuItem.addActionListener(listener);
         }
@@ -1276,28 +1179,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             inferenceRemoveAllFindingsMenuItem.addActionListener(listener);
         }
         return inferenceRemoveAllFindingsMenuItem;
-    }
-    
-    /**
-     * This method initializes viewMenu.
-     *
-     * @return a new menu 'View'.
-     */
-    private JMenu getViewMenu() {
-        
-        if (viewMenu == null) {
-            viewMenu = new JMenu();
-            viewMenu.setName(MenuItemNames.VIEW_MENU);
-            viewMenu.setText(MenuLocalizer.getLabel(MenuItemNames.VIEW_MENU));
-            viewMenu.setMnemonic(MenuLocalizer.getMnemonic(MenuItemNames.VIEW_MENU).charAt(0));
-            // viewMenu.add(getViewNodesMenu()); 29/03/2009 - jlgozalo- Not
-            // required in OpenMarkov
-            viewMenu.add(getViewToolbarsMenu());
-            viewMenu.add(getViewZoomMenu());
-        }
-        
-        return viewMenu;
-        
     }
     
     /**
@@ -1353,266 +1234,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         }
         
         return viewNodesByTitleMenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoomMenu.
-     *
-     * @return a new menu 'View - Zoom'.
-     */
-    private JMenu getViewZoomMenu() {
-        
-        if (viewZoomMenu == null) {
-            viewZoomMenu = new JMenu();
-            viewZoomMenu.setName(MenuItemNames.VIEW_ZOOM_MENU);
-            viewZoomMenu.setText(MenuLocalizer.getLabel(MenuItemNames.VIEW_ZOOM_MENU));
-            viewZoomMenu.setMnemonic(MenuLocalizer.getMnemonic(MenuItemNames.VIEW_ZOOM_MENU).charAt(0));
-            viewZoomMenu.add(getViewZoomInMenuItem());
-            viewZoomMenu.add(getViewZoomOutMenuItem());
-            viewZoomMenu.addSeparator();
-            viewZoomMenu.add(getViewZoom500MenuItem());
-            viewZoomMenu.add(getViewZoom200MenuItem());
-            viewZoomMenu.add(getViewZoom150MenuItem());
-            viewZoomMenu.add(getViewZoom100MenuItem());
-            viewZoomMenu.add(getViewZoom75MenuItem());
-            viewZoomMenu.add(getViewZoom50MenuItem());
-            viewZoomMenu.add(getViewZoom25MenuItem());
-            viewZoomMenu.add(getViewZoom10MenuItem());
-            viewZoomMenu.addSeparator();
-            viewZoomMenu.add(getViewZoomOtherMenuItem());
-        }
-        
-        return viewZoomMenu;
-        
-    }
-    
-    /**
-     * This method initializes viewToolbarsMenu.
-     *
-     * @return a new menu 'View - Toolbars'.
-     */
-    private JMenu getViewToolbarsMenu() {
-        
-        if (viewToolbarsMenu == null) {
-            viewToolbarsMenu = new JMenu();
-            viewToolbarsMenu.setName(MenuItemNames.VIEW_TOOLBARS_MENU);
-            viewToolbarsMenu.setText(MenuLocalizer.getLabel(MenuItemNames.VIEW_TOOLBARS_MENU));
-            viewToolbarsMenu.setMnemonic(MenuLocalizer.getMnemonic(MenuItemNames.VIEW_TOOLBARS_MENU).charAt(0));
-            ToolbarManager toolbarManager = MainPanel.getUniqueInstance().getToolbarManager();
-            Set<String> toolbarNames = toolbarManager.getToolbarNames();
-            if (!toolbarNames.isEmpty()) {
-                for (String toolbarName : toolbarManager.getToolbarNames()) {
-                    JMenuItem menuItem = new LocalizedMenuItem(MenuItemNames.VIEW_TOOLBARS_MENU + "." + toolbarName,
-                                                               ActionCommands.VIEW_TOOLBARS + "." + toolbarName);
-                    menuItem.addActionListener(listener);
-                    viewToolbarsMenu.add(menuItem);
-                }
-            } else {
-                JMenuItem emptyMenuItem = new JMenuItem("(empty)");
-                emptyMenuItem.setEnabled(false);
-                viewToolbarsMenu.add(emptyMenuItem);
-            }
-        }
-        
-        return viewToolbarsMenu;
-        
-    }
-    
-    /**
-     * This method initializes viewZoomInMenuItem.
-     *
-     * @return a new item 'View - Zoom - Zoom in.
-     */
-    private JMenuItem getViewZoomInMenuItem() {
-        
-        if (viewZoomInMenuItem == null) {
-            viewZoomInMenuItem = new LocalizedMenuItem(MenuItemNames.VIEW_ZOOM_IN_MENUITEM, ActionCommands.ZOOM_IN.getCommandName(),
-                                                       IconLoader.ICON_ZOOM_IN_ENABLED);
-            viewZoomInMenuItem.addActionListener(listener);
-        }
-        
-        return viewZoomInMenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoomOutMenuItem.
-     *
-     * @return a new item 'View - Zoom - Zoom out.
-     */
-    private JMenuItem getViewZoomOutMenuItem() {
-        
-        if (viewZoomOutMenuItem == null) {
-            viewZoomOutMenuItem = new LocalizedMenuItem(MenuItemNames.VIEW_ZOOM_OUT_MENUITEM, ActionCommands.ZOOM_OUT.getCommandName(),
-                                                        IconLoader.ICON_ZOOM_OUT_ENABLED);
-            viewZoomOutMenuItem.addActionListener(listener);
-        }
-        
-        return viewZoomOutMenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoom500MenuItem
-     *
-     * @return a new item 'View - Zoom - 500%'.
-     */
-    private JCheckBoxMenuItem getViewZoom500MenuItem() {
-        
-        if (viewZoom500MenuItem == null) {
-            viewZoom500MenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.VIEW_ZOOM_500_MENUITEM,
-                                                                ActionCommands.getZoomActionCommandValue(5));
-            viewZoom500MenuItem.addActionListener(listener);
-            groupZoom.add(viewZoom500MenuItem);
-        }
-        
-        return viewZoom500MenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoom200MenuItem
-     *
-     * @return a new item 'View - Zoom - 200%'.
-     */
-    private JCheckBoxMenuItem getViewZoom200MenuItem() {
-        
-        if (viewZoom200MenuItem == null) {
-            viewZoom200MenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.VIEW_ZOOM_200_MENUITEM,
-                                                                ActionCommands.getZoomActionCommandValue(2));
-            viewZoom200MenuItem.addActionListener(listener);
-            groupZoom.add(viewZoom200MenuItem);
-        }
-        
-        return viewZoom200MenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoom150MenuItem.
-     *
-     * @return a new item 'View - Zoom - 150%'.
-     */
-    private JCheckBoxMenuItem getViewZoom150MenuItem() {
-        
-        if (viewZoom150MenuItem == null) {
-            viewZoom150MenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.VIEW_ZOOM_150_MENUITEM,
-                                                                ActionCommands.getZoomActionCommandValue(1.5));
-            viewZoom150MenuItem.addActionListener(listener);
-            groupZoom.add(viewZoom150MenuItem);
-        }
-        
-        return viewZoom150MenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoom100MenuItem.
-     *
-     * @return a new item 'View - Zoom - 100%'.
-     */
-    private JCheckBoxMenuItem getViewZoom100MenuItem() {
-        
-        if (viewZoom100MenuItem == null) {
-            viewZoom100MenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.VIEW_ZOOM_100_MENUITEM,
-                                                                ActionCommands.getZoomActionCommandValue(1));
-            viewZoom100MenuItem.addActionListener(listener);
-            groupZoom.add(viewZoom100MenuItem);
-            viewZoom100MenuItem.setSelected(true);
-        }
-        
-        return viewZoom100MenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoom75MenuItem
-     *
-     * @return a new item 'View - Zoom - 75%'.
-     */
-    private JCheckBoxMenuItem getViewZoom75MenuItem() {
-        
-        if (viewZoom75MenuItem == null) {
-            viewZoom75MenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.VIEW_ZOOM_75_MENUITEM,
-                                                               ActionCommands.getZoomActionCommandValue(0.75));
-            viewZoom75MenuItem.addActionListener(listener);
-            groupZoom.add(viewZoom75MenuItem);
-        }
-        
-        return viewZoom75MenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoom50MenuItem
-     *
-     * @return a new item 'View - Zoom - 50%'.
-     */
-    private JCheckBoxMenuItem getViewZoom50MenuItem() {
-        
-        if (viewZoom50MenuItem == null) {
-            viewZoom50MenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.VIEW_ZOOM_50_MENUITEM,
-                                                               ActionCommands.getZoomActionCommandValue(0.5));
-            viewZoom50MenuItem.addActionListener(listener);
-            groupZoom.add(viewZoom50MenuItem);
-        }
-        
-        return viewZoom50MenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoom25MenuItem.
-     *
-     * @return a new item 'View - Zoom - 25%'.
-     */
-    private JCheckBoxMenuItem getViewZoom25MenuItem() {
-        
-        if (viewZoom25MenuItem == null) {
-            viewZoom25MenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.VIEW_ZOOM_25_MENUITEM,
-                                                               ActionCommands.getZoomActionCommandValue(0.25));
-            viewZoom25MenuItem.addActionListener(listener);
-            groupZoom.add(viewZoom25MenuItem);
-        }
-        
-        return viewZoom25MenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoom10MenuItem.
-     *
-     * @return a new item 'View - Zoom - 10%'.
-     */
-    private JCheckBoxMenuItem getViewZoom10MenuItem() {
-        
-        if (viewZoom10MenuItem == null) {
-            viewZoom10MenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.VIEW_ZOOM_10_MENUITEM,
-                                                               ActionCommands.getZoomActionCommandValue(0.1));
-            viewZoom10MenuItem.addActionListener(listener);
-            groupZoom.add(viewZoom10MenuItem);
-        }
-        
-        return viewZoom10MenuItem;
-        
-    }
-    
-    /**
-     * This method initializes viewZoomOtherMenuItem.
-     *
-     * @return a new item 'View - Zoom - Other'.
-     */
-    private JCheckBoxMenuItem getViewZoomOtherMenuItem() {
-        
-        if (viewZoomOtherMenuItem == null) {
-            viewZoomOtherMenuItem = new LocalizedCheckBoxMenuItem(MenuItemNames.VIEW_ZOOM_OTHER_MENUITEM,
-                                                                  ActionCommands.ZOOM_OTHER.getCommandName(), true);
-            viewZoomOtherMenuItem.addActionListener(listener);
-            groupZoom.add(viewZoomOtherMenuItem);
-        }
-        
-        return viewZoomOtherMenuItem;
         
     }
     
@@ -1740,56 +1361,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
     }
     
     /**
-     * This method initializes menuMDI.
-     *
-     * @return a new menu dependent of the MDI.
-     */
-    public JMenu getMenuMDI() {
-        
-        if (menuMDI == null) {
-            menuMDI = new JMenu();
-            menuMDI.setName("MDIMenu");
-        }
-        
-        return menuMDI;
-        
-    }
-    
-    /**
-     * Checks the checkbox menu item corresponding to the zoom value. If the
-     * value isn't any of the prefixed zoom values, then checks the last menu
-     * item and modifies its string so that the zoom value appears in the text
-     * of the menu item.
-     *
-     * @param value zoom value.
-     */
-    @Override public void setZoom(double value) {
-        
-        if (value == 5) {
-            viewZoom500MenuItem.setSelected(true);
-        } else if (value == 2) {
-            viewZoom200MenuItem.setSelected(true);
-        } else if (value == 1.5) {
-            viewZoom150MenuItem.setSelected(true);
-        } else if (value == 1) {
-            viewZoom100MenuItem.setSelected(true);
-        } else if (value == 0.75) {
-            viewZoom75MenuItem.setSelected(true);
-        } else if (value == 0.5) {
-            viewZoom50MenuItem.setSelected(true);
-        } else if (value == 0.25) {
-            viewZoom25MenuItem.setSelected(true);
-        } else if (value == 0.1) {
-            viewZoom10MenuItem.setSelected(true);
-        } else {
-            viewZoomOtherMenuItem.setSelected(true);
-        }
-        viewZoomOtherMenuItem.setText(
-                MenuLocalizer.getLabel(MenuItemNames.VIEW_ZOOM_OTHER_MENUITEM) + " (" + (int) Math.round(value * 100)
-                        + "%)...");
-    }
-    
-    /**
      * Returns the component that correspond to an action command.
      *
      * @param actionCommand action command that identifies the component.
@@ -1824,8 +1395,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             case ActionCommands.NODE_PROPERTIES -> editNodePropertiesMenuItem;
             case ActionCommands.EDIT_POTENTIAL -> editRelationMenuItem;
             case ActionCommands.LINK_PROPERTIES -> editLinkPropertiesMenuItem;
-            case ActionCommands.CHANGE_TO_INFERENCE_MODE -> editSwitchToInferenceModeMenuItem;
-            case ActionCommands.CHANGE_TO_EDITION_MODE -> inferenceSwitchToEditionModeMenuItem;
+            case ActionCommands.CHANGE_TO_INFERENCE_MODE -> switchWorkingMode;
+            case ActionCommands.CHANGE_TO_EDITION_MODE -> switchWorkingMode;
             // TODO - MultiCriteria Action Command
             case ActionCommands.INFERENCE_OPTIONS -> inferenceOptionsItem;
             case ActionCommands.PROPAGATION_OPTIONS -> propagationOptionsMenuItem;
@@ -1841,10 +1412,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             case ActionCommands.NODE_REMOVE_ALL_FINDINGS -> inferenceRemoveAllFindingsMenuItem;
             case ActionCommands.BYTITLE_NODES -> viewNodesByTitleMenuItem;
             case ActionCommands.BYNAME_NODES -> viewNodesByNameMenuItem;
-            case ActionCommands.ZOOM_IN -> viewZoomInMenuItem;
-            case ActionCommands.ZOOM_OUT -> viewZoomOutMenuItem;
-            case ActionCommands.ZOOM_OTHER -> viewZoomOtherMenuItem;
-            case ActionCommands.ZOOM -> viewZoomMenu;
             case ActionCommands.NODES -> viewNodesMenu;
             case null, default -> null;
         };

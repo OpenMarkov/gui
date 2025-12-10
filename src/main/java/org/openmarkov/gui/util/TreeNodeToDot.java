@@ -3,6 +3,7 @@ package org.openmarkov.gui.util;
 import org.openmarkov.core.decisiontree.DecisionTreeBranch;
 import org.openmarkov.core.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.gui.dialog.io.OMFileChooser;
 
 import javax.swing.*;
 import java.io.FileWriter;
@@ -157,7 +158,7 @@ public class TreeNodeToDot {
         
         System.out.println(graph.toString());
         
-        JFileChooser chooser = new JFileChooser();
+        OMFileChooser chooser = new OMFileChooser();
         int retrival = chooser.showSaveDialog(null);
         if (retrival != JFileChooser.APPROVE_OPTION) {
             return;

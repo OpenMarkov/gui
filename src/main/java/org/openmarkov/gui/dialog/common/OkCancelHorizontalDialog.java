@@ -8,8 +8,7 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
-import org.openmarkov.gui.loader.element.IconLoader;
+import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -50,10 +49,6 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 */
 	protected int selectedButton = 0;
 	/**
-	 * Icon loader.
-	 */
-	protected IconLoader iconLoader = null;
-	/**
 	 * String database
 	 */
 	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
@@ -82,10 +77,8 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 * This method initialises this instance.
 	 */
 	private void initialize() {
-
 		// setSize(550, 310);
 		setName("OKCancelHorizontalDialog");
-		iconLoader = new IconLoader();
 		configureButtonsPanel();
 		setDefaultButton(getJButtonOK());
 	}
@@ -109,7 +102,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 		if (jButtonOK == null) {
 			jButtonOK = new JButton();
 			jButtonOK.setName("jButtonApply");
-			jButtonOK.setIcon(iconLoader.load(IconLoader.ICON_ACCEPT_ENABLED));
+            jButtonOK.setIcon(IconBind.ACCEPT_ENABLED.icon());
 			jButtonOK.setText(stringDatabase.getString("OKCancelHorizontalDialog.jButtonOK.Text"));
 			jButtonOK.setMnemonic(stringDatabase.getString("OKCancelHorizontalDialog.jButtonOK.Mnemonic").charAt(0));
             jButtonOK.addActionListener(e -> {
@@ -136,7 +129,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 		if (jButtonCancel == null) {
 			jButtonCancel = new JButton();
 			jButtonCancel.setName("jButtonCancel");
-			jButtonCancel.setIcon(iconLoader.load(IconLoader.ICON_REMOVE_ENABLED));
+            jButtonCancel.setIcon(IconBind.REMOVE_ENABLED.icon());
 			jButtonCancel.setText(stringDatabase.getString("OKCancelHorizontalDialog.jButtonCancel.Text"));
 			jButtonCancel
 					.setMnemonic(stringDatabase.getString("OKCancelHorizontalDialog.jButtonCancel.Mnemonic").charAt(0));

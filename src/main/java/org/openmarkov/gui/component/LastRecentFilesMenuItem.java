@@ -23,11 +23,4 @@ public class LastRecentFilesMenuItem extends JMenuItem {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * default constructor
-	 */
-	public LastRecentFilesMenuItem() {
-
-		setName("LastRecentFilesMenuItem");
-	}
 }

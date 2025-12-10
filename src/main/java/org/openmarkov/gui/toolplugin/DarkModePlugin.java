@@ -3,8 +3,7 @@ package org.openmarkov.gui.toolplugin;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
-import org.openmarkov.gui.window.MainPanel;
+import org.openmarkov.gui.configuration.LocalPreferences;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,12 +34,12 @@ public class DarkModePlugin implements ToolPlugin {
     }
     
     @Override public void showDialog(@Nullable JFrame parent) throws Exception {
-        OpenMarkovLocalPreferences.PREFERS_DARK_THEME.set(!OpenMarkovLocalPreferences.PREFERS_DARK_THEME.get());
+        LocalPreferences.PREFERS_DARK_THEME.set(!LocalPreferences.PREFERS_DARK_THEME.get());
         updateInterfaceToLook(parent);
     }
     
     public static void updateInterfaceToLook(@Nullable Container parent) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
-        if (OpenMarkovLocalPreferences.PREFERS_DARK_THEME.get()) {
+        if (LocalPreferences.PREFERS_DARK_THEME.get()) {
             UIManager.setLookAndFeel(new FlatDarculaLaf());
         } else {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

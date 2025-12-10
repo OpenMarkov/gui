@@ -665,51 +665,18 @@ public class VisualNetwork implements PNUndoableEditListener {
      *                 nodes are moved.
      */
     private void moveNodes(double diffX, double diffY, boolean selected) {
-        
-        //Node nodeWrapper = null;
-        
         for (VisualNode node : visualNodes) {
-            //nodeWrapper = node.getNode();
             if (!selected || (node.isSelected())) {
-				
-				
-				/*MoveNodeEdit moveNodeEdit = new MoveNodeEdit(node, 
-						node.getCoordinateX() + 
-						diffX, node.getCoordinateY() + diffY);
-				
-				try {
-					probNet.getPNESupport().announceEdit(moveNodeEdit);
-					probNet.getPNESupport().doEdit(moveNodeEdit);
-				} catch (ConstraintViolatedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (CanNotDoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (DoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}*/
-                
-                //nodeWrapper.getNode().coordinateX =+ diffX;
-                //nodeWrapper.getNode().coordinateY =+ diffY;
-                //node.setTemporalPosition(diffX, diffY);
-                
-                // Check if the node is out of the screen (only by the left or up bounds)
-                if ((node.getTemporalPosition().getX() + diffX) >= 0
-                        && (node.getTemporalPosition().getY() + diffY) >= 0) {
-                    
-                    node.setTemporalPosition(new Point2D.Double(node.
-                                                                        getTemporalPosition()
-                                                                        .getX() + diffX, node.getTemporalPosition()
-                                                                                             .getY() + diffY));
+                Point2D.Double originalPosition = node.getTemporalPosition();
+                double newPosX = originalPosition.getX() + diffX;
+                double newPosY = originalPosition.getY() + diffY;
+                boolean isValidPlace = newPosX >= 0 && newPosY >= 0;
+                if (isValidPlace) {
+                    node.setTemporalPosition(new Point2D.Double(newPosX, newPosY));
                     if (g2 != null) {
                         node.paint(g2);
                     }
-                    
                 }
-                
-                //constructVisualInfo();
             }
         }
         

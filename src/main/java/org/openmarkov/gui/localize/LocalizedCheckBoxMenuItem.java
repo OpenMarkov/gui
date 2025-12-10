@@ -7,16 +7,11 @@
 
 package org.openmarkov.gui.localize;
 
-import org.openmarkov.gui.loader.element.IconLoader;
+import org.openmarkov.gui.loader.element.IconBind;
 
 import javax.swing.*;
 
 @SuppressWarnings("serial") public class LocalizedCheckBoxMenuItem extends JCheckBoxMenuItem {
-
-	/**
-	 * Icon loader.
-	 */
-	private static IconLoader iconLoader = new IconLoader();
 
 	public LocalizedCheckBoxMenuItem(String name, String actionCommand, boolean useMnemonic) {
 		this.setName(name);
@@ -30,14 +25,14 @@ import javax.swing.*;
 	public LocalizedCheckBoxMenuItem(String name, String actionCommand) {
 		this(name, actionCommand, false);
 	}
-
-	public LocalizedCheckBoxMenuItem(String name, String actionCommand, String iconName, boolean useMnemonic) {
+    
+    public LocalizedCheckBoxMenuItem(String name, String actionCommand, IconBind iconBind, boolean useMnemonic) {
 		this(name, actionCommand, useMnemonic);
-		this.setIcon(iconLoader.load(iconName));
+        this.setIcon(iconBind.icon());
 	}
-
-	public LocalizedCheckBoxMenuItem(String name, String actionCommand, String iconName) {
-		this(name, actionCommand, iconName, true);
+    
+    public LocalizedCheckBoxMenuItem(String name, String actionCommand, IconBind iconBind) {
+        this(name, actionCommand, iconBind, true);
 	}
 
 }

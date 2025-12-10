@@ -106,12 +106,12 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
     /**
      * Value of the X coordinate in temporal position of the node.
      */
-    protected int temporalCoordinateX;
+    protected double temporalCoordinateX;
     
     /**
      * Value of the Y coordinate in temporal position of the node.
      */
-    protected int temporalCoordinateY;
+    protected double temporalCoordinateY;
     
     public VisualNode(Node node, VisualNetwork visualNetwork) {
         this.node = node;
@@ -182,9 +182,8 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
      * @param value new position.
      */
     public void setTemporalPosition(Point2D.Double value) {
-        
-        temporalCoordinateX = (int) value.getX();
-        temporalCoordinateY = (int) value.getY();
+        temporalCoordinateX = value.getX();
+        temporalCoordinateY = value.getY();
     }
     
     /**

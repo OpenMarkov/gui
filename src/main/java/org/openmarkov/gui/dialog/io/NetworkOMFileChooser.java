@@ -7,12 +7,16 @@
 
 package org.openmarkov.gui.dialog.io;
 
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
+import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.core.io.format.annotation.FormatManager;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -26,15 +30,17 @@ import java.util.List;
  *
  * @author ibermejo
  */
-@SuppressWarnings("serial") public class NetworkFileChooser extends FileChooser {
+@SuppressWarnings("serial") public class NetworkOMFileChooser extends OMFileChooser {
 	/**
 	 * Creates a new file chooser that starts in the current directory,
 	 * filtering the files with the file filters.
 	 *
 	 * @param isOpening Indicates if the file chooser is for opening a file (isOpening=true) or for saving (isOpening=false)
 	 */
-	public NetworkFileChooser(boolean acceptAllfile, boolean isOpening) {
-		super(acceptAllfile);
+    public NetworkOMFileChooser(boolean acceptAllfile, boolean isOpening) {
+        super();
+        setAcceptAllFileFilterUsed(acceptAllfile);
+        rescanCurrentDirectory();
 		FormatManager formatManager = FormatManager.getInstance();
 		HashMap<String, String> parsersListForFilters = isOpening ?
 				formatManager.getReaders() :
@@ -61,30 +67,30 @@ import java.util.List;
 		//UNCLEAR Where is set pgmx? By default LAST_OPENED_FORMAT=pgmx
 
 		if (isOpening) {
-            currentDirectory = OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.get();
+            currentDirectory = LocalPreferences.LATEST_OPEN_DIRECTORY.get();
             setFileFilter("OpenMarkov");
 		} else {
-            setFileFilter(OpenMarkovLocalPreferences.LATEST_SAVED_NETWORK_FORMAT.get());
+            setFileFilter(LocalPreferences.LATEST_SAVED_NETWORK_FORMAT.get());
 		}
 
         setCurrentDirectory(currentDirectory);
     }
-
-	public NetworkFileChooser() {
+    
+    public NetworkOMFileChooser() {
 		this(false, true);
 	}
 
 	@Override public int showOpenDialog(Component parent) {
 		int result = super.showOpenDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.set(getSelectedFile());
+            LocalPreferences.LATEST_OPEN_DIRECTORY.set(getSelectedFile());
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
             try {
-                OpenMarkovLocalPreferences.LATEST_NETWORK_FORMAT.set(getPgmxFileFormat());
+                LocalPreferences.LATEST_NETWORK_FORMAT.set(getPgmxFileFormat());
             } catch (SAXException | IOException e) {
                 throw new UnrecoverableException(e);
             }
@@ -95,13 +101,13 @@ import java.util.List;
 	@Override public int showSaveDialog(Component parent) {
 		int result = super.showSaveDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.set(getSelectedFile());
+            LocalPreferences.LATEST_OPEN_DIRECTORY.set(getSelectedFile());
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
-            OpenMarkovLocalPreferences.LATEST_SAVED_NETWORK_FORMAT.set(((FileFilterAll) getFileFilter()).getFileDescription());
+            LocalPreferences.LATEST_SAVED_NETWORK_FORMAT.set(((FileFilterAll) getFileFilter()).getFileDescription());
 		}
 		return result;
 	}
@@ -119,4 +125,27 @@ import java.util.List;
 		}
 		super.approveSelection();
 	}
+    
+    /**
+     * Extracts the version of a pgmx file and concatenate it to the String "OpenMarkov" for having the description of the file
+     *
+     * @return the format OpenMarkov.version of a pgmx file
+     *
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
+    
+    public String getPgmxFileFormat() throws SAXException, IOException {
+        try {
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(getSelectedFile());
+            String version = doc.getDocumentElement().getAttribute("formatVersion");
+            //Removing the last digit of the version
+            version = version.substring(0, version.lastIndexOf('.'));
+            return "OpenMarkov." + version;
+        } catch (ParserConfigurationException e) {
+            throw new UnreacheableException(e);
+        }
+        
+    }
 }

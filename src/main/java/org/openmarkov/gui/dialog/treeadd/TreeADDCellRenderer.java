@@ -35,7 +35,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
      */
     private JLabel rightLabel = new JLabel();
     /**
-     * Icon repository for every variable node
+     * IconBind repository for every variable node
      */
     private HashMap<Variable, Icon> iconsPool = new HashMap<Variable, Icon>();
     /**

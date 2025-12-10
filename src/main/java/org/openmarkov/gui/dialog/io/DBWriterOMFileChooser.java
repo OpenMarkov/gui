@@ -6,24 +6,24 @@
  */
 package org.openmarkov.gui.dialog.io;
 
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
+import org.openmarkov.gui.configuration.LocalPreferences;
 
 import java.io.File;
 import java.util.HashMap;
 
-@SuppressWarnings("serial") public class DBWriterFileChooser extends DBFileChooser {
-	public DBWriterFileChooser(boolean acceptAllFiles) {
+@SuppressWarnings("serial") public class DBWriterOMFileChooser extends DBOMFileChooser {
+	public DBWriterOMFileChooser(boolean acceptAllFiles) {
 		super(acceptAllFiles);
 		HashMap<String, String> writersInfo = caseDbManager.getAllWriters();
 		for (String extension : writersInfo.keySet()) {
 			addChoosableFileFilter(new FileFilterAll(extension, writersInfo.get(extension)));
 		}
-        setFileFilter(OpenMarkovLocalPreferences.LATEST_SAVED_DATASET_FORMAT.get());
-        File currentDirectory = OpenMarkovLocalPreferences.LATEST_SAVED_DATASET_DIRECTORY.get();
+		setFileFilter(LocalPreferences.LATEST_SAVED_DATASET_FORMAT.get());
+		File currentDirectory = LocalPreferences.LATEST_SAVED_DATASET_DIRECTORY.get();
         setCurrentDirectory(currentDirectory);
 	}
-
-	public DBWriterFileChooser() {
+	
+	public DBWriterOMFileChooser() {
 		this(false);
 	}
 }

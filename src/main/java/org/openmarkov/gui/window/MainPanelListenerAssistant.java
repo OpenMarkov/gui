@@ -21,19 +21,14 @@ import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.gui.configuration.LastOpenFiles;
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
+import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.dialog.*;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.gui.dialog.inference.common.InferenceOptionsDialog;
-import org.openmarkov.gui.dialog.io.DBReaderFileChooser;
-import org.openmarkov.gui.dialog.io.FileChooser;
-import org.openmarkov.gui.dialog.io.FileFilterAll;
-import org.openmarkov.gui.dialog.io.FileFilterBasic;
-import org.openmarkov.gui.dialog.io.NetsIO;
-import org.openmarkov.gui.dialog.io.NetworkFileChooser;
-import org.openmarkov.gui.dialog.io.URLNetworkChooserDialog;
+import org.openmarkov.gui.dialog.io.*;
+import org.openmarkov.gui.dialog.io.DBReaderOMFileChooser;
 import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.localize.StringDatabase;
@@ -499,7 +494,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.BYNAME_NODES -> activateByTitle(false);
             case ActionCommands.ZOOM_IN -> incrementZoom(getCurrentPanel());
             case ActionCommands.ZOOM_OUT -> decrementZoom(getCurrentPanel());
-            case ActionCommands.ZOOM_OTHER -> setZoom(true, getCurrentPanel(), 0);
             case ActionCommands.CONFIGURATION -> {
                 try {
                     showUserConfigurationDialog();
@@ -597,7 +591,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             MainPanel.getUniqueInstance().getToolbarManager()
                      .addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS.getCommandName() + ".", ""));
         } else if (ActionCommands.isZoomActionCommand(actionCommand)) {
-            setZoom(false, getCurrentPanel(), ActionCommands.getValueZoomActionCommand(actionCommand));
+            setZoom(getCurrentPanel(), ActionCommands.getValueZoomActionCommand(actionCommand));
         } else if (e.getSource() instanceof JButton source) {
             var listeners = source.getActionListeners();
             //
@@ -828,9 +822,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
         networkPanel.setNetworkFileFormat(fileFormat);
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
         LastOpenFiles.setLastFileName(fileName);
-        OpenMarkovLocalPreferences.LATEST_SAVED_DIRECTORY.set(new File(fileName).getAbsoluteFile());
+        LocalPreferences.LATEST_SAVED_DIRECTORY.set(new File(fileName).getAbsoluteFile());
         System.out.println(stringDatabase.getString("NetworkSaved.Text.Label"));
-        mainPanel.getMainMenu().rechargeLastOpenFiles();
+        mainPanel.getMainMenu().rechargeFileMenu();
         return true;
     }
     
@@ -844,7 +838,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) throws WriterException {
-        String fileFormat = OpenMarkovLocalPreferences.LATEST_NETWORK_FORMAT.get();
+        String fileFormat = LocalPreferences.LATEST_NETWORK_FORMAT.get();
         return saveNetworkActions(networkPanel, fileName, fileFormat);
     }
     
@@ -945,7 +939,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return complete path of the file, or null if the user selects cancel.
      */
     private String requestNetworkFileToSave(String suggestedFileName) {
-        NetworkFileChooser fileChooser = new NetworkFileChooser(false, false);
+        NetworkOMFileChooser fileChooser = new NetworkOMFileChooser(false, false);
         String title = stringDatabase.getString("SaveNetwork.Title.Label");
         fileChooser.setDialogTitle(title);
         fileChooser.setSelectedFile(new File(suggestedFileName));
@@ -966,11 +960,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return a list with the absolute path of of the chosen filename and the file format chosen
      */
     private ArrayList<String> requestNetworkFileAndFormatToSave(String suggestedFileName) {
-        NetworkFileChooser fileChooser = new NetworkFileChooser(false, false);
+        NetworkOMFileChooser fileChooser = new NetworkOMFileChooser(false, false);
         String title = stringDatabase.getString("SaveNetwork.Title.Label");
         fileChooser.setDialogTitle(title);
         fileChooser.setSelectedFile(new File(suggestedFileName));
-        fileChooser.setCurrentDirectory(OpenMarkovLocalPreferences.LATEST_SAVED_DIRECTORY.get());
+        fileChooser.setCurrentDirectory(LocalPreferences.LATEST_SAVED_DIRECTORY.get());
         ArrayList<String> fileNameAndFormat = new ArrayList<String>();
         String filename = null;
         String fileFormat = null;
@@ -1089,12 +1083,12 @@ public class MainPanelListenerAssistant extends WindowAdapter
         networkPanels.add(networkPanel);
         LastOpenFiles.setLastFileName(fileName);
         getDirectoryFileName(fileName);
-        OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.set(new File(fileName).getAbsoluteFile());
+        LocalPreferences.LATEST_OPEN_DIRECTORY.set(new File(fileName).getAbsoluteFile());
         // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
         // but it is not longer the scenario
         //mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
         System.out.println(stringDatabase.getString("NetworkLoaded.Text.Label"));
-        mainPanel.getMainMenu().rechargeLastOpenFiles();
+        mainPanel.getMainMenu().rechargeFileMenu();
         
         if (netReadFromFile.getShowCommentWhenOpening()) {
             CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane();
@@ -1147,7 +1141,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         // If the file was opened from a URL, the 'save' and 'save and reopen' buttons have to be disabled
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(true);
         System.out.println(stringDatabase.getString("NetworkLoaded.Text.Label"));
-        mainPanel.getMainMenu().rechargeLastOpenFiles();
+        mainPanel.getMainMenu().rechargeFileMenu();
         
         if (netReadFromURL.getShowCommentWhenOpening()) {
             CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane();
@@ -1172,7 +1166,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return complete path of the file, or null if the user selects cancel.
      */
     private String requestNetworkFileToOpen() {
-        NetworkFileChooser fileChooser = new NetworkFileChooser();
+        NetworkOMFileChooser fileChooser = new NetworkOMFileChooser();
         fileChooser.setDialogTitle(stringDatabase.getString("OpenNetwork.Title.Label"));
         String fileName = null;
         if (fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
@@ -1390,17 +1384,17 @@ public class MainPanelListenerAssistant extends WindowAdapter
         // TODO Implement
         List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel().getEvidence();
         evidence.add(0, currentNetworkPanel.getEditorPanel().getPreResolutionEvidence());
-        JFileChooser fileChooser = new JFileChooser();
+        OMFileChooser omFileChooser = new OMFileChooser();
         
         
-        File currentDirectory = OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.get();
-        fileChooser.setCurrentDirectory(currentDirectory);
+        File currentDirectory = LocalPreferences.LATEST_OPEN_DIRECTORY.get();
+        omFileChooser.setCurrentDirectory(currentDirectory);
         String suggestedFileName = currentNetworkPanel.getTitle().replaceFirst("^*", "");
-        fileChooser.setSelectedFile(new File(suggestedFileName));
-        fileChooser.setAcceptAllFileFilterUsed(false);
-        if (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
+        omFileChooser.setSelectedFile(new File(suggestedFileName));
+        omFileChooser.setAcceptAllFileFilterUsed(false);
+        if (omFileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
             // save the selected file
-            System.out.println("Save evidence file " + fileChooser.getSelectedFile().getAbsolutePath());
+            System.out.println("Save evidence file " + omFileChooser.getSelectedFile().getAbsolutePath());
         }
     }
     
@@ -1410,24 +1404,24 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param currentNetworkPanel
      */
     private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException {
-        FileChooser evidenceFileChooser = new DBReaderFileChooser();
-        evidenceFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
+        OMFileChooser evidenceOMFileChooser = new DBReaderOMFileChooser();
+        evidenceOMFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
         // Set last used evidence format as default
-        String lastFileFilter = OpenMarkovLocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.get();
-        evidenceFileChooser.setFileFilter(lastFileFilter);
-        if ((evidenceFileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)) {
+        String lastFileFilter = LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.get();
+        evidenceOMFileChooser.setFileFilter(lastFileFilter);
+        if ((evidenceOMFileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)) {
             // load the selected file
-            System.out.println("Load evidence file " + evidenceFileChooser.getSelectedFile().getAbsolutePath());
+            System.out.println("Load evidence file " + evidenceOMFileChooser.getSelectedFile().getAbsolutePath());
             CaseDatabaseManager caseDbManager = new CaseDatabaseManager();
             CaseDatabaseReader caseDbReader;
             try {
                 caseDbReader = caseDbManager
-                        .getReader(FilenameUtils.getExtension(evidenceFileChooser.getSelectedFile().getName()));
+                        .getReader(FilenameUtils.getExtension(evidenceOMFileChooser.getSelectedFile().getName()));
             } catch (NoWriterForExtensionException e) {
                 throw new UnrecoverableException(e);
             }
             ProbNet currentNet = currentNetworkPanel.getProbNet();
-            CaseDatabase caseDatabase = caseDbReader.load(evidenceFileChooser.getSelectedFile().getAbsolutePath());
+            CaseDatabase caseDatabase = caseDbReader.load(evidenceOMFileChooser.getSelectedFile().getAbsolutePath());
             List<Variable> variables = caseDatabase.getVariables();
             int[][] cases = caseDatabase.getCases();
             for (int i = 0; i < cases.length; ++i) {
@@ -1447,8 +1441,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
             }
             // save format extension in preferences
-            OpenMarkovLocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.set(((FileFilterBasic) evidenceFileChooser.getFileFilter()).getFilterExtension());
-            OpenMarkovLocalPreferences.LATEST_OPEN_DIRECTORY.set(evidenceFileChooser.getSelectedFile());
+            LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.set(((FileFilterBasic) evidenceOMFileChooser.getFileFilter()).getFilterExtension());
+            LocalPreferences.LATEST_OPEN_DIRECTORY.set(evidenceOMFileChooser.getSelectedFile());
             
         }
     }
@@ -1636,7 +1630,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param frameContentPanel network whose zoom will be changed.
      */
     private void incrementZoom(FrameContentPanel frameContentPanel) {
-        setZoom(false, frameContentPanel, frameContentPanel.getZoom() + zoomChangeValue);
+        setZoom(frameContentPanel, frameContentPanel.getZoom() + zoomChangeValue);
     }
     
     /**
@@ -1645,38 +1639,19 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param frameContentPanel network whose zoom will be changed.
      */
     private void decrementZoom(FrameContentPanel frameContentPanel) {
-        setZoom(false, frameContentPanel, frameContentPanel.getZoom() - zoomChangeValue);
+        setZoom(frameContentPanel, frameContentPanel.getZoom() - zoomChangeValue);
     }
     
     /**
      * Sets the zoom of the current panel and updates the menu and the toolbar.
      *
-     * @param dialogBox         if true, the parameter 'value' is ignored and this value is
-     *                          requested to user.
      * @param frameContentPanel network whose zoom will be changed.
      * @param value             new zoom value.
      */
-    private void setZoom(boolean dialogBox, FrameContentPanel frameContentPanel, double value) {
-        if (dialogBox) {
-            requestZoomToUser(Utilities.getOwner(mainPanel), frameContentPanel);
-        } else {
-            frameContentPanel.setZoom(value);
-        }
+    private void setZoom(FrameContentPanel frameContentPanel, double value) {
+        frameContentPanel.setZoom(value);
         double newZoom = frameContentPanel.getZoom();
         mainPanel.getMainPanelMenuAssistant().setZoom(newZoom);
-    }
-    
-    /**
-     * This method requests to the user a new value of zoom for the actual
-     * network.
-     *
-     * @param owner window that owns the dialog box.
-     */
-    public static void requestZoomToUser(Window owner, FrameContentPanel frameContentPanel) {
-        SelectZoomDialog dialogZoom = new SelectZoomDialog(owner);
-        if (dialogZoom.requestZoom(frameContentPanel.getZoom()) == OkCancelHorizontalDialog.OK_BUTTON) {
-            frameContentPanel.setZoom(dialogZoom.getZoom());
-        }
     }
     
     /**

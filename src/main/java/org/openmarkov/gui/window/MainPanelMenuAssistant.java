@@ -24,10 +24,8 @@ import org.openmarkov.core.model.network.type.MIDType;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.gui.graphic.*;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.gui.menutoolbar.common.MenuAssistant;
-import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
-import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
+import org.openmarkov.gui.localize.MenuLocalizer;
+import org.openmarkov.gui.menutoolbar.common.*;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.edition.Zoom;
@@ -65,12 +63,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
             ActionCommands.GO_TO_FIRST_EVIDENCE_CASE, ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE,
             ActionCommands.GO_TO_NEXT_EVIDENCE_CASE, ActionCommands.GO_TO_LAST_EVIDENCE_CASE,
             ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES, ActionCommands.PROPAGATE_EVIDENCE};
-    /**
-     * Composed action command that contains all the viewing actions (except
-     * view message window).
-     */
-    public static final ActionCommands[] VIEWING_ACTION_COMMANDS = {ActionCommands.ZOOM, ActionCommands.ZOOM_IN,
-            ActionCommands.ZOOM_OUT, ActionCommands.ZOOM_OTHER, ActionCommands.NODES};
     /**
      * Menus and toolbar that manage zoom.
      */
@@ -131,6 +123,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
         setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, false);
         setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
         setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
+        setOptionEnabled(ActionCommands.EDITION_MODE_PREFIX, false);
         
         setOptionEnabled(ActionCommands.NODE_EXPANSION, false);
         setOptionEnabled(ActionCommands.NODE_CONTRACTION, false);
@@ -149,10 +142,13 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
         setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
         setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, false);
         setOptionEnabled(ActionCommands.LINK_PROPERTIES, false);
-        setOptionEnabled(VIEWING_ACTION_COMMANDS, false);
         setOptionEnabled(ActionCommands.PROPAGATION_OPTIONS, false);
         setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, false);
         setOptionEnabled(ActionCommands.TEMPORAL_OPTIONS, false);
+        
+        setOptionEnabled(ActionCommands.ZOOM_IN, false);
+        setOptionEnabled(ActionCommands.ZOOM_OUT, false);
+        setOptionEnabled(ActionCommands.ZOOM, false);
         
         setOptionEnabled(ActionCommands.DECISION_IMPOSE_POLICY, false);
         setOptionEnabled(ActionCommands.DECISION_EDIT_POLICY, false);
@@ -183,11 +179,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
             setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, enable);
         }
         setOptionEnabled(FILING_ACTION_COMMANDS, true);
+        setOptionEnabled(ActionCommands.ZOOM, true);
         if (workingMode == NetworkPanel.WorkingMode.EDITION) {
             setOptionEnabled(EDITING_ACTION_COMMANDS, true);
             setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
         }
-        setOptionEnabled(VIEWING_ACTION_COMMANDS, true);
         setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
         setOptionEnabled(ActionCommands.PROPAGATION_OPTIONS, true);
         
@@ -216,9 +212,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
     
     private boolean getEnableWorkingModeButton() {
         NetworkType networkType = getCurrentNetworkPanel().getProbNet().getNetworkType();
-        return networkType instanceof InfluenceDiagramType || networkType instanceof BayesianNetworkType
-                || networkType instanceof MIDType
-                ;
+        return networkType instanceof InfluenceDiagramType || networkType instanceof BayesianNetworkType;
     }
     
     public void updateInferenceButtons() {
@@ -337,9 +331,15 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
         } else {
             setOptionSelected(ActionCommands.BYNAME_NODES, true);
         }
-        setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
-        setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
-        setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
+        var isInferenceEnabled = getEnableWorkingModeButton();
+        mainPanel.getMainMenu().getSwitchWorkingMode().setText(MenuLocalizer.getLabel(
+                switch (workingMode) {
+                    case EDITION -> MenuItemNames.EDIT_SWITCH_TO_INFERENCE_MODE_MENUITEM;
+                    case INFERENCE -> MenuItemNames.INFERENCE_SWITCH_TO_EDITION_MODE_MENUITEM;
+                }));
+        setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, isInferenceEnabled);
+        setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, isInferenceEnabled);
+        setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, isInferenceEnabled);
         setOptionEnabled(ActionCommands.OBJECT_SELECTION, false);
         setOptionEnabled(ActionCommands.CHANCE_CREATION, false);
         setOptionEnabled(ActionCommands.DECISION_CREATION, false);
@@ -347,8 +347,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
         setOptionEnabled(ActionCommands.LINK_CREATION, false);
         setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
         setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
-        setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
-        setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
         setOptionEnabled(ActionCommands.DECISION_TREE, false);
         updateInferenceButtons();
         setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
@@ -357,7 +355,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
                 setOptionEnabled(ActionCommands.OBJECT_SELECTION, true);
                 setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
                 setOptionEnabled(ActionCommands.LINK_CREATION, true);
-                setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
                 setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
                 if (!currentProbNet.hasConstraintOfClass(OnlyChanceNodes.class)) {
                     setOptionEnabled(ActionCommands.DECISION_CREATION, true);
@@ -381,8 +378,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
                 }
             }
             case INFERENCE -> {
-                
-                setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
                 setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
                 updateOptionsEvidenceCasesNavigation(currentNetworkPanel);
                 setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, !currentNetworkPanel.isPropagationActive());

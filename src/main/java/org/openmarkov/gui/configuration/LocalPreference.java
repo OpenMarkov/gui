@@ -1,17 +1,22 @@
 package org.openmarkov.gui.configuration;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
+import java.util.stream.Stream;
 
 /**
  * A simplified mechanism to access the contents of a {@link Preferences} node's value, alleviating you from manually
@@ -56,6 +61,22 @@ import java.util.prefs.Preferences;
  */
 public final class LocalPreference<T> {
     
+    /**
+     * The default resolve strategy is that which can put and clear a value two times.
+     */
+    private static final LocalPreferenceResolveStrategy RESOLVE_STRATEGY = Arrays
+            .stream(LocalPreferenceResolveStrategy.values())
+            .filter(strategy -> Stream.of(
+                    strategy.put(List.of("test.test"), "test"),
+                    strategy.clear(List.of("test.test")),
+                    strategy.put(List.of("test.test"), "test"),
+                    strategy.clear(List.of("test.test"))
+            ).allMatch(success -> success))
+            .findFirst()
+            .orElse(LocalPreferenceResolveStrategy.SESSION);
+    
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    
     private final @NotNull List<String> preferencePath;
     private final @NotNull Supplier<? extends T> defaultValue;
     private final @NotNull Predicate<Object> verifyIsInstance;
@@ -67,12 +88,11 @@ public final class LocalPreference<T> {
     private boolean isInitialized;
     private boolean modified;
     
-    public static <T extends Serializable> LocalPreference<T> of(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @NotNull Predicate<Object> verifyIsInstance) {
-        return new LocalPreference<>(preferencePath, defaultValue, null, verifyIsInstance, null, null);
-    }
     
-    public static <T extends Serializable> LocalPreference<T> of(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @Nullable Class<T> tClass) {
-        return new LocalPreference<>(preferencePath, defaultValue, tClass, null, null, null);
+    public static <T extends Serializable> LocalPreference<T> of(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @Nullable TypeToken<T> typeToken) {
+        return new LocalPreference<>(preferencePath, defaultValue, null, null,
+                                     (string) -> GSON.fromJson(string, typeToken),
+                                     (value) -> LocalPreference.GSON.toJson(value, typeToken.getType()));
     }
     
     LocalPreference(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @Nullable Class<T> tClass, @Nullable Predicate<Object> verifyIsInstance, Function<String, T> deserializeWith, Function<T, String> serializeWith) {
@@ -108,7 +128,7 @@ public final class LocalPreference<T> {
     
     public void initialize() {
         if (this.isInitialized) return;
-        String nodeValue = LocalPreferenceResolveStrategy.get(this.preferencePath);
+        String nodeValue = LocalPreference.RESOLVE_STRATEGY.get(this.preferencePath);
         if (nodeValue == null) {
             this.isInitialized = true;
             this.value = this.defaultValue.get();
@@ -136,7 +156,7 @@ public final class LocalPreference<T> {
      * @return whether the node contains a value or not.
      */
     public boolean isSet() {
-        return this.modified || LocalPreferenceResolveStrategy.isSet(this.preferencePath);
+        return this.modified || LocalPreference.RESOLVE_STRATEGY.isSet(this.preferencePath);
     }
     
     /**
@@ -167,7 +187,7 @@ public final class LocalPreference<T> {
         }
         try {
             String serialized = this.serializeWith.apply(this.value);
-            LocalPreferenceResolveStrategy.put(this.preferencePath, serialized);
+            LocalPreference.RESOLVE_STRATEGY.put(this.preferencePath, serialized);
         } catch (RuntimeException ignored) {
         }
     }
@@ -179,7 +199,7 @@ public final class LocalPreference<T> {
      * {@link LocalPreference#get()}, you will get the {@link LocalPreference#defaultValue}.
      */
     public void clear() {
-        LocalPreferenceResolveStrategy.clear(this.preferencePath);
+        LocalPreference.RESOLVE_STRATEGY.clear(this.preferencePath);
         this.value = null;
         this.isInitialized = false;
         this.modified = false;

@@ -9,7 +9,7 @@ package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
+import org.openmarkov.gui.configuration.LocalPreferences;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
@@ -26,17 +26,17 @@ public class VisualUtilityNode extends VisualNode {
 	/**
 	 * Internal color of the visual node.
 	 */
-    private static final Color BACKGROUND_COLOR = OpenMarkovLocalPreferences.NODEUTILITY_BACKGROUND_COLOR.get();
+    private static final Color BACKGROUND_COLOR = LocalPreferences.NODEUTILITY_BACKGROUND_COLOR.get();
 
 	/**
 	 * Color of lines and letters.
 	 */
-    private static final Color FOREGROUND_COLOR = OpenMarkovLocalPreferences.NODEUTILITY_FOREGROUND_COLOR.get();
+    private static final Color FOREGROUND_COLOR = LocalPreferences.NODEUTILITY_FOREGROUND_COLOR.get();
 
 	/**
 	 * Color of the letters
 	 */
-    private static final Color TEXT_FOREGROUND_COLOR = OpenMarkovLocalPreferences.NODEUTILITY_TEXT_COLOR.get();
+    private static final Color TEXT_FOREGROUND_COLOR = LocalPreferences.NODEUTILITY_TEXT_COLOR.get();
 
 	/**
 	 * Creates a new visual node from a node.

@@ -185,8 +185,6 @@ public enum ActionCommands {
     INVERT_LINK_AND_UPDATE_POTENTIALS("InvertLinkAndUpdatePotentials"),
     /** Action invoked when the user wants to view a toolbar */
     VIEW_TOOLBARS("View.Toolbars"),
-    /** Action invoked when the user wants to change the zoom of the panel to another value. */
-    ZOOM_OTHER("ZoomOther"),
     /** Action invoked when the user wants to increment the zoom of the panel. */
     ZOOM_IN("ZoomIn"),
     /** Action invoked when the user wants to decrement the zoom of the panel. */

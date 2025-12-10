@@ -13,7 +13,7 @@ import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.component.FrameMirror;
 import org.openmarkov.gui.configuration.LocalPreference;
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
+import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.dialog.SplashScreenLoader;
 import org.openmarkov.gui.dialog.common.WindowDimensions;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
@@ -69,8 +69,8 @@ import java.io.IOException;
         setTitle("OpenMarkov");
         setName("MainGUI");
         this.frameMirror = new FrameMirror(this);
-        if (OpenMarkovLocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.isSet()) {
-            var dimensions = OpenMarkovLocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get();
+        if (LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.isSet()) {
+            var dimensions = LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get();
             setLocation(dimensions.location());
             setSize(dimensions.size());
             setExtendedState(dimensions.extendedState());
@@ -100,12 +100,12 @@ import java.io.IOException;
     
     private void updatePreferenceDimensions() {
         var isMaximized = getExtendedState() == Frame.MAXIMIZED_BOTH;
-        var originalDimensions = OpenMarkovLocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get();
+        var originalDimensions = LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get();
         Point location = isMaximized ? originalDimensions.location() : getLocation();
         Dimension size = isMaximized ? originalDimensions.size() : getSize();
         int extendedState = getExtendedState();
         WindowDimensions newDimensions = new WindowDimensions(location, size, extendedState);
-        OpenMarkovLocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.set(newDimensions);
+        LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.set(newDimensions);
     }
     
     //Conditionally disabled
@@ -172,9 +172,7 @@ import java.io.IOException;
      * LastConnection preference to current Time
      */
     private static void doReadPreferences() {
-        OpenMarkovLocalPreferences.getAllPreferences().forEach(LocalPreference::initialize);
-        OpenMarkovLocalPreferences.LATEST_CONNECTION.set(System.currentTimeMillis());
-        OpenMarkovLocalPreferences.LATEST_USER_CONNECTED.set(System.getProperty("user.name"));
+        LocalPreferences.getAllPreferences().forEach(LocalPreference::initialize);
     }
     
     /**

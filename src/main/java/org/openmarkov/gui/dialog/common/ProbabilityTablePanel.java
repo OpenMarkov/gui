@@ -10,7 +10,6 @@ package org.openmarkov.gui.dialog.common;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.gui.loader.element.IconLoader;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 
@@ -80,10 +79,6 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	 */
 	protected int lastEditableRow = -1;
 	/**
-	 * Icon loader.
-	 */
-    protected IconLoader iconLoader;
-	/**
 	 * Properties for options to display in the table
 	 */
 	protected boolean showAllParameters = true;
@@ -126,8 +121,6 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	 * @param newData    content of the cells.
 	 */
 	public ProbabilityTablePanel(String[] newColumns, Object[][] newData) {
-
-		iconLoader = new IconLoader();
 		columns = newColumns.clone();
 		data = newData.clone();
 		repaint();

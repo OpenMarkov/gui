@@ -33,14 +33,12 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -61,10 +59,6 @@ public class MainPanel extends JPanel {
      * Object that allows to access some private methods for this.
      */
     private static MainPanel MAIN_PANEL = null;
-    /**
-     * Object that manages the MultiDocument Interface.
-     */
-    private MDI mdi = null;
     /**
      * Main menu.
      */
@@ -111,160 +105,6 @@ public class MainPanel extends JPanel {
         return this.networksTabPanel;
     }
     
-    public void addCloseableTab(String title, Component component) {
-        var uniqueTitle = title;
-        var presentNames = IntStream.range(0, this.networksTabPanel.getTabCount())
-                                    .mapToObj(this.networksTabPanel::getTitleAt)
-                                    .collect(Collectors.toSet());
-        
-        int appendedIndex = 2;
-        while (presentNames.contains(uniqueTitle)) {
-            uniqueTitle = title + " (" + appendedIndex + ")";
-            appendedIndex++;
-        }
-        this.networksTabPanel.addTab(uniqueTitle, component);
-        JPanel tabPanel = new JPanel(new FlowLayout());
-        tabPanel.setOpaque(false);
-        tabPanel.add(new JLabel(uniqueTitle));
-        if (component instanceof NetworkPanel networkPanel) {
-            JButton saveButton = new JButton("\uD83D\uDCBE");
-            saveButton.setMargin(new Insets(0, 0, 0, 0));
-            tabPanel.add(saveButton);
-            saveButton.setEnabled(networkPanel.getModified());
-            networkPanel.addOnModification(networkP -> {
-                saveButton.setEnabled(networkP.getModified());
-            });
-            saveButton.addActionListener(e -> {
-                try {
-                    this.mainPanelListenerAssistant.saveNetwork(networkPanel);
-                } catch (WriterException ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            });
-        }
-        
-        JButton closeButton = new JButton("✖");
-        closeButton.setMargin(new Insets(0, 0, 0, 0));
-        closeButton.addActionListener(e -> {
-            var tabIndex = this.networksTabPanel.indexOfTabComponent(tabPanel);
-            try {
-                this.mainPanelListenerAssistant.closePanel(tabIndex);
-            } catch (WriterException ex) {
-                throw new UnrecoverableException(ex);
-            }
-        });
-        tabPanel.add(closeButton);
-        this.networksTabPanel.setTabComponentAt(this.networksTabPanel.getTabCount() - 1, tabPanel);
-        Component tabComponent = this.networksTabPanel.getTabComponentAt(this.networksTabPanel.getTabCount() - 1);
-        
-        tabComponent.addMouseListener(new MouseListener() {
-            @Override public void mouseClicked(MouseEvent e) {
-            
-            }
-            
-            @Override public void mousePressed(MouseEvent e) {
-                MainPanel mainPanel = MainPanel.this;
-                int tabIndex = mainPanel.networksTabPanel.indexOfTabComponent(tabComponent);
-                switch (e.getButton()) {
-                    //LEFT_CLICK
-                    case 1 -> {
-                        mainPanel.networksTabPanel.setSelectedIndex(tabIndex);
-                    }
-                    //RIGHT_CLICK
-                    case 3 -> {
-                        JPopupMenu tabContextMenu = new JPopupMenu();
-                        
-                        if (component instanceof NetworkPanel networkPanel) {
-                            JMenuItem saveButton = new JMenuItem("Save");
-                            saveButton.addActionListener(e1 -> {
-                                try {
-                                    MainPanel.this.mainPanelListenerAssistant.saveNetwork(networkPanel);
-                                } catch (WriterException ex) {
-                                    throw new UnrecoverableException(ex);
-                                }
-                            });
-                            tabContextMenu.add(saveButton);
-                            JMenuItem saveAsButton = new JMenuItem("Save as");
-                            saveAsButton.addActionListener(e1 -> {
-                                try {
-                                    MainPanel.this.mainPanelListenerAssistant.saveNetworkAs(networkPanel);
-                                } catch (WriterException ex) {
-                                    throw new UnrecoverableException(ex);
-                                }
-                            });
-                            tabContextMenu.add(saveAsButton);
-                            
-                        }
-                        
-                        JMenuItem closeThisTab = new JMenuItem("Close this tab");
-                        closeThisTab.addActionListener(e2 -> multiClose(List.of(tabIndex)));
-                        tabContextMenu.add(closeThisTab);
-                        
-                        
-                        tabContextMenu.add(new JSeparator());
-                        JMenuItem closeAllTab = new JMenuItem("Close all tabs");
-                        closeAllTab.addActionListener(e2 -> multiClose(IntStream.range(0, MainPanel.this.networksTabPanel.getTabCount())
-                                                                                .boxed()
-                                                                                .toList()));
-                        tabContextMenu.add(closeAllTab);
-                        
-                        JMenuItem closeAllTabsButThis = new JMenuItem("Close all tabs but this");
-                        closeAllTabsButThis.addActionListener(e2 -> multiClose(Stream.concat(
-                                IntStream.range(0, tabIndex).boxed(),
-                                IntStream.range(tabIndex + 1, MainPanel.this.networksTabPanel.getTabCount()).boxed()
-                        ).toList()));
-                        tabContextMenu.add(closeAllTabsButThis);
-                        JMenuItem closeTabsToTheLeft = new JMenuItem("Close tabs to the left");
-                        closeTabsToTheLeft.addActionListener(e2 -> {
-                            multiClose(IntStream.range(0, tabIndex).boxed().toList());
-                        });
-                        tabContextMenu.add(closeTabsToTheLeft);
-                        JMenuItem closeTabsToTheRight = new JMenuItem("Close tabs to the right");
-                        closeTabsToTheRight.addActionListener(e2 -> {
-                            multiClose(IntStream.range(tabIndex + 1, MainPanel.this.networksTabPanel.getTabCount())
-                                                .boxed()
-                                                .toList());
-                        });
-                        tabContextMenu.add(closeTabsToTheRight);
-                        tabContextMenu.show(tabComponent, e.getX(), e.getY());
-                    }
-                }
-            }
-            
-            public void multiClose(List<Integer> tabIndexesToClose) {
-                tabIndexesToClose = tabIndexesToClose.stream().distinct().sorted(Comparator.reverseOrder()).toList();
-                int initialTab = MainPanel.this.networksTabPanel.getSelectedIndex();
-                boolean initialTabClosed = false;
-                try {
-                    for (int tabIndexToClose : tabIndexesToClose) {
-                        MainPanel.this.networksTabPanel.setSelectedIndex(tabIndexToClose);
-                        if (!MainPanel.this.mainPanelListenerAssistant.closePanel(tabIndexToClose)) {
-                            return;
-                        }
-                        initialTabClosed = initialTabClosed || initialTab == tabIndexToClose;
-                    }
-                    if (!initialTabClosed) {
-                        MainPanel.this.networksTabPanel.setSelectedIndex(initialTab);
-                    }
-                } catch (WriterException e) {
-                    throw new UnrecoverableException(e);
-                }
-            }
-            
-            @Override public void mouseReleased(MouseEvent e) {
-            
-            }
-            
-            @Override public void mouseEntered(MouseEvent e) {
-            
-            }
-            
-            @Override public void mouseExited(MouseEvent e) {
-            
-            }
-        });
-    }
-    
     
     /**
      * Networks tabs come from here.
@@ -285,6 +125,48 @@ public class MainPanel extends JPanel {
         mainFrame.setName(parentFrame.getName());
         toolbarManager = new ToolbarManager(this);
         this.networksTabPanel = new JTabbedPane();
+        
+        //Movement for right and left.
+        InputMap inputMap = this.networksTabPanel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        inputMap.put(KeyStroke.getKeyStroke(
+                KeyEvent.VK_RIGHT,
+                InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK
+        ), "navigateNext");
+        inputMap.put(KeyStroke.getKeyStroke(
+                KeyEvent.VK_LEFT,
+                InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK
+        ), "navigatePrevious");
+        
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                            .addKeyEventPostProcessor(e -> {
+                                if (this.networksTabPanel.getTabCount() == 0) {
+                                    return false;
+                                }
+                                if (e.getID() != KeyEvent.KEY_RELEASED) {
+                                    return false;
+                                }
+                                if ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK) != (InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)) {
+                                    return false;
+                                }
+                                if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                                    int nextIndex = this.networksTabPanel.getSelectedIndex() + 1;
+                                    if (nextIndex >= this.networksTabPanel.getTabCount()) {
+                                        nextIndex = 0;
+                                    }
+                                    this.networksTabPanel.setSelectedIndex(nextIndex);
+                                    return true;
+                                }
+                                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                                    int previous = this.networksTabPanel.getSelectedIndex() - 1;
+                                    if (previous == -1) {
+                                        previous = this.networksTabPanel.getTabCount() - 1;
+                                    }
+                                    this.networksTabPanel.setSelectedIndex(previous);
+                                    return true;
+                                }
+                                return false;
+                            });
+        
         this.networksTabPanel.addChangeListener(e -> {
             var selectedComponent = this.networksTabPanel.getSelectedComponent();
             switch (selectedComponent) {
@@ -511,23 +393,6 @@ public class MainPanel extends JPanel {
     }
     
     /**
-     * This method initialises mainMDI.
-     *
-     * @return a new MDI panel.
-     */
-    public MDI getMdi() {
-        
-        if (mdi == null) {
-            mdi = new MDI(mainMenu.getMenuMDI());
-            mdi.addFrameStateListener(mainPanelListenerAssistant);
-            mdi.setPreferredSize(new Dimension(400, 600));
-        }
-        
-        return mdi;
-        
-    }
-    
-    /**
      * This method initialises standardToolBar.
      *
      * @return a new standard toolbar.
@@ -579,7 +444,7 @@ public class MainPanel extends JPanel {
         if (mainPanelMenuAssistant == null) {
             mainPanelMenuAssistant = new MainPanelMenuAssistant(
                     new MenuToolBarBasic[]{mainMenu, standardToolBar, editionToolBar, this.getInferenceToolBar(),
-                            contextualMenuFactory}, new ZoomMenuToolBar[]{mainMenu, standardToolBar}, this);
+                            contextualMenuFactory}, new ZoomMenuToolBar[]{standardToolBar}, this);
             mainPanelMenuAssistant.updateOptionsAllNetworkClosed();
         }
         
@@ -665,5 +530,162 @@ public class MainPanel extends JPanel {
         }
     }
     
+    public void addCloseableTab(String title, Component component) {
+        var uniqueTitle = title;
+        var presentNames = IntStream.range(0, this.networksTabPanel.getTabCount())
+                                    .mapToObj(this.networksTabPanel::getTitleAt)
+                                    .collect(Collectors.toSet());
+        
+        int appendedIndex = 2;
+        while (presentNames.contains(uniqueTitle)) {
+            uniqueTitle = title + " (" + appendedIndex + ")";
+            appendedIndex++;
+        }
+        this.networksTabPanel.addTab(uniqueTitle, component);
+        JPanel tabPanel = new JPanel(new FlowLayout());
+        tabPanel.setFocusable(false);
+        tabPanel.setOpaque(false);
+        tabPanel.add(new JLabel(uniqueTitle));
+        if (component instanceof NetworkPanel networkPanel) {
+            JButton saveButton = new JButton("\uD83D\uDCBE");
+            saveButton.setFocusable(false);
+            saveButton.setMargin(new Insets(0, 0, 0, 0));
+            tabPanel.add(saveButton);
+            saveButton.setEnabled(networkPanel.getModified());
+            networkPanel.addOnModification(networkP -> {
+                saveButton.setEnabled(networkP.getModified());
+            });
+            saveButton.addActionListener(e -> {
+                try {
+                    this.mainPanelListenerAssistant.saveNetwork(networkPanel);
+                } catch (WriterException ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            });
+        }
+        
+        
+        JButton closeButton = new JButton("✖");
+        closeButton.setFocusable(false);
+        closeButton.setMargin(new Insets(0, 0, 0, 0));
+        closeButton.addActionListener(e -> {
+            var tabIndex = this.networksTabPanel.indexOfTabComponent(tabPanel);
+            try {
+                this.mainPanelListenerAssistant.closePanel(tabIndex);
+            } catch (WriterException ex) {
+                throw new UnrecoverableException(ex);
+            }
+        });
+        tabPanel.add(closeButton);
+        this.networksTabPanel.setTabComponentAt(this.networksTabPanel.getTabCount() - 1, tabPanel);
+        Component tabComponent = this.networksTabPanel.getTabComponentAt(this.networksTabPanel.getTabCount() - 1);
+        
+        tabComponent.addMouseListener(new MouseListener() {
+            @Override public void mouseClicked(MouseEvent e) {
+            
+            }
+            
+            @Override public void mousePressed(MouseEvent e) {
+                MainPanel mainPanel = MainPanel.this;
+                int tabIndex = mainPanel.networksTabPanel.indexOfTabComponent(tabComponent);
+                switch (e.getButton()) {
+                    //LEFT_CLICK
+                    case 1 -> {
+                        mainPanel.networksTabPanel.setSelectedIndex(tabIndex);
+                    }
+                    //RIGHT_CLICK
+                    case 3 -> {
+                        JPopupMenu tabContextMenu = new JPopupMenu();
+                        
+                        if (component instanceof NetworkPanel networkPanel) {
+                            JMenuItem saveButton = new JMenuItem("Save");
+                            saveButton.addActionListener(e1 -> {
+                                try {
+                                    MainPanel.this.mainPanelListenerAssistant.saveNetwork(networkPanel);
+                                } catch (WriterException ex) {
+                                    throw new UnrecoverableException(ex);
+                                }
+                            });
+                            tabContextMenu.add(saveButton);
+                            JMenuItem saveAsButton = new JMenuItem("Save as");
+                            saveAsButton.addActionListener(e1 -> {
+                                try {
+                                    MainPanel.this.mainPanelListenerAssistant.saveNetworkAs(networkPanel);
+                                } catch (WriterException ex) {
+                                    throw new UnrecoverableException(ex);
+                                }
+                            });
+                            tabContextMenu.add(saveAsButton);
+                            
+                        }
+                        
+                        JMenuItem closeThisTab = new JMenuItem("Close this tab");
+                        closeThisTab.addActionListener(e2 -> multiClose(List.of(tabIndex)));
+                        tabContextMenu.add(closeThisTab);
+                        
+                        
+                        tabContextMenu.add(new JSeparator());
+                        JMenuItem closeAllTab = new JMenuItem("Close all tabs");
+                        closeAllTab.addActionListener(e2 -> multiClose(IntStream.range(0, MainPanel.this.networksTabPanel.getTabCount())
+                                                                                .boxed()
+                                                                                .toList()));
+                        tabContextMenu.add(closeAllTab);
+                        
+                        JMenuItem closeAllTabsButThis = new JMenuItem("Close all tabs but this");
+                        closeAllTabsButThis.addActionListener(e2 -> multiClose(Stream.concat(
+                                IntStream.range(0, tabIndex).boxed(),
+                                IntStream.range(tabIndex + 1, MainPanel.this.networksTabPanel.getTabCount()).boxed()
+                        ).toList()));
+                        tabContextMenu.add(closeAllTabsButThis);
+                        JMenuItem closeTabsToTheLeft = new JMenuItem("Close tabs to the left");
+                        closeTabsToTheLeft.addActionListener(e2 -> {
+                            multiClose(IntStream.range(0, tabIndex).boxed().toList());
+                        });
+                        tabContextMenu.add(closeTabsToTheLeft);
+                        JMenuItem closeTabsToTheRight = new JMenuItem("Close tabs to the right");
+                        closeTabsToTheRight.addActionListener(e2 -> {
+                            multiClose(IntStream.range(tabIndex + 1, MainPanel.this.networksTabPanel.getTabCount())
+                                                .boxed()
+                                                .toList());
+                        });
+                        tabContextMenu.add(closeTabsToTheRight);
+                        tabContextMenu.show(tabComponent, e.getX(), e.getY());
+                    }
+                }
+            }
+            
+            public void multiClose(List<Integer> tabIndexesToClose) {
+                tabIndexesToClose = tabIndexesToClose.stream().distinct().sorted(Comparator.reverseOrder()).toList();
+                int initialTab = MainPanel.this.networksTabPanel.getSelectedIndex();
+                boolean initialTabClosed = false;
+                try {
+                    for (int tabIndexToClose : tabIndexesToClose) {
+                        MainPanel.this.networksTabPanel.setSelectedIndex(tabIndexToClose);
+                        if (!MainPanel.this.mainPanelListenerAssistant.closePanel(tabIndexToClose)) {
+                            return;
+                        }
+                        initialTabClosed = initialTabClosed || initialTab == tabIndexToClose;
+                    }
+                    if (!initialTabClosed) {
+                        MainPanel.this.networksTabPanel.setSelectedIndex(initialTab);
+                    }
+                } catch (WriterException e) {
+                    throw new UnrecoverableException(e);
+                }
+            }
+            
+            @Override public void mouseReleased(MouseEvent e) {
+            
+            }
+            
+            @Override public void mouseEntered(MouseEvent e) {
+            
+            }
+            
+            @Override public void mouseExited(MouseEvent e) {
+            
+            }
+        });
+    }
     
 }

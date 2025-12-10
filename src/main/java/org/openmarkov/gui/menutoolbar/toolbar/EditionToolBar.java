@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.menutoolbar.toolbar;
 
-import org.openmarkov.gui.loader.element.IconLoader;
+import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 
 import javax.swing.*;
@@ -73,10 +73,6 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	 * Button group to make autoexclusive the edition options.
 	 */
 	private ButtonGroup editionButtonGroup = new ButtonGroup();
-	/**
-	 * Icon loader.
-	 */
-	private IconLoader iconLoader = null;
 
 	/**
 	 * This method initialises this instance.
@@ -92,7 +88,6 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	 * This method configures the toolbar.
 	 */
 	private void initialize() {
-		iconLoader = new IconLoader();
 		add(getCutButton());
 		add(getCopyButton());
 		add(getPasteButton());
@@ -117,7 +112,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JButton getCutButton() {
 		if (cutButton == null) {
 			cutButton = new JButton();
-			cutButton.setIcon(iconLoader.load(IconLoader.ICON_CUT_ENABLED));
+            cutButton.setIcon(IconBind.CUT_ENABLED.icon());
 			cutButton.setFocusable(false);
             cutButton.setActionCommand(ActionCommands.CLIPBOARD_CUT.getCommandName());
 			cutButton.setToolTipText(stringDatabase.getString(ActionCommands.CLIPBOARD_CUT + STRING_TOOLTIP_SUFFIX));
@@ -135,7 +130,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JButton getCopyButton() {
 		if (copyButton == null) {
 			copyButton = new JButton();
-			copyButton.setIcon(iconLoader.load(IconLoader.ICON_COPY_ENABLED));
+            copyButton.setIcon(IconBind.COPY_ENABLED.icon());
 			copyButton.setFocusable(false);
             copyButton.setActionCommand(ActionCommands.CLIPBOARD_COPY.getCommandName());
 			copyButton.setToolTipText(stringDatabase.getString(ActionCommands.CLIPBOARD_COPY + STRING_TOOLTIP_SUFFIX));
@@ -153,7 +148,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JButton getPasteButton() {
 		if (pasteButton == null) {
 			pasteButton = new JButton();
-			pasteButton.setIcon(iconLoader.load(IconLoader.ICON_PASTE_ENABLED));
+            pasteButton.setIcon(IconBind.PASTE_ENABLED.icon());
 			pasteButton.setFocusable(false);
             pasteButton.setActionCommand(ActionCommands.CLIPBOARD_PASTE.getCommandName());
 			pasteButton
@@ -172,7 +167,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JButton getRemoveButton() {
 		if (removeButton == null) {
 			removeButton = new JButton();
-			removeButton.setIcon(iconLoader.load(IconLoader.ICON_REMOVE_ENABLED));
+            removeButton.setIcon(IconBind.REMOVE_ENABLED.icon());
 			removeButton.setFocusable(false);
             removeButton.setActionCommand(ActionCommands.OBJECT_REMOVAL.getCommandName());
 			removeButton
@@ -191,7 +186,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JButton getUndoButton() {
 		if (undoButton == null) {
 			undoButton = new JButton();
-			undoButton.setIcon(iconLoader.load(IconLoader.ICON_UNDO_ENABLED));
+            undoButton.setIcon(IconBind.UNDO_ENABLED.icon());
 			undoButton.setFocusable(false);
             undoButton.setActionCommand(ActionCommands.UNDO.getCommandName());
 			undoButton.setToolTipText(stringDatabase.getString(ActionCommands.UNDO + STRING_TOOLTIP_SUFFIX));
@@ -209,7 +204,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JButton getRedoButton() {
 		if (redoButton == null) {
 			redoButton = new JButton();
-			redoButton.setIcon(iconLoader.load(IconLoader.ICON_REDO_ENABLED));
+            redoButton.setIcon(IconBind.REDO_ENABLED.icon());
 			redoButton.setFocusable(false);
             redoButton.setActionCommand(ActionCommands.REDO.getCommandName());
 			redoButton.setToolTipText(stringDatabase.getString(ActionCommands.REDO + STRING_TOOLTIP_SUFFIX));
@@ -227,7 +222,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JToggleButton getObjectSelectionButton() {
 		if (objectSelectionButton == null) {
 			objectSelectionButton = new JToggleButton();
-			objectSelectionButton.setIcon(iconLoader.load(IconLoader.ICON_SELECTION_ENABLED));
+            objectSelectionButton.setIcon(IconBind.SELECTION_ENABLED.icon());
             objectSelectionButton.setActionCommand(ActionCommands.OBJECT_SELECTION.getCommandName());
 			objectSelectionButton.setFocusable(false);
 			objectSelectionButton
@@ -247,7 +242,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JToggleButton getChanceCreationButton() {
 		if (chanceCreationButton == null) {
 			chanceCreationButton = new JToggleButton();
-			chanceCreationButton.setIcon(iconLoader.load(IconLoader.ICON_CHANCE_ENABLED));
+            chanceCreationButton.setIcon(IconBind.CHANCE_ENABLED.icon());
             chanceCreationButton.setActionCommand(ActionCommands.CHANCE_CREATION.getCommandName());
 			chanceCreationButton.setFocusable(false);
 			chanceCreationButton
@@ -267,7 +262,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JToggleButton getDecisionCreationButton() {
 		if (decisionCreationButton == null) {
 			decisionCreationButton = new JToggleButton();
-			decisionCreationButton.setIcon(iconLoader.load(IconLoader.ICON_DECISION_ENABLED));
+            decisionCreationButton.setIcon(IconBind.DECISION_ENABLED.icon());
             decisionCreationButton.setActionCommand(ActionCommands.DECISION_CREATION.getCommandName());
 			decisionCreationButton.setFocusable(false);
 			decisionCreationButton
@@ -287,7 +282,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JToggleButton getUtilityCreationButton() {
 		if (utilityCreationButton == null) {
 			utilityCreationButton = new JToggleButton();
-			utilityCreationButton.setIcon(iconLoader.load(IconLoader.ICON_UTILITY_ENABLED));
+            utilityCreationButton.setIcon(IconBind.UTILITY_ENABLED.icon());
             utilityCreationButton.setActionCommand(ActionCommands.UTILITY_CREATION.getCommandName());
 			utilityCreationButton.setFocusable(false);
 			utilityCreationButton
@@ -307,7 +302,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	private JToggleButton getLinkCreationButton() {
 		if (linkCreationButton == null) {
 			linkCreationButton = new JToggleButton();
-			linkCreationButton.setIcon(iconLoader.load(IconLoader.ICON_LINK_ENABLED));
+            linkCreationButton.setIcon(IconBind.LINK_ENABLED.icon());
             linkCreationButton.setActionCommand(ActionCommands.LINK_CREATION.getCommandName());
 			linkCreationButton.setFocusable(false);
 			linkCreationButton

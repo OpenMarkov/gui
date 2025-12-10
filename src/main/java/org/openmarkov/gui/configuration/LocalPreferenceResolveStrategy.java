@@ -1,5 +1,6 @@
 package org.openmarkov.gui.configuration;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -9,116 +10,49 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 enum LocalPreferenceResolveStrategy {
+    USER_FOLDER,
+    INSTALLED_LOCATION,
     BACKING_STORE,
-    FILE_SYSTEM,
-    RESORT_TO_DEFAULT;
+    SESSION;
     
-    public static @Nullable String get(List<String> path) {
-        for (var strategy : LocalPreferenceResolveStrategy.values()) {
-            var valueString = strategy.getString(path);
-            if (valueString != null) {
-                return valueString;
-            }
-        }
-        return null;
-    }
-    
-    public static boolean isSet(List<String> path) {
-        for (var strategy : LocalPreferenceResolveStrategy.values()) {
-            var isSet = strategy.valueIsSet(path);
-            if (isSet) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public static boolean put(List<String> path, String value) {
-        for (var strategy : LocalPreferenceResolveStrategy.values()) {
-            if (strategy.putString(path, value)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public static void clear(List<String> path) {
-        for (var strategy : LocalPreferenceResolveStrategy.values()) {
-            strategy.clearString(path);
-        }
-    }
-    
-    private @Nullable String getString(List<String> path) {
+    public @Nullable String get(List<String> path) {
         try {
             return switch (this) {
-                case BACKING_STORE -> {
-                    var node = Preferences.userRoot().node("OPENMARKOV");
-                    for (int i = 0; i < path.size() - 1; i++) {
-                        node = node.node(path.get(i));
-                    }
-                    yield node.get(path.getLast(), null);
-                }
-                case FILE_SYSTEM -> {
-                    var preferenceFile = new File("openmarkov_preferences");
-                    for (String pathElement : path) {
-                        preferenceFile = new File(preferenceFile, pathElement);
-                    }
-                    yield Files.readString(preferenceFile.toPath());
-                }
-                case RESORT_TO_DEFAULT -> null;
+                case BACKING_STORE -> LocalPreferenceResolveStrategy.preferenceNodeFor(path).get(path.getLast(), null);
+                case USER_FOLDER -> Files.readString(LocalPreferenceResolveStrategy.userFileFor(path).toPath());
+                case INSTALLED_LOCATION -> Files.readString(LocalPreferenceResolveStrategy.localFileFor(path).toPath());
+                case SESSION -> null;
             };
         } catch (RuntimeException | IOException e) {
             return null;
         }
     }
     
-    private @Nullable boolean valueIsSet(List<String> path) {
+    public boolean isSet(List<String> path) {
         try {
             return switch (this) {
-                case BACKING_STORE -> {
-                    var node = Preferences.userRoot().node("OPENMARKOV");
-                    for (int i = 0; i < path.size() - 1; i++) {
-                        node = node.node(path.get(i));
-                    }
-                    yield node.get(path.getLast(), null) != null;
-                }
-                case FILE_SYSTEM -> {
-                    var preferenceFile = new File("openmarkov_preferences");
-                    for (String pathElement : path) {
-                        preferenceFile = new File(preferenceFile, pathElement);
-                    }
-                    try {
-                        Files.readString(preferenceFile.toPath());
-                        yield true;
-                    } catch (IOException e) {
-                        yield false;
-                    }
-                }
-                case RESORT_TO_DEFAULT -> false;
+                case BACKING_STORE ->
+                        LocalPreferenceResolveStrategy.preferenceNodeFor(path).get(path.getLast(), null) != null;
+                case USER_FOLDER ->
+                        LocalPreferenceResolveStrategy.existsFile(LocalPreferenceResolveStrategy.userFileFor(path));
+                case INSTALLED_LOCATION ->
+                        LocalPreferenceResolveStrategy.existsFile(LocalPreferenceResolveStrategy.localFileFor(path));
+                case SESSION -> false;
             };
         } catch (RuntimeException e) {
             return false;
         }
     }
     
-    private boolean putString(List<String> path, String value) {
+    public boolean put(List<String> path, String value) {
         try {
             switch (this) {
-                case BACKING_STORE -> {
-                    var node = Preferences.userRoot().node("OPENMARKOV");
-                    for (int i = 0; i < path.size() - 1; i++) {
-                        node = node.node(path.get(i));
-                    }
-                    node.put(path.getLast(), value);
-                }
-                case FILE_SYSTEM -> {
-                    var preferenceFile = new File("openmarkov_preferences");
-                    for (String pathElement : path) {
-                        preferenceFile = new File(preferenceFile, pathElement);
-                    }
-                    Files.writeString(preferenceFile.toPath(), value);
-                }
-                case RESORT_TO_DEFAULT -> {
+                case BACKING_STORE -> LocalPreferenceResolveStrategy.preferenceNodeFor(path).put(path.getLast(), value);
+                case USER_FOLDER ->
+                        LocalPreferenceResolveStrategy.writeInPath(LocalPreferenceResolveStrategy.userFileFor(path), value);
+                case INSTALLED_LOCATION ->
+                        LocalPreferenceResolveStrategy.writeInPath(LocalPreferenceResolveStrategy.localFileFor(path), value);
+                case SESSION -> {
                 }
             }
             return true;
@@ -127,24 +61,14 @@ enum LocalPreferenceResolveStrategy {
         }
     }
     
-    private boolean clearString(List<String> path) {
+    public boolean clear(List<String> path) {
         try {
             switch (this) {
-                case BACKING_STORE -> {
-                    var node = Preferences.userRoot().node("org").node("openmarkov");
-                    for (int i = 0; i < path.size() - 1; i++) {
-                        node = node.node(path.get(i));
-                    }
-                    node.remove(path.getLast());
-                }
-                case FILE_SYSTEM -> {
-                    var preferenceFile = new File("openmarkov_preferences");
-                    for (String pathElement : path) {
-                        preferenceFile = new File(preferenceFile, pathElement);
-                    }
-                    Files.delete(preferenceFile.toPath());
-                }
-                case RESORT_TO_DEFAULT -> {
+                case BACKING_STORE ->
+                        LocalPreferenceResolveStrategy.preferenceNodeFor(path).parent().remove(path.getLast());
+                case USER_FOLDER -> Files.delete(LocalPreferenceResolveStrategy.userFileFor(path).toPath());
+                case INSTALLED_LOCATION -> Files.delete(LocalPreferenceResolveStrategy.localFileFor(path).toPath());
+                case SESSION -> {
                 }
             }
             return true;
@@ -153,5 +77,37 @@ enum LocalPreferenceResolveStrategy {
         }
     }
     
+    private static Preferences preferenceNodeFor(List<String> path) {
+        var node = Preferences.userRoot().node("OPENMARKOV");
+        for (var pathElement : path) {
+            node = node.node(pathElement);
+        }
+        return node;
+    }
+    
+    private static File localFileFor(List<String> path) {
+        return LocalPreferenceResolveStrategy.resolveFile(new File("openmarkov_preferences"), path);
+    }
+    
+    private static File userFileFor(List<String> path) {
+        return LocalPreferenceResolveStrategy.resolveFile(new File(new File(SystemUtils.getUserHome(), ".openmarkov"), "preferences"), path);
+    }
+    
+    private static File resolveFile(File parentFile, List<String> path) {
+        var preferenceFile = parentFile;
+        for (String pathElement : path) {
+            preferenceFile = new File(preferenceFile, pathElement);
+        }
+        return preferenceFile;
+    }
+    
+    private static boolean existsFile(File path) {
+        return path.exists() && path.isFile();
+    }
+    
+    private static void writeInPath(File path, String value) throws IOException {
+        path.getParentFile().mkdirs();
+        Files.writeString(path.toPath(), value);
+    }
     
 }

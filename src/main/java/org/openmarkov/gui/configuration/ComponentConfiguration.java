@@ -37,20 +37,6 @@ import java.util.Properties;
 		componentVariables = new HashMap<>();
 	}
 
-	public static OperatingSystem getOperatingSystem() {
-        OperatingSystem operatingSystem;
-		Properties properties = System.getProperties();
-		String osName = properties.getProperty("os.name");
-		if (osName.toLowerCase().contains("windows")) {
-			operatingSystem = OperatingSystem.WINDOWS;
-		} else if (osName.toLowerCase().contains("linux")) {
-			operatingSystem = OperatingSystem.LINUX;
-		} else {
-			operatingSystem = OperatingSystem.OTHER;
-		}
-		return operatingSystem;
-	}
-
 	// Methods
 	@Override public void generateDefaultConfiguration() {
 		String initialPath = System.getProperty("user.dir");

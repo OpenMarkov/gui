@@ -7,25 +7,27 @@
 package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
+import org.openmarkov.gui.configuration.LocalPreferences;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
-@SuppressWarnings("serial") public class DBFileChooser extends FileChooser {
+@SuppressWarnings("serial") public class DBOMFileChooser extends OMFileChooser {
 	protected static CaseDatabaseManager caseDbManager = new CaseDatabaseManager();
-
-	public DBFileChooser(boolean acceptAllFiles) {
-		super(acceptAllFiles);
-        File currentDirectory = OpenMarkovLocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.get();
+    
+    public DBOMFileChooser(boolean acceptAllFiles) {
+        super();
+        setAcceptAllFileFilterUsed(acceptAllFiles);
+        rescanCurrentDirectory();
+        File currentDirectory = LocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.get();
 		setCurrentDirectory(currentDirectory);
 	}
 
 	@Override public int showOpenDialog(Component parent) {
 		int result = super.showOpenDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovLocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.set(getSelectedFile().getAbsoluteFile());
+            LocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.set(getSelectedFile().getAbsoluteFile());
 		}
 		return result;
 	}
@@ -33,8 +35,8 @@ import java.io.File;
 	@Override public int showSaveDialog(Component parent) {
 		int result = super.showSaveDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
-            OpenMarkovLocalPreferences.LATEST_SAVED_DATASET_FORMAT.set(((FileFilterAll) getFileFilter()).getFileDescription());
-            OpenMarkovLocalPreferences.LATEST_SAVED_DATASET_DIRECTORY.set(getSelectedFile().getParentFile());
+            LocalPreferences.LATEST_SAVED_DATASET_FORMAT.set(((FileFilterAll) getFileFilter()).getFileDescription());
+            LocalPreferences.LATEST_SAVED_DATASET_DIRECTORY.set(getSelectedFile().getParentFile());
 		}
 		return result;
 	}

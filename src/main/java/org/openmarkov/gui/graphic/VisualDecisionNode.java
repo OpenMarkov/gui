@@ -11,7 +11,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.gui.configuration.OpenMarkovLocalPreferences;
+import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -28,7 +28,7 @@ public class VisualDecisionNode extends VisualNode{
 	/**
 	 * Internal color of the visual node when there is no finding established.
 	 */
-    private static final Color BACKGROUND_COLOR = OpenMarkovLocalPreferences.NODEDECISION_BACKGROUND_COLOR.get();
+    private static final Color BACKGROUND_COLOR = LocalPreferences.NODEDECISION_BACKGROUND_COLOR.get();
 
 	/**
 	 * Internal color of the visual node when there is a preResolution finding
@@ -51,12 +51,12 @@ public class VisualDecisionNode extends VisualNode{
 	/**
 	 * Color of lines and letters.
 	 */
-    private static final Color FOREGROUND_COLOR = OpenMarkovLocalPreferences.NODEDECISION_FOREGROUND_COLOR.get();
+    private static final Color FOREGROUND_COLOR = LocalPreferences.NODEDECISION_FOREGROUND_COLOR.get();
 
 	/**
 	 * Color of the letters
 	 */
-    private static final Color TEXT_FOREGROUND_COLOR = OpenMarkovLocalPreferences.NODEDECISION_TEXT_COLOR.get();
+    private static final Color TEXT_FOREGROUND_COLOR = LocalPreferences.NODEDECISION_TEXT_COLOR.get();
 
 	/**
 	 * This attribute indicates if the node has an imposed policy

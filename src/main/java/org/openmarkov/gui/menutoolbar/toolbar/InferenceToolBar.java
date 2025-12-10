@@ -8,7 +8,7 @@
 package org.openmarkov.gui.menutoolbar.toolbar;
 
 import org.openmarkov.gui.graphic.VisualState;
-import org.openmarkov.gui.loader.element.IconLoader;
+import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 
 import javax.swing.*;
@@ -69,10 +69,6 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
      * Button to propagateEvidence.
      */
     private JButton propagateEvidenceButton = null;
-    /**
-     * Icon loader.
-     */
-    private IconLoader iconLoader = null;
     
     /**
      * This method initializes this instance.
@@ -88,7 +84,6 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
      * This method configures the toolbar.
      */
     private void initialize() {
-        iconLoader = new IconLoader();
         add(getCreateNewEvidenceCaseButton());
         add(getClearOutAllEvidenceCasesButton());
         addSeparator();
@@ -136,7 +131,7 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
     private JButton getCreateNewEvidenceCaseButton() {
         if (createNewEvidenceCaseButton == null) {
             createNewEvidenceCaseButton = new JButton();
-            createNewEvidenceCaseButton.setIcon(iconLoader.load(IconLoader.ICON_CREATE_NEW_EVIDENCE_CASE_ENABLED));
+            createNewEvidenceCaseButton.setIcon(IconBind.CREATE_NEW_EVIDENCE_CASE_ENABLED.icon());
             createNewEvidenceCaseButton.setFocusable(false);
             createNewEvidenceCaseButton.setActionCommand(ActionCommands.CREATE_NEW_EVIDENCE_CASE.getCommandName());
             createNewEvidenceCaseButton.setToolTipText(
@@ -155,7 +150,7 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
     private JButton getGoToFirstEvidenceCaseButton() {
         if (goToFirstEvidenceCaseButton == null) {
             goToFirstEvidenceCaseButton = new JButton();
-            goToFirstEvidenceCaseButton.setIcon(iconLoader.load(IconLoader.ICON_GO_TO_FIRST_EVIDENCE_CASE_ENABLED));
+            goToFirstEvidenceCaseButton.setIcon(IconBind.GO_TO_FIRST_EVIDENCE_CASE_ENABLED.icon());
             goToFirstEvidenceCaseButton.setFocusable(false);
             goToFirstEvidenceCaseButton.setActionCommand(ActionCommands.GO_TO_FIRST_EVIDENCE_CASE.getCommandName());
             goToFirstEvidenceCaseButton.setToolTipText(
@@ -175,7 +170,7 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
         if (goToPreviousEvidenceCaseButton == null) {
             goToPreviousEvidenceCaseButton = new JButton();
             goToPreviousEvidenceCaseButton
-                    .setIcon(iconLoader.load(IconLoader.ICON_GO_TO_PREVIOUS_EVIDENCE_CASE_ENABLED));
+                    .setIcon(IconBind.GO_TO_PREVIOUS_EVIDENCE_CASE_ENABLED.icon());
             goToPreviousEvidenceCaseButton.setFocusable(false);
             goToPreviousEvidenceCaseButton.setActionCommand(ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE.getCommandName());
             goToPreviousEvidenceCaseButton.setToolTipText(
@@ -246,7 +241,7 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
     private JButton getGoToNextEvidenceCaseButton() {
         if (goToNextEvidenceCaseButton == null) {
             goToNextEvidenceCaseButton = new JButton();
-            goToNextEvidenceCaseButton.setIcon(iconLoader.load(IconLoader.ICON_GO_TO_NEXT_EVIDENCE_CASE_ENABLED));
+            goToNextEvidenceCaseButton.setIcon(IconBind.GO_TO_NEXT_EVIDENCE_CASE_ENABLED.icon());
             goToNextEvidenceCaseButton.setFocusable(false);
             goToNextEvidenceCaseButton.setActionCommand(ActionCommands.GO_TO_NEXT_EVIDENCE_CASE.getCommandName());
             goToNextEvidenceCaseButton.setToolTipText(
@@ -265,7 +260,7 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
     private JButton getGoToLastEvidenceCaseButton() {
         if (goToLastEvidenceCaseButton == null) {
             goToLastEvidenceCaseButton = new JButton();
-            goToLastEvidenceCaseButton.setIcon(iconLoader.load(IconLoader.ICON_GO_TO_LAST_EVIDENCE_CASE_ENABLED));
+            goToLastEvidenceCaseButton.setIcon(IconBind.GO_TO_LAST_EVIDENCE_CASE_ENABLED.icon());
             goToLastEvidenceCaseButton.setFocusable(false);
             goToLastEvidenceCaseButton.setActionCommand(ActionCommands.GO_TO_LAST_EVIDENCE_CASE.getCommandName());
             goToLastEvidenceCaseButton.setToolTipText(
@@ -285,7 +280,7 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
         if (clearOutAllEvidenceCasesButton == null) {
             clearOutAllEvidenceCasesButton = new JButton();
             clearOutAllEvidenceCasesButton
-                    .setIcon(iconLoader.load(IconLoader.ICON_CLEAR_OUT_ALL_EVIDENCE_CASES_ENABLED));
+                    .setIcon(IconBind.CLEAR_OUT_ALL_EVIDENCE_CASES_ENABLED.icon());
             clearOutAllEvidenceCasesButton.setFocusable(false);
             clearOutAllEvidenceCasesButton.setActionCommand(ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES.getCommandName());
             clearOutAllEvidenceCasesButton.setToolTipText(
@@ -304,7 +299,7 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
     private JButton getPropagateEvidenceButton() {
         if (propagateEvidenceButton == null) {
             propagateEvidenceButton = new JButton();
-            propagateEvidenceButton.setIcon(iconLoader.load(IconLoader.ICON_PROPAGATE_EVIDENCE_ENABLED));
+            propagateEvidenceButton.setIcon(IconBind.PROPAGATE_EVIDENCE_ENABLED.icon());
             propagateEvidenceButton.setFocusable(false);
             propagateEvidenceButton.setActionCommand(ActionCommands.PROPAGATE_EVIDENCE.getCommandName());
             propagateEvidenceButton.setToolTipText(

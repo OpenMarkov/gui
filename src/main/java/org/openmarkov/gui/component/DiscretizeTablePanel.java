@@ -17,7 +17,7 @@ import org.openmarkov.gui.action.NodePartitionedIntervalEdit;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.gui.exception.WrongIntervalException;
-import org.openmarkov.gui.loader.element.IconLoader;
+import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.GUIDefaultStates;
 
@@ -487,7 +487,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             positiveInfinityButton = new JButton();
             positiveInfinityButton.setName("DiscretizeTablePanel.jButtonInfinitePositiveDouble");
             positiveInfinityButton.setText(stringDatabase.getString("InfinitePositive.Text.Label"));
-            positiveInfinityButton.setIcon(iconLoader.load(IconLoader.ICON_INFINITE_POSITIVE_ENABLED));
+            positiveInfinityButton.setIcon(IconBind.INFINITE_POSITIVE_ENABLED.icon());
             // jButtonInfinitePositiveDouble.setVisible(reorderEnabled);
             positiveInfinityButton.setEnabled(false);
             positiveInfinityButton.addActionListener(this);
@@ -506,7 +506,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             negativeInfinityButton = new JButton();
             negativeInfinityButton.setName("DiscretizeTablePanel.jButtonInfiniteNegativeDouble");
             negativeInfinityButton.setText(stringDatabase.getString("InfiniteNegative.Text.Label"));
-            negativeInfinityButton.setIcon(iconLoader.load(IconLoader.ICON_INFINITE_NEGATIVE_ENABLED));
+            negativeInfinityButton.setIcon(IconBind.INFINITE_NEGATIVE_ENABLED.icon());
             // jButtonInfiniteNegativeDouble.setVisible(reorderEnabled);
             negativeInfinityButton.setEnabled(false);
             negativeInfinityButton.addActionListener(this);
