@@ -1125,7 +1125,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                 try {
                     changeLimitIntervalDiscretize(row, column);
                 } catch (WrongIntervalException.InfinityInIntervalNotAllowed |
-                         WrongIntervalException.LimitsValuesAreWrong | DoEditException ex) {
+                         WrongIntervalException.LimitsValuesAreWrong ex) {
+                    throw new UnrecoverableException(ex);
+                } catch (DoEditException ex) {
                     throw new UnreacheableException(ex);
                 }
             } else if (column == LOWER_BOUND_VALUE_COLUMN_INDEX || column == UPPER_BOUND_VALUE_COLUMN_INDEX) {
