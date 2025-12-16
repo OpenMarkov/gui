@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.window;
 
-import com.sun.tools.javac.Main;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnrecoverableException;
@@ -19,26 +18,20 @@ import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.menutoolbar.menu.MainMenu;
-import org.openmarkov.gui.menutoolbar.plugin.ToolbarManager;
+import org.openmarkov.gui.menutoolbar.toolbar.plugin.ToolbarManager;
 import org.openmarkov.gui.menutoolbar.toolbar.EditionToolBar;
 import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
 import org.openmarkov.gui.menutoolbar.toolbar.StandardToolBar;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
-import org.openmarkov.gui.window.mdi.MDI;
-import org.openmarkov.gui.window.message.MessageWindow;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -62,11 +55,7 @@ public class MainPanel extends JPanel {
     /**
      * Main menu.
      */
-    private MainMenu mainMenu = null;
-    /**
-     * Message window.
-     */
-    private MessageWindow messageWindow = null;
+    private final MainMenu mainMenu;
     /**
      * Panel that contains the toolbars.
      */
@@ -95,7 +84,7 @@ public class MainPanel extends JPanel {
      * Object that listens and manages the user's actions on the menus, contextual
      * menus and toolbars. This object also listens and manages the mdi events.
      */
-    private MainPanelListenerAssistant mainPanelListenerAssistant = null;
+    private final MainPanelListenerAssistant mainPanelListenerAssistant;
     /**
      * The frame where this panel belongs to.
      */
@@ -177,13 +166,15 @@ public class MainPanel extends JPanel {
                 }
                 case DecisionTreeWindow decisionTreeWindow -> {
                     this.getMainPanelMenuAssistant().updateOptionsWindowSelected(false);
+                    this.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTreeWindow);
                 }
                 case null, default -> {
                 
                 }
             }
-            
         });
+        this.mainPanelListenerAssistant = new MainPanelListenerAssistant(MainPanel.MAIN_PANEL);
+        this.mainMenu = new MainMenu(mainPanelListenerAssistant);
         this.initialize();
     }
     
@@ -244,7 +235,11 @@ public class MainPanel extends JPanel {
         this.getMainMenu();
         this.getContextualMenuFactory();
         this.setLayout(new BorderLayout());
-        this.setSize(new Dimension(500, 500));
+        int previousWidth = this.getWidth();
+        int previousHeight = this.getHeight();
+        //Setting the dimensions to 0 causes a refresh when setting them back
+        this.setSize(new Dimension(0, 0));
+        this.setSize(new Dimension(Math.max(600, previousWidth), Math.max(500, previousHeight)));
         this.add(this.getToolBarPanel(), BorderLayout.NORTH);
         this.getMainPanelMenuAssistant();
 		/*JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -290,31 +285,12 @@ public class MainPanel extends JPanel {
     }
     
     /**
-     * This method initialises messageWindow.
-     *
-     * @return a new message window.
-     */
-    public MessageWindow getMessageWindow() {
-        if (messageWindow == null) {
-            messageWindow = new MessageWindow(mainFrame);
-            messageWindow.setVisible(true);
-        }
-        return messageWindow;
-    }
-    
-    /**
      * This method initialises mainMenu.
      *
      * @return a new menubar.
      */
     public MainMenu getMainMenu() {
-        
-        if (mainMenu == null) {
-            mainMenu = new MainMenu(mainPanelListenerAssistant);
-        }
-        
         return mainMenu;
-        
     }
     
     /**
@@ -458,13 +434,7 @@ public class MainPanel extends JPanel {
      * @return a new main panel listener assistant.
      */
     public MainPanelListenerAssistant getMainPanelListenerAssistant() {
-        
-        if (mainPanelListenerAssistant == null) {
-            mainPanelListenerAssistant = new MainPanelListenerAssistant(MainPanel.MAIN_PANEL);
-        }
-        
         return mainPanelListenerAssistant;
-        
     }
     
     /**
@@ -530,7 +500,7 @@ public class MainPanel extends JPanel {
         }
     }
     
-    public void addCloseableTab(String title, Component component) {
+    public void addCloseableTab(String title, ZoomableContentPanel component) {
         var uniqueTitle = title;
         var presentNames = IntStream.range(0, this.networksTabPanel.getTabCount())
                                     .mapToObj(this.networksTabPanel::getTitleAt)
@@ -545,21 +515,14 @@ public class MainPanel extends JPanel {
         JPanel tabPanel = new JPanel(new FlowLayout());
         tabPanel.setFocusable(false);
         tabPanel.setOpaque(false);
-        tabPanel.add(new JLabel(uniqueTitle));
+        JLabel titleLabel = new JLabel(uniqueTitle);
+        tabPanel.add(titleLabel);
         if (component instanceof NetworkPanel networkPanel) {
-            JButton saveButton = new JButton("\uD83D\uDCBE");
-            saveButton.setFocusable(false);
-            saveButton.setMargin(new Insets(0, 0, 0, 0));
-            tabPanel.add(saveButton);
-            saveButton.setEnabled(networkPanel.getModified());
             networkPanel.addOnModification(networkP -> {
-                saveButton.setEnabled(networkP.getModified());
-            });
-            saveButton.addActionListener(e -> {
-                try {
-                    this.mainPanelListenerAssistant.saveNetwork(networkPanel);
-                } catch (WriterException ex) {
-                    throw new UnrecoverableException(ex);
+                if (networkP.getModified()) {
+                    titleLabel.setForeground(new Color(212, 56, 56));
+                } else {
+                    titleLabel.setForeground(null);
                 }
             });
         }
@@ -568,14 +531,7 @@ public class MainPanel extends JPanel {
         JButton closeButton = new JButton("✖");
         closeButton.setFocusable(false);
         closeButton.setMargin(new Insets(0, 0, 0, 0));
-        closeButton.addActionListener(e -> {
-            var tabIndex = this.networksTabPanel.indexOfTabComponent(tabPanel);
-            try {
-                this.mainPanelListenerAssistant.closePanel(tabIndex);
-            } catch (WriterException ex) {
-                throw new UnrecoverableException(ex);
-            }
-        });
+        closeButton.addActionListener(e -> component.close());
         tabPanel.add(closeButton);
         this.networksTabPanel.setTabComponentAt(this.networksTabPanel.getTabCount() - 1, tabPanel);
         Component tabComponent = this.networksTabPanel.getTabComponentAt(this.networksTabPanel.getTabCount() - 1);
@@ -658,19 +614,15 @@ public class MainPanel extends JPanel {
                 tabIndexesToClose = tabIndexesToClose.stream().distinct().sorted(Comparator.reverseOrder()).toList();
                 int initialTab = MainPanel.this.networksTabPanel.getSelectedIndex();
                 boolean initialTabClosed = false;
-                try {
-                    for (int tabIndexToClose : tabIndexesToClose) {
-                        MainPanel.this.networksTabPanel.setSelectedIndex(tabIndexToClose);
-                        if (!MainPanel.this.mainPanelListenerAssistant.closePanel(tabIndexToClose)) {
-                            return;
-                        }
-                        initialTabClosed = initialTabClosed || initialTab == tabIndexToClose;
+                for (int tabIndexToClose : tabIndexesToClose) {
+                    MainPanel.this.networksTabPanel.setSelectedIndex(tabIndexToClose);
+                    if (!((ZoomableContentPanel) MainPanel.this.networksTabPanel.getSelectedComponent()).close()) {
+                        return;
                     }
-                    if (!initialTabClosed) {
-                        MainPanel.this.networksTabPanel.setSelectedIndex(initialTab);
-                    }
-                } catch (WriterException e) {
-                    throw new UnrecoverableException(e);
+                    initialTabClosed = initialTabClosed || initialTab == tabIndexToClose;
+                }
+                if (!initialTabClosed) {
+                    MainPanel.this.networksTabPanel.setSelectedIndex(initialTab);
                 }
             }
             

@@ -3,8 +3,6 @@ package org.openmarkov.gui.localize;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.component.LastRecentFilesMenuItem;
 import org.openmarkov.gui.menutoolbar.toolbar.ZoomComboBox;
-import org.openmarkov.gui.window.mdi.MDIMenu;
-import org.openmarkov.gui.window.message.NonEditableTextArea;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,8 +41,6 @@ public class UpdateLocalizationInComponents {
             } else if (item instanceof JLabel) {
                 temp = item.getName() + ".Text";
                 ((JLabel) item).setText(stringDatabase.getString(temp));
-            } else if (item instanceof MDIMenu) {
-                // doNothing
             } else if (item instanceof JMenu) {
                 temp = item.getName() + ".Label";
                 ((JMenu) item).setText(stringDatabase.getString(temp));
@@ -56,8 +52,6 @@ public class UpdateLocalizationInComponents {
                 ((JMenuItem) item).setText(stringDatabase.getString(temp));
                 temp = item.getName() + ".Mnemonic";
                 ((JMenuItem) item).setMnemonic(stringDatabase.getString(temp).charAt(0));
-            } else if (item instanceof NonEditableTextArea) {
-                // doNothing
             } else if (item instanceof JPanel) {
                 allComponentsUpdateSetText((Container) item);
             } else if (item instanceof JTextArea) {

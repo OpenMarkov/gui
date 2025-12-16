@@ -39,9 +39,6 @@ import org.openmarkov.gui.util.PropertyNames;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
-import org.openmarkov.gui.window.mdi.FrameContentPanel;
-import org.openmarkov.gui.window.mdi.MDIListener;
-import org.openmarkov.gui.window.message.MessageWindow;
 import org.openmarkov.inference.algorithm.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
 import org.openmarkov.inference.algorithm.decompositionIntoSymmetricDANs.evaluation.DANDecompositionIntoSymmetricDANsEvaluation;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEOptimalIntervention;
@@ -79,7 +76,7 @@ import java.util.prefs.BackingStoreException;
  * @version 1.6.2 -cmyago -26/02/2023 re-added behaviour for "Expand network" (fixing regression)
  */
 public class MainPanelListenerAssistant extends WindowAdapter
-        implements ActionListener, MDIListener, PropertyNames, ComponentListener {
+        implements ActionListener, PropertyNames, ComponentListener {
     /**
      * Value for the Zoom increment/decrement
      */
@@ -525,7 +522,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> this.getCurrentNetworkPanel().enableRevelationArc();
             case ActionCommands.DECISION_TREE -> {
                 try {
-                    showDecisionTree(this.getCurrentNetworkPanel().getProbNet());
+                    showDecisionTree(this.getCurrentNetworkPanel());
                 } catch (NotEvaluableNetworkException | IncompatibleEvidenceException |
                          NonProjectablePotentialException |
                          PotentialOperationException.DifferentSizesInPotentialsAndStates |
@@ -647,8 +644,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return the current network panel.
      */
-    public FrameContentPanel getCurrentPanel() {
-        return (FrameContentPanel) mainPanel.getNetworksTabPanel().getSelectedComponent();
+    public ZoomableContentPanel getCurrentPanel() {
+        return (ZoomableContentPanel) mainPanel.getNetworksTabPanel().getSelectedComponent();
     }
     
     /**
@@ -662,65 +659,27 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return true, if the network can be closed; otherwise, false.
      */
-    private boolean networkCanBeClosed(NetworkPanel networkPanel) throws WriterException {
+    public boolean networkCanBeClosed(NetworkPanel networkPanel) throws WriterException {
         int response;
-        boolean canClose = true;
+        boolean canClose = !networkPanel.getModified();
         if (networkPanel.getModified()) {
-            String title = stringDatabase.getFormattedString("NetworkNotSaved.Title.Label", networkPanel.getTitle());
-            String message = stringDatabase.getFormattedString("NetworkNotSaved.Text.Label", networkPanel.getTitle());
+            String title = StringDatabase.getUniqueInstance()
+                                         .getFormattedString("NetworkNotSaved.Title.Label", networkPanel.probNet.getName());
+            String message = StringDatabase.getUniqueInstance()
+                                           .getFormattedString("NetworkNotSaved.Text.Label", networkPanel.probNet.getName());
             response = JOptionPane
                     .showConfirmDialog(Utilities.getOwner(mainPanel), message, title, JOptionPane.YES_NO_CANCEL_OPTION,
                                        JOptionPane.WARNING_MESSAGE);
-            switch (response) {
-                case JOptionPane.YES_OPTION: {
-                    canClose = saveNetwork(networkPanel);
-                    break;
-                }
-                case JOptionPane.NO_OPTION: {
-                    canClose = true;
-                    break;
-                }
-                default: {
-                    return false;
-                }
-            }
+            canClose = switch (response) {
+                case JOptionPane.YES_OPTION -> saveNetwork(networkPanel);
+                case JOptionPane.NO_OPTION -> true;
+                default -> false;
+            };
         }
         if (canClose) {
             networkPanels.remove(networkPanel);
         }
         return canClose;
-    }
-    
-    /**
-     * This method executes when a network frame is going to be closed.
-     *
-     * @param contentPanel content panel of the frame that is trying to be closed.
-     *
-     * @return true, if the frame that contents the panel can be closed;
-     * otherwise, false.
-     */
-    @Override public boolean frameClosing(FrameContentPanel contentPanel) {
-        contentPanel.close();
-        if (!NetworkPanel.class.isAssignableFrom(contentPanel.getClass())) {
-            return true;
-        }
-        try {
-            return networkCanBeClosed((NetworkPanel) contentPanel);
-        } catch (WriterException e) {
-            throw new UnrecoverableException(e);
-        }
-    }
-    
-    /**
-     * This method executes when a frame has been closed.
-     *
-     * @param contentPanel content panel of the frame that has been closed.
-     */
-    @Override public void frameClosed(FrameContentPanel contentPanel) {
-        if (networkPanels.isEmpty()) {
-            mainPanel.setToolBarPanel(NetworkPanel.WorkingMode.EDITION);
-            mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
-        }
     }
     
     //    /**
@@ -783,23 +742,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
     //        }
     //        return result;
     //    }
-    
-    /**
-     * This method executes when a network frame has been selected.
-     *
-     * @param contentPanel content panel of the frame that has been selected.
-     */
-    @Override public void frameSelected(FrameContentPanel contentPanel) {
-        if (contentPanel instanceof NetworkPanel) {
-            mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent((NetworkPanel) contentPanel);
-            mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
-            mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);
-        } else if (contentPanel instanceof MessageWindow) {
-            mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(false);
-        } else if (contentPanel instanceof DecisionTreeWindow) {
-            mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree((DecisionTreeWindow) contentPanel);
-        }
-    }
     
     
     /**
@@ -876,16 +818,17 @@ public class MainPanelListenerAssistant extends WindowAdapter
     }
     
     private void createBackUpNetworkFile(String fileName, String newFileName) {
-        try {
-            File inFile = new File(fileName);
-            File outFile = new File(newFileName);
-            FileInputStream in = new FileInputStream(inFile);
-            FileOutputStream out = new FileOutputStream(outFile);
-            int c;
-            while ((c = in.read()) != -1)
+        File inFile = new File(fileName);
+        File outFile = new File(newFileName);
+        try (
+                FileInputStream in = new FileInputStream(inFile);
+                FileOutputStream out = new FileOutputStream(outFile);
+        ) {
+            while (true) {
+                int c = in.read();
+                if (c == -1) break;
                 out.write(c);
-            in.close();
-            out.close();
+            }
         } catch (IOException e) {
             System.out.println(stringDatabase.getString("NetworkBackupError.Text.Label"));
         }
@@ -1032,6 +975,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     public NetworkPanel createNewFrame(ProbNet probNet) {
         NetworkPanel networkPanel = new NetworkPanel(probNet, mainPanel);
         mainPanel.addCloseableTab(probNet.getName(), networkPanel);
+        mainPanel.getNetworksTabPanel().setSelectedComponent(networkPanel);
         networkPanel.setContextualMenuFactory(mainPanel.getContextualMenuFactory());
         // networkPanel.addEditionListener( mainPanel
         // .getMainPanelMenuAssistant() );
@@ -1223,17 +1167,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return true if the network has been closed; otherwise, false.
      */
-    public boolean closePanel(int panelIndex) throws WriterException {
-        var componentToClose = mainPanel.getNetworksTabPanel().getComponentAt(panelIndex);
-        boolean canClose = !(componentToClose instanceof NetworkPanel networkPanel) || networkCanBeClosed(networkPanel);
-        if (canClose) {
-            mainPanel.getNetworksTabPanel().removeTabAt(panelIndex);
-        }
-        if (networkPanels.isEmpty()) {
-            mainPanel.setToolBarPanel(NetworkPanel.WorkingMode.EDITION);
-            mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
-        }
-        return canClose;
+    public boolean closePanel(ZoomableContentPanel panel) throws WriterException {
+        return panel.close();
     }
     
     /**
@@ -1389,7 +1324,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         
         File currentDirectory = LocalPreferences.LATEST_OPEN_DIRECTORY.get();
         omFileChooser.setCurrentDirectory(currentDirectory);
-        String suggestedFileName = currentNetworkPanel.getTitle().replaceFirst("^*", "");
+        String suggestedFileName = currentNetworkPanel.probNet.getName();
         omFileChooser.setSelectedFile(new File(suggestedFileName));
         omFileChooser.setAcceptAllFileFilterUsed(false);
         if (omFileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
@@ -1627,30 +1562,30 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * This method increments the zoom of the current panel.
      *
-     * @param frameContentPanel network whose zoom will be changed.
+     * @param zoomableContentPanel network whose zoom will be changed.
      */
-    private void incrementZoom(FrameContentPanel frameContentPanel) {
-        setZoom(frameContentPanel, frameContentPanel.getZoom() + zoomChangeValue);
+    private void incrementZoom(ZoomableContentPanel zoomableContentPanel) {
+        setZoom(zoomableContentPanel, zoomableContentPanel.getZoom() + zoomChangeValue);
     }
     
     /**
      * This method decrements the zoom of the current panel.
      *
-     * @param frameContentPanel network whose zoom will be changed.
+     * @param zoomableContentPanel network whose zoom will be changed.
      */
-    private void decrementZoom(FrameContentPanel frameContentPanel) {
-        setZoom(frameContentPanel, frameContentPanel.getZoom() - zoomChangeValue);
+    private void decrementZoom(ZoomableContentPanel zoomableContentPanel) {
+        setZoom(zoomableContentPanel, zoomableContentPanel.getZoom() - zoomChangeValue);
     }
     
     /**
      * Sets the zoom of the current panel and updates the menu and the toolbar.
      *
-     * @param frameContentPanel network whose zoom will be changed.
-     * @param value             new zoom value.
+     * @param zoomableContentPanel network whose zoom will be changed.
+     * @param value                new zoom value.
      */
-    private void setZoom(FrameContentPanel frameContentPanel, double value) {
-        frameContentPanel.setZoom(value);
-        double newZoom = frameContentPanel.getZoom();
+    private void setZoom(ZoomableContentPanel zoomableContentPanel, double value) {
+        zoomableContentPanel.setZoom(value);
+        double newZoom = zoomableContentPanel.getZoom();
         mainPanel.getMainPanelMenuAssistant().setZoom(newZoom);
     }
     
@@ -1663,17 +1598,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
         return networkPanels;
     }
     
-    @Override public void frameTitleChanged(FrameContentPanel contentPanel, String oldName, String newName) {
-        // TODO Auto-generated method stub
-    }
-    
-    @Override public void frameOpened(FrameContentPanel contentPanel) {
-        // TODO Auto-generated method stub
-    }
-    
-    private void showDecisionTree(ProbNet probNet) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException, NotEnoughtMemoryException {
+    private void showDecisionTree(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException, NotEnoughtMemoryException {
+        if (networkPanel.getDecisionTreeWindow() != null) {
+            mainPanel.getNetworksTabPanel().setSelectedComponent(networkPanel.getDecisionTreeWindow());
+            return;
+        }
         try {
-            InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
+            InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(networkPanel.probNet,
                                                                                         Utilities.getOwner(mainPanel));
             if (costEffectivenessDialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
                 return;
@@ -1686,9 +1617,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     // TODO: Do something for show cost-effectiveness decision tree
                 }
             }
-            DecisionTreeWindow decisionTree = new DecisionTreeWindow(probNet);
-            mainPanel.addCloseableTab("Decision tree of " + probNet.getName(), decisionTree);
+            DecisionTreeWindow decisionTree = new DecisionTreeWindow(networkPanel);
+            mainPanel.addCloseableTab("Decision tree for " + networkPanel.probNet.getName(), decisionTree);
             mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
+            mainPanel.getNetworksTabPanel().setSelectedComponent(decisionTree);
         } catch (OutOfMemoryError e) {
             throw new NotEnoughtMemoryException(e);
         }

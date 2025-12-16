@@ -41,7 +41,6 @@ import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
-import org.openmarkov.inference.algorithm.dlimidevaluation.StrategyManager;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEEvaluation;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEExpectedUtilityDecision;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEPropagation;
@@ -183,10 +182,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     private boolean networkChanged = true;
     /**
-     * Listener that listen to the changes of size.
-     */
-    private HashSet<EditorPanelSizeListener> sizeListeners = new HashSet<EditorPanelSizeListener>();
-    /**
      * Object that creates the contextual menus.
      */
     private ContextualMenuFactory contextualMenuFactory = null;
@@ -321,22 +316,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     /**
-     * Notifies to the registered size listener (if any) that the panel's size
-     * has changed.
-     *
-     * @param incrLeft   increase for the left side.
-     * @param incrTop    increase overhead.
-     * @param incrRight  increase for the right side.
-     * @param incrBottom increase for below.
-     */
-    @SuppressWarnings("unused") private void notifySizeChanged(double incrLeft, double incrTop, double incrRight,
-                                                               double incrBottom) {
-        for (EditorPanelSizeListener listener : sizeListeners) {
-            listener.sizeChanged(incrLeft, incrTop, incrRight, incrBottom);
-        }
-    }
-    
-    /**
      * Invoked when a mouse button has been clicked (pressed and released) on
      * the component.
      *
@@ -345,6 +324,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     @Override public void mouseClicked(MouseEvent e) {
     }
     
+    private int lastClickCount = 0;
+    private boolean lastLeftClickProducedANode;
+    
     /**
      * Invoked when a mouse button has been pressed on the component.
      *
@@ -352,11 +334,24 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     @Override public void mousePressed(MouseEvent e) {
         // requestFocusInWindow(); Activate if nodes can't be moved by arrows.
+        
+        if (e.getClickCount() <= (lastClickCount + 1)) {
+            lastLeftClickProducedANode = false;
+            lastClickCount = Math.max(e.getClickCount() - 1, 0);
+        } else {
+            lastClickCount += 1;
+        }
+        // requestFocusInWindow(); Activate if nodes can't be moved by arrows.
         Graphics2D g = (Graphics2D) getGraphics();
         cursorPosition.setLocation(zoom.screenToPanel(e.getX()), zoom.screenToPanel(e.getY()));
         // Specific functionality depending on the edition mode;
         try {
+            var oldNodesCount = probNet.getNodes().size();
             editionMode.mousePressed(e, cursorPosition, g);
+            if (e.getClickCount() == 1) {
+                int newNodesCount = probNet.getNodes().size();
+                this.lastLeftClickProducedANode = oldNodesCount < newNodesCount;
+            }
         } catch (Exception ex) {
             throw new UnrecoverableException(ex);
         }
@@ -373,7 +368,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             return;
         }
         if (e.isAltDown() && e.getClickCount() != 2) {
-            if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+            node = visualNetwork.whatNodeInPosition(cursorPosition, g);
+            if (node != null) {
                 if (!node.isSelected()) {
                     visualNetwork.setSelectedAllObjects(false);
                     visualNetwork.setSelectedNode(node, true);
@@ -397,19 +393,33 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             // If we are in Edition Mode a double click must open
             // the corresponding properties dialog (for node, link
             // or network)
-            if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+            node = visualNetwork.whatNodeInPosition(cursorPosition, g);
+            if (node != null) {
                 try {
-                    changeNodeProperties(node);
+                    boolean userAcceptedChanges = changeNodeProperties(node);
+                    if (!userAcceptedChanges && lastLeftClickProducedANode) {
+                        while (true) {
+                            if (probNet.getPNESupport()
+                                       .undoAndDelete()
+                                       .stream()
+                                       .anyMatch(edit -> edit instanceof AddNodeEdit)) {
+                                break;
+                            }
+                        }
+                    }
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ConstraintViolatedException ex) {
                     repaint();
                     throw new UnrecoverableException(ex);
                 }
-            } else if ((link = visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
-                changeLinkProperties(link);
             } else {
-                changeNetworkProperties();
+                link = visualNetwork.whatLinkInPosition(cursorPosition, g);
+                if (link != null) {
+                    changeLinkProperties(link);
+                } else {
+                    changeNetworkProperties();
+                }
             }
             repaint();
             return;
@@ -526,15 +536,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * @param e mouse event information.
      */
     @Override public void mouseMoved(MouseEvent e) {
-    }
-    
-    /**
-     * This method allows to an object to be registered as size listener.
-     *
-     * @param l size listener.
-     */
-    public void addEditorPanelSizeListener(EditorPanelSizeListener l) {
-        sizeListeners.add(l);
     }
     
     /**
@@ -730,9 +731,12 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * undo manager.
      *
      * @param selectedNode
+     *
+     * @return
      */
-    public void changeNodeProperties(VisualNode selectedNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
-        if (requestNodePropertiesToUser2(Utilities.getOwner(this), selectedNode.getNode(), false)) {
+    public boolean changeNodeProperties(VisualNode selectedNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+        boolean userAcceptedChanges = requestNodePropertiesToUser2(Utilities.getOwner(this), selectedNode.getNode(), false);
+        if (userAcceptedChanges) {
             adjustPanelDimension();
             selectedNode.update(postResolutionEvidence.size());
             repaint();
@@ -741,6 +745,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         } else {
             probNet.getPNESupport().undoAndDelete();
         }
+        return userAcceptedChanges;
     }
     
     public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
@@ -911,10 +916,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         pasteEdit.executeEdit();
         // Set the nodes and links we just pasted as selected
         SelectedContent pastedContent = pasteEdit.getPastedContent();
-        for (Node node : pastedContent.getNodes()) {
+        for (Node node : pastedContent.nodes()) {
             visualNetwork.setSelectedNode(node.getName(), true);
         }
-        for (Link<Node> link : pastedContent.getLinks()) {
+        for (Link<Node> link : pastedContent.links()) {
             visualNetwork.setSelectedLink(link, true);
         }
         adjustPanelDimension();

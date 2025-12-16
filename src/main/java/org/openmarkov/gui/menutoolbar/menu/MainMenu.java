@@ -289,24 +289,21 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
      * @param newListener listener of the user's actions.
      */
     public MainMenu(ActionListener newListener) {
-        
         listener = newListener;
-        initialize();
-        
+        reInitialize();
     }
     
     /**
      * This method initializes the instance.
      */
-    private void initialize() {
-        
+    public void reInitialize() {
+        removeAll();
         add(getFileMenu());
         add(getEditMenu());
         add(getInferenceMenu());
         add(getToolsMenu());
         // add(getOptionsMenu()); //FOR FUTURE USE
         add(getHelpingMenu());
-        
     }
     
     /**
@@ -442,7 +439,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         
         if (fileCloseMenuItem == null) {
             fileCloseMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_CLOSE_MENUITEM, ActionCommands.CLOSE_NETWORK.getCommandName(),
-                                                      IconBind.CLOSE_ENABLED,
+                                                      null,
                                                       KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
             fileCloseMenuItem.addActionListener(listener);
         }
@@ -1395,8 +1392,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
             case ActionCommands.NODE_PROPERTIES -> editNodePropertiesMenuItem;
             case ActionCommands.EDIT_POTENTIAL -> editRelationMenuItem;
             case ActionCommands.LINK_PROPERTIES -> editLinkPropertiesMenuItem;
-            case ActionCommands.CHANGE_TO_INFERENCE_MODE -> switchWorkingMode;
-            case ActionCommands.CHANGE_TO_EDITION_MODE -> switchWorkingMode;
+            case ActionCommands.CHANGE_WORKING_MODE, ActionCommands.CHANGE_TO_INFERENCE_MODE,
+                 ActionCommands.CHANGE_TO_EDITION_MODE -> switchWorkingMode;
             // TODO - MultiCriteria Action Command
             case ActionCommands.INFERENCE_OPTIONS -> inferenceOptionsItem;
             case ActionCommands.PROPAGATION_OPTIONS -> propagationOptionsMenuItem;

@@ -13,7 +13,6 @@ import java.awt.*;
 import java.awt.geom.*;
 
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.gui.swingUtils.SwingUtils;
 
 /**
  * This class is the visual representation of a link.
@@ -193,7 +192,7 @@ public class VisualArrow extends VisualElement {
 		transformation2D.translate(-tx, -ty);
         points[0] = new java.awt.geom.Point2D.Double();
         
-        java.awt.geom.Point2D.Double swingEnd = SwingUtils.om2DPointToSwing2DPoint(end);
+        java.awt.geom.Point2D.Double swingEnd = new java.awt.geom.Point2D.Double(end.x, end.y);
         transformation2D.transform(swingEnd, points[0]);
         end.setLocation(swingEnd.getX(), swingEnd.getY());
         
@@ -219,7 +218,7 @@ public class VisualArrow extends VisualElement {
         
         Point2D.Double[] corePoints = new Point2D.Double[9];
         for (index = 0; index < corePoints.length; index++) {
-            corePoints[index] = SwingUtils.swing2DPointToOM2DPoint(points[index]);
+            corePoints[index] = new Point2D.Double(points[index].x, points[index].y);
         }
         return corePoints;
 

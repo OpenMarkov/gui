@@ -5,7 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.menutoolbar.plugin;
+package org.openmarkov.gui.menutoolbar.toolbar.plugin;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

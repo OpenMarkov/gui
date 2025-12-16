@@ -224,13 +224,8 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     private void setCellBorders(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         setBorder(new LineBorder(Color.BLACK, 5));
         if (hasFocus) {
-            if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) & (row >= firstEditableRow)) {
-                setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-                getUncertaintyIcon().setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-            } else {
-                setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-                getUncertaintyIcon().setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-            }
+            setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+            getUncertaintyIcon().setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
         } else {
             getUncertaintyIcon().setBorder(noFocusBorder);
         }

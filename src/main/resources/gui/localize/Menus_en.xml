@@ -199,14 +199,14 @@
             <Mnemonic value="i"/>
         </Options>
         <InferenceOptions>
-            <Label value="Inference Options"/>
+            <Label value="Inference options"/>
         </InferenceOptions>
         <TemporalOptions>
-            <Label value="Temporal Options"/>
+            <Label value="Temporal options"/>
         </TemporalOptions>
         <PropagateEvidence>
             <Mnemonic value="e"/>
-            <Label value="Propagate Evidence"/>
+            <Label value="Propagate evidence"/>
         </PropagateEvidence>
         <ClearOutAllEvidenceCases>
             <Mnemonic value="v"/>

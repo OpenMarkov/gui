@@ -13,6 +13,7 @@ import org.openmarkov.gui.window.edition.EditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * Dialog box to set the inference options
@@ -54,8 +55,6 @@ public class PropagationOptionsDialog extends JDialog {
 		this.getContentPane().add(principalPanel, BorderLayout.CENTER);
 		principalPanel.setLayout(new BorderLayout());
 		textPanel.setLayout(new GridLayout(2, 1));
-		textPanel.add(new JLabel("\n" + stringDatabase.getString("OptionsInferenceDialog.Text.Label"),
-				SwingConstants.CENTER));
 		principalPanel.add(textPanel, BorderLayout.NORTH);
 		radioButtonsPanel.setLayout(new GridLayout(2, 1));
 		JRadioButton jRadioButton1 = new JRadioButton(
@@ -82,6 +81,7 @@ public class PropagationOptionsDialog extends JDialog {
 				editorPanel, inferenceToolBar);
 		okButton.addActionListener(optionsInferenceDialogListener);
 		cancelButton.addActionListener(optionsInferenceDialogListener);
+        this.setIconImage(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE));
 		pack();
 		setMinimumSize(new Dimension(300, getHeight()));
 		setModal(true);

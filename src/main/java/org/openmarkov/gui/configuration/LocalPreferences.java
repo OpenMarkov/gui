@@ -63,6 +63,11 @@ public final class LocalPreferences {
             });
     
     
+    public static final LocalPreference<Boolean> PRINT_COMPONENTS_OF_MOUSE_LOCATION = LocalPreference
+            .of("developer_tool/print_components_of_mouse_location", () -> false, new TypeToken<>() {
+            });
+    
+    
     public static final LocalPreference<Color> NODECHANCE_BACKGROUND_COLOR = LocalPreference
             .of("colors/node_chance_background", () -> new Color(251, 249, 153), new TypeToken<>() {
             });
@@ -128,7 +133,7 @@ public final class LocalPreferences {
         for (var field : LocalPreferences.class.getDeclaredFields()) {
             if (!LocalPreference.class.isAssignableFrom(field.getType())) continue;
             try {
-                allPreferences.add(LocalPreference.class.cast(field.get(null)));
+                allPreferences.add((LocalPreference<?>) field.get(null));
             } catch (IllegalAccessException ignored) {
             }
         }

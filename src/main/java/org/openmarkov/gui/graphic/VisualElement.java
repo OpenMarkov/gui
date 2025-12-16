@@ -8,7 +8,6 @@
 package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.gui.swingUtils.SwingUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -103,8 +102,8 @@ public abstract class VisualElement {
 	 */
 	public boolean pointInsideShape(Point2D.Double point, Graphics2D g) {
 		Shape shape = getShape(g);
-        return shape != null && shape.contains(SwingUtils.om2DPointToSwing2DPoint(point));
-	}
+        return shape != null && shape.contains(new java.awt.geom.Point2D.Double(point.x, point.y));
+    }
 
 	/**
 	 * Adjusts the text that should be shown in a limited space.

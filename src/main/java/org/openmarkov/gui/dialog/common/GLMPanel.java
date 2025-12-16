@@ -127,9 +127,7 @@ import java.util.List;
         if (row >= 0 && row < tableModel.getRowCount()) {
             String covariate = tableModel.getValueAt(row, 0).toString();
             boolean isMandatory = false;
-            String[] mandatoryCovariates = (potential instanceof WeibullHazardPotential) ?
-                    GLMPotential.getMandatoryCovariates() :
-                    GLMPotential.getMandatoryCovariates();
+            String[] mandatoryCovariates = GLMPotential.getMandatoryCovariates();
             for (String mandatoryCovariate : mandatoryCovariates) {
                 isMandatory |= mandatoryCovariate.equals(covariate);
             }

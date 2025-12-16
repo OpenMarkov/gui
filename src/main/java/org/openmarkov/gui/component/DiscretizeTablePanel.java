@@ -844,16 +844,10 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         }
         valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
         valuesTable.requestFocus();
-        
-        
-        /*
-        int column = 1;
-        int row = newIndex;
-        valuesTable.editCellAt(row, column);
-        var editing = (JTextField) valuesTable.getEditorComponent();
-        editing.selectAll();
-        editing.requestFocus();
-        */
+        valuesTable.editCellAt(newIndex, 1);
+        var stateNameField = (JTextField) valuesTable.getEditorComponent();
+        stateNameField.selectAll();
+        stateNameField.requestFocus();
     }
     
     /**
@@ -1058,7 +1052,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             double[] currentLimits = variable.getPartitionedInterval().getLimits();
             int numLimits = currentLimits.length;
             boolean[] currentBelongsToLeft = variable.getPartitionedInterval().getBelongsToLeftSide();
-            int limitsIndex = (lower) ? numLimits - row - 2 : numLimits - row - 1;
+            int limitsIndex = numLimits - row - (lower ? 2 : 1);
             // posterior limits
             int i = limitsIndex;
             currentLimits[i] = roundedValue;
@@ -1139,10 +1133,10 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                 int numIntervals = variable.getPartitionedInterval().getNumSubintervals();
                 
                 boolean showNegInfinity = (column == LOWER_BOUND_VALUE_COLUMN_INDEX) && (
-                        isUpMonotony() && row == numIntervals - 1 || !isUpMonotony() && row == 0
+                        isUpMonotony() ? row == numIntervals - 1 : row == 0
                 );
                 boolean showInfinity = (column == UPPER_BOUND_VALUE_COLUMN_INDEX) && (
-                        isUpMonotony() && row == 0 || !isUpMonotony() && row == numIntervals - 1
+                        isUpMonotony() ? row == 0 : row == numIntervals - 1
                 );
                 getNegativeInfinityButton().setVisible(showNegInfinity);
                 getNegativeInfinityButton().setEnabled(showNegInfinity);

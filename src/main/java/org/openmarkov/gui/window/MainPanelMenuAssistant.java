@@ -211,7 +211,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
     }
     
     private boolean getEnableWorkingModeButton() {
-        NetworkType networkType = getCurrentNetworkPanel().getProbNet().getNetworkType();
+        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
+        if (currentNetworkPanel == null) return false;
+        NetworkType networkType = currentNetworkPanel.getProbNet().getNetworkType();
         return networkType instanceof InfluenceDiagramType || networkType instanceof BayesianNetworkType;
     }
     
@@ -811,7 +813,21 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
         setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, false);
         setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
         setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
-        mainPanel.getStandardToolBar().getDecisionTreeButton().setSelected(true);
+        setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
+        setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, false);
+        setOptionEnabled(ActionCommands.DECISION_TREE, false);
+        setOptionEnabled(ActionCommands.UNDO, false);
+        setOptionEnabled(ActionCommands.REDO, false);
+        setOptionEnabled(ActionCommands.CLIPBOARD_CUT, false);
+        setOptionEnabled(ActionCommands.CLIPBOARD_COPY, false);
+        setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
+        setOptionEnabled(ActionCommands.OBJECT_REMOVAL, false);
+        setOptionEnabled(ActionCommands.OBJECT_SELECTION, false);
+        setOptionEnabled(ActionCommands.CHANCE_CREATION, false);
+        setOptionEnabled(ActionCommands.DECISION_CREATION, false);
+        setOptionEnabled(ActionCommands.UTILITY_CREATION, false);
+        setOptionEnabled(ActionCommands.LINK_CREATION, false);
+        //mainPanel.getStandardToolBar().getDecisionTreeButton().setSelected(true);
         setZoom(decisionTreeWindow.getZoom());
     }
     

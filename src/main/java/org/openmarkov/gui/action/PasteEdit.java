@@ -39,7 +39,7 @@ import java.util.stream.IntStream;
         newVariables = new HashMap<>();
         edits = new ArrayList<>();
         // Gather new node creation edits
-        for (Node node : clipboardContent.getNodes()) {
+        for (Node node : clipboardContent.nodes()) {
             String oldName = node.getName();
             String newName = oldName;
             while (probNet.containsVariable(newName)) {
@@ -54,7 +54,7 @@ import java.util.stream.IntStream;
             edits.add(addNodeEdit);
         }
         //Gather link creation edits
-        for (Link<Node> link : clipboardContent.getLinks()) {
+        for (Link<Node> link : clipboardContent.links()) {
             String originalSourceNodeName = link.getNode1().getName();
             String originalDestinationNodeName = link.getNode2().getName();
             AddLinkEdit addLinkEdit = new AddLinkEdit(probNet, probNet.getVariable(newVariables.get(originalSourceNodeName)),
@@ -79,7 +79,7 @@ import java.util.stream.IntStream;
                 }
                 pastedContent = new SelectedContent(pastedNodes, pastedLinks);
                 //Replace potentials to already created nodes with copies of copied nodes
-                for (Node originalNode : clipboardContent.getNodes()) {
+                for (Node originalNode : clipboardContent.nodes()) {
                     ArrayList<Potential> newPotentials = new ArrayList<>();
                     Node newNode = probNet.getNode(newVariables.get(originalNode.getName()));
                     for (Potential originalPotential : originalNode.getPotentials()) {

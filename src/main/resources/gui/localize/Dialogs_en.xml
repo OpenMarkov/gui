@@ -76,7 +76,7 @@
             <Text value="Comment for node {0}"/>
         </commentHTMLScrollPaneNodeComment>
         <jTextAreaLabelNodeComment>
-            <Text value="Comment&#xD;&#xA;(Click twice to &#xD;&#xA;add or modify) :"/>
+            <Text value="Comment&#xD;&#xA;(double-click to &#xD;&#xA;edit) :"/>
         </jTextAreaLabelNodeComment>
         <jLabelPanel>
             <Text value="States:"/>
@@ -162,7 +162,7 @@
             </Columns>
         </ValuesTable>
         <jTextAreaLabelNodeValuesComment>
-            <Text value="Comment&#xD;&#xA;(Click twice to &#xD;&#xA;add or modify) :"/>
+            <Text value="Comment&#xD;&#xA;(double-click to &#xD;&#xA;edit) :"/>
         </jTextAreaLabelNodeValuesComment>
         <jLabelStatesValues>
             <Text value="Standard Domains:"/>
@@ -246,7 +246,7 @@
         </CommentHTMLScrollPaneNetworkDefinition>
         <NetworkDefinitionComment>
             <Mnemonic value="c"/>
-            <Text value="Comment &#xD;&#xA;(Click twice to &#xD;&#xA;add or modify) :"/>
+            <Text value="Comment&#xD;&#xA;(double-click to &#xD;&#xA;edit) :"/>
         </NetworkDefinitionComment>
         <NetworkName>
             <Text value="Network Name: "/>
@@ -523,7 +523,7 @@
             <Label value="Select the propagation type"/>
         </Text>
         <Title>
-            <Label value="Setting propagation options"/>
+            <Label value="Propagation options"/>
         </Title>
         <optionAuto>
             <Label value="Automatic"/>
@@ -664,7 +664,7 @@
             <Text value="States: "/>
         </jLabelValuesPanel>
         <jTextAreaLabelNodeValuesComment>
-            <Text value="Comment&#xD;&#xA;(Click twice to &#xD;&#xA;add or modify) :"/>
+            <Text value="Comment&#xD;&#xA;(double-click to &#xD;&#xA;edit) :"/>
         </jTextAreaLabelNodeValuesComment>
         <jLabelStatesValues>
             <Text value="Values:"/>
@@ -756,7 +756,7 @@
         </commentHTMLScrollPaneNodeDefinitionComment>
         <jTextAreaLabelNodeDefinitionComment>
             <Mnemonic value="o"/>
-            <Text value="Comment &#xD;&#xA;(Click twice &#xD;&#xA;to add &#xD;&#xA;or modify) :"/>
+            <Text value="Comment&#xD;&#xA;(double-click to &#xD;&#xA;edit) :"/>
         </jTextAreaLabelNodeDefinitionComment>
         <jLabelNodePurpose>
             <Text value="Purpose:"/>
@@ -986,7 +986,7 @@
     </ImposePolicydialog>
     <NodeDiscretizeTablePanel>
         <jTextAreaLabelNodeComment>
-            <Text value="Comment&#xD;&#xA;(Click twice to &#xD;&#xA;add or modify) :"/>
+            <Text value="Comment&#xD;&#xA;(double-click to &#xD;&#xA;edit) :"/>
         </jTextAreaLabelNodeComment>
         <commentHTMLScrollPaneNodeComment>
             <Text value="Comment for node {0}"/>

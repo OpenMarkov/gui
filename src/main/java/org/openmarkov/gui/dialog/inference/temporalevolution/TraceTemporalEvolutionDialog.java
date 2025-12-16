@@ -742,9 +742,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         
         JTable jtable = new JTable(numRows, numColumns);
         
-        int row = 0;
+        int row;
         // Build conditioning variables names
-        for (; row < conditioningVariables.size(); row++) {
+        for (row = 0; row < conditioningVariables.size(); row++) {
             jtable.setValueAt(conditioningVariables.get(row).getBaseName(), row, 0);
         }
         
@@ -753,8 +753,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         row++;
         
         // Build slices column
-        int slice = 0;
-        for (; row < numRows; row++) {
+        for (int slice = 0; row < numRows; row++) {
             jtable.setValueAt(slice, row, 0);
             slice++;
         }

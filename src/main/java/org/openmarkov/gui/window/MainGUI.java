@@ -22,8 +22,7 @@ import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.*;
 import java.io.IOException;
 
 /**
@@ -36,21 +35,16 @@ import java.io.IOException;
  */
 @SuppressWarnings("serial") public class MainGUI extends JFrame {
     
-    /**
-     * Main panel of the GUI.
-     */
-    MainPanel mainPanel = null;
+    public static final MainGUI INSTANCE = new MainGUI();
+    
+    public final MainPanel mainPanel;
     
     private final FrameMirror frameMirror;
     
     /**
      * Launch the MainGUIInit runnable process
      */
-    public MainGUI() {
-        
-        /*
-         * Splash Screen panel
-         */
+    private MainGUI() {
         SplashScreenLoader splash = new SplashScreenLoader();
         configureUI();
         splash.splashScreenInit();
@@ -64,7 +58,8 @@ import java.io.IOException;
         Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
         setSize(screenPortionSize(screenInsets));
         setLocation(screenInsets.left, screenInsets.top);
-        setContentPane(getMainPanel());
+        this.mainPanel = new MainPanel(this);
+        setContentPane(this.mainPanel);
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("OpenMarkov");
         setName("MainGUI");
@@ -93,6 +88,20 @@ import java.io.IOException;
             
             }
         });
+        
+        
+        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
+            if (!LocalPreferences.PRINT_COMPONENTS_OF_MOUSE_LOCATION.get()) return;
+            if (!(event instanceof MouseEvent mouseEvent)) return;
+            var element = SwingUtilities.getDeepestComponentAt(MainGUI.this, mouseEvent.getX(), mouseEvent.getY());
+            System.out.println("- Mouse locator -" + element);
+            String prefix = "-";
+            while (element != null) {
+                System.out.println(prefix + " " + element);
+                element = element.getParent();
+                prefix += "-";
+            }
+        }, AWTEvent.MOUSE_MOTION_EVENT_MASK);
         splash.getSplash().setProgress("Completed", 100);
         // loading the application
         splash.splashScreenDestroy();
@@ -118,34 +127,6 @@ import java.io.IOException;
     public void unfreeze() {
         if (true) return;
         this.frameMirror.unfreeze();
-    }
-    
-    public void oldMainGUI() {
-        
-        /*
-         * Splash Screen panel
-         */
-        SplashScreenLoader splash = new SplashScreenLoader();
-        
-        configureUI();
-        splash.splashScreenInit();
-        
-        splash.getSplash().setProgress("Loading OpenMarkov preferences", 0);
-        doReadPreferences();
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("OpenMarkov");
-        setName("MainGUI");
-        Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
-        setSize(screenPortionSize(screenInsets));
-        setLocation(screenInsets.left, screenInsets.top);
-        splash.getSplash().setProgress("Loading Resources", 25);
-        // TODO here will be the plug-in loaders in future
-        setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
-        splash.getSplash().setProgress("Loading Main Panel", 50);
-        setContentPane(getMainPanel());
-        splash.getSplash().setProgress("Completed", 100);
-        // loading the application
-        splash.splashScreenDestroy();
     }
     
     /**
@@ -186,21 +167,6 @@ import java.io.IOException;
         int width = screen.width - screenInsets.right - screenInsets.left;
         int height = screen.height - screenInsets.top - screenInsets.bottom;
         return new Dimension(width, height);
-    }
-    
-    /**
-     * This method initialises mainPanel.
-     *
-     * @return a new main panel.
-     */
-    public MainPanel getMainPanel() {
-        
-        if (mainPanel == null) {
-            mainPanel = new MainPanel(this);
-        }
-        
-        return mainPanel;
-        
     }
     
     /**

@@ -19,12 +19,14 @@ import org.openmarkov.gui.graphic.SelectionListener;
 import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
+import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
-import org.openmarkov.gui.window.mdi.FrameContentPanel;
+import org.openmarkov.gui.window.ZoomableContentPanel;
+import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 
+import javax.swing.*;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import java.awt.*;
@@ -39,12 +41,9 @@ import java.util.function.Consumer;
  * a network panel.
  *
  * @author jmendoza
- * @version 1.3 - asaez - Functionality added: - Explanation capabilities, -
- * Management of working modes (edition/inference), - Expansion and
- * contraction of nodes, - Introduction and elimination of evidence -
- * Management of multiple evidence cases.
+ * @version 1.4 - jrico: Now it also has a reference to its DecisionTreeWindow (if shown).
  */
-public class NetworkPanel extends FrameContentPanel implements PNUndoableEditListener {
+public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEditListener {
     /**
      * Static field for serializable class.
      */
@@ -56,7 +55,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     /**
      * Panel where the network is painted.
      */
-    private EditorPanel editorPanel = null;
+    private final EditorPanel editorPanel;
     /**
      * Application main
      */
@@ -80,6 +79,8 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      */
     private WorkingMode workingMode = WorkingMode.EDITION;
     
+    private DecisionTreeWindow decisionTreeWindow;
+    
     public enum WorkingMode {
         EDITION, INFERENCE;
     }
@@ -97,6 +98,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         this.mainPanel = mainPanel;
         this.onModificationListener = new ArrayList<>();
         probNet.getPNESupport().addListener(this);
+        this.editorPanel = new EditorPanel(this, new VisualNetwork(probNet));
         initialize();
     }
     
@@ -124,7 +126,11 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         // getNetworkScrollPanel().setSize(new Dimension (300,300));
         // splitPane.setTopComponent(getNetworkScrollPanel());
         // splitPane.setBottomComponent(getPropertiesScrollPanel());
-        add(new ScrollableEditorPanel(getEditorPanel()));
+        
+        var editorScrollPanel = new JScrollPane();
+        editorScrollPanel.setViewportView(editorPanel);
+        editorScrollPanel.getVerticalScrollBar().setUnitIncrement(25);
+        add(editorScrollPanel);
     }
     
     /**
@@ -133,9 +139,6 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
      * @return a new editor panel.
      */
     public EditorPanel getEditorPanel() {
-        if (editorPanel == null) {
-            editorPanel = new EditorPanel(this, new VisualNetwork(probNet));
-        }
         return editorPanel;
     }
     
@@ -180,20 +183,6 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         for (Consumer<NetworkPanel> onModification : this.onModificationListener) {
             onModification.accept(this);
         }
-    }
-    
-    /**
-     * Returns the title of the content panel.
-     *
-     * @return the title of the content panel.
-     */
-    @Override public String getTitle() {
-        return (
-                (getProbNet().getName() == null) ?
-                        StringDatabase.getUniqueInstance().getString("InternalFrame.Title.Label") :
-                        getProbNet().getName()
-        );
-        // return (String) getProbNet().getName();
     }
     
     /**
@@ -786,13 +775,31 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
         editorPanel.setInferenceAlgorithm(inferenceAlgorithm);
     }
     
-    @Override public void close() {
-        // TODO Auto-generated method stub
+    @Override public boolean close() {
+        try {
+            if (!MainGUI.INSTANCE.mainPanel.getMainPanelListenerAssistant().networkCanBeClosed(this)) {
+                return false;
+            }
+        } catch (WriterException e) {
+            throw new UnrecoverableException(e);
+        }
+        if (this.decisionTreeWindow != null) {
+            this.decisionTreeWindow.close();
+        }
+        return super.close();
     }
     
     // TODO OOPN end
     
     public void createNextSliceNode() throws DoEditException {
         editorPanel.createNextSliceNode();
+    }
+    
+    public void setDecisionTreeWindow(DecisionTreeWindow decisionTreeWindow) {
+        this.decisionTreeWindow = decisionTreeWindow;
+    }
+    
+    public DecisionTreeWindow getDecisionTreeWindow() {
+        return this.decisionTreeWindow;
     }
 }

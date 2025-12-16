@@ -161,8 +161,6 @@ public class TemporalEvolutionTablePane extends JScrollPane {
                         values[i] += temporalEvolutionValues.get(cycle)[i];
                     }
                     // cell(row, column) = cell(i+1, j+1)
-                    info[i][columnIndex] = values[i];
-                    model.setValueAt(values[i], i, columnIndex);
                 } else {
                     if (temporalEvolutionValues.containsKey(cycle)) {
                         values[i] = temporalEvolutionValues.get(cycle)[i];
@@ -170,9 +168,9 @@ public class TemporalEvolutionTablePane extends JScrollPane {
                         values[i] = 0.0;
                     }
                     // cell(row, column) = cell(i+1, j+1)
-                    info[i][columnIndex] = values[i];
-                    model.setValueAt(values[i], i, columnIndex);
                 }
+                info[i][columnIndex] = values[i];
+                model.setValueAt(values[i], i, columnIndex);
             }
         }
 

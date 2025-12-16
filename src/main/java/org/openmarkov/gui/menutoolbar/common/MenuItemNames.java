@@ -395,11 +395,6 @@ public class MenuItemNames {
 	 */
 	public static final String VIEW_ZOOM_OTHER_MENUITEM = VIEW_ZOOM_MENU + ".Other";
 
-	/**
-	 * String database token for the item 'Window - View message window'.
-	 */
-	public static final String VIEW_MESSAGEWINDOW_MENUITEM = VIEW_MENU + ".MessageWindow";
-
 	/* Tree contextual menu */
 	/**
 	 * String database token for the menu 'Tools'.

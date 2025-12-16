@@ -8,29 +8,28 @@
 package org.openmarkov.gui.window.decisiontree;
 
 import org.openmarkov.core.exception.*;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.window.mdi.FrameContentPanel;
+import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.ZoomableContentPanel;
 
 import java.awt.*;
 
-@SuppressWarnings("serial") public class DecisionTreeWindow extends FrameContentPanel {
-    private String title;
-    private DecisionTreePanel decisionTreePanel = null;
+@SuppressWarnings("serial") public class DecisionTreeWindow extends ZoomableContentPanel {
     
-    public DecisionTreeWindow(ProbNet probNet) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
-        setLayout(new BorderLayout());
-        title = probNet.getName() + "- decision tree";
-        decisionTreePanel = new DecisionTreePanel(probNet);
-        add(decisionTreePanel, BorderLayout.CENTER);
-        setBackground(Color.blue);
+    private final DecisionTreePanel decisionTreePanel;
+    private final NetworkPanel networkPanel;
+    
+    public DecisionTreeWindow(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
+        this.setLayout(new BorderLayout());
+        this.networkPanel = networkPanel;
+        this.decisionTreePanel = new DecisionTreePanel(networkPanel.probNet);
+        this.networkPanel.setDecisionTreeWindow(this);
+        this.add(decisionTreePanel, BorderLayout.CENTER);
+        this.setBackground(Color.blue);
     }
     
-    @Override public String getTitle() {
-        return title;
-    }
-    
-    @Override public void close() {
-        // TODO Auto-generated method stub
+    @Override public boolean close() {
+        this.networkPanel.setDecisionTreeWindow(null);
+        return super.close();
     }
     
     @Override public double getZoom() {

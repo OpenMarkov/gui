@@ -5,7 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.menutoolbar.plugin;
+package org.openmarkov.gui.menutoolbar.toolbar.plugin;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.UnreacheableException;
@@ -31,10 +31,6 @@ public class ToolbarManager {
             Toolbar toolbar = toolbarClass.getAnnotation(Toolbar.class);
             this.toolbarClasses.put(toolbar.name(), toolbarClass);
         });
-    }
-    
-    public Set<String> getToolbarNames() {
-        return toolbarClasses.keySet();
     }
     
     public void addToolbar(String name) {

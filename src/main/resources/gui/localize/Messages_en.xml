@@ -13,7 +13,7 @@
     </AddCriterion>
     <AddState>
         <Text value="Input name for new state"/>
-        <DefaultValue value="New State"/>
+        <DefaultValue value="New state"/>
     </AddState>
     <CheckMessageWindow>
         <Text>
