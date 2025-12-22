@@ -43,8 +43,8 @@ public class LinkInversionWithPotentialsUpdateValidator {
 
 		boolean valid = false;
 		if (link.isDirected()) {
-			Node node1 = link.getNode1();
-			Node node2 = link.getNode2();
+            Node node1 = link.getFrom();
+            Node node2 = link.getTo();
 			valid = validNode(node1) && validNode(node2) && validNewLinks(node1, node2);
 		}
 		return valid;

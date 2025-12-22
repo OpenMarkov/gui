@@ -67,7 +67,6 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 * @param owner window that owns the dialog.
 	 */
 	public OkCancelHorizontalDialog(Window owner) {
-
 		super(owner);
 		initialize();
 		pack();
@@ -87,7 +86,6 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 * Sets up the panel where the buttons of the buttons panel will be appear.
 	 */
 	private void configureButtonsPanel() {
-
 		addButtonToButtonsPanel(getJButtonOK());
 		addButtonToButtonsPanel(getJButtonCancel());
 	}
@@ -97,15 +95,23 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 *
 	 * @return a new Ok button.
 	 */
-	protected JButton getJButtonOK() {
-
-		if (jButtonOK == null) {
-			jButtonOK = new JButton();
-			jButtonOK.setName("jButtonApply");
-            jButtonOK.setIcon(IconBind.ACCEPT_ENABLED.icon());
-			jButtonOK.setText(stringDatabase.getString("OKCancelHorizontalDialog.jButtonOK.Text"));
-			jButtonOK.setMnemonic(stringDatabase.getString("OKCancelHorizontalDialog.jButtonOK.Mnemonic").charAt(0));
-            jButtonOK.addActionListener(e -> {
+    protected JButton getJButtonOK() {
+        
+        if (this.jButtonOK == null) {
+            this.jButtonOK = new JButton();
+            this.jButtonOK.setName("jButtonApply");
+            this.jButtonOK.setIcon(IconBind.ACCEPT_ENABLED.icon());
+            this.jButtonOK.setText(this.stringDatabase.getString("OKCancelHorizontalDialog.jButtonOK.Text"));
+            this.jButtonOK.setMnemonic(this.stringDatabase.getString("OKCancelHorizontalDialog.jButtonOK.Mnemonic")
+                                                          .charAt(0));
+            this.jButtonOK.addActionListener(getOnOkClickListener());
+        }
+        return this.jButtonOK;
+    }
+    
+    protected ActionListener getOnOkClickListener() {
+        if (this.onOkClickListener == null) {
+            this.onOkClickListener = e -> {
                 try {
                     if (doOkClickBeforeHide()) {
                         selectedButton = OK_BUTTON;
@@ -114,10 +120,12 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
                 } catch (Exception ex) {
                     throw new UnrecoverableException(ex);
                 }
-            });
-		}
-		return jButtonOK;
-	}
+            };
+        }
+        return this.onOkClickListener;
+    }
+    
+    private ActionListener onOkClickListener;
 
 	/**
 	 * This method initialises jButtonCancel.
@@ -125,26 +133,27 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 * @return a new Cancel button.
 	 */
 	protected JButton getJButtonCancel() {
-
-		if (jButtonCancel == null) {
-			jButtonCancel = new JButton();
-			jButtonCancel.setName("jButtonCancel");
-            jButtonCancel.setIcon(IconBind.REMOVE_ENABLED.icon());
-			jButtonCancel.setText(stringDatabase.getString("OKCancelHorizontalDialog.jButtonCancel.Text"));
-			jButtonCancel
-					.setMnemonic(stringDatabase.getString("OKCancelHorizontalDialog.jButtonCancel.Mnemonic").charAt(0));
-			setCancelButton(jButtonCancel);
-			jButtonCancel.addActionListener(new ActionListener() {
+        
+        if (this.jButtonCancel == null) {
+            this.jButtonCancel = new JButton();
+            this.jButtonCancel.setName("jButtonCancel");
+            this.jButtonCancel.setIcon(IconBind.REMOVE_ENABLED.icon());
+            this.jButtonCancel.setText(this.stringDatabase.getString("OKCancelHorizontalDialog.jButtonCancel.Text"));
+            this.jButtonCancel
+                    .setMnemonic(this.stringDatabase.getString("OKCancelHorizontalDialog.jButtonCancel.Mnemonic")
+                                                    .charAt(0));
+            setCancelButton(this.jButtonCancel);
+            this.jButtonCancel.addActionListener(new ActionListener() {
 
 				@Override public void actionPerformed(ActionEvent e) {
 					doCancelClickBeforeHide();
-					selectedButton = CANCEL_BUTTON;
+                    OkCancelHorizontalDialog.this.selectedButton = CANCEL_BUTTON;
 					setVisible(false);
 					dispose();
 				}
 			});
 		}
-		return jButtonCancel;
+        return this.jButtonCancel;
 	}
 
 	/**
@@ -156,7 +165,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	@Override public void setVisible(boolean b) {
 
 		if (b) {
-			selectedButton = OK_BUTTON;
+            this.selectedButton = OK_BUTTON;
 		}
 		super.setVisible(b);
 	}
@@ -180,7 +189,8 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	}
 
 	public int getSelectedButton() {
-		return selectedButton;
+        return this.selectedButton;
 	}
-
+ 
+ 
 }

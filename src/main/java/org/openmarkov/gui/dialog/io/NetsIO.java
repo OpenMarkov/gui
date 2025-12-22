@@ -145,19 +145,6 @@ public class NetsIO {
         ProbNetWriter probNetWriter = formatManager.getProbNetWriter(fileExtension, fileFormat);
         try {
             probNetWriter.writeProbNet(fileName, network, evidence);
-            /*
-            if (fileExtension.contentEquals("elv")) {
-                //ElviraWriter.getUniqueInstance().writeProbNet(fileName, network);
-            } else if (fileExtension.contentEquals("xml")) {
-                //XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
-            } else if (fileExtension.contentEquals("pgmx")) {
-                PGMXWriter_0_2.getUniqueInstance().writeProbNet(fileName, network);
-            } else if (fileExtension.contentEquals("bif")) {
-                //HuginWriter.getUniqueInstance().writeProbNet(fileName,network);
-            } else {
-                throw new NotRecognisedNetworkFileExtensionException(fileName);
-            }
-            */
         } catch (WriterException.UnknownNetworkType e) {
             if (fileExtension.equals("elv")) {
                 new File(fileName).delete();

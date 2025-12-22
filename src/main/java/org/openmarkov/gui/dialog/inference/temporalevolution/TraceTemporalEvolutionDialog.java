@@ -241,8 +241,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         }
         isIndividual = true;
         //Select language; otherwise takes VM language; changing "default locales" does not work.
-        UIManager.put("ProgressMonitor.progressText", stringDatabase.getString("ProgressMonitor.ProgressText.Label"));
-        UIManager.put("OptionPane.cancelButtonText", stringDatabase.getString("Cancel.Text.Label"));
+        UIManager.put("ProgressMonitor.progressText", stringDatabase.getString("ProgressMonitor.ProgressText"));
+        UIManager.put("OptionPane.cancelButtonText", stringDatabase.getString("Cancel.Text"));
         this.progressMonitor = new ProgressMonitor(owner, stringDatabase.getString("ProgressMonitor.Message.TemporalEvolution"), stringDatabase.getString("ProgressMonitor.Note.TemporalEvolution"), 0, 100);
         
         
@@ -800,9 +800,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     private void initialize(Window owner) {
         // 24/10/2022
         if (isByCriterion) {
-            setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.ByCriterionTitle.Label"));
+            setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.ByCriterionTitle"));
         } else {
-            setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + " " + variableOfInterest
+            setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title") + " " + variableOfInterest
                     .getBaseName());
         }
         setContentPane(getJContentPane());
@@ -849,7 +849,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         JPanel buttonsPanel = new JPanel();
         JButton jButtonSaveReport = new JButton();
         jButtonSaveReport.setName("jButtonSaveReport");
-        jButtonSaveReport.setText(stringDatabase.getString("Dialog.SaveReport.Label"));
+        jButtonSaveReport.setText(stringDatabase.getString("Dialog.SaveReport"));
         jButtonSaveReport.addActionListener(e -> {
             try {
                 saveReport();
@@ -860,7 +860,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         buttonsPanel.add(jButtonSaveReport);
         JButton jButtonClose = new JButton();
         jButtonClose.setName("jButtonClose");
-        jButtonClose.setText(stringDatabase.getString("Dialog.Close.Label"));
+        jButtonClose.setText(stringDatabase.getString("Dialog.Close"));
         jButtonClose.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
                 setVisible(false);
@@ -894,10 +894,10 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         if (tabbedPane == null) {
             tabbedPane = new JTabbedPane();
             tabbedPane.setName("TraceTemporalEvolutionTabbedPane");
-            tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionChart.Title.Label"), null,
+            tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionChart.Title"), null,
                               getChartsPanelWithCheckBoxes(), null);
             tabbedPane
-                    .addTab(stringDatabase.getString("TemporalEvolutionTable.Title.Label"), null, getTablePane(), null);
+                    .addTab(stringDatabase.getString("TemporalEvolutionTable.Title"), null, getTablePane(), null);
             
         }
         return tabbedPane;
@@ -940,7 +940,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         
         TitledBorder border = new TitledBorder(
-                stringDatabase.getString("TemporalEvolutionResultDialog.Legend.Title.Label"));
+                stringDatabase.getString("TemporalEvolutionResultDialog.Legend.Title"));
         
         panel.setBorder(border);
         panel.setBackground(Color.WHITE);
@@ -1043,9 +1043,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 panel.add(checkBox);
             }
             if (isByCriterion) {
-                panel.setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.Criteria.Label")));
+                panel.setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.Criteria")));
             } else {
-                panel.setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.States.Label")));
+                panel.setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.States")));
             }
             
             checkBoxPanel = new JScrollPane(panel);
@@ -1065,7 +1065,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     private JPanel getDisplayTypePanel() {
         JPanel displayType = new JPanel();
         displayType
-                .setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.Display.Label")));
+                .setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.Display")));
         displayType.setPreferredSize(new Dimension(150, 150));
         displayType.setLayout(new BoxLayout(displayType, BoxLayout.PAGE_AXIS));
         
@@ -1169,7 +1169,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             if (isCumulative) {
                 isCumulative = false;
                 tabbedPane.removeTabAt(1);
-                tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title.Label"), null, getTablePane(),
+                tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title"), null, getTablePane(),
                                   null);
                 checkBoxChanged();
             }
@@ -1177,7 +1177,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             if (!isCumulative) {
                 isCumulative = true;
                 tabbedPane.removeTabAt(1);
-                tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title.Label"), null, getTablePane(),
+                tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title"), null, getTablePane(),
                                   null);
                 checkBoxChanged();
             }
@@ -1201,7 +1201,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             try {
                 showByCriterionSeries(markedCheckBoxes, jCheckBoxDiscounted.isSelected(), jCheckBoxUpfrontValues.isSelected());
                 tabbedPane.removeTabAt(1);
-                tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title.Label"), null, getTablePane(),
+                tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title"), null, getTablePane(),
                                   null);
             } catch (UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable e) {
                 throw new UnreacheableException(e);
@@ -1212,7 +1212,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 showUtilitySeries(jCheckBoxDiscounted.isSelected());
                 //
                 tabbedPane.removeTabAt(1);
-                tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title.Label"), null, getTablePane(),
+                tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title"), null, getTablePane(),
                                   null);
                 //
             } else {
@@ -1684,8 +1684,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         String filename = omFileChooser.getSelectedFile().getAbsolutePath();
         if (omFileChooser.getSelectedFile().exists()) {
             int result = JOptionPane.showConfirmDialog(this,
-                                                       stringDatabase.getString("OverwriteFile.Text.Label"),
-                                                       stringDatabase.getString("OverwriteFile.Title.Label"),
+                                                       stringDatabase.getString("OverwriteFile.Text"),
+                                                       stringDatabase.getString("OverwriteFile.Title"),
                                                        JOptionPane.YES_NO_OPTION);
             if (result != JOptionPane.YES_OPTION) {
                 return;

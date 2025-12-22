@@ -59,7 +59,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
     /**
      * Application main
      */
-    private MainPanel mainPanel;
+    private final MainPanel mainPanel;
     /**
      * Name of the file where the network is saved (updated or not).
      */
@@ -79,10 +79,10 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
      */
     private WorkingMode workingMode = WorkingMode.EDITION;
     
-    private DecisionTreeWindow decisionTreeWindow;
+    private final ArrayList<DecisionTreeWindow> decisionTreeWindows;
     
     public enum WorkingMode {
-        EDITION, INFERENCE;
+        EDITION, INFERENCE
     }
     
     private final List<Consumer<NetworkPanel>> onModificationListener;
@@ -98,23 +98,9 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
         this.mainPanel = mainPanel;
         this.onModificationListener = new ArrayList<>();
         probNet.getPNESupport().addListener(this);
-        this.editorPanel = new EditorPanel(this, new VisualNetwork(probNet));
+        this.editorPanel = new EditorPanel(this, new VisualNetwork(probNet, this.mainPanel.mainGUI));
         initialize();
-    }
-    
-    /**
-     * This method requests to the user the additionalProperties of a network.
-     *
-     * @param owner      window that owns the dialog box.
-     * @param probNet    Netwoek
-     * @param newNetwork specifies if the network whose additionalProperties are
-     *                   going to be edited is new.
-     *
-     * @return true, if the user has made changes on the additionalProperties;
-     * otherwise, false.
-     */
-    public static boolean requestNetworkProperties(ProbNet probNet, Window owner, boolean newNetwork) {
-        return EditorPanel.requestNetworkProperties(owner, probNet);
+        decisionTreeWindows = new ArrayList<>();
     }
     
     /**
@@ -202,15 +188,6 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
      */
     public void setNetworkFile(String name) {
         networkFile = name;
-    }
-    
-    /**
-     * Returns the format of the file where the network is saved.
-     *
-     * @return a string that contains the format of the file.
-     */
-    public String getNetworkFileFormat() {
-        return networkFileFormat;
     }
     
     /**
@@ -306,7 +283,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
      * This method has been created for testing.
      */
     public void changePotential() throws IncompatibleEvidenceException, ThereIsNoPotentialsInNodeException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException, ConstraintViolatedException {
-        editorPanel.showPotentialDialog(getWorkingMode() != WorkingMode.EDITION);
+        editorPanel.showPotentialDialog(workingMode != WorkingMode.EDITION);
     }
     
     /**
@@ -394,7 +371,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
      * versa, and also when the user modifies the current expansion threshold in
      * the Inference tool bar
      */
-    public void updateNodesExpansionState(NetworkPanel.WorkingMode newWorkingMode) {
+    public void updateNodesExpansionState(WorkingMode newWorkingMode) {
         editorPanel.updateNodesExpansionState(newWorkingMode);
     }
     
@@ -783,9 +760,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
         } catch (WriterException e) {
             throw new UnrecoverableException(e);
         }
-        if (this.decisionTreeWindow != null) {
-            this.decisionTreeWindow.close();
-        }
+        new ArrayList<>(this.decisionTreeWindows).forEach(DecisionTreeWindow::close);
         return super.close();
     }
     
@@ -795,11 +770,11 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
         editorPanel.createNextSliceNode();
     }
     
-    public void setDecisionTreeWindow(DecisionTreeWindow decisionTreeWindow) {
-        this.decisionTreeWindow = decisionTreeWindow;
+    public void addDecisionTreeWindows(DecisionTreeWindow decisionTreeWindows) {
+        this.decisionTreeWindows.add(decisionTreeWindows);
     }
     
-    public DecisionTreeWindow getDecisionTreeWindow() {
-        return this.decisionTreeWindow;
+    public void removeDecisionTreeWindows(DecisionTreeWindow decisionTreeWindows) {
+        this.decisionTreeWindows.remove(decisionTreeWindows);
     }
 }

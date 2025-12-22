@@ -1,46 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
     <StandardDomain>
-        <Text>
+        <Text value="Dominios estándar">
             <Mnemonic value="d"/>
-            <Label value="Dominios estándar"/>
         </Text>
     </StandardDomain>
     <StandardCriteria>
         <Text value="Criterios estándar"/>
     </StandardCriteria>
     <Apply>
-        <Text>
-            <Label value="Aplicar"/>
+        <Text value="Aplicar">
             <Mnemonic value="a"/>
         </Text>
     </Apply>
     <Up>
-        <Text>
-            <Label value="Subir"/>
+        <Text value="Subir">
             <Mnemonic value="s"/>
         </Text>
     </Up>
     <Ok>
-        <Text>
+        <Text value="Aceptar">
             <Mnemonic value="a"/>
-            <Label value="Aceptar"/>
         </Text>
     </Ok>
     <Cancel>
-        <Text>
+        <Text value="Cancelar">
             <Mnemonic value="c"/>
-            <Label value="Cancelar"/>
         </Text>
     </Cancel>
     <InfinitePositive>
-        <Text>
-            <Label value="Insertar infinito positivo"/>
-        </Text>
+        <Text value="Insertar infinito positivo"/>
     </InfinitePositive>
     <Add>
-        <Text>
-            <Label value="Añadir"/>
+        <Text value="Añadir">
             <Mnemonic value="ñ"/>
         </Text>
     </Add>
@@ -48,33 +40,26 @@
         <Text value="Español"/>
     </BUNDLEFILE>
     <Copy>
-        <Text>
+        <Text value="Copiar">
             <Mnemonic value="c"/>
-            <Label value="Copiar"/>
         </Text>
     </Copy>
     <Clear>
         <Text value="Limpiar">
             <Mnemonic value="l"/>
-            <Label value="Limpiar"/>
         </Text>
     </Clear>
     <Delete>
-        <Text>
-            <Label value="Borrar"/>
+        <Text value="Borrar">
             <Mnemonic value="b"/>
         </Text>
     </Delete>
     <InfiniteNegative>
-        <Text>
-            <Label value="Insertar infinito negativo"/>
-        </Text>
+        <Text value="Insertar infinito negativo"/>
     </InfiniteNegative>
     <Down>
-        <Text>
+        <Text value="Bajar">
             <Mnemonic value="j"/>
-            <Label value="Bajar"/>
         </Text>
     </Down>
 </properties>
-

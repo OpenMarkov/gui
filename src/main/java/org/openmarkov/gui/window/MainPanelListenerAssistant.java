@@ -558,7 +558,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     throw new UnreacheableException(ex);
                 }
                 try {
-                    cePlugin.showDialog(MainPanel.getUniqueInstance().getMainFrame());
+                    cePlugin.showDialog(MainGUI.INSTANCE.mainPanel.getMainFrame());
                 } catch (Exception ex) {
                     throw new UnrecoverableException(ex);
                 }
@@ -585,8 +585,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
         if (actionCommand.startsWith(ActionCommands.EDITION_MODE_PREFIX.getCommandName())) {
             activateEditionMode(actionCommand);
         } else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS.getCommandName())) {
-            MainPanel.getUniqueInstance().getToolbarManager()
-                     .addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS.getCommandName() + ".", ""));
+            MainGUI.INSTANCE.mainPanel.getToolbarManager()
+                                      .addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS.getCommandName() + ".", ""));
         } else if (ActionCommands.isZoomActionCommand(actionCommand)) {
             setZoom(getCurrentPanel(), ActionCommands.getValueZoomActionCommand(actionCommand));
         } else if (e.getSource() instanceof JButton source) {
@@ -664,9 +664,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
         boolean canClose = !networkPanel.getModified();
         if (networkPanel.getModified()) {
             String title = StringDatabase.getUniqueInstance()
-                                         .getFormattedString("NetworkNotSaved.Title.Label", networkPanel.probNet.getName());
+                                         .getFormattedString("NetworkNotSaved.Title", networkPanel.probNet.getName());
             String message = StringDatabase.getUniqueInstance()
-                                           .getFormattedString("NetworkNotSaved.Text.Label", networkPanel.probNet.getName());
+                                           .getFormattedString("NetworkNotSaved.Text", networkPanel.probNet.getName());
             response = JOptionPane
                     .showConfirmDialog(Utilities.getOwner(mainPanel), message, title, JOptionPane.YES_NO_CANCEL_OPTION,
                                        JOptionPane.WARNING_MESSAGE);
@@ -697,7 +697,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     //            String fileName,
     //            SaveOptions saveOptions) {
     //        boolean result = false;
-    //        mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getValuesInAString("SavingNetwork.Text.Label")
+    //        mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getValuesInAString("SavingNetwork.Text)
     //                + " "
     //                + fileName);
     //        try {
@@ -721,23 +721,23 @@ public class MainPanelListenerAssistant extends WindowAdapter
     //            OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
     //                    getDirectoryFileName(fileName),
     //                    OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-    //            mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getValuesInAString("NetworkSaved.Text.Label"));
+    //            mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getValuesInAString("NetworkSaved.Text));
     //            mainPanel.getMainMenu().rechargeLastOpenFiles();
     //            result = true;
     //        } catch (NotRecognisedNetworkFileExtensionException e) {
     //            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-    //                    stringDatabase.getValuesInAString("CanNotRecognisedFileExtension.Text.Label"),
-    //                    stringDatabase.getValuesInAString("ErrorWindow.Title.Label"),
+    //                    stringDatabase.getValuesInAString("CanNotRecognisedFileExtension.Text),
+    //                    stringDatabase.getValuesInAString("ErrorWindow.Title),
     //                    JOptionPane.ERROR_MESSAGE);
     //        } catch (CanNotWriteNetworkToFileException e) {
     //            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-    //                    stringDatabase.getValuesInAString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage(),
-    //                    stringDatabase.getValuesInAString("ErrorWindow.Title.Label"),
+    //                    stringDatabase.getValuesInAString("ErrorSavingNetwork.Text) + ": " + e.getMessage(),
+    //                    stringDatabase.getValuesInAString("ErrorWindow.Title),
     //                    JOptionPane.ERROR_MESSAGE);
     //        } catch (Exception e) {
     //            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
     //                    stringDatabase.getValuesInAString("Generic I/O error"),
-    //                    stringDatabase.getValuesInAString("ErrorWindow.Title.Label"),
+    //                    stringDatabase.getValuesInAString("ErrorWindow.Title),
     //                    JOptionPane.ERROR_MESSAGE);
     //        }
     //        return result;
@@ -754,7 +754,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return true if the network could be saved; otherwise, false.
      */
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat) throws WriterException {
-        System.out.println(stringDatabase.getString("SavingNetwork.Text.Label") + " " + fileName);
+        System.out.println(stringDatabase.getString("SavingNetwork.Text") + " " + fileName);
         NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidence(), fileName,
                                fileFormat);
         
@@ -765,7 +765,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
         LastOpenFiles.setLastFileName(fileName);
         LocalPreferences.LATEST_SAVED_DIRECTORY.set(new File(fileName).getAbsoluteFile());
-        System.out.println(stringDatabase.getString("NetworkSaved.Text.Label"));
+        System.out.println(stringDatabase.getString("NetworkSaved.Text"));
         mainPanel.getMainMenu().rechargeFileMenu();
         return true;
     }
@@ -830,9 +830,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 out.write(c);
             }
         } catch (IOException e) {
-            System.out.println(stringDatabase.getString("NetworkBackupError.Text.Label"));
+            System.out.println(stringDatabase.getString("NetworkBackupError.Text"));
         }
-        System.out.println(stringDatabase.getString("NetworkBackup.Text.Label"));
+        System.out.println(stringDatabase.getString("NetworkBackup.Text"));
     }
     
     private static String toBakExtension(String nameFile) {
@@ -883,7 +883,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private String requestNetworkFileToSave(String suggestedFileName) {
         NetworkOMFileChooser fileChooser = new NetworkOMFileChooser(false, false);
-        String title = stringDatabase.getString("SaveNetwork.Title.Label");
+        String title = stringDatabase.getString("SaveNetwork.Title");
         fileChooser.setDialogTitle(title);
         fileChooser.setSelectedFile(new File(suggestedFileName));
         String filename = null;
@@ -904,7 +904,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private ArrayList<String> requestNetworkFileAndFormatToSave(String suggestedFileName) {
         NetworkOMFileChooser fileChooser = new NetworkOMFileChooser(false, false);
-        String title = stringDatabase.getString("SaveNetwork.Title.Label");
+        String title = stringDatabase.getString("SaveNetwork.Title");
         fileChooser.setDialogTitle(title);
         fileChooser.setSelectedFile(new File(suggestedFileName));
         fileChooser.setCurrentDirectory(LocalPreferences.LATEST_SAVED_DIRECTORY.get());
@@ -953,7 +953,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 criteria.add(new Criterion());
                 probNet.setDecisionCriteria(criteria);
             }
-            String networkName = stringDatabase.getString("InternalFrame.Title.Label") + " " + frameIndex;
+            String networkName = stringDatabase.getString("InternalFrame.Title") + " " + frameIndex;
             probNet.setName(networkName);
             probNet.getPNESupport().setWithUndo(true);
             networkPanels.add(createNewFrame(probNet));
@@ -1006,7 +1006,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             fileName = requestNetworkFileToOpen();
         }
         if (fileName == null) return;
-        System.out.println(stringDatabase.getString("LoadingNetwork.Text.Label") + " " + fileName);
+        System.out.println(stringDatabase.getString("LoadingNetwork.Text") + " " + fileName);
         //TODO Performance issue here on first call
         ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
         ProbNet netReadFromFile = probNetInfo.getProbNet();
@@ -1031,7 +1031,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
         // but it is not longer the scenario
         //mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
-        System.out.println(stringDatabase.getString("NetworkLoaded.Text.Label"));
+        System.out.println(stringDatabase.getString("NetworkLoaded.Text"));
         mainPanel.getMainMenu().rechargeFileMenu();
         
         if (netReadFromFile.getShowCommentWhenOpening()) {
@@ -1043,7 +1043,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             JOptionPane networkMessagePane = new JOptionPane(commentHTMLScrollPaneNetworkComment,
                                                              JOptionPane.INFORMATION_MESSAGE);
             JDialog networkMessageDialog = networkMessagePane.createDialog(Utilities.getOwner(mainPanel),
-                                                                           stringDatabase.getString("NetworkCommentWindow.Title.Label"));
+                                                                           stringDatabase.getString("NetworkCommentWindow.Title"));
             networkMessageDialog.setResizable(true);
             networkMessageDialog.setMinimumSize(new Dimension(500, 300));
             networkMessageDialog.setVisible(true);
@@ -1066,7 +1066,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             return;
         }
         String urlFile = url.getFile();
-        System.out.println(stringDatabase.getString("LoadingNetworkURL.Text.Label") + " " + url);
+        System.out.println(stringDatabase.getString("LoadingNetworkURL.Text") + " " + url);
         ProbNetInfo probNetInfo = NetsIO.openNetworkURL(url);
         ProbNet netReadFromURL = probNetInfo.getProbNet();
         netReadFromURL.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
@@ -1084,7 +1084,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         LastOpenFiles.setLastFileName(urlFile);
         // If the file was opened from a URL, the 'save' and 'save and reopen' buttons have to be disabled
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(true);
-        System.out.println(stringDatabase.getString("NetworkLoaded.Text.Label"));
+        System.out.println(stringDatabase.getString("NetworkLoaded.Text"));
         mainPanel.getMainMenu().rechargeFileMenu();
         
         if (netReadFromURL.getShowCommentWhenOpening()) {
@@ -1096,7 +1096,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             JOptionPane networkMessagePane = new JOptionPane(commentHTMLScrollPaneNetworkComment,
                                                              JOptionPane.INFORMATION_MESSAGE);
             JDialog networkMessageDialog = networkMessagePane.createDialog(Utilities.getOwner(mainPanel),
-                                                                           stringDatabase.getString("NetworkCommentWindow.Title.Label"));
+                                                                           stringDatabase.getString("NetworkCommentWindow.Title"));
             networkMessageDialog.setResizable(true);
             networkMessageDialog.setMinimumSize(new Dimension(500, 300));
             networkMessageDialog.setVisible(true);
@@ -1111,7 +1111,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private String requestNetworkFileToOpen() {
         NetworkOMFileChooser fileChooser = new NetworkOMFileChooser();
-        fileChooser.setDialogTitle(stringDatabase.getString("OpenNetwork.Title.Label"));
+        fileChooser.setDialogTitle(stringDatabase.getString("OpenNetwork.Title"));
         String fileName = null;
         if (fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
             fileName = fileChooser.getSelectedFile().getAbsolutePath();
@@ -1340,7 +1340,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException {
         OMFileChooser evidenceOMFileChooser = new DBReaderOMFileChooser();
-        evidenceOMFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
+        evidenceOMFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title"));
         // Set last used evidence format as default
         String lastFileFilter = LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.get();
         evidenceOMFileChooser.setFileFilter(lastFileFilter);
@@ -1599,10 +1599,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
     }
     
     private void showDecisionTree(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException, NotEnoughtMemoryException {
-        if (networkPanel.getDecisionTreeWindow() != null) {
-            mainPanel.getNetworksTabPanel().setSelectedComponent(networkPanel.getDecisionTreeWindow());
-            return;
-        }
         try {
             InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(networkPanel.probNet,
                                                                                         Utilities.getOwner(mainPanel));

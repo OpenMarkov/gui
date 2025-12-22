@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.util.MovedNodeInfo;
+import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -41,6 +42,8 @@ public class VisualNetwork implements PNUndoableEditListener {
      * Network whose visual representation is managed by this object.
      */
     protected ProbNet probNet;
+    
+    private final MainGUI mainGUI;
     
     /**
      * This variable indicates if nodes must be drawn by title.
@@ -105,10 +108,11 @@ public class VisualNetwork implements PNUndoableEditListener {
      * Creates a new visual network.
      *
      * @param probNet object that has the information of the network.
+     * @param mainGUI
      */
-    public VisualNetwork(ProbNet probNet) {
-        
+    public VisualNetwork(ProbNet probNet, MainGUI mainGUI) {
         this.probNet = probNet;
+        this.mainGUI = mainGUI;
         this.probNet.getPNESupport().addListener(this);
         
         //network.addNetworkChangeListener(this);
@@ -128,10 +132,9 @@ public class VisualNetwork implements PNUndoableEditListener {
     public double[] getNetworkBounds(Graphics2D g) {
         
         double[] networkBounds = {Double.MAX_VALUE, Double.MIN_VALUE, Double.MAX_VALUE, Double.MIN_VALUE};
-        Rectangle2D nodeBounds;
         
         for (VisualNode node : visualNodes) {
-            nodeBounds = node.getShape(g).getBounds2D();
+            Rectangle2D nodeBounds = node.getShape(g).getBounds2D();
             networkBounds[0] = Math.min(nodeBounds.getMinX(), networkBounds[0]);
             networkBounds[1] = Math.max(nodeBounds.getMaxX(), networkBounds[1]);
             networkBounds[2] = Math.min(nodeBounds.getMinY(), networkBounds[2]);
@@ -154,16 +157,10 @@ public class VisualNetwork implements PNUndoableEditListener {
     protected void constructVisualInfo() {
         
         List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
-        List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
-        Node nodeToCheck;
-        Link<Node> linkToCheck;
-        VisualNode vNode1;
-        VisualNode vNode2;
-        int i;
         
         List<Node> nodesToAdd = probNet.getNodes();
         for (VisualNode vNode : visualNodes) {
-            nodeToCheck = vNode.getNode();
+            Node nodeToCheck = vNode.getNode();
             int index = nodesToAdd.indexOf(nodeToCheck);
             if (index >= 0 && vNode.getTemporalPosition().getX() == nodesToAdd.get(index).getCoordinateX()
                     && vNode.getTemporalPosition().getX() == nodesToAdd.get(index).getCoordinateX()) {
@@ -177,6 +174,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         }
         
         visualNodes.removeAll(vNodesToDelete);
+        VisualNode vNode1;
         for (Node node : nodesToAdd) {
             vNode1 = createVisualNode(node);
             visualNodes.add(vNode1);
@@ -187,8 +185,9 @@ public class VisualNetwork implements PNUndoableEditListener {
         //links = probNet.backupProbNet.getLinks();
         List<Link<Node>> links = probNet.getLinks();
         
+        List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
         for (VisualLink vLink : visualLinks) {
-            linkToCheck = vLink.getLink();
+            Link<Node> linkToCheck = vLink.getLink();
             if (links.contains(linkToCheck) && !containsNodeToDelete(linkToCheck, vNodesToDelete)) {
                 links.remove(linkToCheck);
             } else {
@@ -198,17 +197,17 @@ public class VisualNetwork implements PNUndoableEditListener {
         visualLinks.removeAll(vLinksToDelete);
         int visualNodesCount = visualNodes.size();
         for (Link<Node> link : links) {
-            i = 0;
+            int i = 0;
             vNode1 = null;
-            vNode2 = null;
+            VisualNode vNode2 = null;
             while ((i < visualNodesCount) && ((vNode1 == null) || (vNode2 == null))) {
                 if (vNode1 == null) {
-                    if (link.getNode1().equals(visualNodes.get(i).getNode())) {
+                    if (link.getFrom().equals(visualNodes.get(i).getNode())) {
                         vNode1 = visualNodes.get(i);
                     }
                 }
                 if (vNode2 == null) {
-                    if (link.getNode2().equals(visualNodes.get(i).getNode())) {
+                    if (link.getTo().equals(visualNodes.get(i).getNode())) {
                         vNode2 = visualNodes.get(i);
                     }
                 }
@@ -279,8 +278,6 @@ public class VisualNetwork implements PNUndoableEditListener {
      * descending relevance criteria).
      */
     private ArrayList<VisualNode> reorderVisualNodes() {
-        int selPos = 0;
-        ArrayList<VisualNode> newList = new ArrayList<VisualNode>();
         ArrayList<VisualNode> nodesSelected = new ArrayList<VisualNode>();
         ArrayList<VisualNode> nodesUnselected = new ArrayList<VisualNode>();
         
@@ -294,6 +291,8 @@ public class VisualNetwork implements PNUndoableEditListener {
         
         int selected = nodesSelected.size();
         int counter1 = 0;
+        ArrayList<VisualNode> newList = new ArrayList<VisualNode>();
+        int selPos = 0;
         while (counter1 < selected) {
             VisualNode candidate = null;
             double highestRelevance = -1;
@@ -391,12 +390,11 @@ public class VisualNetwork implements PNUndoableEditListener {
      */
     public VisualNode whatNodeInPosition(Point2D.Double position, Graphics2D g) {
         
-        VisualNode node;
         VisualNode nodeFound = null;
         int index = 0, length = visualNodes.size();
         
         while ((nodeFound == null) && (index < length)) {
-            node = visualNodes.get(index++);
+            VisualNode node = visualNodes.get(index++);
             if (node.pointInsideShape(position, g)) {
                 nodeFound = node;
             }
@@ -417,15 +415,13 @@ public class VisualNetwork implements PNUndoableEditListener {
      */
     public InnerBox whatInnerBoxInPosition(Point2D.Double position, Graphics2D g) {
         
-        InnerBox innerBox;
         InnerBox innerBoxFound = null;
-        VisualNode node;
         int index = 0;
         int nodesLength = visualNodes.size();
         while ((innerBoxFound == null) && (index < nodesLength)) {
-            node = visualNodes.get(index++);
+            VisualNode node = visualNodes.get(index++);
             if (node.pointInsideShape(position, g)) {
-                innerBox = node.getInnerBox();
+                InnerBox innerBox = node.getInnerBox();
                 if (innerBox.pointInsideShape(position, g)) {
                     innerBoxFound = innerBox;
                 }
@@ -445,18 +441,16 @@ public class VisualNetwork implements PNUndoableEditListener {
      */
     public VisualState whatStateInPosition(Point2D.Double position, Graphics2D g) {
         
-        VisualState state;
         VisualState stateFound = null;
-        VisualNode node;
         int index = 0;
         int nodesLength = visualNodes.size();
         while ((stateFound == null) && (index < nodesLength)) {
-            node = visualNodes.get(index++);
+            VisualNode node = visualNodes.get(index++);
             if (node.pointInsideShape(position, g)) {
                 if (node.getInnerBox() instanceof FSVariableBox) {
                     int numStates = node.getInnerBox().getNumStates();
                     for (int i = 0; i < numStates; i++) {
-                        state = ((FSVariableBox) node.getInnerBox()).getVisualState(i);
+                        VisualState state = ((FSVariableBox) node.getInnerBox()).getVisualState(i);
                         if (state.pointInsideShape(position, g)) {
                             stateFound = state;
                         }
@@ -479,13 +473,12 @@ public class VisualNetwork implements PNUndoableEditListener {
      */
     public VisualLink whatLinkInPosition(Point2D.Double position, Graphics2D g) {
         
-        VisualLink link;
         VisualLink linkFound = null;
         int index = 0;
         int length = visualLinks.size();
         
         while ((linkFound == null) && (index < length)) {
-            link = visualLinks.get(index++);
+            VisualLink link = visualLinks.get(index++);
             if (link.pointInsideShape(position, g)) {
                 linkFound = link;
             }
@@ -768,10 +761,8 @@ public class VisualNetwork implements PNUndoableEditListener {
      */
     public static void fillDifferencesNodesMovedInfo(List<MovedNodeInfo> movedNodes) {
         
-        Node node;
-        
         for (MovedNodeInfo movedNode : movedNodes) {
-            node = movedNode.getNode();
+            Node node = movedNode.getNode();
             movedNode.setDiffPosition(new Point2D.Double(node.getCoordinateX() - movedNode.getDiffPosition().getX(),
                                                          node.getCoordinateY() - movedNode.getDiffPosition().getY()));
         }
@@ -820,15 +811,12 @@ public class VisualNetwork implements PNUndoableEditListener {
      */
     public List<VisualLink> getLinksOfNodes(List<VisualNode> nodes, boolean onlyBothEnds) {
         ArrayList<VisualLink> links = new ArrayList<VisualLink>();
-        int i, l = nodes.size();
-        boolean found;
-        boolean foundSource;
-        boolean foundDestination;
+        int l = nodes.size();
         for (VisualLink visualLink : visualLinks) {
-            found = false;
-            foundSource = false;
-            foundDestination = false;
-            i = 0;
+            boolean found = false;
+            boolean foundSource = false;
+            boolean foundDestination = false;
+            int i = 0;
             while (!found && (i < l)) {
                 foundSource |= visualLink.getSourceNode().equals(nodes.get(i));
                 foundDestination |= visualLink.getDestinationNode().equals(nodes.get(i));
@@ -933,24 +921,18 @@ public class VisualNetwork implements PNUndoableEditListener {
     
     @Override public void afterEditHappens(PNUndoableEditEvent e) {
         constructVisualInfo();
-        if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE)
+        if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();
+        }
+        mainGUI.mainPanel.getEditionToolBar().getUndoButton().setEnabled(this.probNet.getPNESupport().getCanUndo());
+        mainGUI.mainPanel.getEditionToolBar().getRedoButton().setEnabled(this.probNet.getPNESupport().getCanRedo());
     }
     
     public void visualDecisionNodeRefresh() {
-        
         List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
-        List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
-        Node nodeToCheck;
-        Link<Node> linkToCheck;
-        VisualNode vNode1;
-        VisualNode vNode2;
-        int i;
-        
         List<Node> nodesToAdd = probNet.getNodes();
         for (VisualNode vNode : visualNodes) {
-            nodeToCheck = vNode.getNode();
-            
+            Node nodeToCheck = vNode.getNode();
             if (vNode.getNode().getNodeType() != NodeType.DECISION) {
                 nodesToAdd.remove(nodeToCheck);
                 
@@ -960,18 +942,19 @@ public class VisualNetwork implements PNUndoableEditListener {
         }
         
         visualNodes.removeAll(vNodesToDelete);
+        VisualNode vNode1;
         for (Node node : nodesToAdd) {
             vNode1 = createVisualNode(node);
             visualNodes.add(vNode1);
             vNode1.setByTitle(byTitle);
-            
         }
         
         //links = probNet.backupProbNet.getLinks();
         List<Link<Node>> links = probNet.getLinks();
         
+        List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
         for (VisualLink vLink : visualLinks) {
-            linkToCheck = vLink.getLink();
+            Link<Node> linkToCheck = vLink.getLink();
             if (links.contains(linkToCheck) && !containsNodeToDelete(linkToCheck, vNodesToDelete)) {
                 links.remove(linkToCheck);
             } else {
@@ -981,17 +964,17 @@ public class VisualNetwork implements PNUndoableEditListener {
         visualLinks.removeAll(vLinksToDelete);
         int visualNodesCount = visualNodes.size();
         for (Link<Node> link : links) {
-            i = 0;
+            int i = 0;
             vNode1 = null;
-            vNode2 = null;
+            VisualNode vNode2 = null;
             while ((i < visualNodesCount) && ((vNode1 == null) || (vNode2 == null))) {
                 if (vNode1 == null) {
-                    if (link.getNode1().equals(visualNodes.get(i).getNode())) {
+                    if (link.getFrom().equals(visualNodes.get(i).getNode())) {
                         vNode1 = visualNodes.get(i);
                     }
                 }
                 if (vNode2 == null) {
-                    if (link.getNode2().equals(visualNodes.get(i).getNode())) {
+                    if (link.getTo().equals(visualNodes.get(i).getNode())) {
                         vNode2 = visualNodes.get(i);
                     }
                 }
@@ -1028,6 +1011,10 @@ public class VisualNetwork implements PNUndoableEditListener {
         if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();
         }
+        boolean canUndo = this.probNet.getPNESupport().getCanUndo();
+        mainGUI.mainPanel.getEditionToolBar().getUndoButton().setEnabled(canUndo);
+        boolean canRedo = this.probNet.getPNESupport().getCanRedo();
+        mainGUI.mainPanel.getEditionToolBar().getRedoButton().setEnabled(canRedo);
     }
     
     public void setProbNet(ProbNet probNet) {
@@ -1128,8 +1115,8 @@ public class VisualNetwork implements PNUndoableEditListener {
         PNEdit linkEdit = null;
         if (newLink != null) {
             newLink = null;
-            VisualNode newLinkDestination;
             if (newLinkSource != null) {
+                VisualNode newLinkDestination;
                 if ((newLinkDestination = whatNodeInPosition(point, g)) != null) {
                     if (!newLinkSource.equals(newLinkDestination)) {
                         linkEdit = new AddLinkEdit(probNet, probNet.getVariable(newLinkSource.getNode().getName()),

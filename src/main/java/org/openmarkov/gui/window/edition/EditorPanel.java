@@ -224,20 +224,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     /**
-     * This method requests to the user the additionalProperties of a network.
-     *
-     * @param owner   window that owns the dialog box.
-     * @param probNet the network from where the properties are retrieved
-     *
-     * @return true, if the user has made changes on the additionalProperties;
-     * otherwise, false.
-     */
-    public static boolean requestNetworkProperties(Window owner, ProbNet probNet) {
-        NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(owner, probNet);
-        return (dialogProperties.showProperties() == OkCancelHorizontalDialog.OK_BUTTON);
-    }
-    
-    /**
      * This method initializes this instance.
      */
     private void initialize() {
@@ -396,7 +382,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             node = visualNetwork.whatNodeInPosition(cursorPosition, g);
             if (node != null) {
                 try {
-                    boolean userAcceptedChanges = changeNodeProperties(node);
+                    boolean userAcceptedChanges = changeNodeProperties(node, lastLeftClickProducedANode);
                     if (!userAcceptedChanges && lastLeftClickProducedANode) {
                         while (true) {
                             if (probNet.getPNESupport()
@@ -732,10 +718,11 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      *
      * @param selectedNode
      *
+     * @param newNode
      * @return
      */
-    public boolean changeNodeProperties(VisualNode selectedNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
-        boolean userAcceptedChanges = requestNodePropertiesToUser2(Utilities.getOwner(this), selectedNode.getNode(), false);
+    public boolean changeNodeProperties(VisualNode selectedNode, boolean newNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+        boolean userAcceptedChanges = requestNodePropertiesToUser2(Utilities.getOwner(this), selectedNode.getNode(), newNode);
         if (userAcceptedChanges) {
             adjustPanelDimension();
             selectedNode.update(postResolutionEvidence.size());
@@ -751,7 +738,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
         if (selectedNodes.size() == 1) {
-            changeNodeProperties(selectedNodes.getFirst());
+            changeNodeProperties(selectedNodes.getFirst(), false);
         }
     }
     
@@ -874,7 +861,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void changeNetworkProperties() {
         // TODO be careful with local pNESupport and extern pNESupport
-        if (!requestNetworkProperties(Utilities.getOwner(this), probNet)) {
+        Window owner = Utilities.getOwner(this);
+        NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(owner, probNet);
+        if (!(dialogProperties.showProperties() == OkCancelHorizontalDialog.OK_BUTTON)) {
             cancelAction();
         }
     }
@@ -1001,7 +990,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     
     private static boolean requestImposePolicyValues(Window owner, VisualNode visualNode) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         ImposePolicyDialog imposePolicyDialog = new ImposePolicyDialog(owner, visualNode);
-        imposePolicyDialog.setTitle("ImposePolicydialog.Title.Label");
+        imposePolicyDialog.setTitle("ImposePolicydialog.Title");
         return (imposePolicyDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
     }
     
@@ -1021,7 +1010,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             Node dummyNode = new Node(new ProbNet(), node.getVariable(), node.getNodeType());
             dummyNode.setPotential(expectedUtility);
             PotentialEditDialog expectedUtilityDialog = new PotentialEditDialog(Utilities.getOwner(this), dummyNode, false, true);
-            expectedUtilityDialog.setTitle("ExpectedUtilityDialog.Title.Label");
+            expectedUtilityDialog.setTitle("ExpectedUtilityDialog.Title");
             expectedUtilityDialog.requestValues();
         }
         networkChanged = false;
@@ -1057,7 +1046,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             }
             PotentialEditDialog optimalPolicyDialog =
                     new PotentialEditDialog(Utilities.getOwner(this), dummy, false, true);
-            optimalPolicyDialog.setTitle("OptimalPolicyDialog.Title.Label");
+            optimalPolicyDialog.setTitle("OptimalPolicyDialog.Title");
             optimalPolicyDialog.requestValues();
         }
         networkChanged = false;
@@ -2177,8 +2166,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             return;
         }
         Link<Node> link = links.get(0).getLink();
-        Node node1 = link.getNode1();
-        Node node2 = link.getNode2();
+        Node node1 = link.getFrom();
+        Node node2 = link.getTo();
         InvertLinkAndUpdatePotentialsEdit invertLink =
                 new InvertLinkAndUpdatePotentialsEdit(probNet, node1.getVariable(), node2.getVariable());
         invertLink.executeEdit();

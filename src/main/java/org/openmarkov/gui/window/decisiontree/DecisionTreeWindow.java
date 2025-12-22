@@ -22,13 +22,13 @@ import java.awt.*;
         this.setLayout(new BorderLayout());
         this.networkPanel = networkPanel;
         this.decisionTreePanel = new DecisionTreePanel(networkPanel.probNet);
-        this.networkPanel.setDecisionTreeWindow(this);
+        this.networkPanel.addDecisionTreeWindows(this);
         this.add(decisionTreePanel, BorderLayout.CENTER);
         this.setBackground(Color.blue);
     }
     
     @Override public boolean close() {
-        this.networkPanel.setDecisionTreeWindow(null);
+        this.networkPanel.removeDecisionTreeWindows(null);
         return super.close();
     }
     

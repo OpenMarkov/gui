@@ -27,7 +27,7 @@ import org.openmarkov.gui.dialog.costeffectiveness.CEPDialog;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
 import org.openmarkov.gui.util.TreeNodeToDot;
-import org.openmarkov.gui.window.MainPanel;
+import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.inference.algorithm.decompositionIntoSymmetricDANs.DecompositionGenerateDecisionTree;
 
 import javax.swing.*;
@@ -256,7 +256,7 @@ import java.io.IOException;
             
             Object selectedComponent = jTree.getLastSelectedPathComponent();
             if (selectedComponent instanceof DecisionTreeNodePanel) {
-                MainPanel.getUniqueInstance()
+                MainGUI.INSTANCE.mainPanel
                          .getMainPanelListenerAssistant()
                          .openNetwork(getNetwork(selectedComponent));
             }

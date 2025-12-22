@@ -14,8 +14,6 @@ import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.core.localize.StringDatabase;
 
@@ -187,9 +185,8 @@ import java.awt.event.ItemListener;
         } else if (e.getStateChange() == ItemEvent.SELECTED) {
             parent.setEnabledPotentialTypeCombobox(true);
             if (previousPolicy == PolicyType.OPTIMAL) {
-                SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node,
-                                                                         TablePotential.class.getAnnotation(PotentialType.class)
-                                                                                             .name());
+                SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node
+                );
                 ProbNet probNet = node.getProbNet();
                 setPotentialEdit.executeEdit(); // getJComboBoxRelationType().requestFocus();
             }

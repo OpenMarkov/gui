@@ -1,46 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
     <StandardDomain>
-        <Text>
+        <Text value="Standard domains">
             <Mnemonic value="s"/>
-            <Label value="Standard domains"/>
         </Text>
     </StandardDomain>
     <StandardCriteria>
         <Text value="Standard criteria"/>
     </StandardCriteria>
     <Apply>
-        <Text>
-            <Label value="Apply"/>
+        <Text value="Apply">
             <Mnemonic value="a"/>
         </Text>
     </Apply>
     <Up>
-        <Text>
-            <Label value="Up"/>
+        <Text value="Up">
             <Mnemonic value="u"/>
         </Text>
     </Up>
     <Ok>
-        <Text>
+        <Text value="Ok">
             <Mnemonic value="o"/>
-            <Label value="Ok"/>
         </Text>
     </Ok>
     <Cancel>
-        <Text>
+        <Text value="Cancel">
             <Mnemonic value="c"/>
-            <Label value="Cancel"/>
         </Text>
     </Cancel>
     <InfinitePositive>
-        <Text>
-            <Label value="Insert positive infinity"/>
-        </Text>
+        <Text value="Insert positive infinity"/>
     </InfinitePositive>
     <Add>
-        <Text>
-            <Label value="Add"/>
+        <Text value="Add">
             <Mnemonic value="d"/>
         </Text>
     </Add>
@@ -48,33 +40,26 @@
         <Text value="Default (english)"/>
     </BUNDLEFILE>
     <Copy>
-        <Text>
+        <Text value="Copy">
             <Mnemonic value="c"/>
-            <Label value="Copy"/>
         </Text>
     </Copy>
     <Clear>
         <Text value="Clear">
             <Mnemonic value="l"/>
-            <Label value="Clear"/>
         </Text>
     </Clear>
     <Delete>
-        <Text>
-            <Label value="Delete"/>
+        <Text value="Delete">
             <Mnemonic value="e"/>
         </Text>
     </Delete>
     <InfiniteNegative>
-        <Text>
-            <Label value="Insert negative infinity"/>
-        </Text>
+        <Text value="Insert negative infinity"/>
     </InfiniteNegative>
     <Down>
-        <Text>
+        <Text value="Down">
             <Mnemonic value="w"/>
-            <Label value="Down"/>
         </Text>
     </Down>
 </properties>
-

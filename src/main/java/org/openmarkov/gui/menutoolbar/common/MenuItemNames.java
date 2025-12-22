@@ -314,6 +314,21 @@ public class MenuItemNames {
 	 * String database token for the menu 'View'.
 	 */
 	public static final String VIEW_MENU = "View";
+    
+    /**
+     * String database token for the item 'View - Change scale'.
+     */
+    public static final String VIEW_CHANGE_SCALE = VIEW_MENU + ".ChangeScale";
+    
+    /**
+     * String database token for the item 'View - Go next tab'.
+     */
+    public static final String VIEW_GO_NEXT_TAB = VIEW_MENU + ".GoNextTab";
+    
+    /**
+     * String database token for the item 'View - Go previous tab'.
+     */
+    public static final String VIEW_GO_PREVIOUS_TAB = VIEW_MENU + ".GoPreviousTab";
 
 	/**
 	 * String database token for the item 'View - Nodes'.
@@ -329,11 +344,6 @@ public class MenuItemNames {
 	 * String database token for the item 'View - Nodes - By title'.
 	 */
 	public static final String VIEW_NODES_BYTITLE_MENUITEM = VIEW_NODES_MENU + ".ByTitle";
-
-	/**
-	 * String database token for the item 'View - Toolbars'.
-	 */
-	public static final String VIEW_TOOLBARS_MENU = VIEW_MENU + ".Toolbars";
 
 	/**
 	 * String database token for the item 'View - Zoom'.

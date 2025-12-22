@@ -71,17 +71,6 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
     /**
      * Constructor.
      *
-     * @param parent this panel's parent dialog
-     */
-    public NetworkDefinitionPanel(NetworkPropertiesDialog parent) {
-        this.parent = parent;
-        this.newNetwork = true;
-        initialize();
-    }
-    
-    /**
-     * Constructor.
-     *
      * @param probNet manage the network access
      */
     public NetworkDefinitionPanel(NetworkPropertiesDialog parent, ProbNet probNet) {

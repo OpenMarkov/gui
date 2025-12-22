@@ -5,26 +5,16 @@
         <Message value="Introduzca el nombre del nuevo estado"/>
     </AddState>
     <TemporalEvolutionResultDialog>
-        <Title>
-            <Label value="Evolución temporal de:"/>
+        <Title value="Evolución temporal de:">
             <ConditioningVariables value="dadas las políticas impuestas"/>
         </Title>
-        <ByCriterionTitle>
-            <Label value="Evolución temporal por criterio"/>
-        </ByCriterionTitle>
+        <ByCriterionTitle value="Evolución temporal por criterio"/>
         <Legend>
-            <Title>
-                <Label value="Leyenda"/>
-            </Title>
+            <Title value="Leyenda"/>
         </Legend>
-        <States>
-            <Label value="Estados"/>
-        </States>
-        <Criteria>
-            <Label value="Criterios"/>
-        </Criteria>
-        <Display>
-            <Label value="Visualización"/>
+        <States value="Estados"/>
+        <Criteria value="Criterios"/>
+        <Display value="Visualización">
             <Instantaneus value="Instantaneo"/>
             <Accumulate value="Acumulado"/>
             <Individual value="Individual"/>
@@ -34,25 +24,17 @@
         </Display>
     </TemporalEvolutionResultDialog>
     <TemporalEvolutionTable>
-        <Title>
-            <Label value="Tabla"/>
-        </Title>
+        <Title value="Tabla"/>
         <Headers>
             <Criterion value="Criterio"/>
         </Headers>
     </TemporalEvolutionTable>
     <TemporalEvolutionChart>
-        <Title>
-            <Label value="Gráfico"/>
-        </Title>
+        <Title value="Gráfico"/>
     </TemporalEvolutionChart>
     <Dialog>
-        <Close>
-            <Label value="Cerrar"/>
-        </Close>
-        <SaveReport>
-            <Label value="Guardar informe"/>
-        </SaveReport>
+        <Close value="Cerrar"/>
+        <SaveReport value="Guardar informe"/>
     </Dialog>
     <DiscreteTablePanel>
         <Table>
@@ -76,7 +58,7 @@
             <Text value="Comentario para el nodo {0}"/>
         </commentHTMLScrollPaneNodeComment>
         <jTextAreaLabelNodeComment>
-            <Text value="Comentar&#xD;&#xA;(Doble click para &#xD;&#xA;añadir o modificar) :"/>
+            <Text value="Comentar&#13;&#10;(Doble click para &#13;&#10;añadir o modificar) :"/>
         </jTextAreaLabelNodeComment>
         <jLabelPanel>
             <Text value="Estados:"/>
@@ -91,19 +73,16 @@
         </jRadioButtonAll>
         <Msg>
             <ChangeToProbabilistic>
-                <Text
-                        value="¿Realmente quiere cambiar de un modelo determinista a un modelo probabilista? &#xD;&#xA;Si es así, todos los valores permitirán valores entre 0(cero) y 1(uno) "/>
+                <Text value="¿Realmente quiere cambiar de un modelo determinista a un modelo probabilista? &#13;&#10;Si es así, todos los valores permitirán valores entre 0(cero) y 1(uno) "/>
                 <Title value="Confirmación para cambiar el modelo"/>
             </ChangeToProbabilistic>
             <ChangeToDeterministic>
-                <Text
-                        value="¿Realmente quiere cambiar de un modelo probabilista a un modelo determinista? &#xD;&#xA;Si es así, todos los valores serán apropiadamente ajustados a valores 0(cero) y 1(uno) "/>
+                <Text value="¿Realmente quiere cambiar de un modelo probabilista a un modelo determinista? &#13;&#10;Si es así, todos los valores serán apropiadamente ajustados a valores 0(cero) y 1(uno) "/>
                 <Title value="Confirmación para cambiar el modelo"/>
             </ChangeToDeterministic>
             <ChangeToOptimal>
                 <Title value="Confirmación para cambiar el modelo"/>
-                <Text
-                        value="¿Realmente quiere cambiar a un modelo de decision optima? &#xD;&#xA;Si es así, todos los valores anteriores se perderán "/>
+                <Text value="¿Realmente quiere cambiar a un modelo de decision optima? &#13;&#10;Si es así, todos los valores anteriores se perderán "/>
             </ChangeToOptimal>
         </Msg>
         <jRadioButtonCompound>
@@ -162,7 +141,7 @@
             </Columns>
         </ValuesTable>
         <jTextAreaLabelNodeValuesComment>
-            <Text value="Comentario&#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :"/>
+            <Text value="Comentario&#13;&#10;(Pulse dos veces para&#13;&#10;añadir o modificar) :"/>
         </jTextAreaLabelNodeValuesComment>
         <jLabelStatesValues>
             <Text value="Valores:"/>
@@ -179,46 +158,23 @@
             <Text value="Lista de propiedades:"/>
         </jLabelOtherPropertiesTable>
         <OtherPropertiesTablePanel>
-            <PropertyIdColumn>
-                <Label value="Id"/>
+            <PropertyIdColumn value="Id">
                 <Prefix value="prop_"/>
             </PropertyIdColumn>
-            <PropertyTypeColumn>
-                <Label value="Tipo de objeto"/>
-            </PropertyTypeColumn>
-            <PropertyNameColumn>
-                <Label value="Nombre Propiedad"/>
-            </PropertyNameColumn>
-            <PropertyValueColumn>
-                <Label value="Valor"/>
-            </PropertyValueColumn>
+            <PropertyTypeColumn value="Tipo de objeto"/>
+            <PropertyNameColumn value="Nombre Propiedad"/>
+            <PropertyValueColumn value="Valor"/>
         </OtherPropertiesTablePanel>
     </NodeOtherPropertiesPanel>
     <NetworkPropertiesDialog>
-        <OtherPropertiesTab>
-            <Label value="Otras prop."/>
-        </OtherPropertiesTab>
-        <VariablesTab>
-            <Label value="Variables"/>
-        </VariablesTab>
-        <Advanced>
-            <Label value="Avanzadas"/>
-        </Advanced>
-        <DefinitionTab>
-            <Label value="Definición"/>
-        </DefinitionTab>
-        <Title>
-            <Label value="Propiedades de la red"/>
-        </Title>
-        <DecisionCriteriaTab>
-            <Label value="Criterios de decisión"/>
-        </DecisionCriteriaTab>
-        <AgentsTab>
-            <Label value="Agentes"/>
-        </AgentsTab>
-        <TemporalOptionsTab>
-            <Label value="Opciones temporales"/>
-        </TemporalOptionsTab>
+        <OtherPropertiesTab value="Otras prop."/>
+        <VariablesTab value="Variables"/>
+        <Advanced value="Avanzadas"/>
+        <DefinitionTab value="Definición"/>
+        <Title value="Propiedades de la red"/>
+        <DecisionCriteriaTab value="Criterios de decisión"/>
+        <AgentsTab value="Agentes"/>
+        <TemporalOptionsTab value="Opciones temporales"/>
     </NetworkPropertiesDialog>
     <NetworkDefinitionPanel>
         <NetworkTypes>
@@ -246,7 +202,7 @@
         </CommentHTMLScrollPaneNetworkDefinition>
         <NetworkDefinitionComment>
             <Mnemonic value="c"/>
-            <Text value="Comentario&#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :"/>
+            <Text value="Comentario&#13;&#10;(Pulse dos veces para&#13;&#10;añadir o modificar) :"/>
         </NetworkDefinitionComment>
         <NetworkName>
             <Text value="Nombre de la red:"/>
@@ -278,28 +234,23 @@
     <NodePotentialTable>
         <Msg>
             <AllowAgainValuesToModified>
-                <Text
-                        value="Todos los valores en esta columna fueron ya modificados. ¿quiere realmente continuar? Si es asi, los valores se sobreescribiran."/>
+                <Text value="Todos los valores en esta columna fueron ya modificados. ¿quiere realmente continuar? Si es asi, los valores se sobreescribiran."/>
                 <Title value="Confirmación de sobreescritura"/>
             </AllowAgainValuesToModified>
             <ProbabilisticValueNotAllowed>
                 <Title value="Valor probabilista no permitido"/>
-                <Text
-                        value="En un modelo probabilista, por favor, use valores entre cero (0) y uno (1)"/>
+                <Text value="En un modelo probabilista, por favor, use valores entre cero (0) y uno (1)"/>
             </ProbabilisticValueNotAllowed>
             <DeterministicSumMustBeEqualToOne>
-                <Text
-                        value="En un modelo determinista, los valores en la columna deben sumar &quot;1&quot;.&#xD;&#xA;Por favor, cambie primero uno de los valores &quot;0&quot; a &quot;1&quot; y este valor &quot;0&quot; se ajustará apropiadamente."/>
+                <Text value="En un modelo determinista, los valores en la columna deben sumar &quot;1&quot;.&#13;&#10;Por favor, cambie primero uno de los valores &quot;0&quot; a &quot;1&quot; y este valor &quot;0&quot; se ajustará apropiadamente."/>
                 <Title value="Valor determinista no permitido"/>
             </DeterministicSumMustBeEqualToOne>
             <DeterministicValueNotAllowed>
                 <Title value="Valor determinista no permitido"/>
-                <Text
-                        value="En un modelo determinista, por favor, use valores cero (0) o uno (1)"/>
+                <Text value="En un modelo determinista, por favor, use valores cero (0) o uno (1)"/>
             </DeterministicValueNotAllowed>
             <SummaOfProbabilitiesHigherThanOne>
-                <Text
-                        value="Valor no permitido ya que la suma de probabilidades sería mayor que la unidad."/>
+                <Text value="Valor no permitido ya que la suma de probabilidades sería mayor que la unidad."/>
                 <Title value="Mensaje de Error"/>
             </SummaOfProbabilitiesHigherThanOne>
         </Msg>
@@ -329,9 +280,8 @@
         </Agents>
     </NetworkAgentsPanel>
     <NetworkTemporalOptionsPanel>
-        <TemporalOptions>
+        <TemporalOptions value="Duración del ciclo">
             <Title value="Opciones temporales"/>
-            <Label value="Duración del ciclo"/>
             <Unit>
                 <DAY value="dias"/>
                 <WEEK value="semanas"/>
@@ -350,19 +300,12 @@
     </NetworkTemporalOptionsPanel>
     <NetworkOtherPropertiesPanel>
         <OtherPropertiesTablePanel>
-            <PropertyIdColumn>
-                <Label value="Id"/>
+            <PropertyIdColumn value="Id">
                 <Prefix value="Prop_"/>
             </PropertyIdColumn>
-            <PropertyTypeColumn>
-                <Label value="TipoObjeto"/>
-            </PropertyTypeColumn>
-            <PropertyNameColumn>
-                <Label value="Propiedad"/>
-            </PropertyNameColumn>
-            <PropertyValueColumn>
-                <Label value="Valor"/>
-            </PropertyValueColumn>
+            <PropertyTypeColumn value="TipoObjeto"/>
+            <PropertyNameColumn value="Propiedad"/>
+            <PropertyValueColumn value="Valor"/>
         </OtherPropertiesTablePanel>
         <jLabelOtherPropertiesTable>
             <Text value="Tabla de propiedades:"/>
@@ -370,9 +313,7 @@
         <jLabelOtherPropertiesTable value="Otras propiedades:"/>
     </NetworkOtherPropertiesPanel>
     <NetworkAgentsDialog>
-        <Title>
-            <Label value="Agentes"/>
-        </Title>
+        <Title value="Agentes"/>
     </NetworkAgentsDialog>
     <HTMLTextEditor>
         <jButtonCancelHTML>
@@ -386,14 +327,10 @@
         </Title>
     </HTMLTextEditor>
     <ZoomValues>
-        <Title>
-            <Label value="Valores de zoom:"/>
-        </Title>
+        <Title value="Valores de zoom:"/>
     </ZoomValues>
     <NetworkURLValues>
-        <Title>
-            <Label value="URL de la red."/>
-        </Title>
+        <Title value="URL de la red."/>
     </NetworkURLValues>
     <FileExtension>
         <CSV>
@@ -457,47 +394,27 @@
     </LanguageDialog>
     <NodePropertiesDialog>
         <DiscreteValuesTab>
-            <Title>
-                <Label value="Dominio"/>
-            </Title>
+            <Title value="Dominio"/>
         </DiscreteValuesTab>
         <OtherPropsTab>
-            <Title>
-                <Label value="Otras propiedades"/>
-            </Title>
+            <Title value="Otras propiedades"/>
         </OtherPropsTab>
         <DiscretizeValuesTab>
-            <Title>
-                <Label value="Dominio"/>
-            </Title>
+            <Title value="Dominio"/>
         </DiscretizeValuesTab>
         <ProbTablesTab>
-            <Title>
-                <Label value="Tablas de probabilidad">
-                    <NodeChance value="Relación"/>
-                    <NodeDecision value="Tabla de políticas"/>
-                    <NodeUtility value="Tabla de utilidad"/>
-                </Label>
-            </Title>
+            <Title value="Tablas de probabilidad"/>
         </ProbTablesTab>
         <ParentsTab>
-            <Title>
-                <Label value="Padres"/>
-            </Title>
+            <Title value="Padres"/>
         </ParentsTab>
-        <Title>
-            <Label value="Propiedades del nodo"/>
-        </Title>
+        <Title value="Propiedades del nodo"/>
         <DefinitionTab>
-            <Title>
-                <Label value="Definición"/>
-            </Title>
+            <Title value="Definición"/>
         </DefinitionTab>
     </NodePropertiesDialog>
     <MulticriteriaDialog>
-        <Title>
-            <Label value="Selección de criterios"/>
-        </Title>
+        <Title value="Selección de criterios"/>
         <Type>
             <Title value="Análisis"/>
             <Unicriterion value="Unicriterio"/>
@@ -519,24 +436,12 @@
         <Title value="Opciones de inferencia"/>
     </InferenceOptionsDialog>
     <OptionsInferenceDialog>
-        <Text>
-            <Label value="Seleccionar el tipo de propagación"/>
-        </Text>
-        <Title>
-            <Label value="Configurando opciones de propagación"/>
-        </Title>
-        <optionAuto>
-            <Label value="Automatico"/>
-        </optionAuto>
-        <optionManual>
-            <Label value="Manual"/>
-        </optionManual>
-        <jButtonOK>
-            <Label value="Aceptar"/>
-        </jButtonOK>
-        <jButtonCancel>
-            <Label value="Cancelar"/>
-        </jButtonCancel>
+        <Text value="Seleccionar el tipo de propagación"/>
+        <Title value="Configurando opciones de propagación"/>
+        <optionAuto value="Automatico"/>
+        <optionManual value="Manual"/>
+        <jButtonOK value="Aceptar"/>
+        <jButtonCancel value="Cancelar"/>
     </OptionsInferenceDialog>
     <DiscretizeTableModel>
         <Columns>
@@ -572,38 +477,20 @@
     </DiscretizeTableModel>
     <UncertainValuesDialog>
         <DistributionsTable>
-            <Title>
-                <Label value="Distribuciones"/>
-            </Title>
+            <Title value="Distribuciones"/>
             <Columns>
-                <Distribution>
-                    <Label value="Distribución"/>
-                </Distribution>
-                <State>
-                    <Label value="Estado"/>
-                </State>
-                <Parameters>
-                    <Label value="Parámetros"/>
-                </Parameters>
-                <Name>
-                    <Label value="Nombre"/>
-                </Name>
+                <Distribution value="Distribución"/>
+                <State value="Estado"/>
+                <Parameters value="Parámetros"/>
+                <Name value="Nombre"/>
             </Columns>
         </DistributionsTable>
-        <Title>
-            <Label value="Variable:"/>
-        </Title>
+        <Title value="Variable:"/>
         <ConfigurationTable>
-            <Title>
-                <Label value="Configuración"/>
-            </Title>
+            <Title value="Configuración"/>
             <Columns>
-                <State>
-                    <Label value="Estado"/>
-                </State>
-                <Variable>
-                    <Label value="Variable"/>
-                </Variable>
+                <State value="Estado"/>
+                <Variable value="Variable"/>
             </Columns>
         </ConfigurationTable>
         <jButtonRemove>
@@ -664,7 +551,7 @@
             <Text value="Estados: "/>
         </jLabelValuesPanel>
         <jTextAreaLabelNodeValuesComment>
-            <Text value="Comentario &#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :"/>
+            <Text value="Comentario &#13;&#10;(Pulse dos veces para&#13;&#10;añadir o modificar) :"/>
         </jTextAreaLabelNodeValuesComment>
         <jLabelStatesValues>
             <Text value="Dominios estándar:"/>
@@ -680,24 +567,14 @@
     <NodeValuesPanel>
         <ValuesTable>
             <Columns>
-                <Value>
-                    <Label value="Valor"/>
-                </Value>
-                <Id>
-                    <Label value="Id"/>
-                </Id>
-                <Name>
-                    <Label value="Nombre"/>
-                </Name>
+                <Value value="Valor"/>
+                <Id value="Id"/>
+                <Name value="Nombre"/>
             </Columns>
-            <Text>
-                <Label value="Tabla de estados: "/>
-            </Text>
+            <Text value="Tabla de estados: "/>
         </ValuesTable>
         <StatesValues>
-            <Text>
-                <Label value="Valores por defecto:"/>
-            </Text>
+            <Text value="Valores por defecto:"/>
         </StatesValues>
     </NodeValuesPanel>
     <NodeDefinitionPanel>
@@ -756,7 +633,7 @@
         </commentHTMLScrollPaneNodeDefinitionComment>
         <jTextAreaLabelNodeDefinitionComment>
             <Mnemonic value="o"/>
-            <Text value="Comentario &#xD;&#xA;(Pulse dos veces &#xD;&#xA;para añadir&#xD;&#xA; o modificar) :"/>
+            <Text value="Comentario &#13;&#10;(Pulse dos veces &#13;&#10;para añadir&#13;&#10; o modificar) :"/>
         </jTextAreaLabelNodeDefinitionComment>
         <jLabelNodePurpose>
             <Text value="Proposito:"/>
@@ -770,18 +647,15 @@
         </Atemporal>
     </NodeDefinitionPanel>
     <ZoomOther>
-        <Text>
-            <Label value="Zoom:"/>
+        <Text value="Zoom:">
             <Mnemonic value="o"/>
         </Text>
     </ZoomOther>
     <ShortcutsBox>
         <Title value="Atajos"/>
         <NoteIndicator value="Nota"/>
-
         <ShortcutRowTitle value="Atajo"/>
         <FunctionRowTitle value="Función"/>
-
         <SpecificTableTitle value="Atajos específicos"/>
         <Specific>
             <OpenTable>
@@ -813,8 +687,6 @@
                 <Function value="Guardar y reabrir"/>
             </SaveReopen>
         </Specific>
-
-
         <CommonTableTitle value="Atajos genéricos"/>
         <Common>
             <New>
@@ -923,29 +795,19 @@
         <Description value="Ficheros de Elvira"/>
     </ElviraFileExtension>
     <NodePotentialReorderVariables>
-        <Title>
-            <Label value="Reordenar variables"/>
-        </Title>
+        <Title value="Reordenar variables"/>
     </NodePotentialReorderVariables>
     <NodePotentialDialog>
-        <Title>
-            <Label value="Potencial del Nodo"/>
-        </Title>
+        <Title value="Potencial del Nodo"/>
     </NodePotentialDialog>
     <ExpectedUtilityDialog>
-        <Title>
-            <Label value="Utilidad esperada"/>
-        </Title>
+        <Title value="Utilidad esperada"/>
     </ExpectedUtilityDialog>
     <OptimalPolicyDialog>
-        <Title>
-            <Label value="Política óptima"/>
-        </Title>
+        <Title value="Política óptima"/>
     </OptimalPolicyDialog>
     <VariableTypeOptions>
-        <Title>
-            <Label value="Tipos de Variables:"/>
-        </Title>
+        <Title value="Tipos de Variables:"/>
     </VariableTypeOptions>
     <OKCancelHorizontalDialog>
         <jButtonCancel>
@@ -975,18 +837,14 @@
         </jLabelNodeParentsTable>
     </NodeParentsPanel>
     <LinkRestrictionDialog>
-        <Title>
-            <Label value="Restricción de enlace: Enlace entre {0} y {1}"/>
-        </Title>
+        <Title value="Restricción de enlace: Enlace entre {0} y {1}"/>
     </LinkRestrictionDialog>
     <ImposePolicydialog>
-        <Title>
-            <Label value="Imponer política"/>
-        </Title>
+        <Title value="Imponer política"/>
     </ImposePolicydialog>
     <NodeDiscretizeTablePanel>
         <jTextAreaLabelNodeComment>
-            <Text value="Comentar&#xD;&#xA;(Doble click para &#xD;&#xA;añadir o modificar) :"/>
+            <Text value="Comentar&#13;&#10;(Doble click para &#13;&#10;añadir o modificar) :"/>
         </jTextAreaLabelNodeComment>
         <commentHTMLScrollPaneNodeComment>
             <Text value="Comentario para el nodo {0}"/>
@@ -1008,15 +866,9 @@
         </jLabelPanel>
     </NodeDiscretizeTablePanel>
     <AddFindingDialog>
-        <CancelButton>
-            <Label value="Cancelar"/>
-        </CancelButton>
-        <Title>
-            <Label value="Añadir hallazgo"/>
-        </Title>
-        <OKButton>
-            <Label value="Añadir hallazgo"/>
-        </OKButton>
+        <CancelButton value="Cancelar"/>
+        <Title value="Añadir hallazgo"/>
+        <OKButton value="Añadir hallazgo"/>
     </AddFindingDialog>
     <CommentHTMLScrollPane>
         <jTextPaneCommentHTML>
@@ -1024,38 +876,27 @@
         </jTextPaneCommentHTML>
     </CommentHTMLScrollPane>
     <DecisionCriteria>
-        <Title>
-            <Label value="Criterios de decision"/>
-        </Title>
+        <Title value="Criterios de decision"/>
     </DecisionCriteria>
     <NodeRelation>
-        <Title>
+        <Title value="Relacion">
             <Tooltip value="Relación del nodo"/>
-            <Label value="Relacion"/>
         </Title>
     </NodeRelation>
     <SelectZoom>
-        <Title>
-            <Label value="Seleccionar zoom"/>
-        </Title>
+        <Title value="Seleccionar zoom"/>
     </SelectZoom>
     <SelectNetworkURL>
-        <Title>
-            <Label value="Abrir archivo desde URL"/>
-        </Title>
+        <Title value="Abrir archivo desde URL"/>
     </SelectNetworkURL>
     <OtherProperties>
-        <Title>
-            <Label value="Otras propiedades"/>
-        </Title>
+        <Title value="Otras propiedades"/>
     </OtherProperties>
     <BUNDLEFILE>
         <Text value="Español "/>
     </BUNDLEFILE>
     <NodeTypeOptions>
-        <Title>
-            <Label value="Tipo de nodo :"/>
-        </Title>
+        <Title value="Tipo de nodo :"/>
     </NodeTypeOptions>
     <PotentialEditDialog>
         <ReorderVariables>
@@ -1067,9 +908,7 @@
         <Agent1 value="Agente 1"/>
     </Network>
     <RevelationArcDialog>
-        <Title>
-            <Label value="Condiciones de revelación para  {0}"/>
-        </Title>
+        <Title value="Condiciones de revelación para  {0}"/>
     </RevelationArcDialog>
     <ScopeSelector>
         <Title value="Ámbito"/>
@@ -1091,4 +930,3 @@
         </Value>
     </AddOtherProperty>
 </properties>
-

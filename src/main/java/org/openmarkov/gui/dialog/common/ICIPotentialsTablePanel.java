@@ -6,7 +6,6 @@
  */
 package org.openmarkov.gui.dialog.common;
 
-import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.State;
@@ -16,7 +15,6 @@ import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.gui.component.*;
 import org.openmarkov.gui.dialog.node.ICIOptionsPanel;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +33,6 @@ import java.util.List;
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "ICI") public class ICIPotentialsTablePanel
         extends ProbabilityTablePanel {
     
-    protected Logger logger;
     private ICIOptionsPanel iciOptionPanel;
     /**
      * JTable where show the values.

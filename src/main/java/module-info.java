@@ -24,6 +24,7 @@ open module org.openmarkov.gui {
     requires jdk.compiler;
     requires com.google.gson;
     requires java.xml;
+    requires colt;
     
     
     exports org.openmarkov.gui.action;

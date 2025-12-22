@@ -468,7 +468,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         if (standardDomainButton == null) {
             standardDomainButton = new JButton();
             standardDomainButton.setName("KeyTablePanel.standardDomainButton");
-            standardDomainButton.setText(stringDatabase.getString("StandardDomain.Text.Label"));
+            standardDomainButton.setText(stringDatabase.getString("StandardDomain.Text"));
             standardDomainButton.setVisible(true);
             standardDomainButton.setEnabled(true);
             standardDomainButton.setActionCommand("StandardDomain");
@@ -486,7 +486,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         if (positiveInfinityButton == null) {
             positiveInfinityButton = new JButton();
             positiveInfinityButton.setName("DiscretizeTablePanel.jButtonInfinitePositiveDouble");
-            positiveInfinityButton.setText(stringDatabase.getString("InfinitePositive.Text.Label"));
+            positiveInfinityButton.setText(stringDatabase.getString("InfinitePositive.Text"));
             positiveInfinityButton.setIcon(IconBind.INFINITE_POSITIVE_ENABLED.icon());
             // jButtonInfinitePositiveDouble.setVisible(reorderEnabled);
             positiveInfinityButton.setEnabled(false);
@@ -505,7 +505,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         if (negativeInfinityButton == null) {
             negativeInfinityButton = new JButton();
             negativeInfinityButton.setName("DiscretizeTablePanel.jButtonInfiniteNegativeDouble");
-            negativeInfinityButton.setText(stringDatabase.getString("InfiniteNegative.Text.Label"));
+            negativeInfinityButton.setText(stringDatabase.getString("InfiniteNegative.Text"));
             negativeInfinityButton.setIcon(IconBind.INFINITE_NEGATIVE_ENABLED.icon());
             // jButtonInfiniteNegativeDouble.setVisible(reorderEnabled);
             negativeInfinityButton.setEnabled(false);

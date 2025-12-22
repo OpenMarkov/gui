@@ -187,7 +187,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     private void initialize() {
         potentialManager = new PotentialManager();
         // Set default title
-        setTitle("NodePotentialDialog.Title.Label");
+        setTitle("NodePotentialDialog.Title");
         configureComponentsPanel();
         pack();
     }

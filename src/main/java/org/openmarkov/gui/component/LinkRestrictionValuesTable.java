@@ -59,8 +59,8 @@ import java.util.ArrayList;
     public LinkRestrictionValuesTable(Link<Node> link, ValuesTableModel tableModel, final boolean modifiable) {
         super(tableModel, modifiable);
         this.link = link;
-        node1 = link.getNode1();
-        node2 = link.getNode2();
+        node1 = link.getFrom();
+        node2 = link.getTo();
         net = node1.getProbNet();
     }
     

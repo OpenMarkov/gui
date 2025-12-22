@@ -65,7 +65,7 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 	 */
 
 	public RevelationIntervalEdit(Link<Node> link, StateAction stateAction, int row, double newValue, boolean isLower) {
-		super(link.getNode1().getProbNet());
+        super(link.getFrom().getProbNet());
 		this.link = link;
 		this.stateAction = stateAction;
 		this.rowSelected = row;

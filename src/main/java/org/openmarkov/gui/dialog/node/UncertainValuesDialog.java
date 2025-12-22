@@ -330,7 +330,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     }
     
     private String getColumnString(String column) {
-        return stringDatabase.getString("UncertainValuesDialog.DistributionsTable.Columns." + column + ".Label");
+        return stringDatabase.getString("UncertainValuesDialog.DistributionsTable.Columns." + column);
     }
     
     private void fillDistributionsTableModel(Variable variable, EvidenceCase configuration, TablePotential potential) throws NonProjectablePotentialException {

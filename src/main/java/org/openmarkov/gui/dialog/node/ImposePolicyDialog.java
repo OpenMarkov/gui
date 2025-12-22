@@ -124,7 +124,7 @@ public class ImposePolicyDialog extends PotentialEditDialog{
         }
         potentialManager = new PotentialManager();
         // Set default title
-        setTitle("NodePotentialDialog.Title.Label");
+        setTitle("NodePotentialDialog.Title");
         configureComponentsPanel();
         pack();
 

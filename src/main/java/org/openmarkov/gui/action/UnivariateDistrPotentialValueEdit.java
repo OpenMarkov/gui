@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.action;
 
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
@@ -26,119 +25,75 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
  * @author carmenyago
  * @version 1.0  03/04/2017
  */
-@SuppressWarnings("serial") public class UnivariateDistrPotentialValueEdit extends PNEdit {
-	/**
-	 * The column of the table where is the potential
-	 */
-	private int col;
-	/**
-	 * The row of the table where is the potential
-	 */
-	private int row;
-	/**
-	 * Index of the value selected
-	 */
-	private int potentialSelected;
-
-	/**
-	 * The new class of the distribution
-	 */
-	private Class<? extends ProbDensFunction> newDistributionClass;
-
-	/**
-	 * The UnivariateDistrPotential to be changed
-	 */
-	private UnivariateDistrPotential oldPotential;
-
-	/**
-	 * The new UnivariateDistrPotential
-	 */
-
-	private UnivariateDistrPotential newPotential;
-
-	/**
-	 * The new distributionTable
-	 */
-	private AugmentedTable newDistributionTable;
-
-	/**
-	 * Pseudo-util class with common operations used  in potential tables
-	 */
-	private PotentialsTablePanelOperations tablePotentialsPanelOperations;
-
-	/**
-	 * The node which potential is changed
-	 */
-	private Node node;
-
-	// Constructor
-
-	/**
-     * Creates a new {@code UnivariateDistrPotentialEdit} in which one value of the {@code distributionTable} is changed.
-	 * Specifying the node to be edited, the new value to be inserted in (row,col) and the notEditablePositions of the displayed table.
-	 *
-	 * @param node                 - the node to be changed
-	 * @param newValue             - the new value to be inserted in the table
-	 * @param row                  - the row where the new value is inserted
-	 * @param col                  - the column where the new value is inserted
-	 * @param notEditablePositions - the notEditablePositions of the displayed table
-	 * @see org.openmarkov.core.model.network.potential.UnivariateDistrPotential
-	 */
-	public UnivariateDistrPotentialValueEdit(Node node, String newValue, int row, int col,
-			Object[][] notEditablePositions) {
-		super(node.getProbNet());
-		this.node = node;
-			this.oldPotential = (UnivariateDistrPotential) node.getPotentials().get(0);
-		this.row = row;
-		this.col = col;
-		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
-
-		this.newPotential = new UnivariateDistrPotential(oldPotential);
-		this.newDistributionTable = newPotential.getDistributionTable();
-        this.potentialSelected = PotentialsTablePanelOperations.getPotentialIndex(row, col, newDistributionTable);
-		newDistributionTable.getFunctionValues()[potentialSelected] = newValue;
-	}
-
-	/**
-     * Creates a new {@code UnivariateDistrPotentialEdit} specifying the node to be and the new probability distribution.
-     * This is used when the distribution of {@code UnivariateDistrPotential} is changed.
-	 *
-	 * @param node             - the node to be edited
-	 * @param distributionName - the name of the distribution to be created. Represents the attribute name in ProbDensFunctionType which represents the distribution class
-	 * @see org.openmarkov.core.model.network.potential.UnivariateDistrPotential
-	 */
-	public UnivariateDistrPotentialValueEdit(Node node, String distributionName) {
-		super(node.getProbNet());
-		this.node = node;
-        //The old univariateDistrPotential
-        UnivariateDistrPotential potential = (UnivariateDistrPotential) node.getPotentials().get(0);
-			this.oldPotential = potential;
-		if (distributionName.equals(potential.getProbDensFunctionName())) {
-			this.newPotential = new UnivariateDistrPotential(potential);
-		} else {
-			this.newDistributionClass = ProbDensFunctionManager.getUniqueInstance()
-					.getProbDensFunctionClass(distributionName);
-			this.newPotential = new UnivariateDistrPotential(potential.getVariables(), newDistributionClass,
-					potential.getPotentialRole());
-		}
-	}
-
-	/**
-	 * This method changes the old UnivariateDistrPotential in node for the updated potential
-	 * and updates the probNet
-	 */
-	@Override protected void doEdit() throws DoEditException {
-        PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(node, oldPotential, newPotential);
-        changePotentialEdit.executeEdit();
-	}
+@SuppressWarnings("serial") public class UnivariateDistrPotentialValueEdit extends PotentialChangeEdit {
+    /**
+     * The column of the table where is the potential
+     */
+    private int col;
+    /**
+     * The row of the table where is the potential
+     */
+    private int row;
+    /**
+     * Index of the value selected
+     */
+    private int potentialSelected;
     
     /**
-	 * Gets the row position associated to value edited if priorityList exists
-	 *
-	 * @param position position of the value in the array of values
-	 * @return the position in the table
-	 */
-	public int getRowPosition(int position) {
+     * The new class of the distribution
+     */
+    private Class<? extends ProbDensFunction> newDistributionClass;
+    
+    /**
+     * The new distributionTable
+     */
+    private AugmentedTable newDistributionTable;
+    
+    /**
+     * Pseudo-util class with common operations used  in potential tables
+     */
+    private PotentialsTablePanelOperations tablePotentialsPanelOperations;
+    
+    /**
+     * The node which potential is changed
+     */
+    private Node node;
+    
+    // Constructor
+    
+    /**
+     * Creates a new {@code UnivariateDistrPotentialEdit} specifying the node to be and the new probability distribution.
+     * This is used when the distribution of {@code UnivariateDistrPotential} is changed.
+     *
+     * @param node             - the node to be edited
+     * @param distributionName - the name of the distribution to be created. Represents the attribute name in ProbDensFunctionType which represents the distribution class
+     *
+     * @see org.openmarkov.core.model.network.potential.UnivariateDistrPotential
+     */
+    public UnivariateDistrPotentialValueEdit(Node node, String distributionName) {
+        super(node, null, null);
+        this.node = node;
+        //The old univariateDistrPotential
+        UnivariateDistrPotential potential = (UnivariateDistrPotential) node.getPotentials().get(0);
+        this.oldPotential = potential;
+        if (distributionName.equals(potential.getProbDensFunctionName())) {
+            this.newPotential = new UnivariateDistrPotential(potential);
+        } else {
+            this.newDistributionClass = ProbDensFunctionManager.getUniqueInstance()
+                                                               .getProbDensFunctionClass(distributionName);
+            this.newPotential = new UnivariateDistrPotential(potential.getVariables(), newDistributionClass,
+                                                             potential.getPotentialRole());
+        }
+    }
+    
+    /**
+     * Gets the row position associated to value edited if priorityList exists
+     *
+     * @param position position of the value in the array of values
+     *
+     * @return the position in the table
+     */
+    public int getRowPosition(int position) {
         try {
             int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(node);
             return lastRow - position % newDistributionTable.getDimensions()[0];
@@ -146,24 +101,31 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
             throw new UnreacheableException(e);
         }
     }
-
-	/**
-	 * Gets the row position associated to value edited if priorityList no
-	 * exists
-	 *
-	 * @return the position in the table
-	 */
-	public int getRowPosition() {
-		return row;
-	}
-
-	/**
-	 * Gets the column where the value is edited
-	 *
-	 * @return the column edited
-	 */
-	public int getColumnPosition() {
-		return col;
-	}
-
+    
+    /**
+     * Gets the row position associated to value edited if priorityList no
+     * exists
+     *
+     * @return the position in the table
+     */
+    public int getRowPosition() {
+        return row;
+    }
+    
+    /**
+     * Gets the column where the value is edited
+     *
+     * @return the column edited
+     */
+    public int getColumnPosition() {
+        return col;
+    }
+    
+    public UnivariateDistrPotential getNewUnivariateDistrPotential() {
+        return (UnivariateDistrPotential) super.getNewPotential();
+    }
+    
+    public UnivariateDistrPotential getOldUnivariateDistrPotential() {
+        return (UnivariateDistrPotential) super.getNewPotential();
+    }
 }

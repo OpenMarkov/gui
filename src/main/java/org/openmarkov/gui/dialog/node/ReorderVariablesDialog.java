@@ -34,7 +34,7 @@ import java.awt.*;
 	}
 
 	private void initialize() {
-		setTitle(stringDatabase.getString("NodePotentialReorderVariables.Title.Label"));
+        setTitle(stringDatabase.getString("NodePotentialReorderVariables.Title"));
 		configureComponentsPanel();
 		pack();
 	}

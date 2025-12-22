@@ -27,7 +27,7 @@ public class UpdateLocalizationInComponents {
         for (Component item : listComponents) {
             if (item instanceof JButton) {
                 if (!((JButton) item).getText().isEmpty()) {
-                    temp = item.getName() + ".Text.Label";
+                    temp = item.getName() + ".Text";
                     ((JButton) item).setText(stringDatabase.getString(temp));
                 }
             } else if (item instanceof JDialog) {
@@ -42,13 +42,13 @@ public class UpdateLocalizationInComponents {
                 temp = item.getName() + ".Text";
                 ((JLabel) item).setText(stringDatabase.getString(temp));
             } else if (item instanceof JMenu) {
-                temp = item.getName() + ".Label";
+                temp = item.getName();
                 ((JMenu) item).setText(stringDatabase.getString(temp));
                 temp = item.getName() + ".Mnemonic";
                 ((JMenu) item).setMnemonic(stringDatabase.getString(temp).charAt(0));
                 allComponentsUpdateSetText((Container) item);
             } else if (item instanceof JMenuItem) {
-                temp = item.getName() + ".Label";
+                temp = item.getName();
                 ((JMenuItem) item).setText(stringDatabase.getString(temp));
                 temp = item.getName() + ".Mnemonic";
                 ((JMenuItem) item).setMnemonic(stringDatabase.getString(temp).charAt(0));
@@ -72,14 +72,14 @@ public class UpdateLocalizationInComponents {
             
         } // end-for
         if (c instanceof JMenu) {
-            temp = c.getName() + ".Label";
+            temp = c.getName();
             ((JMenu) c).setText(stringDatabase.getString(temp));
             // extract JMenuItems
             int itemCount = ((JMenu) c).getItemCount();
             for (int i = 0; i < itemCount; i++) {
                 JMenuItem item = ((JMenu) c).getItem(i);
                 if (item instanceof JMenu) {
-                    temp = item.getName() + ".Label";
+                    temp = item.getName();
                     item.setText(stringDatabase.getString(temp));
                     temp = item.getName() + ".Mnemonic";
                     item.setMnemonic(stringDatabase.getString(temp).charAt(0));
@@ -87,7 +87,7 @@ public class UpdateLocalizationInComponents {
                 } else if (item instanceof LastRecentFilesMenuItem) {
                     // do not change
                 } else if (item instanceof JMenuItem) {
-                    temp = item.getName() + ".Label";
+                    temp = item.getName();
                     item.setText(stringDatabase.getString(temp));
                     temp = item.getName() + ".Mnemonic";
                     item.setMnemonic(stringDatabase.getString(temp).charAt(0));

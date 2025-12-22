@@ -105,8 +105,9 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
         if (oldValueString.equals(newValueString))
             return;
         
-        AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, newValueString, row, col,
-                                                                                        priorityList, getTableModel().getNotEditablePositions());
+        Object[][] notEditablePositions = getTableModel().getNotEditablePositions();
+        AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, newValueString, row, col
+        );
         try {
             nodePotentialEdit.executeEdit();
         } catch (DoEditException e) {
@@ -178,7 +179,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
      */
     public void augmentedPotentialValueEditHappened(AugmentedPotentialValueEdit edit) {
         int position = edit.getIndexSelected();
-        Potential editPotential = edit.getPotential();
+        Potential editPotential = edit.getNewPotential();
         AugmentedTable editTable;
         if (editPotential instanceof AugmentedTablePotential) {
             editTable = ((AugmentedTablePotential) editPotential).getAugmentedTable();
@@ -207,7 +208,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
     @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
         //if (event.getEdit () instanceof AugmentedPotentialValueEdit)
         AugmentedPotentialValueEdit edit = (AugmentedPotentialValueEdit) event.getEdit();
-        Potential editPotential = edit.getPotential();
+        Potential editPotential = edit.getNewPotential();
         AugmentedTable editTable;
         if (editPotential instanceof AugmentedTablePotential) {
             editTable = ((AugmentedTablePotential) editPotential).getAugmentedTable();

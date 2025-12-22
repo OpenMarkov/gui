@@ -38,6 +38,10 @@ public final class LocalPreferences {
                 new TypeToken<>() {
                 });
     
+    public static final LocalPreference<Double> UI_SCALE = LocalPreference
+            .of("user_interface/ui_scale", () -> 1.0, new TypeToken<>() {
+            });
+    
     public static final LocalPreference<Boolean> PREFERS_DARK_THEME = LocalPreference
             .of("user_interface/prefers_dark_theme", () -> false, new TypeToken<>() {
             });

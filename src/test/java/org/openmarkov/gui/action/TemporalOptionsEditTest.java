@@ -13,7 +13,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.core.TemporalOptionsEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.inference.TemporalOptions;
-import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -73,7 +72,7 @@ public class TemporalOptionsEditTest {
     public void temporalOptionsTest() throws DoEditException {
         TemporalOptions temporalOptions = new TemporalOptions();
         temporalOptions.setHorizon(50);
-        temporalOptions.setTransition(TransitionTime.END);
+        temporalOptions.setTransition(TemporalOptions.TransitionTime.END);
         TemporalOptionsEdit edit = new TemporalOptionsEdit(probNet, temporalOptions);
         
         edit.executeEdit();
@@ -81,18 +80,18 @@ public class TemporalOptionsEditTest {
         assertEquals(probNet.getInferenceOptions()
                             .getTemporalOptions()
                             .getTransition()
-                            .toString(), TransitionTime.END.toString());
+                            .toString(), TemporalOptions.TransitionTime.END.toString());
         
         TemporalOptions temporalOptions2 = new TemporalOptions();
         temporalOptions2.setHorizon(10);
-        temporalOptions2.setTransition(TransitionTime.HALF);
+        temporalOptions2.setTransition(TemporalOptions.TransitionTime.HALF);
         TemporalOptionsEdit edit2 = new TemporalOptionsEdit(probNet, temporalOptions2);
         edit2.executeEdit();
         assertEquals(10, probNet.getInferenceOptions().getTemporalOptions().getHorizon());
         assertEquals(probNet.getInferenceOptions()
                             .getTemporalOptions()
                             .getTransition()
-                            .toString(), TransitionTime.HALF.toString());
+                            .toString(), TemporalOptions.TransitionTime.HALF.toString());
         
         
         probNet.getPNESupport().undo();
@@ -101,7 +100,7 @@ public class TemporalOptionsEditTest {
         assertEquals(probNet.getInferenceOptions()
                             .getTemporalOptions()
                             .getTransition()
-                            .toString(), TransitionTime.END.toString());
+                            .toString(), TemporalOptions.TransitionTime.END.toString());
         
     }
 }

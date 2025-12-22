@@ -52,9 +52,7 @@ public class BottomPanelButtonDialog extends DialogBase {
 	 * @param owner window that owns the dialog box.
 	 */
 	public BottomPanelButtonDialog(Window owner) {
-
 		super(owner);
-
 		initialize();
 		setName("BottomPanelButtonDialog");
 	}
@@ -63,11 +61,9 @@ public class BottomPanelButtonDialog extends DialogBase {
 	 * This method initialises this instance.
 	 */
 	private void initialize() {
-
 		setResizable(false);
 		setModal(true);
 		setContentPane(getJContentPane());
-
 	}
 
 	/**
@@ -76,16 +72,13 @@ public class BottomPanelButtonDialog extends DialogBase {
 	 * @return a new content panel.
 	 */
 	private JPanel getJContentPane() {
-
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new BorderLayout());
 			jContentPane.add(getComponentsPanel(), BorderLayout.CENTER);
 			jContentPane.add(getBottomPanel(), BorderLayout.SOUTH);
 		}
-
 		return jContentPane;
-
 	}
 
 	/**
@@ -106,15 +99,12 @@ public class BottomPanelButtonDialog extends DialogBase {
 	 * @return a new bottom panel.
 	 */
 	protected JPanel getBottomPanel() {
-
 		if (bottomPanel == null) {
 			bottomPanel = new JPanel();
 			bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 			bottomPanel.add(getButtonsPanel());
 		}
-
 		return bottomPanel;
-
 	}
 
 	/**
@@ -123,15 +113,12 @@ public class BottomPanelButtonDialog extends DialogBase {
 	 * @return a new panel that contains the buttons.
 	 */
 	protected JPanel getButtonsPanel() {
-
 		if (buttonsPanel == null) {
 			buttonsPanel = new JPanel();
 			buttonsPanel.setLayout(new GridLayout(1, 0, 10, 10));
 			buttonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		}
-
 		return buttonsPanel;
-
 	}
 
 	/**
@@ -141,8 +128,6 @@ public class BottomPanelButtonDialog extends DialogBase {
 	 * @param button button that will be added to the panel.
 	 */
 	protected void addButtonToButtonsPanel(JButton button) {
-
 		buttonsPanel.add(button);
-
 	}
 }

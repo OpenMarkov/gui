@@ -55,8 +55,8 @@ import java.util.stream.IntStream;
         }
         //Gather link creation edits
         for (Link<Node> link : clipboardContent.links()) {
-            String originalSourceNodeName = link.getNode1().getName();
-            String originalDestinationNodeName = link.getNode2().getName();
+            String originalSourceNodeName = link.getFrom().getName();
+            String originalDestinationNodeName = link.getTo().getName();
             AddLinkEdit addLinkEdit = new AddLinkEdit(probNet, probNet.getVariable(newVariables.get(originalSourceNodeName)),
                                                       probNet.getVariable(newVariables.get(originalDestinationNodeName)), link.isDirected());
             addLinkEdit.executeEdit();

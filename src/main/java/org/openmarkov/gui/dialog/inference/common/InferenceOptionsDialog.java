@@ -12,7 +12,6 @@ import org.openmarkov.core.action.core.TemporalOptionsEdit;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.inference.TemporalOptions;
-import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.ProbNet;
@@ -299,7 +298,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
     public JPanel getMulticriteriaPanel() {
         if (multicriteriaPanel == null) {
             multicriteriaPanel = new JPanel();
-            multicriteriaPanel.setBorder(new TitledBorder(stringDatabase.getString("MulticriteriaDialog.Title.Label")));
+            multicriteriaPanel.setBorder(new TitledBorder(stringDatabase.getString("MulticriteriaDialog.Title")));
             multicriteriaPanel.setLayout(new BoxLayout(multicriteriaPanel, BoxLayout.PAGE_AXIS));
             
             multicriteriaPanel.add(getUnitsAndSelectPanels());
@@ -915,11 +914,11 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         transitionsButtonGroup.add(getHalfCycleButton());
         transitionsButtonGroup.add(getEndOfCycleButton());
         
-        if (this.temporalOptions.getTransition() == TransitionTime.BEGINNING) {
+        if (this.temporalOptions.getTransition() == TemporalOptions.TransitionTime.BEGINNING) {
             beginningOfCycleButton.setSelected(true);
-        } else if (this.temporalOptions.getTransition() == TransitionTime.HALF) {
+        } else if (this.temporalOptions.getTransition() == TemporalOptions.TransitionTime.HALF) {
             halfCycleButton.setSelected(true);
-        } else if (this.temporalOptions.getTransition() == TransitionTime.END) {
+        } else if (this.temporalOptions.getTransition() == TemporalOptions.TransitionTime.END) {
             endOfCycleButton.setSelected(true);
         }
     }
@@ -966,11 +965,11 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
             }
             this.temporalOptions.setHorizon(numSlices);
             if (beginningOfCycleButton.isSelected()) {
-                this.temporalOptions.setTransition(TransitionTime.BEGINNING);
+                this.temporalOptions.setTransition(TemporalOptions.TransitionTime.BEGINNING);
             } else if (halfCycleButton.isSelected()) {
-                this.temporalOptions.setTransition(TransitionTime.HALF);
+                this.temporalOptions.setTransition(TemporalOptions.TransitionTime.HALF);
             } else if (endOfCycleButton.isSelected()) {
-                this.temporalOptions.setTransition(TransitionTime.END);
+                this.temporalOptions.setTransition(TemporalOptions.TransitionTime.END);
             }
             
             TemporalOptionsEdit editTemporal = new TemporalOptionsEdit(probNet, temporalOptions);

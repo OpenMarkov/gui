@@ -51,7 +51,7 @@ import java.awt.*;
 		messageStringResource =
 				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		setTitle(dialogStringResource
-				.getValuesInAString("NodePotentialDialog.Title.Label"));*/
+				.getValuesInAString("NodePotentialDialog.Title));*/
 		getComponentsPanel().setLayout(new BorderLayout(5, 5));
 		getComponentsPanel().add(getJPanelRemoveStates(), BorderLayout.CENTER);
 

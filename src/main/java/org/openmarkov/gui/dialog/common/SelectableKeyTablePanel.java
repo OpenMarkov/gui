@@ -47,7 +47,7 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
                                    boolean firstColumnHidden, Link<Node> link) {
         super(newColumns, new Object[0][0], newKeyPrefix, true);
         this.link = link;
-        this.node = link.getNode1();
+        this.node = link.getFrom();
         super.getAddValueButton().setVisible(false);
         super.getRemoveValueButton().setVisible(false);
         super.getDownValueButton().setVisible(false);

@@ -1,474 +1,311 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-    <Edit>
+    <Edit value="Edición">
         <!-- TODO OOBN start  -->
-        <MarkAsInput>
-            <Label value="Marcar como entrada"/>
-        </MarkAsInput>
-        <EditClass>
-            <Label value="Editar clase"/>
-        </EditClass>
-        <EditInstanceName>
-            <Label value="Editar el nombre de la instancia"/>
-        </EditInstanceName>
-        <Arity>
-            <Label value="Aridad"/>
-        </Arity>
+        <MarkAsInput value="Marcar como entrada"/>
+        <EditClass value="Editar clase"/>
+        <EditInstanceName value="Editar el nombre de la instancia"/>
+        <Arity value="Aridad"/>
         <!-- TODO OOBN end -->
         <Mode>
-            <Link>
+            <Link value="Insertar enlaces">
                 <Mnemonic value="l"/>
-                <Label value="Insertar enlaces"/>
             </Link>
-            <Selection>
-                <Label value="Selección de objetos"/>
+            <Selection value="Selección de objetos">
                 <Mnemonic value="j"/>
             </Selection>
-            <Decision>
+            <Decision value="Insertar nodos de decisión">
                 <Mnemonic value="e"/>
-                <Label value="Insertar nodos de decisión"/>
             </Decision>
-            <Utility>
+            <Utility value="Insertar nodos de utilidad">
                 <Mnemonic value="u"/>
-                <Label value="Insertar nodos de utilidad"/>
             </Utility>
-            <Chance>
+            <Chance value="Insertar nodos de probabilidad">
                 <Mnemonic value="a"/>
-                <Label value="Insertar nodos de probabilidad"/>
             </Chance>
         </Mode>
-        <Remove>
+        <Remove value="Eliminar">
             <Mnemonic value="e"/>
-            <Label value="Eliminar"/>
         </Remove>
-        <Undo>
+        <Undo value="Deshacer">
             <Mnemonic value="d"/>
-            <Label value="Deshacer"/>
         </Undo>
-        <InstanceCreation>
-            <Label value="Creación de instancia"/>
-        </InstanceCreation>
-        <ViewPolicy>
-            <Label value="Ver política ..."/>
-        </ViewPolicy>
-        <NodeTest>
-            <Label value="Testing ..."/>
-        </NodeTest>
-        <LinkRestrictionEnable>
+        <InstanceCreation value="Creación de instancia"/>
+        <ViewPolicy value="Ver política ..."/>
+        <NodeTest value="Testing ..."/>
+        <LinkRestrictionEnable value="Añadir restricciones">
             <Mnemonic value="a"/>
-            <Label value="Añadir restricciones"/>
         </LinkRestrictionEnable>
-        <SelectAll>
-            <Label value="Seleccionar todo"/>
+        <SelectAll value="Seleccionar todo">
             <Mnemonic value="t"/>
         </SelectAll>
-        <ViewNodePotential>
-            <Label value="Ver probabilidad ..."/>
-        </ViewNodePotential>
-        <Log>
-            <Label value="Registrar evolución temporal"/>
+        <ViewNodePotential value="Ver probabilidad ..."/>
+        <Log value="Registrar evolución temporal">
             <Mnemonic value="l"/>
         </Log>
-        <InvertLinkAndUpdatePotentials>
+        <InvertLinkAndUpdatePotentials value="Invertir enlace">
             <Mnemonic value="v"/>
-            <Label value="Invertir enlace"/>
         </InvertLinkAndUpdatePotentials>
-        <RevelationArc>
+        <RevelationArc value="Editar condiciones de revelación">
             <Mnemonic value="a"/>
-            <Label value="Editar condiciones de revelación"/>
         </RevelationArc>
-        <LinkProperties>
-            <Label value="Propiedades del enlace..."/>
+        <LinkProperties value="Propiedades del enlace...">
             <Mnemonic value="i"/>
         </LinkProperties>
-        <LinkRestrictionEdit>
-            <Label value="Editar restricciones"/>
+        <LinkRestrictionEdit value="Editar restricciones">
             <Mnemonic value="r"/>
         </LinkRestrictionEdit>
-        <Policy>
-            <Label value="Editar política ..."/>
-        </Policy>
-        <Redo>
-            <Label value="Rehacer"/>
+        <Policy value="Editar política ..."/>
+        <Redo value="Rehacer">
             <Mnemonic value="r"/>
         </Redo>
-        <LinkRestrictionDisable>
-            <Label value="Eliminar restricciones"/>
+        <LinkRestrictionDisable value="Eliminar restricciones">
             <Mnemonic value="d"/>
         </LinkRestrictionDisable>
-        <Cut>
+        <Cut value="Cortar">
             <Mnemonic value="c"/>
-            <Label value="Cortar"/>
         </Cut>
-        <Label value="Edición"/>
-        <SwitchToInference>
-            <Label value="Conmutar a modo Inferencia"/>
+        <SwitchToInference value="Conmutar a modo Inferencia">
             <Mnemonic value="s"/>
         </SwitchToInference>
-        <InstanceInput>
-            <Label value="Entrada"/>
-        </InstanceInput>
+        <InstanceInput value="Entrada"/>
         <Mnemonic value="e"/>
-        <ObjectSelection>
-            <Label value="Selección de objetos"/>
+        <ObjectSelection value="Selección de objetos">
             <Mnemonic value="j"/>
         </ObjectSelection>
-        <Copy>
-            <Label value="Copiar"/>
+        <Copy value="Copiar">
             <Mnemonic value="o"/>
         </Copy>
-        <AbsorbNode>
-            <Label value="Absorber este nodo"/>
+        <AbsorbNode value="Absorber este nodo">
             <Mnemonic value="b"/>
         </AbsorbNode>
-        <AbsorbParents>
-            <Label value="Absorber padres"/>
-        	<Mnemonic value="n"/>
+        <AbsorbParents value="Absorber padres">
+            <Mnemonic value="n"/>
         </AbsorbParents>
-        <NodeProperties>
-            <Label value="Propiedades del nodo..."/>
+        <NodeProperties value="Propiedades del nodo...">
             <Mnemonic value="i"/>
         </NodeProperties>
-        <NodePotential>
-            <Label value="Editar probabilidad ..."/>
-        </NodePotential>
-        <Utility>
-            <Label value="Editar Utilidad ..."/>
-        </Utility>
-        <Paste>
+        <NodePotential value="Editar probabilidad ..."/>
+        <Utility value="Editar Utilidad ..."/>
+        <Paste value="Pegar">
             <Mnemonic value="p"/>
-            <Label value="Pegar"/>
         </Paste>
-        <ViewUtility>
-            <Label value="Ver utilidad ..."/>
-        </ViewUtility>
-        <NextSliceNode>
-            <Label value="Crear nodo en la próxima rodaja"/>
-        </NextSliceNode>
+        <ViewUtility value="Ver utilidad ..."/>
+        <NextSliceNode value="Crear nodo en la próxima rodaja"/>
     </Edit>
-    <Window>
-        <Mosaic>
+    <Window value="Ventana">
+        <Mosaic value="Organizar en mosaico">
             <Mnemonic value="m"/>
-            <Label value="Organizar en mosaico"/>
         </Mosaic>
-        <Previous>
-            <Label value="Anterior"/>
+        <Previous value="Anterior">
             <Mnemonic value="a"/>
         </Previous>
-        <Cascade>
-            <Label value="Organizar en cascada"/>
+        <Cascade value="Organizar en cascada">
             <Mnemonic value="c"/>
         </Cascade>
         <Mnemonic value="n"/>
-        <MinimizeAll>
+        <MinimizeAll value="Minimizar todas">
             <Mnemonic value="z"/>
-            <Label value="Minimizar todas"/>
         </MinimizeAll>
-        <RestoreAll>
-            <Label value="Restaurar todas"/>
+        <RestoreAll value="Restaurar todas">
             <Mnemonic value="r"/>
         </RestoreAll>
-        <Next>
-            <Label value="Siguiente"/>
+        <Next value="Siguiente">
             <Mnemonic value="s"/>
         </Next>
-        <Label value="Ventana"/>
     </Window>
     <Uncertainty>
-        <Remove>
-            <Label value="Eliminar incertidumbre"/>
-        </Remove>
-        <Edit>
-            <Label value="Editar incertidumbre"/>
-        </Edit>
-        <Assign>
-            <Label value="Asignar incertidumbre"/>
-        </Assign>
+        <Remove value="Eliminar incertidumbre"/>
+        <Edit value="Editar incertidumbre"/>
+        <Assign value="Asignar incertidumbre"/>
     </Uncertainty>
-    <Inference>
-        <GoToNextEvidenceCase>
-            <Label value="Ir al siguiente caso de evidencia"/>
+    <Inference value="Inferencia">
+        <GoToNextEvidenceCase value="Ir al siguiente caso de evidencia">
             <Mnemonic value="n"/>
         </GoToNextEvidenceCase>
-        <RemoveAllFindings>
-            <Label value="Eliminar todos los hallazgos"/>
+        <RemoveAllFindings value="Eliminar todos los hallazgos">
             <Mnemonic value="d"/>
         </RemoveAllFindings>
-        <Options>
-            <Label value="Opciones de propagación"/>
+        <Options value="Opciones de propagación">
             <Mnemonic value="i"/>
         </Options>
-        <InferenceOptions>
-            <Label value="Opciones de inferencia"/>
-        </InferenceOptions>
-        <TemporalOptions>
-            <Label value="Opciones temporales"/>
-        </TemporalOptions>
-        <PropagateEvidence>
+        <InferenceOptions value="Opciones de inferencia"/>
+        <TemporalOptions value="Opciones temporales"/>
+        <PropagateEvidence value="Propagar Evidencia">
             <Mnemonic value="e"/>
-            <Label value="Propagar Evidencia"/>
         </PropagateEvidence>
-        <ClearOutAllEvidenceCases>
+        <ClearOutAllEvidenceCases value="Vaciar la lista de casos de evidencia">
             <Mnemonic value="v"/>
-            <Label value="Vaciar la lista de casos de evidencia"/>
         </ClearOutAllEvidenceCases>
-        <SwitchToEdition>
+        <SwitchToEdition value="Conmutar a modo Edición">
             <Mnemonic value="s"/>
-            <Label value="Conmutar a modo Edición"/>
         </SwitchToEdition>
-        <Expansion>
+        <Expansion value="Expandir nodo(s)">
             <Mnemonic value="x"/>
-            <Label value="Expandir nodo(s)"/>
         </Expansion>
-        <AddFinding>
+        <AddFinding value="Introducir hallazgo">
             <Mnemonic value="a"/>
-            <Label value="Introducir hallazgo"/>
         </AddFinding>
-        <Contraction>
+        <Contraction value="Contraer nodo(s)">
             <Mnemonic value="o"/>
-            <Label value="Contraer nodo(s)"/>
         </Contraction>
-        <Label value="Inferencia"/>
-        <GoToFirstEvidenceCase>
+        <GoToFirstEvidenceCase value="Ir al primer caso de evidencia">
             <Mnemonic value="f"/>
-            <Label value="Ir al primer caso de evidencia"/>
         </GoToFirstEvidenceCase>
-        <CreateNewEvidenceCase>
+        <CreateNewEvidenceCase value="Crear un nuevo caso de evidencia">
             <Mnemonic value="c"/>
-            <Label value="Crear un nuevo caso de evidencia"/>
         </CreateNewEvidenceCase>
-        <RemoveFinding>
-            <Label value="Eliminar hallazgo"/>
+        <RemoveFinding value="Eliminar hallazgo">
             <Mnemonic value="r"/>
         </RemoveFinding>
-        <GoToPreviousEvidenceCase>
+        <GoToPreviousEvidenceCase value="Ir al anterior caso de evidencia">
             <Mnemonic value="p"/>
-            <Label value="Ir al anterior caso de evidencia"/>
         </GoToPreviousEvidenceCase>
-        <GoToLastEvidenceCase>
+        <GoToLastEvidenceCase value="Ir al último caso de evidencia">
             <Mnemonic value="l"/>
-            <Label value="Ir al último caso de evidencia"/>
         </GoToLastEvidenceCase>
-        <ChangeFinding>
-            <Label value="Modificar hallazgo"/>
-        </ChangeFinding>
+        <ChangeFinding value="Modificar hallazgo"/>
     </Inference>
-    <View>
-        <Toolbars>
+    <View value="Ver">
+        <Toolbars value="Barras de herramientas">
             <Mnemonic value="t"/>
-            <Label value="Barras de herramientas"/>
-            <ObjectOriented>
-                <Label value="Orientación a objetos"/>
-            </ObjectOriented>
+            <ObjectOriented value="Orientación a objetos"/>
         </Toolbars>
-        <Zoom>
+        <Zoom value="Zoom">
             <Mnemonic value="z"/>
-            <x75>
-                <Label value="75%"/>
-            </x75>
-            <x100>
-                <Label value="100%"/>
-            </x100>
-            <x500>
-                <Label value="500%"/>
-            </x500>
-            <x10>
-                <Label value="10%"/>
-            </x10>
-            <x200>
-                <Label value="200%"/>
-            </x200>
-            <Other>
+            <x75 value="75%"/>
+            <x100 value="100%"/>
+            <x500 value="500%"/>
+            <x10 value="10%"/>
+            <x200 value="200%"/>
+            <Other value="Otro">
                 <Mnemonic value="t"/>
-                <Label value="Otro"/>
             </Other>
-            <x25>
-                <Label value="25%"/>
-            </x25>
-            <x150>
-                <Label value="150%"/>
-            </x150>
-            <x50>
-                <Label value="50%"/>
-            </x50>
-            <ZoomIn>
+            <x25 value="25%"/>
+            <x150 value="150%"/>
+            <x50 value="50%"/>
+            <ZoomIn value="Ampliar zoom">
                 <Mnemonic value="a"/>
-                <Label value="Ampliar zoom"/>
             </ZoomIn>
-            <ZoomOut>
-                <Label value="Reducir zoom"/>
+            <ZoomOut value="Reducir zoom">
                 <Mnemonic value="r"/>
             </ZoomOut>
-            <Label value="Zoom"/>
         </Zoom>
-        <MessageWindow>
+        <MessageWindow value="Ventana de mensajes">
             <Mnemonic value="v"/>
-            <Label value="Ventana de mensajes"/>
         </MessageWindow>
-        <Nodes>
-            <ByTitle>
-                <Label value="Por título"/>
+        <Nodes value="Nodos">
+            <ByTitle value="Por título">
                 <Mnemonic value="t"/>
             </ByTitle>
             <Mnemonic value="n"/>
-            <Label value="Nodos"/>
-            <ByName>
-                <Label value="Por nombre"/>
+            <ByName value="Por nombre">
                 <Mnemonic value="n"/>
             </ByName>
         </Nodes>
-        <Label value="Ver"/>
         <Mnemonic value="v"/>
     </View>
-    <Help>
-        <ChangeLanguage>
-            <Label value="Cambiar idioma..."/>
+    <Help value="Ayuda">
+        <ChangeLanguage value="Cambiar idioma...">
             <Mnemonic value="i"/>
         </ChangeLanguage>
-        <Shortcuts>
+        <Shortcuts value="Atajos">
             <Mnemonic value="j"/>
-            <Label value="Atajos"/>
         </Shortcuts>
-        <About>
+        <About value="Acerca de...">
             <Mnemonic value="a"/>
-            <Label value="Acerca de..."/>
         </About>
-        <Label value="Ayuda"/>
         <Mnemonic value="a"/>
     </Help>
     <Tree>
-        <ExpandNext>
-            <Label value = "Expandir N niveles"/>
-            <Mnemonic value = "n"/>
+        <ExpandNext value="Expandir N niveles">
+            <Mnemonic value="n"/>
         </ExpandNext>
-        <ExpandAll>
-            <Label value = "Expandir todos los niveles"/>
-            <Mnemonic value = "t"/>
+        <ExpandAll value="Expandir todos los niveles">
+            <Mnemonic value="t"/>
         </ExpandAll>
-        <OpenNetwork>
-            <Label value = "Abrir red"/>
-            <Mnemonic value = "a"/>
+        <OpenNetwork value="Abrir red">
+            <Mnemonic value="a"/>
         </OpenNetwork>
-        <ShowCEP>
-            <Label value = "Mostrar partición CE"/>
+        <ShowCEP value="Mostrar partición CE">
             <Mnemonic value="c"/>
         </ShowCEP>
-        <SaveGraphviz>
-            <Label value="Guardar en formato Graphviz"/>
+        <SaveGraphviz value="Guardar en formato Graphviz">
             <Mnemonic value="g"/>
         </SaveGraphviz>
     </Tree>
-    <Tools>
-        <DBGenerator>
+    <Tools value="Herramientas">
+        <DBGenerator value="Generar BBDD...">
             <Mnemonic value="g"/>
-            <Label value="Generar BBDD..."/>
         </DBGenerator>
-        <CostEffectivenessDeterministic>
-            <Label value="Análisis determinista"/>
-        </CostEffectivenessDeterministic>
-        <CostEffectivenessSensitivity>
-            <Label value="Análisis de sensibilidad"/>
-        </CostEffectivenessSensitivity>
-        <CostEffectiveness>
-            <Label value="Análisis de coste-efectividad"/>
-        </CostEffectiveness>
-        <SensitivityAnalysis>
-            <Label value="Análisis de sensibilidad"/>
-        </SensitivityAnalysis>
-        <Learning>
-            <Label value="Aprendizaje"/>
+        <CostEffectivenessDeterministic value="Análisis determinista"/>
+        <CostEffectivenessSensitivity value="Análisis de sensibilidad"/>
+        <CostEffectiveness value="Análisis de coste-efectividad"/>
+        <SensitivityAnalysis value="Análisis de sensibilidad"/>
+        <Learning value="Aprendizaje">
             <Mnemonic value="a"/>
         </Learning>
-        <UtilityCalculator>
-            <Label value="Calculador de utilidades"/>
+        <UtilityCalculator value="Calculador de utilidades">
             <Mnemonic value="u"/>
         </UtilityCalculator>
-        <Evaluation>
-            <Label value="Evaluación"/>
+        <Evaluation value="Evaluación">
             <Mnemonic value="e"/>
         </Evaluation>
-        <Configuration>
-            <Label value="Configuración OpenMarkov"/>
+        <Configuration value="Configuración OpenMarkov">
             <Mnemonic value="c"/>
         </Configuration>
         <Plugin>
             <NotAvailable value="La funcionalidad que está intentando ejecutar no está disponible"/>
             <Error value="Error tratando de procesar el comando: "/>
         </Plugin>
-        <Label value="Herramientas"/>
     </Tools>
-    <File>
-        <SaveAs>
-            <Label value="Guardar como..."/>
+    <File value="Archivo">
+        <SaveAs value="Guardar como...">
             <Mnemonic value="u"/>
         </SaveAs>
-        <Close>
+        <Close value="Cerrar">
             <Mnemonic value="c"/>
-            <Label value="Cerrar"/>
         </Close>
-        <NetworkProperties>
-            <Label value="Propiedades de la red..."/>
+        <NetworkProperties value="Propiedades de la red...">
             <Mnemonic value="p"/>
         </NetworkProperties>
-        <Exit>
-            <Label value="Salir"/>
+        <Exit value="Salir">
             <Mnemonic value="s"/>
         </Exit>
-        <LoadEvidence>
-            <Label value="Cargar evidencia..."/>
-        </LoadEvidence>
-        <Save>
+        <LoadEvidence value="Cargar evidencia..."/>
+        <Save value="Guardar">
             <Mnemonic value="g"/>
-            <Label value="Guardar"/>
         </Save>
-        <Label value="Archivo"/>
-        <New>
-            <Label value="Nuevo..."/>
+        <New value="Nuevo...">
             <Mnemonic value="n"/>
         </New>
-        <SaveOpen>
-            <Label value="Guardar y reabrir"/>
+        <SaveOpen value="Guardar y reabrir">
             <Mnemonic value="w"/>
         </SaveOpen>
-        <Open>
-            <Label value="Abrir..."/>
+        <Open value="Abrir...">
             <Mnemonic value="a"/>
         </Open>
-        <OpenURL>
-            <Label value="Abrir red desde URL"/>
+        <OpenURL value="Abrir red desde URL">
             <Mnemonic value="a"/>
         </OpenURL>
         <Mnemonic value="a"/>
-        <SaveEvidence>
-            <Label value="Salvar evidencia.."/>
-        </SaveEvidence>
+        <SaveEvidence value="Salvar evidencia.."/>
     </File>
     <Decision>
-        <ShowExpectedUtility>
-            <Label value="Mostrar utilidad esperada"/>
-        </ShowExpectedUtility>
-        <ShowOptimalPolicy>
-            <Label value="Mostrar política óptima"/>
-        </ShowOptimalPolicy>
+        <ShowExpectedUtility value="Mostrar utilidad esperada"/>
+        <ShowOptimalPolicy value="Mostrar política óptima"/>
         <ShowOptimalStrategy>
             <Title value="Estrategia óptima"/>
         </ShowOptimalStrategy>
         <Intervention>
             <Title value="Intervención"/>
         </Intervention>
-        <EditPolicy>
-            <Label value="Editar política"/>
-        </EditPolicy>
-        <RemovePolicy>
-            <Label value="Eliminar política"/>
-        </RemovePolicy>
-        <ImposePolicy>
-            <Label value="Imponer política"/>
-        </ImposePolicy>
+        <EditPolicy value="Editar política"/>
+        <RemovePolicy value="Eliminar política"/>
+        <ImposePolicy value="Imponer política"/>
     </Decision>
-    <Options>
+    <Options value="Opciones">
         <Mnemonic value="o"/>
-        <Label value="Opciones"/>
     </Options>
     <CostEffectiveness>
         <Cycles value="ciclos"/>
@@ -485,76 +322,39 @@
         <BeginningOfCycle value="Inicio del ciclo"/>
         <HalfCycle value="Mitad del ciclo"/>
         <EndOfCycle value="Final del ciclo"/>
-        <ExpandNetwork>
-            <Label value="Expandir red"/>
+        <ExpandNetwork value="Expandir red">
             <FileName value="_extendida"/>
         </ExpandNetwork>
-<!--        <ExpandNetworkCE>-->
-<!--            <Label value="Expandir red CE"/>-->
-<!--        </ExpandNetworkCE>-->
-        <Analysis>
-            <Label value="Análisis de coste-efectividad"/>
-        </Analysis>
-        <TemporalEvolution>
-            <Label value="Evolución temporal"/>
+        <!--        <ExpandNetworkCE>-->
+        <!--            <Label value="Expandir red CE"/>-->
+        <!--        </ExpandNetworkCE>-->
+        <Analysis value="Análisis de coste-efectividad"/>
+        <TemporalEvolution value="Evolución temporal">
             <InstantValues value="Valores instantáneos"/>
             <CumulativeValues value="Valores acumulados"/>
             <ValueType value="Tipo de valor"/>
         </TemporalEvolution>
-        <TemporalEvolutionByCriterion>
-            <Label value="Evolución temporal por criterio "/>
-        </TemporalEvolutionByCriterion>
+        <TemporalEvolutionByCriterion value="Evolución temporal por criterio "/>
     </CostEffectiveness>
     <TreeADD>
         <AddSubtree value="Añadir subárbol"/>
         <StartNode value="Establecer primer nodo"/>
         <ChangeVariable value="Cambiar variable"/>
-        <EditPotential>
-            <Label value="Editar potencial"/>
-        </EditPotential>
-        <JoinBranches>
-            <Label value="Añadir estados a rama"/>
-        </JoinBranches>
-        <DissociateStates>
-            <Label value="Quitar estados de rama"/>
-        </DissociateStates>
-        <ChangeVariable>
-            <Label value="Cambiar variable"/>
-        </ChangeVariable>
-        <RemoveVariables>
-            <Label value="Quitar variables"/>
-        </RemoveVariables>
-        <RemoveSubtree>
-            <Label value="Quitar subárbol"/>
-        </RemoveSubtree>
-        <AddVariables>
-            <Label value="Añadir variables a potencial"/>
-        </AddVariables>
-        <SplitInterval>
-            <Label value="Dividir intervalo"/>
-        </SplitInterval>
-        <ChangeInterval>
-            <Label value="Modificar intervalo"/>
-        </ChangeInterval>
-        <SetLabel>
-            <Label value="Establecer etiqueta"/>
-        </SetLabel>
-        <SetReference>
-            <Label value="Establecer referencia"/>
-        </SetReference>
-        <RemoveLabel>
-            <Label value="Quitar etiqueta"/>
-        </RemoveLabel>
-        <RemoveReference>
-            <Label value="Quitar referencia"/>
-        </RemoveReference>
-
+        <EditPotential value="Editar potencial"/>
+        <JoinBranches value="Añadir estados a rama"/>
+        <DissociateStates value="Quitar estados de rama"/>
+        <RemoveVariables value="Quitar variables"/>
+        <RemoveSubtree value="Quitar subárbol"/>
+        <AddVariables value="Añadir variables a potencial"/>
+        <SplitInterval value="Dividir intervalo"/>
+        <ChangeInterval value="Modificar intervalo"/>
+        <SetLabel value="Establecer etiqueta"/>
+        <SetReference value="Establecer referencia"/>
+        <RemoveLabel value="Quitar etiqueta"/>
+        <RemoveReference value="Quitar referencia"/>
         <DomainChangeWarning value="Está tratando de modificar el dominio de la variable"/>
     </TreeADD>
-
-
     <BUNDLEFILE>
         <Text value="Español"/>
     </BUNDLEFILE>
 </properties>
-

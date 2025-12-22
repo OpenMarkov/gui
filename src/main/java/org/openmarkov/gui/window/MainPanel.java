@@ -49,10 +49,6 @@ public class MainPanel extends JPanel {
     
     private static final long serialVersionUID = -7852474978327911654L;
     /**
-     * Object that allows to access some private methods for this.
-     */
-    private static MainPanel MAIN_PANEL = null;
-    /**
      * Main menu.
      */
     private final MainMenu mainMenu;
@@ -90,6 +86,9 @@ public class MainPanel extends JPanel {
      */
     private JFrame mainFrame;
     
+    
+    public final MainGUI mainGUI;
+    
     public JTabbedPane getNetworksTabPanel() {
         return this.networksTabPanel;
     }
@@ -105,13 +104,13 @@ public class MainPanel extends JPanel {
     /**
      * Creates a new instance with a clear declared parent.
      *
-     * @param parentFrame the parent Frame of the Main Panel
+     * @param mainGUI the parent Frame of the Main Panel
      */
-    public MainPanel(JFrame parentFrame) {
-        MAIN_PANEL = this;
-        MAIN_PANEL.setName("MainPanel");
-        mainFrame = parentFrame;
-        mainFrame.setName(parentFrame.getName());
+    public MainPanel(MainGUI mainGUI) {
+        this.setName("MainPanel");
+        this.mainGUI = mainGUI;
+        mainFrame = mainGUI;
+        mainFrame.setName(mainGUI.getName());
         toolbarManager = new ToolbarManager(this);
         this.networksTabPanel = new JTabbedPane();
         
@@ -125,36 +124,6 @@ public class MainPanel extends JPanel {
                 KeyEvent.VK_LEFT,
                 InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK
         ), "navigatePrevious");
-        
-        KeyboardFocusManager.getCurrentKeyboardFocusManager()
-                            .addKeyEventPostProcessor(e -> {
-                                if (this.networksTabPanel.getTabCount() == 0) {
-                                    return false;
-                                }
-                                if (e.getID() != KeyEvent.KEY_RELEASED) {
-                                    return false;
-                                }
-                                if ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK) != (InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)) {
-                                    return false;
-                                }
-                                if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                                    int nextIndex = this.networksTabPanel.getSelectedIndex() + 1;
-                                    if (nextIndex >= this.networksTabPanel.getTabCount()) {
-                                        nextIndex = 0;
-                                    }
-                                    this.networksTabPanel.setSelectedIndex(nextIndex);
-                                    return true;
-                                }
-                                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                                    int previous = this.networksTabPanel.getSelectedIndex() - 1;
-                                    if (previous == -1) {
-                                        previous = this.networksTabPanel.getTabCount() - 1;
-                                    }
-                                    this.networksTabPanel.setSelectedIndex(previous);
-                                    return true;
-                                }
-                                return false;
-                            });
         
         this.networksTabPanel.addChangeListener(e -> {
             var selectedComponent = this.networksTabPanel.getSelectedComponent();
@@ -173,32 +142,9 @@ public class MainPanel extends JPanel {
                 }
             }
         });
-        this.mainPanelListenerAssistant = new MainPanelListenerAssistant(MainPanel.MAIN_PANEL);
-        this.mainMenu = new MainMenu(mainPanelListenerAssistant);
+        this.mainPanelListenerAssistant = new MainPanelListenerAssistant(this);
+        this.mainMenu = new MainMenu(this, mainPanelListenerAssistant);
         this.initialize();
-    }
-    
-    /**
-     * Singleton pattern
-     *
-     * @param parentFrame is the parent Frame for this Main Panel
-     *
-     * @return mainPanel. {@code MainPanel}
-     */
-    public static MainPanel getUniqueInstance(JFrame parentFrame) {
-        if (MAIN_PANEL == null) {
-            new MainPanel(parentFrame);
-        }
-        return MAIN_PANEL;
-    }
-    
-    /**
-     * Singleton pattern
-     *
-     * @return mainPanel. {@code MainPanel}
-     */
-    public static MainPanel getUniqueInstance() {
-        return MAIN_PANEL;
     }
     
     /**
@@ -210,7 +156,7 @@ public class MainPanel extends JPanel {
      * @return The current ProbNet opened in the Main Panel.
      */
     public static @Nullable ProbNet getCurrentProbNet() {
-        MainPanel panelInstance = MainPanel.getUniqueInstance();
+        MainPanel panelInstance = MainGUI.INSTANCE.mainPanel;
         if (panelInstance == null) {
             return null;
         }
@@ -226,11 +172,30 @@ public class MainPanel extends JPanel {
     }
     
     /**
+     * Convenience method to avoid writing
+     * {@code MainPanel.getUniqueInstance().getMainPanelListenerAssistant().getCurrentNetworkPanel()}.
+     * <p>
+     * This method cannot throw NullPointerException.
+     *
+     * @return The current NetworkPanel opened in the Main Panel.
+     */
+    public static @Nullable NetworkPanel getCurrentNetworkPanel() {
+        MainPanel panelInstance = MainGUI.INSTANCE.mainPanel;
+        if (panelInstance == null) {
+            return null;
+        }
+        MainPanelListenerAssistant listenerAssistant = panelInstance.getMainPanelListenerAssistant();
+        if (listenerAssistant == null) {
+            return null;
+        }
+        return listenerAssistant.getCurrentNetworkPanel();
+    }
+    
+    /**
      * This method initialises this instance, changing the default values and
      * assigning the listeners of the window.
      */
     private void initialize() {
-        
         this.getMainPanelListenerAssistant();
         this.getMainMenu();
         this.getContextualMenuFactory();
@@ -242,22 +207,7 @@ public class MainPanel extends JPanel {
         this.setSize(new Dimension(Math.max(600, previousWidth), Math.max(500, previousHeight)));
         this.add(this.getToolBarPanel(), BorderLayout.NORTH);
         this.getMainPanelMenuAssistant();
-		/*JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-
-		splitPane.setDividerLocation(770);
-		splitPane.setTopComponent(getMdi());
-		splitPane.setBottomComponent(getPropertiesScrollPanel());
-
-		splitPane.setOneTouchExpandable(true);*/
-        
         this.add(networksTabPanel, BorderLayout.CENTER);
-        
-        //add(getMdi(), BorderLayout.CENTER);
-        
-        //add(splitPane);//, BorderLayout.CENTER);
-        //ClipboardManager.addClipboardListener(getMainPanelMenuAssistant());
-        //add(getMessageWindow(), BorderLayout.SOUTH);
-        
     }
     
     /**
@@ -314,7 +264,6 @@ public class MainPanel extends JPanel {
      * @return a new toolbar panel.
      */
     public JPanel getToolBarPanel() {
-        
         if (toolBarPanel == null) {
             toolBarPanel = new JPanel();
 				/* This way, the main toolbar and the secondary are in different lines
@@ -328,7 +277,6 @@ public class MainPanel extends JPanel {
             toolBarPanel.add(this.getStandardToolBar());
             toolBarPanel.add(this.getEditionToolBar());
         }
-        
         return toolBarPanel;
         
     }
@@ -342,18 +290,18 @@ public class MainPanel extends JPanel {
     protected void setToolBarPanel(NetworkPanel.WorkingMode barType) {
         switch (barType) {
             case EDITION -> {
-                MAIN_PANEL.getToolBarPanel().remove(MAIN_PANEL.getInferenceToolBar());
-                MAIN_PANEL.getToolBarPanel().add(MAIN_PANEL.getEditionToolBar(), 1);
+                getToolBarPanel().remove(getInferenceToolBar());
+                getToolBarPanel().add(getEditionToolBar(), 1);
             }
             case INFERENCE -> {
-                MAIN_PANEL.getToolBarPanel().remove(MAIN_PANEL.getEditionToolBar());
-                MAIN_PANEL.getInferenceToolBar().setExpansionThreshold(this.getMainPanelListenerAssistant().
+                getToolBarPanel().remove(getEditionToolBar());
+                getInferenceToolBar().setExpansionThreshold(this.getMainPanelListenerAssistant().
                                                                            getCurrentNetworkPanel()
                                                                            .getExpansionThreshold());
-                MAIN_PANEL.getToolBarPanel().add(MAIN_PANEL.getInferenceToolBar(), 1);
+                getToolBarPanel().add(getInferenceToolBar(), 1);
             }
         }
-        MAIN_PANEL.initialize();
+        initialize();
         
     }
     

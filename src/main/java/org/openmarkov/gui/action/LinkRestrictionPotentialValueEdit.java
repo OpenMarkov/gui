@@ -57,10 +57,10 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 	private TablePotential tablePotential;
 
 	public LinkRestrictionPotentialValueEdit(Link<Node> link, Integer newValue, int row, int col) {
-		super(link.getNode1().getProbNet());
+        super(link.getFrom().getProbNet());
 		this.link = link;
-		this.node1 = link.getNode1();
-		this.node2 = link.getNode2();
+        this.node1 = link.getFrom();
+        this.node2 = link.getTo();
 		this.col = col;
 		this.row = row;
 		this.tablePotential = (TablePotential) link.getRestrictionsPotential();

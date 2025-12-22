@@ -245,7 +245,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
         if (upValueButton == null) {
             upValueButton = new JButton();
             upValueButton.setName("KeyTablePanel.upValueButton");
-            upValueButton.setText(stringDatabase.getString("Up.Text.Label"));
+            upValueButton.setText(stringDatabase.getString("Up.Text"));
             upValueButton.setMnemonic(stringDatabase.getString("Up.Text.Mnemonic").charAt(0));
             upValueButton.setIcon(IconBind.ARROW_UP_ENABLED.icon());
             upValueButton.setVisible(reorderable);
@@ -265,7 +265,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
         if (downValueButton == null) {
             downValueButton = new JButton();
             downValueButton.setName("KeyTablePanel.downValueButton");
-            downValueButton.setText(stringDatabase.getString("Down.Text.Label"));
+            downValueButton.setText(stringDatabase.getString("Down.Text"));
             downValueButton.setMnemonic(stringDatabase.getString("Down.Text.Mnemonic").charAt(0));
             downValueButton.setIcon(IconBind.ARROW_DOWN_ENABLED.icon());
             downValueButton.setVisible(reorderable);
@@ -285,7 +285,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
         if (addValueButton == null) {
             addValueButton = new JButton();
             addValueButton.setName("KeyTablePanel.addValueButton");
-            addValueButton.setText(stringDatabase.getString("Add.Text.Label"));
+            addValueButton.setText(stringDatabase.getString("Add.Text"));
             addValueButton.setMnemonic(stringDatabase.getString("Add.Text.Mnemonic").charAt(0));
             addValueButton.setIcon(IconBind.PLUS_ENABLED.icon());
             addValueButton.addActionListener(this);
@@ -340,7 +340,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
         if (removeValueButton == null) {
             removeValueButton = new JButton();
             removeValueButton.setName("KeyTablePanel.removeValueButton");
-            removeValueButton.setText(stringDatabase.getString("Delete.Text.Label"));
+            removeValueButton.setText(stringDatabase.getString("Delete.Text"));
             removeValueButton.setMnemonic(stringDatabase.getString("Delete.Text.Mnemonic").charAt(0));
             removeValueButton.setIcon(IconBind.MINUS_ENABLED.icon());
             removeValueButton.setEnabled(false);

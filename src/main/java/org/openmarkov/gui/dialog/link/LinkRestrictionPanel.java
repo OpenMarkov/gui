@@ -62,8 +62,8 @@ import java.util.List;
 	public LinkRestrictionPanel(Link<Node> link) {
 
 		this.link = link;
-		node1 = link.getNode1();
-		node2 = link.getNode2();
+        node1 = link.getFrom();
+        node2 = link.getTo();
 		modifiable = true;
 		setData(node1, node2);
 		setLayout(new BorderLayout());

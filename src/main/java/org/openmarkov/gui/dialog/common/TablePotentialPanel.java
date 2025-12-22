@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.core.UncertainValuesEdit;
 import org.openmarkov.core.action.core.UncertainValuesRemoveEdit;
 import org.openmarkov.core.exception.*;
@@ -23,7 +22,6 @@ import org.openmarkov.gui.component.ValuesTableModel;
 import org.openmarkov.gui.component.ValuesTableOptimalPolicyCellRenderer;
 import org.openmarkov.gui.component.ValuesTableWithLinkRestrictionCellRenderer;
 import org.openmarkov.gui.dialog.node.UncertainValuesDialog;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.UncertaintyContextualMenu;
 import org.openmarkov.gui.util.Utilities;
@@ -68,7 +66,6 @@ import java.util.List;
  */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Table") public class TablePotentialPanel
         extends ProbabilityTablePanel {
-    protected Logger logger;
     /**
      * JTable where show the values.
      */
@@ -147,17 +144,14 @@ import java.util.List;
         this.node = node;
         // This panel displays the first potential of the node
         potential = node.getFirstPotential();
-        if (potential instanceof ExactDistrPotential) {
-            isExactDistrPotential = true;
-            tablePotential = ((ExactDistrPotential) potential).getTablePotential();
-        } else
-            tablePotential = (TablePotential) potential;
+        isExactDistrPotential = potential instanceof ExactDistrPotential;
+        tablePotential = isExactDistrPotential ? ((ExactDistrPotential) potential).getTablePotential() : (TablePotential) potential;
         
         // The list of variables of potential
         variables = potential.getVariables();
         
         // Creating the table; class ValuesTable
-        valuesTable = new ValuesTable(node, getTableModel(), modifiable);
+        valuesTable = new ValuesTable(node, getTableModel(), false);
         valuesTable.setName("PotentialsTablePanel.valuesTable");
         valuesTable.setVisible(true);
         
@@ -457,7 +451,8 @@ import java.util.List;
             //int length = values.length - 2;
             int length = lastEditableRow;
             for (State state : variables.get(0).getStates()) {
-                values[length--][0] = state.getName();
+                values[length][0] = state.getName();
+                length--;
             }
         }
         return values;

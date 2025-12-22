@@ -10,7 +10,7 @@ package org.openmarkov.gui.toolplugin;
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.gui.window.MainPanel;
+import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.plugin.PluginSearch;
 
 import javax.swing.*;
@@ -108,7 +108,7 @@ public final class ToolPluginManager {
         menuItem.setAction(new AbstractAction() {
             @Override public void actionPerformed(ActionEvent e) {
                 try {
-                    toolPlugin.showDialog(MainPanel.getUniqueInstance().getMainFrame());
+                    toolPlugin.showDialog(MainGUI.INSTANCE.mainPanel.getMainFrame());
                 } catch (Exception ex) {
                     UnrecoverableException unrecoverableException = new UnrecoverableException(ex);
                     throw unrecoverableException;

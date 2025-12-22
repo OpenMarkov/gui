@@ -7,9 +7,11 @@
 
 package org.openmarkov.gui.menutoolbar.menu;
 
+import com.google.gson.reflect.TypeToken;
 import org.openmarkov.gui.component.LastRecentFilesMenuItem;
 import org.openmarkov.gui.configuration.LastOpenFiles;
 import org.openmarkov.gui.configuration.LocalPreferences;
+import org.openmarkov.gui.dialog.common.RequestDialogger;
 import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.localize.LocalizedCheckBoxMenuItem;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
@@ -20,6 +22,7 @@ import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasicImpl;
 import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.toolplugin.ToolPluginManager;
+import org.openmarkov.gui.window.MainPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -170,6 +173,10 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
      */
     private JMenu inferenceMenu = null;
     /**
+     * Object that represents the menu 'View'.
+     */
+    private JMenu viewMenu;
+    /**
      * Object that represents the item 'Inference - Switch to Edition mode'.
      */
     private JMenuItem switchWorkingMode = null;
@@ -270,6 +277,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
      */
     private JMenuItem helpOpenShortcutsMenuItem = null;
     
+    private final MainPanel mainPanel;
     /**
      * Object that listen to the user's actions.
      */
@@ -283,12 +291,17 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     // private HashMap<JComponent, String> dynamicActions = new
     // HashMap<JComponent, String>();
     
+    private static final double UI_SCALE_MAX = 5.0;
+    private static final double UI_SCALE_MIN = 0.5;
+    
     /**
      * Creates a new instance.
      *
+     * @param mainPanel
      * @param newListener listener of the user's actions.
      */
-    public MainMenu(ActionListener newListener) {
+    public MainMenu(MainPanel mainPanel, ActionListener newListener) {
+        this.mainPanel = mainPanel;
         listener = newListener;
         reInitialize();
     }
@@ -301,9 +314,90 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         add(getFileMenu());
         add(getEditMenu());
         add(getInferenceMenu());
+        add(getViewMenu());
         add(getToolsMenu());
         // add(getOptionsMenu()); //FOR FUTURE USE
         add(getHelpingMenu());
+    }
+    
+    
+    /**
+     * This method initializes viewMenu.
+     *
+     * @return a new menu 'View'.
+     */
+    private JMenu getViewMenu() {
+        
+        if (viewMenu == null) {
+            viewMenu = new JMenu();
+            viewMenu.setName(MenuItemNames.VIEW_MENU);
+            viewMenu.setText(MenuLocalizer.getLabel(MenuItemNames.VIEW_MENU));
+            viewMenu.setMnemonic(MenuLocalizer.getMnemonic(MenuItemNames.VIEW_MENU).charAt(0));
+            LocalizedMenuItem goNextTab = new LocalizedMenuItem(MenuItemNames.VIEW_GO_NEXT_TAB, null,
+                                                                null, KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+            viewMenu.add(goNextTab);
+            goNextTab.addActionListener(e -> {
+                var networksTabPanel = this.mainPanel.getNetworksTabPanel();
+                if (networksTabPanel.getTabCount() <= 1) {
+                    return;
+                }
+                int nextIndex = networksTabPanel.getSelectedIndex() + 1;
+                if (nextIndex >= networksTabPanel.getTabCount()) {
+                    nextIndex = 0;
+                }
+                networksTabPanel.setSelectedIndex(nextIndex);
+            });
+            
+            LocalizedMenuItem goPreviousTab = new LocalizedMenuItem(MenuItemNames.VIEW_GO_PREVIOUS_TAB, null,
+                                                                    null, KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+            viewMenu.add(goPreviousTab);
+            goPreviousTab.addActionListener(e -> {
+                var networksTabPanel = this.mainPanel.getNetworksTabPanel();
+                if (networksTabPanel.getTabCount() <= 1) {
+                    return;
+                }
+                int previous = networksTabPanel.getSelectedIndex() - 1;
+                if (previous == -1) {
+                    previous = networksTabPanel.getTabCount() - 1;
+                }
+                networksTabPanel.setSelectedIndex(previous);
+            });
+            
+            LocalizedMenuItem changeScale = new LocalizedMenuItem(MenuItemNames.VIEW_CHANGE_SCALE, null);
+            viewMenu.add(changeScale);
+            changeScale.addActionListener(e -> {
+                RequestDialogger
+                        .of(this.mainPanel.mainGUI, new JTextField(LocalPreferences.UI_SCALE.get().toString()))
+                        .validating((textField, validator) -> {
+                            if (!validator.addErrorWhen(!stringIsDouble(textField.getText()), "The value must be a number")) {
+                                validator.addErrorWhen(Double.parseDouble(textField.getText()) > UI_SCALE_MAX, "Scale should not be greater than " + UI_SCALE_MAX);
+                                validator.addErrorWhen(Double.parseDouble(textField.getText()) < UI_SCALE_MIN, "Scale should not be lower than " + UI_SCALE_MIN);
+                            }
+                        })
+                        .mapInputAs(new TypeToken<>() {
+                        }, textField -> Double.parseDouble(textField.getText()))
+                        .withTitle("Change scale")
+                        .onOk(num -> {
+                            LocalPreferences.UI_SCALE.set(num);
+                            JOptionPane.showMessageDialog(this.mainPanel.mainGUI, "Scale changed to " + num + "." + System.lineSeparator() + "Your changes will be applied in the next reset.",
+                                                          "Changes accepted", JOptionPane.INFORMATION_MESSAGE, IconBind.OPENMARKOV_LOGO_16.icon());
+                        })
+                        .request();
+            });
+        }
+        
+        return viewMenu;
+        
+    }
+    
+    
+    private static boolean stringIsDouble(String string) {
+        try {
+            Double.parseDouble(string);
+            return true;
+        } catch (RuntimeException ex) {
+            return false;
+        }
     }
     
     /**
@@ -1467,4 +1561,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         MenuToolBarBasicImpl.setText(component, text);
         
     }
+    
+    
 }

@@ -106,7 +106,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
      * This method configures the dialog box.
      */
     private void initialize() {
-        String title = stringDatabase.getString("NetworkPropertiesDialog.Title.Label");
+        String title = stringDatabase.getString("NetworkPropertiesDialog.Title");
         if (probNet != null) {
             title += ": " + probNet.getName();
         }
@@ -132,17 +132,17 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
         if (tabbedPane == null) {
             tabbedPane = new JTabbedPane();
             //tabbedPane.addTab("", null, getNetworkDefinitionPanel(), null);
-            tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.DefinitionTab.Label"), null, getNetworkDefinitionPanel(), null);
-            //tabbedPane.setTitleAt(0, stringDatabase.getString("NetworkPropertiesDialog.DefinitionTab.Label"));
-            tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.VariablesTab.Label"), null, getNetworkVariablesPanel(), null);
+            tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.DefinitionTab"), null, getNetworkDefinitionPanel(), null);
+            //tabbedPane.setTitleAt(0, stringDatabase.getString("NetworkPropertiesDialog.DefinitionTab));
+            tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.VariablesTab"), null, getNetworkVariablesPanel(), null);
             if (!newNetwork) {
-                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.DecisionCriteriaTab.Label"), null,
+                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.DecisionCriteriaTab"), null,
                                   getNetworkDecisionCriteriaPanel(), null);
-                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.AgentsTab.Label"), null,
+                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.AgentsTab"), null,
                                   getNetworkAgentsPanel(), null);
-                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.TemporalOptionsTab.Label"), null,
+                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.TemporalOptionsTab"), null,
                                   getNetworkTemporalOptionsPanel(), null);
-                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.OtherPropertiesTab.Label"), null,
+                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.OtherPropertiesTab"), null,
                                   getNetworkOtherPropertiesPanel(), null);
             }
             tabbedPane.setName("tabbedPane");

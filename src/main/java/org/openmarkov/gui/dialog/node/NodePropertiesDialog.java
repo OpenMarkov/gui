@@ -104,26 +104,26 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 		// set the nodeProperties variable in this dialog and panels
 		this.node = node;
 		// *******
-		setTitle(stringDatabase.getString("NodePropertiesDialog.Title.Label") + ": " + node.getName());
+        setTitle(stringDatabase.getString("NodePropertiesDialog.Title") + ": " + node.getName());
 		nodeDefinitionPanel.setNodeProperties(node);
 		// *******
 		if (node.getNodeType() == NodeType.CHANCE || node.getNodeType() == NodeType.DECISION) {
 			nodeDomainValuesTablePanel.setFieldsFromProperties(node);
 			if (node.getVariable().getVariableType() == VariableType.FINITE_STATES) {
 				// tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
-				// .getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
+                // .getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title)),
 				// true); // set enable the DiscreteValuesPanel
 				// changed by mpalacios
 				tabbedPane.setEnabledAt(tabbedPane
-								.indexOfTab(stringDatabase.getString("NodePropertiesDialog.DiscretizeValuesTab.Title.Label")),
+                                                .indexOfTab(stringDatabase.getString("NodePropertiesDialog.DiscretizeValuesTab.Title")),
 						true); // set disable the
 				// DiscreteValuesPanel
 			} else if (node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
 				// tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
-				// .getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
+                // .getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title)),
 				// false); // set disable the DiscreteValuesPanel
 				tabbedPane.setEnabledAt(tabbedPane
-								.indexOfTab(stringDatabase.getString("NodePropertiesDialog.DiscretizeValuesTab.Title.Label")),
+                                                .indexOfTab(stringDatabase.getString("NodePropertiesDialog.DiscretizeValuesTab.Title")),
 						true); // set enable the
 				// DiscreteValuesPanel
 			}
@@ -139,11 +139,11 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 			/*
 			 * tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
 			 * .
-			 * getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
+             * getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title)),
 			 * false); // set disable the DiscreteValuesPanel
 			 * tabbedPane.setEnabledAt
 			 * (tabbedPane.indexOfTab(dialogStringResource
-			 * .getValuesInAString("NodePropertiesDialog.DiscretizeValuesTab.Title.Label"
+             * .getValuesInAString("NodePropertiesDialog.DiscretizeValuesTab.Title
 			 * )), false);
 			 */// set disable the DiscreteValuesPanel
 		}
@@ -153,7 +153,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 		/*
 		 * nodeProbsValuesTablePanel.setNodeProperties(node); String
 		 * auxTitle = dialogStringResource .getValuesInAString(
-		 * "NodePropertiesDialog.ProbTablesTab.Title.Label"); int auxTabPosition
+         * "NodePropertiesDialog.ProbTablesTab.Title); int auxTabPosition
 		 * = tabbedPane.indexOfTab(auxTitle); if (node.getNodeType() ==
 		 * NodeType.CHANCE ) { auxTitle = dialogStringResource .getValuesInAString(
 		 * "NodePropertiesDialog.ProbTablesTab.Title.Label.NodeChance"); } else
@@ -182,11 +182,14 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 	 * This method configures the dialog box.
 	 */
 	protected void initialize() {
-		setTitle(stringDatabase.getString("NodePropertiesDialog.Title.Label") + ": " + (
+        setTitle(stringDatabase.getString("NodePropertiesDialog.Title") + ": " + (
 				node == null ? "" : node.getName()
 		));
 		getComponentsPanel().setName("NodePropertiesDialogComponentPane");
 		configureComponentsPanel();
+        if (this.newNode) {
+            getNodeDefinitionPanel().getJTextFieldNodeName().requestFocus();
+        }
 		pack();
 	}
 
@@ -207,24 +210,24 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 		if (tabbedPane == null) {
 			tabbedPane = new JTabbedPane();
 			tabbedPane.setName("NodePropertiesDialogTabbedPane");
-			tabbedPane.addTab(stringDatabase.getString("NodePropertiesDialog.DefinitionTab.Title.Label"), null,
+            tabbedPane.addTab(stringDatabase.getString("NodePropertiesDialog.DefinitionTab.Title"), null,
 					getNodeDefinitionPanel(), null);
 			// changed by mpalacios
 			// tabbedPane
 			// .addTab(
 			// dialogStringResource
-			// .getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title.Label"),
+            // .getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title),
 			// null, getNodeDiscreteValuesTablePanel(), null);
-			tabbedPane.addTab(stringDatabase.getString("NodePropertiesDialog.DiscretizeValuesTab.Title.Label"), null,
+            tabbedPane.addTab(stringDatabase.getString("NodePropertiesDialog.DiscretizeValuesTab.Title"), null,
 					getNodeDomainValuesTablePanel(), null);
-			tabbedPane.addTab(stringDatabase.getString("NodePropertiesDialog.ParentsTab.Title.Label"), null,
+            tabbedPane.addTab(stringDatabase.getString("NodePropertiesDialog.ParentsTab.Title"), null,
 					getNodeParentsPanel(), null);
 			/*
 			 * tabbedPane .addTab( dialogStringResource
-			 * .getValuesInAString("NodePropertiesDialog.ProbTablesTab.Title.Label"),
+             * .getValuesInAString("NodePropertiesDialog.ProbTablesTab.Title),
 			 * null, getNodeProbsTablePanel(), null);
 			 */
-			tabbedPane.addTab(stringDatabase.getString("NodePropertiesDialog.OtherPropsTab.Title.Label"), null,
+            tabbedPane.addTab(stringDatabase.getString("NodePropertiesDialog.OtherPropsTab.Title"), null,
 					getNodeOtherPropsTablePanel(), null);
 		}
 		return tabbedPane;
@@ -242,7 +245,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 	 *
 	 * @return a new node definition panel.
 	 */
-	protected JPanel getNodeDefinitionPanel() {
+    protected NodeDefinitionPanel getNodeDefinitionPanel() {
 		if (nodeDefinitionPanel == null) {
 			nodeDefinitionPanel = new NodeDefinitionPanel(node);
 			nodeDefinitionPanel.setName("nodeDefinitionPanel");

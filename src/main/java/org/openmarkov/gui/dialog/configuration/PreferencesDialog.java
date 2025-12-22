@@ -72,7 +72,6 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     JButton jButtonExport = null;
     JButton jButtonImport = null;
     JButton jButtonReset = null;
-    private Logger logger;
     
     /**
      * Creates PreferencesEditor dialog that show all System and User
@@ -138,7 +137,6 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         createSplitPane();
         createButtonPanel();
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        this.logger = LogManager.getLogger(PreferencesDialog.class);
     }
     
     /**

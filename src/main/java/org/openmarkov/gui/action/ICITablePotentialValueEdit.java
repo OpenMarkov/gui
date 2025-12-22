@@ -21,10 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @SuppressWarnings("serial") public class ICITablePotentialValueEdit extends PNEdit {
-    /**
-     *
-     */
-    protected Logger logger;
+    
     /**
      * The column of the table where is the potential
      */

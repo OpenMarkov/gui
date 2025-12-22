@@ -14,9 +14,6 @@ import javax.swing.*;
 @SuppressWarnings("serial") public class LocalizedMenuItem extends JMenuItem {
     
     public LocalizedMenuItem(String name, String actionCommand) {
-        String iconName = null;
-        KeyStroke keyStroke = null;
-        
         this.setName(name);
         this.setText(MenuLocalizer.getLabel(name));
         this.setMnemonic(MenuLocalizer.getMnemonic(name).charAt(0));
@@ -24,10 +21,7 @@ import javax.swing.*;
 	}
     
     public LocalizedMenuItem(String name, String actionCommand, IconBind iconBind, KeyStroke keyStroke) {
-        this.setName(name);
-        this.setText(MenuLocalizer.getLabel(name));
-        this.setMnemonic(MenuLocalizer.getMnemonic(name).charAt(0));
-        this.setActionCommand(actionCommand);
+        this(name, actionCommand);
         if (iconBind != null) {
             this.setIcon(iconBind.icon());
         }

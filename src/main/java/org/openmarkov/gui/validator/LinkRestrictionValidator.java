@@ -33,9 +33,9 @@ public class LinkRestrictionValidator {
 	 *         link.
 	 */
 	public static boolean validate(Link<Node> link) {
-
-		Node node1 = link.getNode1();
-		Node node2 = link.getNode2();
+        
+        Node node1 = link.getFrom();
+        Node node2 = link.getTo();
 		ProbNet net = node1.getProbNet();
         if (!net.hasConstraintOfClass(NoLinkRestriction.class)) {
 			if ((node1.getNodeType() == NodeType.CHANCE || node1.getNodeType() == NodeType.DECISION) && (

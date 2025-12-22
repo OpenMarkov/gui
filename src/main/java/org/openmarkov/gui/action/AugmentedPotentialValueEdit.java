@@ -7,17 +7,12 @@
 
 package org.openmarkov.gui.action;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.AugmentedTable;
 import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
@@ -27,7 +22,7 @@ import java.util.List;
  * @author carmenyago
  * @version 1.1 22/05/2017 Changed into AugmentedPotentialValueEdit: now is the edit for all the AugmentedPotentials
  */
-@SuppressWarnings("serial") public class AugmentedPotentialValueEdit extends PNEdit {
+@SuppressWarnings("serial") public class AugmentedPotentialValueEdit extends PotentialChangeEdit {
     /**
      * The column of the table where is the potential
      */
@@ -45,15 +40,7 @@ import java.util.List;
      * Index of the value selected
      */
     private int indexSelected;
-    /**
-     * The new potential
-     */
-    private Potential oldPotential;
-    
-    /**
-     * The new potential
-     */
-    private Potential newPotential;
+
     
     /**
      * The AugmentedTable potential
@@ -85,10 +72,6 @@ import java.util.List;
     private String[] newAugmentedValues;
     
     /**
-     * Logger
-     */
-    private Logger logger;
-    /**
      * Node
      */
     private Node node;
@@ -104,26 +87,20 @@ import java.util.List;
      * @param newValue             the new value
      * @param col                  the column in the edited table
      * @param row                  the row in the edited table
-     * @param priorityList         the priority lists for potentials update.
-     * @param notEditablePositions two dimensional array with the information about editable
-     *                             positions.
      */
-    public AugmentedPotentialValueEdit(Node node, String newValue, int row, int col, List<Integer> priorityList,
-                                       Object[][] notEditablePositions) {
-        super(node.getProbNet());
-        logger = LogManager.getLogger(AugmentedPotentialValueEdit.class.getName());
+    public AugmentedPotentialValueEdit(Node node, String newValue, int row, int col) {
+        super(node, null, null);
         boolean isAugmentedTablePotential = false;
         
         this.node = node;
         oldPotential = node.getPotentials().get(0);
-        if (oldPotential instanceof AugmentedTablePotential) {
-            oldAugmentedTablePotential = (AugmentedTablePotential) oldPotential;
+        if (oldPotential instanceof AugmentedTablePotential oldAugmentedPotential) {
+            oldAugmentedTablePotential = oldAugmentedPotential;
             newAugmentedTablePotential = new AugmentedTablePotential(oldAugmentedTablePotential);
             newPotential = newAugmentedTablePotential;
             newAugmentedTable = newAugmentedTablePotential.getAugmentedTable();
             newAugmentedValues = newAugmentedTable.getFunctionValues();
             isAugmentedTablePotential = true;
-            
         } else {
             oldUnivariateDistrPotential = (UnivariateDistrPotential) oldPotential;
             newUnivariateDistrPotential = new UnivariateDistrPotential(oldUnivariateDistrPotential);
@@ -158,8 +135,8 @@ import java.util.List;
      * @see org.openmarkov.core.model.network.potential.UnivariateDistrPotential
      */
     public AugmentedPotentialValueEdit(Node node, String distributionName) {
-        super(node.getProbNet());
-
+        super(node, null, null);
+        
         this.node = node;
         //The old univariateDistrPotential
         oldPotential = node.getPotentials().get(0);
@@ -176,31 +153,6 @@ import java.util.List;
         this.indexSelected = -1;
     }
     
-    /*
-     *
-     */
-    @Override protected void doEdit() throws DoEditException {
-        PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(node, oldPotential, newPotential);
-        changePotentialEdit.executeEdit();
-    }
-    
-    /**
-     * Gets the table-potential of the node
-     *
-     * @return variable1 {@code Variable}
-     */
-    public Potential getPotential() {
-        return newPotential;
-    }
-    
-    /**
-     * Gets the priority list
-     *
-     * @return the priority list
-     */
-    public List<Integer> getPriorityList() {
-        return priorityList;
-    }
     
     /**
      * Gets the row position associated to value edited if priorityList exists

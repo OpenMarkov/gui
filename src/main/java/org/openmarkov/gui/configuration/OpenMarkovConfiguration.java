@@ -34,18 +34,15 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
     private static final String CONFIGURATION_FILE_NAME = "OpenMarkov.conf";
 
 	private HashMap<String, Configuration> configurations;
-
-	private Logger logger;
-
-	// Constructor
+    
+    // Constructor
 
 	/**
 	 * Singleton pattern (private constructor).<p>
 	 * Reads configuration from disk or generates default configuration.
 	 */
 	private OpenMarkovConfiguration() {
-		this.logger = LogManager.getLogger(OpenMarkovConfiguration.class);
-		readConfiguration();
+        readConfiguration();
 	}
 
 	// Methods

@@ -3,28 +3,20 @@
     <Languages>
         <Spanish>
             <ShortName>
-                <Text>
-                    <Label value="es"/>
-                </Text>
+                <Text value="es"/>
             </ShortName>
             <LongName>
-                <Text>
-                    <Label value="Español"/>
-                </Text>
+                <Text value="Español"/>
             </LongName>
             <flag value=""/>
         </Spanish>
         <English>
             <LongName>
-                <Text>
-                    <Label value="Inglés"/>
-                </Text>
+                <Text value="Inglés"/>
             </LongName>
             <flag value=""/>
             <ShortName>
-                <Text>
-                    <Label value="en"/>
-                </Text>
+                <Text value="en"/>
             </ShortName>
         </English>
     </Languages>
@@ -32,4 +24,3 @@
         <Text value="Español"/>
     </BUNDLEFILE>
 </properties>
-

@@ -36,7 +36,7 @@ import java.text.MessageFormat;
 	public LinkRestrictionEditDialog(Window owner, Link<Node> link) {
 		super(owner);
 		this.link = link;
-		link.getNode1().getProbNet().getPNESupport().openParenthesis();
+        link.getFrom().getProbNet().getPNESupport().openParenthesis();
 		initialize();
 		setLocationRelativeTo(owner);
 		setMinimumSize(new Dimension(750, 450));
@@ -47,13 +47,13 @@ import java.text.MessageFormat;
 	 * This method configures the dialog box.
 	 */
 	private void initialize() {
-
-		Node node1 = link.getNode1();
-		Node node2 = link.getNode2();
+        
+        Node node1 = link.getFrom();
+        Node node2 = link.getTo();
 		String title = "";
 		if (link != null) {
 			MessageFormat messageForm = new MessageFormat(
-					StringDatabase.getUniqueInstance().getString("LinkRestrictionDialog.Title.Label"));
+                    StringDatabase.getUniqueInstance().getString("LinkRestrictionDialog.Title"));
 			Object[] labelArgs = new Object[] { node1.getName(), node2.getName() };
 			title = messageForm.format(labelArgs);
 		}
@@ -98,13 +98,13 @@ import java.text.MessageFormat;
 	@Override protected boolean doOkClickBeforeHide() {
 
 		getLinkRestrictionPanel().close();
-		link.getNode1().getProbNet().getPNESupport().closeParenthesis();
+        link.getFrom().getProbNet().getPNESupport().closeParenthesis();
 		return true;
 	}
 
 	@Override protected void doCancelClickBeforeHide() {
-
-		link.getNode1().getProbNet().getPNESupport().closeParenthesis();
+        
+        link.getFrom().getProbNet().getPNESupport().closeParenthesis();
 
 	}
 

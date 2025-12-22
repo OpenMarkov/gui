@@ -52,7 +52,7 @@ import java.awt.*;
 		 * messageStringResource =
 		 * StringResourceLoader.getUniqueInstance().getBundleMessages();
 		 * setTitle(dialogStringResource
-		 * .getValuesInAString("NodePotentialDialog.Title.Label"));
+         * .getValuesInAString("NodePotentialDialog.Title));
 		 */
 		// getContentPane().setLayout (new BoxLayout(getContentPane(),
 		// BoxLayout.Y_AXIS));

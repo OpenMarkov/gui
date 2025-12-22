@@ -65,7 +65,7 @@ import java.util.List;
      */
     public RevelationArcPanel(Link<Node> link) {
         this.link = link;
-        this.variableType = link.getNode1().getVariable().getVariableType();
+        this.variableType = link.getFrom().getVariable().getVariableType();
         initialize();
     }
     
@@ -92,8 +92,8 @@ import java.util.List;
             jLabelValuesPanel = new JLabel();
             jLabelValuesPanel.setName("jLabelValuesPanel");
             jLabelValuesPanel.setText("a Label");
-            Node node1 = link.getNode1();
-            Node node2 = link.getNode2();
+            Node node1 = link.getFrom();
+            Node node2 = link.getTo();
             MessageFormat messageForm = new MessageFormat(
                     stringDatabase.getString("RevelationArcPanel.jLabelValuesPanel.Text"));
             Object[] labelArgs = new Object[]{node1.getName(), node2.getName()};
@@ -165,7 +165,7 @@ import java.util.List;
     }
     
     protected static Object[][] convertStringsToTableDiscreteFormat(Link<Node> link) {
-        Node node = link.getNode1();
+        Node node = link.getFrom();
         State[] values = node.getVariable().getStates();
         List<State> revealingStates = link.getRevealingStates();
         int i;

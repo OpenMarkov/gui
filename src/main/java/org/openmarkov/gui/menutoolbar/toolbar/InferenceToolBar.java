@@ -106,7 +106,7 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
     private JLabel getExpansionThresholdLabel() {
         if (expansionThreshold == null) {
             expansionThreshold = new JLabel();
-            expansionThreshold.setText("  " + stringDatabase.getString("ExpansionThreshold.Label") + ": ");
+            expansionThreshold.setText("  " + stringDatabase.getString("ExpansionThreshold") + ": ");
         }
         return expansionThreshold;
     }
@@ -194,7 +194,7 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
             currentEvidenceCaseName.setFont(font);
             currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_0_COLOR);
             currentEvidenceCaseName.setForeground(Color.WHITE);
-            currentEvidenceCaseName.setText("   " + stringDatabase.getString("CaseNumber.Label") + " 0   ");
+            currentEvidenceCaseName.setText("   " + stringDatabase.getString("CaseNumber") + " 0   ");
             currentEvidenceCaseName.setMaximumSize(currentEvidenceCaseName.getPreferredSize());
             currentEvidenceCaseName.setHorizontalAlignment(SwingConstants.CENTER);
             currentEvidenceCaseName.setEditable(false);
@@ -211,9 +211,9 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
     public void setCurrentEvidenceCaseName(int currentCase) {
         if (currentCase < 10) {
             currentEvidenceCaseName
-                    .setText("   " + stringDatabase.getString("CaseNumber.Label") + " " + currentCase + "   ");
+                    .setText("   " + stringDatabase.getString("CaseNumber") + " " + currentCase + "   ");
         } else {
-            currentEvidenceCaseName.setText(stringDatabase.getString("CaseNumber.Label") + " " + currentCase);
+            currentEvidenceCaseName.setText(stringDatabase.getString("CaseNumber") + " " + currentCase);
         }
         if (currentCase % 5 == 0) {
             currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_0_COLOR);

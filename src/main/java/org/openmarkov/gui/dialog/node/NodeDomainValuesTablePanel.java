@@ -79,10 +79,6 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * panel, buttonGroup and radioButtons to define monotony in the panel
      */
     private JPanel jPanelNodeType;
-    /**
-     * Logger
-     */
-    private Logger logger;
     private JLabel jLabelNodeVariableType;
     // private PrefixedKeyTablePanel nodeDiscreteStatesTablePanel;
     private ButtonGroup buttonGroup = new ButtonGroup();
@@ -162,7 +158,6 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         setName("NodeDomainValuesTablePanel");
         this.newNode = newNode;
         this.listener = new NodeDomainValuesTablePanelListener(this);
-        this.logger = LogManager.getLogger(NodeDomainValuesTablePanel.class);
     }
     
     /**

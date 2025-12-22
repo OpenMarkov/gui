@@ -231,45 +231,47 @@ public class NodeDefinitionPanel extends JPanel
         GroupLayout groupLayout = new GroupLayout(this);
         groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
                 groupLayout.createSequentialGroup().addContainerGap().addGroup(
-                        groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup()
-                                                                                               .addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-                                                                                                                    .addGroup(
-                                                                                                                            groupLayout.createSequentialGroup()
-                                                                                                                                       .addComponent(getJLabelNodeName())
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, 203,
-                                                                                                                                                     GroupLayout.PREFERRED_SIZE)
-                                                                                                                                       .addGap(18)
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getJLabelTimeSlice())
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getJComboBoxTimeSlice(), GroupLayout.PREFERRED_SIZE, 85,
-                                                                                                                                                     GroupLayout.PREFERRED_SIZE))
-                                                                                                                    .addGroup(
-                                                                                                                            groupLayout.createSequentialGroup()
-                                                                                                                                       .addComponent(getJLabelNodePurpose())
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getJComboBoxNodePurpose(), GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                     203, GroupLayout.PREFERRED_SIZE)
-                                                                                                                                       .addGap(18)
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getJLabelNodeRelevance())
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getJComboBoxNodeRelevance(), GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                     85, GroupLayout.PREFERRED_SIZE))
-                                                                                                                    .addGroup(
-                                                                                                                            groupLayout.createSequentialGroup()
-                                                                                                                                       .addComponent(getAgentsOrDecisionCriteriaOrObservedLabel())
-                                                                                                                                       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                                       .addComponent(getAgentsOrDecisionCriteriaOrObserved(),
-                                                                                                                                                     GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-                                                                                                                    
-                                                                                                                    )
-                                                                                                                    .addGroup(groupLayout.createSequentialGroup()
-                                                                                                                                         .addComponent(getJTextAreaLabelNodeDefinitionComment())
-                                                                                                                                         .addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(), 30, 560,
-                                                                                                                                                       Short.MAX_VALUE)))
-                                                                                               .addContainerGap()))));
+                        groupLayout.createParallelGroup(Alignment.LEADING)
+                                   .addGroup(
+                                           groupLayout.createSequentialGroup()
+                                                      .addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+                                                                           .addGroup(
+                                                                                   groupLayout.createSequentialGroup()
+                                                                                              .addComponent(getJLabelNodeName())
+                                                                                              .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                              .addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, 203,
+                                                                                                            GroupLayout.PREFERRED_SIZE)
+                                                                                              .addGap(18)
+                                                                                              .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                              .addComponent(getJLabelTimeSlice())
+                                                                                              .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                              .addComponent(getJComboBoxTimeSlice(), GroupLayout.PREFERRED_SIZE, 85,
+                                                                                                            GroupLayout.PREFERRED_SIZE))
+                                                                           .addGroup(
+                                                                                   groupLayout.createSequentialGroup()
+                                                                                              .addComponent(getJLabelNodePurpose())
+                                                                                              .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                              .addComponent(getJComboBoxNodePurpose(), GroupLayout.PREFERRED_SIZE,
+                                                                                                            203, GroupLayout.PREFERRED_SIZE)
+                                                                                              .addGap(18)
+                                                                                              .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                              .addComponent(getJLabelNodeRelevance())
+                                                                                              .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                              .addComponent(getJComboBoxNodeRelevance(), GroupLayout.PREFERRED_SIZE,
+                                                                                                            85, GroupLayout.PREFERRED_SIZE))
+                                                                           .addGroup(
+                                                                                   groupLayout.createSequentialGroup()
+                                                                                              .addComponent(getAgentsOrDecisionCriteriaOrObservedLabel())
+                                                                                              .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                              .addComponent(getAgentsOrDecisionCriteriaOrObserved(),
+                                                                                                            GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+                                                                           
+                                                                           )
+                                                                           .addGroup(groupLayout.createSequentialGroup()
+                                                                                                .addComponent(getJTextAreaLabelNodeDefinitionComment())
+                                                                                                .addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(), 30, 560,
+                                                                                                              Short.MAX_VALUE)))
+                                                      .addContainerGap()))));
         groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
                 groupLayout.createSequentialGroup()
                            .addContainerGap()
@@ -858,8 +860,7 @@ public class NodeDefinitionPanel extends JPanel
         NodeNameEdit nodeNameEdit = new NodeNameEdit(node, this.jTextFieldNodeName.getText());
         try {
             nodeNameEdit.executeEdit();
-        }
-        catch (DoEditException e1) {
+        } catch (DoEditException e1) {
             throw new UnrecoverableException(e1);
         }
     }
@@ -916,7 +917,8 @@ public class NodeDefinitionPanel extends JPanel
      */
     public boolean checkName() {
         String name = jTextFieldNodeName.getText();
-        boolean result = name != null && !name.isEmpty() && !(!node.getBaseName().equals(name) && Util.existNode(node.getProbNet(), name));
+        boolean result = name != null && !name.isEmpty() && !(!node.getBaseName()
+                                                                   .equals(name) && Util.existNode(node.getProbNet(), name));
         if (!result) {
             jTextFieldNodeName.requestFocus();
         }
@@ -941,7 +943,7 @@ public class NodeDefinitionPanel extends JPanel
                 getCommentHTMLScrollPaneNodeDefinitionComment().getCommentText();
         
         NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(node, comment);
-            ProbNet probNet = node.getProbNet();
+        ProbNet probNet = node.getProbNet();
         nodeCommentEdit.executeEdit();
     }
     
@@ -950,7 +952,7 @@ public class NodeDefinitionPanel extends JPanel
      */
     public void alwaysObservedPropertyHasChanged() throws DoEditException {
         NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.node, this.jCheckboxAlwaysObserved.isSelected());
-            ProbNet probNet = node.getProbNet();
+        ProbNet probNet = node.getProbNet();
         edit.executeEdit();
     }
     

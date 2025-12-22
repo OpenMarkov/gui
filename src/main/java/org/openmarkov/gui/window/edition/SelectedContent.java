@@ -6,6 +6,7 @@
  */
 package org.openmarkov.gui.window.edition;
 
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 
@@ -16,7 +17,7 @@ import java.util.List;
  * @author ibermejo
  * @version 1.1 jrico: Turned into record.
  */
-public record SelectedContent(List<Node> nodes, List<Link<Node>> links) {
+public record SelectedContent(List<Node> nodes, List<Link<Node>> links) implements ClassLocalizable {
  
 	/**
 	 * Copy constructor for ClipboardContent.

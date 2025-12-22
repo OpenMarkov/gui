@@ -59,7 +59,7 @@ public class CursorLoader {
         Image image = tk.getImage(resource);
         if (image == null) {
             System.err.println(StringDatabase.getUniqueInstance()
-                                             .getFormattedString("CursorResourceNotExists.Text.Label", CURSORS_PATH + cursorName));
+                                             .getFormattedString("CursorResourceNotExists.Text", CURSORS_PATH + cursorName));
             return null;
         }
         return tk.createCustomCursor(image, new Point(0, 0), "");

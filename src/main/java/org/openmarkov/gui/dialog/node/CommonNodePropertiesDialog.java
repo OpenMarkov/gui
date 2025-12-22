@@ -37,7 +37,6 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog {
 	 * @param readOnly if true, values inside the dialog will not be editable
 	 */
 	public CommonNodePropertiesDialog(Window owner, Node node, boolean newNode, boolean readOnly) {
-
 		super(owner, node, newNode, readOnly);
 		node.getProbNet().getPNESupport().openParenthesis();
 		initialize();
@@ -54,7 +53,6 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog {
 	 *                false, an existing network is being modified.
 	 */
 	public CommonNodePropertiesDialog(Window owner, Node node, boolean newNode) {
-
 		this(owner, node, newNode, false);
 	}
 

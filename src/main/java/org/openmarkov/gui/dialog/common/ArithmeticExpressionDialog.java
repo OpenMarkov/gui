@@ -108,7 +108,7 @@ import java.util.Map;
                 ed1.setCaretPosition(0);
                 ed1.setEditable(false);
                 JScrollPane scrollPane = new JScrollPane(ed1);
-                JDialog helpDialog = new JDialog(null, stringDatabase.getString("Help.Label"),
+                JDialog helpDialog = new JDialog(null, stringDatabase.getString("Help"),
                                                  ModalityType.APPLICATION_MODAL);
                 helpDialog.add(scrollPane);
                 helpDialog.setSize(600, 600);
@@ -129,7 +129,7 @@ import java.util.Map;
         expressionPanel.setLayout(new BorderLayout());
         JPanel helpPanel = new JPanel();
         helpPanel.setLayout(new BorderLayout());
-        helpButton = new JButton(stringDatabase.getString("Help.Label"));
+        helpButton = new JButton(stringDatabase.getString("Help"));
         helpButton.setMaximumSize(new Dimension(40, 20));
         helpPanel.add(helpButton, BorderLayout.LINE_END);
         expressionPanel.add(helpPanel, BorderLayout.NORTH);
@@ -144,7 +144,7 @@ import java.util.Map;
         JScrollPane variableListScroller = new JScrollPane(variableList);
         variableListScroller.setPreferredSize(new Dimension(175, 150));
         JLabel variableListLabel = new JLabel(
-                stringDatabase.getString("ArithmeticExpressionEvaluator.Variables.Label"));
+                stringDatabase.getString("ArithmeticExpressionEvaluator.Variables"));
         JPanel variableListPanel = new JPanel();
         variableListPanel.setLayout(new BorderLayout());
         variableListPanel.add(variableListLabel, BorderLayout.NORTH);
@@ -154,7 +154,7 @@ import java.util.Map;
         JScrollPane functionListScroller = new JScrollPane(functionList);
         functionListScroller.setPreferredSize(new Dimension(175, 150));
         JLabel functionListLabel = new JLabel(
-                stringDatabase.getString("ArithmeticExpressionEvaluator.Functions.Label"));
+                stringDatabase.getString("ArithmeticExpressionEvaluator.Functions"));
         JPanel functionListPanel = new JPanel();
         functionListPanel.setLayout(new BorderLayout());
         functionListPanel.add(functionListLabel, BorderLayout.NORTH);

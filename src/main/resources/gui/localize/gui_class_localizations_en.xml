@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassLocalizations>
+    <Localization class="org.openmarkov.gui.action.AddFindingEdit"
+                  value="Add {finding} on {evidenceCase} on {visualNode}. Previous finding was {previousFinding}"/>
+    <Localization class="org.openmarkov.gui.action.AugmentedPotentialValueEdit"
+                  value="Augmented change potential for {node} from {oldPotential} to {newPotential}"/>
+    <Localization class="org.openmarkov.gui.action.ICITablePotentialValueEdit"
+                  value="ICI Table potential value edit"/>
+    <Localization class="org.openmarkov.gui.action.ImposePolicyEdit"
+                  value="Impose policy {newPolicy} on {visualDecisionNode}. Last policy was {lastPolicy}"/>
+    <Localization class="org.openmarkov.gui.action.LinkRestrictionPotentialValueEdit"
+                  value="Restrict link {link}"/>
+    <Localization class="org.openmarkov.gui.action.MoveNodeEdit"
+                  value="Move nodes {namesNode} from {lastPositions} to {newPositions}"/>
+    <Localization class="org.openmarkov.gui.action.NetworkAgentEdit"
+                  value="Edit agent {agentName} with action {stateAction}"/>
+    <Localization class="org.openmarkov.gui.action.NodeAgentEdit"
+                  value="Replace agent for {node} from {currentAgent} to {newAgent}"/>
+    <Localization class="org.openmarkov.gui.action.NodeDecisionCriteriaEdit"
+                  value="Replace decision criteria for {node} from {currentDecisionCriteria} to {newDecisionCriteria}"/>
+    <Localization class="org.openmarkov.gui.action.NodePartitionedIntervalEdit"
+                  value="Edit partitioned interval of node {node} with action {stateAction}"/>
+    <Localization class="org.openmarkov.gui.action.OtherPropertyEdit"
+                  value="Set property {otherPropertyAction} of node {node} to data: {newData}"/>
+    <Localization class="org.openmarkov.gui.action.PartitionedIntervalEdit"
+                  value="Replace partitioned interval of node {node} from {currentPartitionedInterval} to {newPartitionedInterval}"/>
+    <Localization class="org.openmarkov.gui.action.PasteEdit"
+                  value="Paste {clipboardContent}"/>
+    <Localization class="org.openmarkov.gui.action.PasteEdit$1"
+                  value="Paste finalizer"/>
+    <Localization class="org.openmarkov.gui.action.RemoveFindingEdit"
+                  value="Remove {finding} on {evidenceCase} on {visualNode}."/>
+    <Localization class="org.openmarkov.gui.action.RemoveLinkRestrictionEdit"
+                  value="Remove link restrictions of: {links}"/>
+    <Localization class="org.openmarkov.gui.action.RemoveSelectedEdit"
+                  value="Remove nodes: {nodesToRemove}\nRemove links: {linksToRemove};
+	private List<VisualLink> linksToRemove;"/>
+    <Localization class="org.openmarkov.gui.action.RevelationIntervalEdit"
+                  value="Edit revelation interval from link {link} with action {stateAction}"/>
+    <Localization class="org.openmarkov.gui.action.TablePotentialValueEdit"
+                  value="Change potential for {node} from {oldPotential} to {newPotential}"/>
+    <Localization class="org.openmarkov.gui.action.UnivariateDistrPotentialValueEdit"
+                  value="Change potential for {node} from {oldPotential} to {newPotential}"/>
     <Localization class="org.openmarkov.gui.exception.BinomialPotentialWrongValueException$NValuesIsWrong"
                   value="N value must be positive, but it was {nValue}."/>
     <Localization class="org.openmarkov.gui.exception.BinomialPotentialWrongValueException$ThetaValueIsWrong"

@@ -93,7 +93,7 @@ import java.util.EventObject;
         JPanel buttonsPanel = new JPanel();
         JButton jButtonClose = new JButton();
         jButtonClose.setName("jButtonClose");
-        jButtonClose.setText(stringDatabase.getString("Dialog.Close.Label"));
+        jButtonClose.setText(stringDatabase.getString("Dialog.Close"));
         jButtonClose.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
                 setVisible(false);

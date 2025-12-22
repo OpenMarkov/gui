@@ -51,7 +51,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 //		this.selectedNode = selectedNode;
 //		this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence.getFindings());;
 //
-//		this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + selectedNode.getProbNet()
+//		this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title) + selectedNode.getProbNet()
 //				.getName());
 //		getComponentsPanel().setLayout(new BoxLayout(getComponentsPanel(), BoxLayout.PAGE_AXIS));
 //		getComponentsPanel().add(getSlicesPanel());
@@ -102,7 +102,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
         setMinimumSize(new Dimension(300, 300));
         this.setResizable(true);
         this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence.getFindings());
-        this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + probNet
+        this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title") + probNet
                 .getName());
         getComponentsPanel().setLayout(new BoxLayout(getComponentsPanel(), BoxLayout.PAGE_AXIS));
         getComponentsPanel().add(getSlicesPanel());
@@ -116,7 +116,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
         JPanel slicesPanel = new JPanel();
         slicesPanel.add(getJLabelNumSlices());
         slicesPanel.add(getNumSlicesTextField());
-        slicesPanel.setBorder(new TitledBorder(stringDatabase.getString("Inference.TemporalOptions.Label")));
+        slicesPanel.setBorder(new TitledBorder(stringDatabase.getString("Inference.TemporalOptions")));
         slicesPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
         return slicesPanel;
     }

@@ -24,27 +24,12 @@ import java.util.List;
  * @version 1.0 21/12/10
  */
 public class MoveNodeEdit extends PNEdit {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 7578733825996342882L;
-    /**
-     * The nodes last positions before the action
-     */
-    private List<Point2D.Double> lastPositions = new ArrayList<Point2D.Double>();
-    /**
-     * The new positions of the nodes to move
-     */
-    private List<Point2D.Double> newPositions = new ArrayList<Point2D.Double>();
-    /**
-     * The node's name to move
-     */
-    private List<String> namesNode = new ArrayList<String>();
     
-    /**
-     * Logger
-     */
-    protected Logger logger;
+    private static final long serialVersionUID = 7578733825996342882L;
+    
+    private List<Point2D.Double> lastPositions = new ArrayList<Point2D.Double>();
+    private List<Point2D.Double> newPositions = new ArrayList<Point2D.Double>();
+    private List<String> namesNode = new ArrayList<String>();
     
     /**
      * Creates a new {@code MoveNodeEdit} with the nodes, and new X, Y

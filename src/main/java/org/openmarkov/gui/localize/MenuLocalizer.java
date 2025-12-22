@@ -16,10 +16,7 @@ import org.openmarkov.core.localize.StringDatabase;
  */
 public class MenuLocalizer {
 
-	/**
-	 * Suffix that has label string resources.
-	 */
-	private final static String LABEL_SUFFIX = ".Label";
+
 	/**
 	 * Suffix that has mnemonic string resources.
 	 */
@@ -30,7 +27,7 @@ public class MenuLocalizer {
 	}
 
 	public static String getLabel(String stringId) {
-        return StringDatabase.getUniqueInstance().getString(stringId + LABEL_SUFFIX);
+        return StringDatabase.getUniqueInstance().getString(stringId);
 	}
 
 	public static String getMnemonic(String stringId) {

@@ -160,13 +160,13 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	private PrefixedOtherPropertiesTablePanel getOtherPropertiesTablePanel() {
 		if (otherPropertiesTablePanel == null) {
             String[] columnNames = new String[]{stringDatabase.getString(
-					"NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn.Label"),
+                    "NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn"),
 					stringDatabase.getString(
-							"NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyNameColumn.Label"),
+                            "NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyNameColumn"),
 					stringDatabase.getString(
-							"NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyValueColumn.Label"),
+                            "NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyValueColumn"),
 					// dialogStringResource
-					// .getValuesInAString("NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyTypeColumn.Label")
+                    // .getValuesInAString("NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyTypeColumn)
 			};
 			// ,
 			otherPropertiesTablePanel = new PrefixedOtherPropertiesTablePanel(columnNames, new Object[][] {},

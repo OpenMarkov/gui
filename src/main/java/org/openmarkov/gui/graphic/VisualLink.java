@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.graphic;
 
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
@@ -20,7 +21,7 @@ import java.awt.*;
  * @author jmendoza
  * @version 1.0
  */
-public class VisualLink extends VisualArrow {
+public class VisualLink extends VisualArrow implements ClassLocalizable {
     
     /**
      * Color of the border when the node is alwaysObserved.
@@ -146,6 +147,10 @@ public class VisualLink extends VisualArrow {
         setEndPoint(destination.getCutPoint(line, g));
         
         super.paint(g);
+    }
+    
+    @Override public String toString() {
+        return this.localize();
     }
     
 }

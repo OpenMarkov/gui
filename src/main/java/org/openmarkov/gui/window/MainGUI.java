@@ -18,6 +18,7 @@ import org.openmarkov.gui.dialog.SplashScreenLoader;
 import org.openmarkov.gui.dialog.common.WindowDimensions;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
+import org.openmarkov.plugin.PluginSearch;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
@@ -54,6 +55,10 @@ import java.io.IOException;
         // TODO here will be the plug-in loaders in future
         setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
         StringDatabase.getUniqueInstance().getAllBundles();
+        // This forces static loading of every OpenMarkov's class. We might want to change into 'full' instead of 'init'
+        // to preload every class available.
+        PluginSearch.init().stream().forEach(ignored -> {
+        });
         splash.getSplash().setProgress("Loading interface", 75);
         Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
         setSize(screenPortionSize(screenInsets));

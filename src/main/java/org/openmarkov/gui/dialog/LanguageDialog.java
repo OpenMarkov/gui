@@ -53,9 +53,8 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 	 * to store temporally the old language to set
 	 */
 	private String oldLanguage;
-	private Logger logger;
-
-	/**
+    
+    /**
 	 * constructor on a parent JFrame
 	 *
 	 * @param parent
@@ -63,8 +62,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 	private LanguageDialog(JFrame parent) {
 		super(parent, "", true);
 		setName("LanguageDialog");
-		this.logger = LogManager.getLogger(LanguageDialog.class);
-		this.oldLanguage = stringDatabase.getLanguage();
+        this.oldLanguage = stringDatabase.getLanguage();
 		stringDatabase.addLocaleChangeListener(this);
 			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			initialize();

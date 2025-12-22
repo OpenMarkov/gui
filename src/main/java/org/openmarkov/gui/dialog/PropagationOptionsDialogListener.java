@@ -56,8 +56,8 @@ public class PropagationOptionsDialogListener implements ActionListener {
 		String command = actionEvent.getActionCommand();
 		String inferenceType = automaticPropagationOptionsDialog.getButtonGroup().getSelection().getActionCommand();
 		StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-		if (command.equals(stringDatabase.getString("OptionsInferenceDialog.jButtonOK.Label"))) {
-			if (inferenceType.equals(stringDatabase.getString("OptionsInferenceDialog.optionAuto.Label"))) {
+        if (command.equals(stringDatabase.getString("OptionsInferenceDialog.jButtonOK"))) {
+            if (inferenceType.equals(stringDatabase.getString("OptionsInferenceDialog.optionAuto"))) {
 				editorPanel.setAutomaticPropagation(true);
 				editorPanel.setPropagationActive(true);
                 if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
@@ -77,13 +77,13 @@ public class PropagationOptionsDialogListener implements ActionListener {
 					inferenceToolBar.setCurrentEvidenceCaseName(editorPanel.getCurrentCase());
 					editorPanel.updateNodesFindingState(editorPanel.getCurrentEvidenceCase());
 				}
-			} else if (inferenceType.equals(stringDatabase.getString("OptionsInferenceDialog.optionManual.Label"))) {
+            } else if (inferenceType.equals(stringDatabase.getString("OptionsInferenceDialog.optionManual"))) {
 				editorPanel.setAutomaticPropagation(false);
                 if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
 					inferenceToolBar.setCurrentEvidenceCaseName(editorPanel.getCurrentCase());
 				}
 			}
-		} else if (command.equals(stringDatabase.getString("OptionsInferenceDialog.jButtonCancel.Label"))) {
+        } else if (command.equals(stringDatabase.getString("OptionsInferenceDialog.jButtonCancel"))) {
 			// do nothing
 		}
 		automaticPropagationOptionsDialog.setVisible(false);

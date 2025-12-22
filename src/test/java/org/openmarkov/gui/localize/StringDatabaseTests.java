@@ -59,14 +59,14 @@ public class StringDatabaseTests {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringButtons() throws MissingResourceException {
-
-		getCorrectString(stringDatabase, "Add.Text.Label");
-		getCorrectString(stringDatabase, "Cancel.Text.Label");
-		getCorrectString(stringDatabase, "Clear.Text.Label");
-		getCorrectString(stringDatabase, "Copy.Text.Label");
-		getCorrectString(stringDatabase, "Delete.Text.Label");
-		getCorrectString(stringDatabase, "Down.Text.Label");
-		getCorrectString(stringDatabase, "Ok.Text.Label");
+        
+        getCorrectString(stringDatabase, "Add.Text");
+        getCorrectString(stringDatabase, "Cancel.Text");
+        getCorrectString(stringDatabase, "Clear.Text");
+        getCorrectString(stringDatabase, "Copy.Text");
+        getCorrectString(stringDatabase, "Delete.Text");
+        getCorrectString(stringDatabase, "Down.Text");
+        getCorrectString(stringDatabase, "Ok.Text");
 	}
 
 	/**
@@ -100,12 +100,12 @@ public class StringDatabaseTests {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringDialogs() throws MissingResourceException {
-		getCorrectString(stringDatabase, "Author.Text.Label");
+        getCorrectString(stringDatabase, "Author.Text");
 		getCorrectString(stringDatabase, "ChainGraph.Text.Mnemonic");
-		getCorrectString(stringDatabase, "Continuous.Text.Label");
-		getCorrectString(stringDatabase, "Defaults.Title.Label");
-		getCorrectString(stringDatabase, "Information.Title.Label");
-		getCorrectString(stringDatabase, "NetworkProperties.Title.Label");
+        getCorrectString(stringDatabase, "Continuous.Text");
+        getCorrectString(stringDatabase, "Defaults.Title");
+        getCorrectString(stringDatabase, "Information.Title");
+        getCorrectString(stringDatabase, "NetworkProperties.Title");
 		getCorrectString(stringDatabase, "Values.Text.Mnemonic");
 	}
 
@@ -141,14 +141,14 @@ public class StringDatabaseTests {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringMenus() throws MissingResourceException {
-
-		getCorrectString(stringDatabase, "Edit.ChanceCreation.Label");
-		getCorrectString(stringDatabase, "Edit.Copy.Label");
+        
+        getCorrectString(stringDatabase, "Edit.ChanceCreation");
+        getCorrectString(stringDatabase, "Edit.Copy");
 		getCorrectString(stringDatabase, "Edit.NodeProperties.Mnemonic");
 		getCorrectString(stringDatabase, "Edit.Paste.Mnemonic");
-		getCorrectString(stringDatabase, "File.Close.Label");
+        getCorrectString(stringDatabase, "File.Close");
 		getCorrectString(stringDatabase, "File.Mnemonic");
-		getCorrectString(stringDatabase, "View.Label");
+        getCorrectString(stringDatabase, "View");
 	}
 
 	/**
@@ -181,14 +181,14 @@ public class StringDatabaseTests {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringMessages() throws MissingResourceException {
-
-		getCorrectString(stringDatabase, "Action.MoveNodes.Label");
-		getCorrectString(stringDatabase, "ClipboardNotSet.Text.Label");
-		getCorrectString(stringDatabase, "EmptyState.Text.Label");
-		getCorrectString(stringDatabase, "IconificationVetoed.Text.Label");
-		getCorrectString(stringDatabase, "LoadingNetwork.Text.Label");
-		getCorrectString(stringDatabase, "NodeNotCreated.Text.Label");
-		getCorrectString(stringDatabase, "SelectionVetoed.Text.Label");
+        
+        getCorrectString(stringDatabase, "Action.MoveNodes");
+        getCorrectString(stringDatabase, "ClipboardNotSet.Text");
+        getCorrectString(stringDatabase, "EmptyState.Text");
+        getCorrectString(stringDatabase, "IconificationVetoed.Text");
+        getCorrectString(stringDatabase, "LoadingNetwork.Text");
+        getCorrectString(stringDatabase, "NodeNotCreated.Text");
+        getCorrectString(stringDatabase, "SelectionVetoed.Text");
 	}
 
 	/**
@@ -221,14 +221,14 @@ public class StringDatabaseTests {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringSelectables() throws MissingResourceException {
-
-		getCorrectString(stringDatabase, "absent.Text.Label");
-		getCorrectString(stringDatabase, "high.Text.Label");
-		getCorrectString(stringDatabase, "mild.Text.Label");
-		getCorrectString(stringDatabase, "other.Text.Label");
-		getCorrectString(stringDatabase, "present.Text.Label");
-		getCorrectString(stringDatabase, "sign.Text.Label");
-		getCorrectString(stringDatabase, "yes.Text.Label");
+        
+        getCorrectString(stringDatabase, "absent.Text");
+        getCorrectString(stringDatabase, "high.Text");
+        getCorrectString(stringDatabase, "mild.Text");
+        getCorrectString(stringDatabase, "other.Text");
+        getCorrectString(stringDatabase, "present.Text");
+        getCorrectString(stringDatabase, "sign.Text");
+        getCorrectString(stringDatabase, "yes.Text");
 	}
 
 	/**
@@ -262,14 +262,14 @@ public class StringDatabaseTests {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringToolBars() throws MissingResourceException {
-
-		getCorrectString(stringDatabase, "ChanceCreation.ToolTip.Label");
-		getCorrectString(stringDatabase, "ClipboardCut.ToolTip.Label");
-		getCorrectString(stringDatabase, "DecisionCreation.ToolTip.Label");
-		getCorrectString(stringDatabase, "NewNetwork.ToolTip.Label");
-		getCorrectString(stringDatabase, "ObjectSelection.ToolTip.Label");
-		getCorrectString(stringDatabase, "Redo.ToolTip.Label");
-		getCorrectString(stringDatabase, "UtilityCreation.ToolTip.Label");
+        
+        getCorrectString(stringDatabase, "ChanceCreation.ToolTip");
+        getCorrectString(stringDatabase, "ClipboardCut.ToolTip");
+        getCorrectString(stringDatabase, "DecisionCreation.ToolTip");
+        getCorrectString(stringDatabase, "NewNetwork.ToolTip");
+        getCorrectString(stringDatabase, "ObjectSelection.ToolTip");
+        getCorrectString(stringDatabase, "Redo.ToolTip");
+        getCorrectString(stringDatabase, "UtilityCreation.ToolTip");
 	}
 
 	/**

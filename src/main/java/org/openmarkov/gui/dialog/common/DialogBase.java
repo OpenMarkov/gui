@@ -41,9 +41,7 @@ public class DialogBase extends JDialog {
 	 * @param owner window that owns the dialog box.
 	 */
 	public DialogBase(Window owner) {
-
 		super(owner);
-        
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setName("DialogBase");
 		addWindowListener(new WindowAdapter() {
@@ -55,18 +53,13 @@ public class DialogBase extends JDialog {
 				}
 			}
 		});
-		ActionListener listener = new ActionListener() {
-
-			@Override public void actionPerformed(ActionEvent evt) {
-
-				if (jButtonCancel != null) {
-					jButtonCancel.doClick();
-				}
-			}
-		};
+        ActionListener listener = evt -> {
+            if (jButtonCancel != null) {
+                jButtonCancel.doClick();
+            }
+        };
 		getRootPane().registerKeyboardAction(listener, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
 				JComponent.WHEN_IN_FOCUSED_WINDOW);
-
 	}
 
 	/**
@@ -76,9 +69,7 @@ public class DialogBase extends JDialog {
 	 * @param defaultButton button invoked when the key ENTER is pressed.
 	 */
 	public void setDefaultButton(JButton defaultButton) {
-
 		getRootPane().setDefaultButton(defaultButton);
-
 	}
 
 	/**
@@ -87,8 +78,6 @@ public class DialogBase extends JDialog {
 	 * @param button button invoked when the key ESC is pressed.
 	 */
 	public void setCancelButton(JButton button) {
-
 		jButtonCancel = button;
-
 	}
 }

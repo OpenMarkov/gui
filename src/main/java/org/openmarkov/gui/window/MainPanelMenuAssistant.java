@@ -664,12 +664,12 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
                     String label = StringDatabase.getUniqueInstance().getString(
                             switch (visualNode.getNode().getNodeType()) {
                                 case CHANCE, DECISION -> switch (workingMode) {
-                                    case EDITION -> "Edit.NodePotential.Label";
-                                    case INFERENCE -> "Edit.ViewNodePotential.Label";
+                                    case EDITION -> "Edit.NodePotential";
+                                    case INFERENCE -> "Edit.ViewNodePotential";
                                 };
                                 case UTILITY -> switch (workingMode) {
-                                    case EDITION -> "Edit.Utility.Label";
-                                    case INFERENCE -> "Edit.ViewUtility.Label";
+                                    case EDITION -> "Edit.Utility";
+                                    case INFERENCE -> "Edit.ViewUtility";
                                 };
                                 case SV_SUM, SV_PRODUCT -> null;
                             });
@@ -695,7 +695,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
                         canAddFinding = false;
                     
                     setText(ActionCommands.NODE_ADD_FINDING.getCommandName(), StringDatabase.getUniqueInstance()
-                                                                                            .getString((addOrChange) ? "Inference.AddFinding.Label" : "Inference.ChangeFinding.Label"));
+                                                                                            .getString((addOrChange) ? "Inference.AddFinding" : "Inference.ChangeFinding"));
                 }
             }
         }
@@ -765,7 +765,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
     
     public NetworkPanel getCurrentNetworkPanel() {
         int selectedIndex = mainPanel.getNetworksTabPanel().getSelectedIndex();
-        if (selectedIndex == -1) return null;
+        if (selectedIndex <= -1 || selectedIndex >= mainPanel.getNetworksTabPanel().getTabCount()) return null;
         Component componentAt = mainPanel.getNetworksTabPanel().getComponentAt(selectedIndex);
         if (componentAt instanceof NetworkPanel networkPanel) {
             return networkPanel;

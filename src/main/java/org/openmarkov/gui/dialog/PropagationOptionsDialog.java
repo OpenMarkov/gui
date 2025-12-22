@@ -47,9 +47,9 @@ public class PropagationOptionsDialog extends JDialog {
 		JPanel textPanel = new JPanel();
 		JPanel radioButtonsPanel = new JPanel();
 		JPanel buttonsPanel = new JPanel();
-		JButton okButton = new JButton(stringDatabase.getString("OptionsInferenceDialog.jButtonOK.Label"));
-		JButton cancelButton = new JButton(stringDatabase.getString("OptionsInferenceDialog.jButtonCancel.Label"));
-		setTitle(stringDatabase.getString("OptionsInferenceDialog.Title.Label"));
+        JButton okButton = new JButton(stringDatabase.getString("OptionsInferenceDialog.jButtonOK"));
+        JButton cancelButton = new JButton(stringDatabase.getString("OptionsInferenceDialog.jButtonCancel"));
+        setTitle(stringDatabase.getString("OptionsInferenceDialog.Title"));
 		this.getContentPane().setLayout(new BorderLayout());
 		setLocationRelativeTo(owner);
 		this.getContentPane().add(principalPanel, BorderLayout.CENTER);
@@ -58,11 +58,11 @@ public class PropagationOptionsDialog extends JDialog {
 		principalPanel.add(textPanel, BorderLayout.NORTH);
 		radioButtonsPanel.setLayout(new GridLayout(2, 1));
 		JRadioButton jRadioButton1 = new JRadioButton(
-				stringDatabase.getString("OptionsInferenceDialog.optionAuto.Label"));
-		jRadioButton1.setActionCommand(stringDatabase.getString("OptionsInferenceDialog.optionAuto.Label"));
+                stringDatabase.getString("OptionsInferenceDialog.optionAuto"));
+        jRadioButton1.setActionCommand(stringDatabase.getString("OptionsInferenceDialog.optionAuto"));
 		JRadioButton jRadioButton2 = new JRadioButton(
-				stringDatabase.getString("OptionsInferenceDialog.optionManual.Label"));
-		jRadioButton2.setActionCommand(stringDatabase.getString("OptionsInferenceDialog.optionManual.Label"));
+                stringDatabase.getString("OptionsInferenceDialog.optionManual"));
+        jRadioButton2.setActionCommand(stringDatabase.getString("OptionsInferenceDialog.optionManual"));
 		radioButtonsPanel.add(jRadioButton1);
 		radioButtonsPanel.add(jRadioButton2);
 		if (editorPanel.isAutomaticPropagation()) {

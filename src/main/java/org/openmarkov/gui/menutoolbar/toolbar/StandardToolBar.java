@@ -208,6 +208,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     private ZoomComboBox getZoomComboBox() {
         if (zoomComboBox == null) {
             zoomComboBox = new ZoomComboBox(listener);
+            zoomComboBox.setFocusable(false);
         }
         return zoomComboBox;
     }
@@ -290,8 +291,8 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
             costEffectivenessButton.setActionCommand(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC.getCommandName());
             costEffectivenessButton.setFocusable(false);
             costEffectivenessButton.setToolTipText(
-                    stringDatabase.getString("Tools.CostEffectiveness.Label") + ": " + stringDatabase
-                            .getString(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC + ".Label"));
+                    stringDatabase.getString("Tools.CostEffectiveness") + ": " + stringDatabase
+                            .getString(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC.toString()));
             costEffectivenessButton.addActionListener(listener);
             costEffectivenessButton.addMouseMotionListener(this);
         }
@@ -310,7 +311,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
             sensAnalysisButton.setIcon(IconBind.SENS_ANALYSIS.icon());
             sensAnalysisButton.setActionCommand(ActionCommands.SENSITIVITY_ANALYSIS.getCommandName());
             sensAnalysisButton.setFocusable(false);
-            sensAnalysisButton.setToolTipText(stringDatabase.getString("SensitivityAnalysis.ToolTip.Label"));
+            sensAnalysisButton.setToolTipText(stringDatabase.getString("SensitivityAnalysis.ToolTip"));
             sensAnalysisButton.addActionListener(listener);
             sensAnalysisButton.addMouseMotionListener(this);
             sensAnalysisButton.setEnabled(false);

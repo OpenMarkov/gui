@@ -124,13 +124,13 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	private PrefixedOtherPropertiesTablePanel getOtherPropertiesTablePanel() {
 		if (otherPropertiesTablePanel == null) {
             String[] columnNames = new String[]{stringDatabase.getString(
-					"NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn.Label"),
+                    "NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn"),
 					stringDatabase.getString(
-							"NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyNameColumn.Label"),
+                            "NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyNameColumn"),
 					stringDatabase.getString(
-							"NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyValueColumn.Label"),
+                            "NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyValueColumn"),
 					// dialogStringResource
-					// .getValuesInAString("NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyTypeColumn.Label")
+                    // .getValuesInAString("NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyTypeColumn)
 			};
 			otherPropertiesTablePanel = new PrefixedOtherPropertiesTablePanel(columnNames, new Object[][] {},
 					stringDatabase

@@ -183,7 +183,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	 *
 	 * @return a undo button.
 	 */
-	private JButton getUndoButton() {
+    public JButton getUndoButton() {
 		if (undoButton == null) {
 			undoButton = new JButton();
             undoButton.setIcon(IconBind.UNDO_ENABLED.icon());
@@ -201,7 +201,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	 *
 	 * @return a redo button.
 	 */
-	private JButton getRedoButton() {
+    public JButton getRedoButton() {
 		if (redoButton == null) {
 			redoButton = new JButton();
             redoButton.setIcon(IconBind.REDO_ENABLED.icon());

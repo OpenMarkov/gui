@@ -82,7 +82,7 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     protected void initialize() {
         visualNode.getNode().getProbNet().getPNESupport().setWithUndo(true);
         visualNode.getNode().getProbNet().getPNESupport().openParenthesis();
-        setTitle(stringDatabase.getString("AddFindingDialog.Title.Label"));
+        setTitle(stringDatabase.getString("AddFindingDialog.Title"));
         configureComponentsPanel();
         
         

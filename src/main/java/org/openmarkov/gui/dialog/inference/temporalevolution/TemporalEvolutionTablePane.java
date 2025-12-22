@@ -116,7 +116,7 @@ public class TemporalEvolutionTablePane extends JScrollPane {
         if (!isUtility) {
             // States of the Variable of Interest
             table.getColumnModel().getColumn(lastColumnIndex).setHeaderValue(StringDatabase.getUniqueInstance().
-                    getString("TemporalEvolutionResultDialog.States.Label"));
+                                                                                           getString("TemporalEvolutionResultDialog.States"));
             for (int i = 0; i < numRows; i++) {
                 info[i][lastColumnIndex] = variableOfInterest.getStateName(i % variableOfInterest.getNumStates());
                 model.setValueAt(variableOfInterest.getStateName(i % variableOfInterest.getNumStates()), i, lastColumnIndex);

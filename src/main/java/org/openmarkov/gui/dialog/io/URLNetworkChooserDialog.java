@@ -77,7 +77,7 @@ public class URLNetworkChooserDialog extends OkCancelHorizontalDialog {
     private void initialize() {
         Dimension dialogDimension = new Dimension(400, 120);
         setSize(dialogDimension);
-        setTitle(stringDatabase.getString("SelectNetworkURL.Title.Label"));
+        setTitle(stringDatabase.getString("SelectNetworkURL.Title"));
         configureComponentsPanel();
         setMinimumSize(dialogDimension);
         setMaximumSize(dialogDimension);
@@ -104,7 +104,7 @@ public class URLNetworkChooserDialog extends OkCancelHorizontalDialog {
             contentsPanel = new JPanel();
             contentsPanel.setLayout(new GridLayout(0, 1, 0, 0));
             contentsPanel.setBorder(BorderFactory
-                                            .createTitledBorder(null, stringDatabase.getString("NetworkURLValues.Title.Label"),
+                                            .createTitledBorder(null, stringDatabase.getString("NetworkURLValues.Title"),
                                                                 TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null,
                                                                 new Color(51, 51, 51)));
             contentsPanel.add(getURLTextField(), null);

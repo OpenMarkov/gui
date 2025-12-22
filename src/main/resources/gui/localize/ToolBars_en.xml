@@ -3,158 +3,95 @@
     <Edit>
         <Mode>
             <Link>
-                <ToolTip>
-                    <Label value="Insert links"/>
-                </ToolTip>
+                <ToolTip value="Insert links"/>
             </Link>
             <Selection>
-                <ToolTip>
-                    <Label value="Object selection"/>
-                </ToolTip>
+                <ToolTip value="Object selection"/>
             </Selection>
             <Decision>
-                <ToolTip>
-                    <Label value="Insert decision nodes"/>
-                </ToolTip>
+                <ToolTip value="Insert decision nodes"/>
             </Decision>
             <Utility>
-                <ToolTip>
-                    <Label value="Insert utility nodes"/>
-                </ToolTip>
+                <ToolTip value="Insert utility nodes"/>
             </Utility>
             <Chance>
-                <ToolTip>
-                    <Label value="Insert chance nodes"/>
-                </ToolTip>
+                <ToolTip value="Insert chance nodes"/>
             </Chance>
         </Mode>
     </Edit>
     <ClearOutAllEvidenceCases>
-        <ToolTip>
-            <Label value="Clear out the list of evidence cases"/>
-        </ToolTip>
+        <ToolTip value="Clear out the list of evidence cases"/>
     </ClearOutAllEvidenceCases>
     <GoToFirstEvidenceCase>
-        <ToolTip>
-            <Label value="Go to the first evidence case"/>
-        </ToolTip>
+        <ToolTip value="Go to the first evidence case"/>
     </GoToFirstEvidenceCase>
     <ClipboardPaste>
-        <ToolTip>
-            <Label value="Pastes the content of the clipboard"/>
-        </ToolTip>
+        <ToolTip value="Pastes the content of the clipboard"/>
     </ClipboardPaste>
     <ChangeWorkingMode>
-        <ToolTip>
-            <Label value="Inference/Edition mode"/>
-        </ToolTip>
+        <ToolTip value="Inference/Edition mode"/>
     </ChangeWorkingMode>
     <Undo>
-        <ToolTip>
-            <Label value="Undo the last operation"/>
-        </ToolTip>
+        <ToolTip value="Undo the last operation"/>
     </Undo>
     <CreateNewEvidenceCase>
-        <ToolTip>
-            <Label value="Create a new evidence case"/>
-        </ToolTip>
+        <ToolTip value="Create a new evidence case"/>
     </CreateNewEvidenceCase>
     <PropagateEvidence>
-        <ToolTip>
-            <Label value="Propagate evidence"/>
-        </ToolTip>
+        <ToolTip value="Propagate evidence"/>
     </PropagateEvidence>
     <OpenNetwork>
-        <ToolTip>
-            <Label value="Opens an existing network"/>
-        </ToolTip>
+        <ToolTip value="Opens an existing network"/>
     </OpenNetwork>
     <GoToNextEvidenceCase>
-        <ToolTip>
-            <Label value="Go to the next evidence case"/>
-        </ToolTip>
+        <ToolTip value="Go to the next evidence case"/>
     </GoToNextEvidenceCase>
     <ClipboardCopy>
-        <ToolTip>
-            <Label value="Copies the selected nodes into the clipboard"/>
-        </ToolTip>
+        <ToolTip value="Copies the selected nodes into the clipboard"/>
     </ClipboardCopy>
     <GoToPreviousEvidenceCase>
-        <ToolTip>
-            <Label value="Go to the previous evidence case"/>
-        </ToolTip>
+        <ToolTip value="Go to the previous evidence case"/>
     </GoToPreviousEvidenceCase>
     <BUNDLEFILE>
         <Text value="Default (english)"/>
     </BUNDLEFILE>
     <ClipboardCut>
-        <ToolTip>
-            <Label value="Cuts the selected nodes and save them into the clipboard"/>
-        </ToolTip>
+        <ToolTip value="Cuts the selected nodes and save them into the clipboard"/>
     </ClipboardCut>
     <GoToLastEvidenceCase>
-        <ToolTip>
-            <Label value="Go to the last evidence case"/>
-        </ToolTip>
+        <ToolTip value="Go to the last evidence case"/>
     </GoToLastEvidenceCase>
-    <NotCompiledNet>
-        <Label value="Not Compiled!"/>
-    </NotCompiledNet>
+    <NotCompiledNet value="Not Compiled!"/>
     <ObjectRemoval>
-        <ToolTip>
-            <Label value="Deletes the selected nodes"/>
-        </ToolTip>
+        <ToolTip value="Deletes the selected nodes"/>
     </ObjectRemoval>
     <NewNetwork>
-        <ToolTip>
-            <Label value="Creates a new network"/>
-        </ToolTip>
+        <ToolTip value="Creates a new network"/>
     </NewNetwork>
     <CloseNetwork>
-        <ToolTip>
-            <Label value="Close the current network"/>
-        </ToolTip>
+        <ToolTip value="Close the current network"/>
     </CloseNetwork>
     <SaveNetwork>
-        <ToolTip>
-            <Label value="Saves the current network"/>
-        </ToolTip>
+        <ToolTip value="Saves the current network"/>
     </SaveNetwork>
-    <CaseNumber>
-        <Label value="Case Number"/>
-    </CaseNumber>
+    <CaseNumber value="Case Number"/>
     <Redo>
-        <ToolTip>
-            <Label value="Redo the last undone operation"/>
-        </ToolTip>
+        <ToolTip value="Redo the last undone operation"/>
     </Redo>
-    <ExpansionThreshold>
-        <Label value="Expansion Threshold"/>
-    </ExpansionThreshold>
+    <ExpansionThreshold value="Expansion Threshold"/>
     <ZoomIn>
-        <ToolTip>
-            <Label value="Zoom in the current network on 20%"/>
-        </ToolTip>
+        <ToolTip value="Zoom in the current network on 20%"/>
     </ZoomIn>
     <ZoomOut>
-        <ToolTip>
-            <Label value="Zoom out the current network on 20%"/>
-        </ToolTip>
+        <ToolTip value="Zoom out the current network on 20%"/>
     </ZoomOut>
     <DecisionTree>
-        <ToolTip>
-            <Label value="Decision tree"/>
-        </ToolTip>
+        <ToolTip value="Decision tree"/>
     </DecisionTree>
     <ShowOptimalStrategy>
-        <ToolTip>
-            <Label value="Show optimal strategy"/>
-        </ToolTip>
+        <ToolTip value="Show optimal strategy"/>
     </ShowOptimalStrategy>
     <SensitivityAnalysis>
-        <ToolTip>
-            <Label value="Sensitivity Analysis"/>
-        </ToolTip>
+        <ToolTip value="Sensitivity Analysis"/>
     </SensitivityAnalysis>
 </properties>
-
