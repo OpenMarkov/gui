@@ -41,7 +41,7 @@ import java.util.List;
  * @author ibermejo
  * @version 1.3 cmyago 19/06/2016 - adapted the class to the new utility treatment; minor changes
  */
-public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
+public class PotentialEditDialog extends OkCancelHorizontalDialog
         implements ActionListener, PanelResizeEventListener {
     /**
      *

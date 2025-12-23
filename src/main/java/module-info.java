@@ -26,7 +26,6 @@ open module org.openmarkov.gui {
     requires java.xml;
     requires colt;
     
-    
     exports org.openmarkov.gui.action;
     exports org.openmarkov.gui.localize;
     exports org.openmarkov.gui.window;

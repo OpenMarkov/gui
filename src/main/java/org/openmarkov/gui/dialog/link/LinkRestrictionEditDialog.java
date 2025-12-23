@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.link;
 
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.localize.StringDatabase;
 
@@ -21,7 +21,7 @@ import java.text.MessageFormat;
  * restrictions.
  */
 
-@SuppressWarnings("serial") public class LinkRestrictionEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+@SuppressWarnings("serial") public class LinkRestrictionEditDialog extends OkCancelHorizontalDialog {
 
 	/****
 	 * The link containing the link restrictions

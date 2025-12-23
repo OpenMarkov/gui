@@ -8,12 +8,10 @@
 package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.window.edition.EditorPanel;
-import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +24,7 @@ import java.awt.*;
  * @author asaez
  * @version 1.0
  */
-public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+public class AddFindingDialog extends OkCancelHorizontalDialog {
     private static final long serialVersionUID = 5618641549380924577L;
     /**
      * Object where the finding will be set.

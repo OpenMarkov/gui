@@ -42,7 +42,7 @@ import java.util.List;
  * @author jlgozalo
  * @version 1.5 mpalacios
  */
-public class NodeDefinitionPanel extends JPanel
+public final class NodeDefinitionPanel extends JPanel
         implements FocusListener, ItemListener, CommentListener, ActionListener {
     /**
      * serial uid
@@ -915,24 +915,8 @@ public class NodeDefinitionPanel extends JPanel
      * @return true, if the name field isn't empty and there isn't any node with
      * this name; otherwise, false.
      */
-    public boolean checkName() {
-        String name = jTextFieldNodeName.getText();
-        boolean result = name != null && !name.isEmpty() && !(!node.getBaseName()
-                                                                   .equals(name) && Util.existNode(node.getProbNet(), name));
-        if (!result) {
-            jTextFieldNodeName.requestFocus();
-        }
-        return result;
-    }
-    
-    /**
-     * This method checks that the purpose field is filled if this field is
-     * enabled.
-     *
-     * @return true, if the purpose field isn't empty; otherwise, false.
-     */
-    public static boolean checkPurpose() {
-        return true;
+    public void checkNameConstraints() throws ConstraintViolatedException {
+        new NodeNameEdit(node, this.jTextFieldNodeName.getText()).tryConstraintsWillBeMet();
     }
     
     @Override public void commentHasChanged() throws DoEditException {

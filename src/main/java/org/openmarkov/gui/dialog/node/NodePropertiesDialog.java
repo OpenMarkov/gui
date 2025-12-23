@@ -7,11 +7,11 @@
 
 package org.openmarkov.gui.dialog.node;
 
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -26,7 +26,7 @@ import java.awt.*;
  * @author jmendoza
  * @version 1.3 mpalacios
  */
-public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizontalDialog implements ChangeListener {
+public abstract class NodePropertiesDialog extends OkCancelHorizontalDialog implements ChangeListener {
 	/**
 	 * Constant that defines the height of the tables that are shown into the
 	 * dialog box.
@@ -352,33 +352,15 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 	 *
 	 * @return true if all the fields are correct.
 	 */
-	@Override protected boolean doOkClickBeforeHide() {
+    @Override protected boolean doOkClickBeforeHide() throws ConstraintViolatedException {
 		// If the is user is editing a cell, stop the edition to save the data
 		nodeDomainValuesTablePanel.getDiscretizedStatesPanel().stopCellEditing();
-		if (generalChecks() /* && specificChecks() */) {
-			node.getProbNet().getPNESupport().closeParenthesis();
-			return true;
-		}
-		return false;
+        nodeDefinitionPanel.checkNameConstraints();
+        node.getProbNet().getPNESupport().closeParenthesis();
+        return true;
 	}
-
-	/**
-	 * This method carries out the checks of the general fields. This fields
-	 * appears in all of the subclasses.
-	 *
-	 * @return true if all the fields are correct.
-	 */
-	private boolean generalChecks() {
-		if (!nodeDefinitionPanel.checkName()) {
-			return false;
-		}
-        if (!NodeDefinitionPanel.checkPurpose()) {
-			return false;
-		}
-		return true;
-	}
-
-	/**
+    
+    /**
 	 * This method carries out the checks of the specific fields. This specific
 	 * fields depend on the type of the node.
 	 *

@@ -33,8 +33,7 @@
     <Localization class="org.openmarkov.gui.action.RemoveLinkRestrictionEdit"
                   value="Remove link restrictions of: {links}"/>
     <Localization class="org.openmarkov.gui.action.RemoveSelectedEdit"
-                  value="Remove nodes: {nodesToRemove}\nRemove links: {linksToRemove};
-	private List<VisualLink> linksToRemove;"/>
+                  value="Remove nodes: {nodesToRemove}\nRemove links: {linksToRemove};"/>
     <Localization class="org.openmarkov.gui.action.RevelationIntervalEdit"
                   value="Edit revelation interval from link {link} with action {stateAction}"/>
     <Localization class="org.openmarkov.gui.action.TablePotentialValueEdit"

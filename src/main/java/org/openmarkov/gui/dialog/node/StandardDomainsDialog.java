@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.awt.*;
 /**
  * @author maryebra
  */
-@SuppressWarnings("serial") public class StandardDomainsDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+@SuppressWarnings("serial") public class StandardDomainsDialog extends OkCancelHorizontalDialog {
 
 	private JPanel standardDomainsPanel;
 

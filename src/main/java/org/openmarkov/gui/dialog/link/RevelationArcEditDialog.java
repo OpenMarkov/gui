@@ -10,7 +10,7 @@ package org.openmarkov.gui.dialog.link;
 
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 
 import java.awt.*;
 import java.text.MessageFormat;
@@ -19,7 +19,7 @@ import java.text.MessageFormat;
  * This class implements the revelation arc dialog box for the edition of the
  * revelation arc properties.
  */
-@SuppressWarnings("serial") public class RevelationArcEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+@SuppressWarnings("serial") public class RevelationArcEditDialog extends OkCancelHorizontalDialog {
 	private Link<Node> link;
 	/***
 	 * Jpanel showing the values table of the first node
