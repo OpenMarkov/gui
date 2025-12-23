@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.action.core.NodeAlwaysObservedEdit;
 import org.openmarkov.core.action.core.NodeCommentEdit;
-import org.openmarkov.core.action.core.NodeNameEdit;
+import org.openmarkov.core.action.core.NodeBaseNameEdit;
 import org.openmarkov.core.action.core.PurposeEdit;
 import org.openmarkov.core.action.core.RelevanceEdit;
 import org.openmarkov.core.action.core.TimeSliceEdit;
@@ -857,9 +857,9 @@ public final class NodeDefinitionPanel extends JPanel
         if (node.getName().equals(this.jTextFieldNodeName.getText())) {
             return;
         }
-        NodeNameEdit nodeNameEdit = new NodeNameEdit(node, this.jTextFieldNodeName.getText());
+        NodeBaseNameEdit nodeBaseNameEdit = new NodeBaseNameEdit(node, this.jTextFieldNodeName.getText());
         try {
-            nodeNameEdit.executeEdit();
+            nodeBaseNameEdit.executeEdit();
         } catch (DoEditException e1) {
             throw new UnrecoverableException(e1);
         }
@@ -916,7 +916,7 @@ public final class NodeDefinitionPanel extends JPanel
      * this name; otherwise, false.
      */
     public void checkNameConstraints() throws ConstraintViolatedException {
-        new NodeNameEdit(node, this.jTextFieldNodeName.getText()).tryConstraintsWillBeMet();
+        new NodeBaseNameEdit(node, this.jTextFieldNodeName.getText()).tryConstraintsWillBeMet();
     }
     
     @Override public void commentHasChanged() throws DoEditException {

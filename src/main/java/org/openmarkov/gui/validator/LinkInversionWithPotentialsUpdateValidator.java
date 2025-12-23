@@ -8,6 +8,8 @@
 package org.openmarkov.gui.validator;
 
 import org.openmarkov.core.action.base.linkEdits.InvertLinkEdit;
+import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -22,6 +24,8 @@ import org.openmarkov.core.model.network.potential.FunctionPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
+import org.openmarkov.gui.exception.CannotInvertUndirectedLinks;
+import org.openmarkov.gui.exception.LinkInversionRequiresChanceVariablesWithPotential;
 
 import java.util.List;
 
@@ -41,22 +45,19 @@ public class LinkInversionWithPotentialsUpdateValidator {
      *
      * @return boolean
      */
-    public static boolean validate(Link<Node> link) {
-        
-        boolean valid = false;
-        if (link.isDirected()) {
-            Node node1 = link.getFrom();
-            Node node2 = link.getTo();
-            boolean node1Valid = validNode(node1);
-            boolean node2Valid = validNode(node2);
-            boolean newLinkValid = validNewLinks(node1, node2);
-            valid = node1Valid && node2Valid && newLinkValid;
+    public static void validate(Link<Node> link) throws LinkInversionRequiresChanceVariablesWithPotential, ConstraintViolatedException, CannotInvertUndirectedLinks {
+        if (!link.isDirected()) {
+            throw new CannotInvertUndirectedLinks(link);
         }
-        return valid;
+        Node node1 = link.getFrom();
+        Node node2 = link.getTo();
+        LinkInversionWithPotentialsUpdateValidator.validNode(node1);
+        LinkInversionWithPotentialsUpdateValidator.validNode(node2);
+        LinkInversionWithPotentialsUpdateValidator.validNewLinks(node1, node2);
     }
     
-    private static boolean validNewLinks(Node node1, Node node2) {
-        return new InvertLinkEdit(node1.getProbNet(), node1.getVariable(), node2.getVariable(), true).constraintsWillBeMet();
+    private static void validNewLinks(Node node1, Node node2) throws ConstraintViolatedException {
+        new InvertLinkEdit(node1.getProbNet(), node1.getVariable(), node2.getVariable(), true).tryConstraintsWillBeMet();
     }
     
     /**
@@ -64,14 +65,14 @@ public class LinkInversionWithPotentialsUpdateValidator {
      *
      * @return boolean
      */
-    private static boolean validNode(Node node) {
-        
-        boolean validNode = false;
-        if (node.getNodeType() == NodeType.CHANCE) {
-            List<Potential> potentials = node.getPotentials();
-            validNode = !potentials.isEmpty() && validPotentialType(potentials.get(0));
+    private static void validNode(Node node) throws LinkInversionRequiresChanceVariablesWithPotential {
+        if (node.getNodeType() != NodeType.CHANCE) {
+            throw new LinkInversionRequiresChanceVariablesWithPotential(node);
         }
-        return validNode;
+        List<Potential> potentials = node.getPotentials();
+        if (potentials.isEmpty() || !validPotentialType(potentials.get(0))) {
+            throw new LinkInversionRequiresChanceVariablesWithPotential(node);
+        }
     }
     
     /**

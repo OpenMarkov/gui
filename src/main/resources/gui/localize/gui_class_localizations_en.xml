@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassLocalizations>
+    <Localization class="org.openmarkov.gui.exception.CannotInvertUndirectedLinks"
+                  value="Undirected links cannot be inverted, meaning it is not possible to invert {link}"/>
+    <Localization class="org.openmarkov.gui.exception.LinkInversionRequiresChanceVariablesWithPotential"
+                  value="Link inversion is only possible for Chance nodes that have a potential, which is not the case for {wrongNode}"/>
+    <Localization class="org.openmarkov.gui.graphic.VisualLink"
+                  value="Visual {link}"/>
+    <Localization class="org.openmarkov.gui.window.edition.SelectedContent"
+                  value="Selected nodes: {nodes}\nSelected links: {links}"/>
     <Localization class="org.openmarkov.gui.action.AddFindingEdit"
                   value="Add {finding} on {evidenceCase} on {visualNode}. Previous finding was {previousFinding}"/>
     <Localization class="org.openmarkov.gui.action.AugmentedPotentialValueEdit"
@@ -21,7 +29,7 @@
     <Localization class="org.openmarkov.gui.action.NodePartitionedIntervalEdit"
                   value="Edit partitioned interval of node {node} with action {stateAction}"/>
     <Localization class="org.openmarkov.gui.action.OtherPropertyEdit"
-                  value="Set property {otherPropertyAction} of node {node} to data: {newData}"/>
+                  value="Set property {otherPropertyAction} of node {node} to data: {newProperty}"/>
     <Localization class="org.openmarkov.gui.action.PartitionedIntervalEdit"
                   value="Replace partitioned interval of node {node} from {currentPartitionedInterval} to {newPartitionedInterval}"/>
     <Localization class="org.openmarkov.gui.action.PasteEdit"
