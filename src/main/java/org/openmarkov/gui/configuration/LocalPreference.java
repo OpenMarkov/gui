@@ -1,6 +1,5 @@
 package org.openmarkov.gui.configuration;
 
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -75,7 +74,10 @@ public final class LocalPreference<T> {
             .findFirst()
             .orElse(LocalPreferenceResolveStrategy.SESSION);
     
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(java.io.File.class, new GsonAdapters.FileAdapter())
+            .create();
     
     private final @NotNull List<String> preferencePath;
     private final @NotNull Supplier<? extends T> defaultValue;
@@ -189,6 +191,7 @@ public final class LocalPreference<T> {
             String serialized = this.serializeWith.apply(this.value);
             LocalPreference.RESOLVE_STRATEGY.put(this.preferencePath, serialized);
         } catch (RuntimeException ignored) {
+            ignored.printStackTrace();
         }
     }
     
