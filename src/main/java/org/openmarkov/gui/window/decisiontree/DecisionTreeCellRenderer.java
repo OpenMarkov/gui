@@ -4,13 +4,17 @@
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
  */
-
 package org.openmarkov.gui.window.decisiontree;
 
 import javax.swing.*;
 import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 
+/**
+ * Custom cell renderer for decision tree elements in a JTree.
+ * It updates the visual representation of each tree cell based on its state.
+ */
+@SuppressWarnings("serial")
 public class DecisionTreeCellRenderer implements TreeCellRenderer {
 
 	@Override public Component getTreeCellRendererComponent(JTree tree, Object object, boolean selected,

@@ -40,27 +40,49 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
-@SuppressWarnings("serial") public class DecisionTreePanel extends JScrollPane {
-    protected VisualDecisionTree jTree;
+/**
+ * A scrollable container that displays and manages a visual decision tree.
+ * It handles tree generation, zoom levels, and dynamic expansion through inference.
+ */
+@SuppressWarnings("serial") 
+ public class DecisionTreePanel extends JScrollPane {
+
+    /** The visual tree component. */
+	protected VisualDecisionTree jTree;
+    
+    /** Factory for creating contextual menus based on node types. */
+    private ContextualMenuFactory contextualMenuFactory;
+
+    /** Listener for mouse and action events. */
+    private TreePanelListener listener;
     
     public VisualDecisionTree getJTree() {
         return jTree;
     }
     
-    
-    private ContextualMenuFactory contextualMenuFactory;
-    private TreePanelListener listener;
-    
+    /**
+     * Constructs a panel and builds the decision tree for the given network.
+     * @param probNet The probabilistic network to represent.
+     * 
+     * @throws NotEvaluableNetworkException
+     * @throws IncompatibleEvidenceException
+     * @throws NonProjectablePotentialException
+     * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates
+     * @throws NotSupportedOperationException
+     */
     public DecisionTreePanel(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         listener = new TreePanelListener();
         contextualMenuFactory = new ContextualMenuFactory(listener);
         
         //DecisionTreeElement root = DecisionTreeBuilder.buildDecisionTree (probNet);
         DecisionTreeElement root = buildDecisionTree(probNet);
-        updateVisualInformation(root);
-        
+        updateVisualInformation(root); 
     }
     
+    /**
+     * Rebuilds the visual model and refreshes the viewport.
+     * @param root The root element of the decision tree.
+     */
     private void updateVisualInformation(DecisionTreeElement root) {
         DecisionTreeModel model = new DecisionTreeModel(root);
         jTree = new VisualDecisionTree(model);
@@ -73,16 +95,34 @@ import java.io.IOException;
         
     }
     
+    private static final int DEFAULT_DEPTH = 5;
+    
+    /**
+     * Builds a decision tree from a ProbNet with a default depth.
+     * @see #buildDecisionTree(ProbNet, int, EvidenceCase)
+     */
     public static DecisionTreeElement buildDecisionTree(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
-        return buildDecisionTree(probNet, 5);
+        return buildDecisionTree(probNet, DEFAULT_DEPTH);
     }
     
-    
+    /**
+	 * Builds a decision tree from a ProbNet up to a specified depth.
+	 * @param probNet The probabilistic network.
+	 * @param depth The maximum depth of the decision tree.
+	 * @return The root element of the constructed decision tree.
+	 * 
+	 * @throws NotEvaluableNetworkException
+	 * @throws IncompatibleEvidenceException
+	 * @throws NonProjectablePotentialException
+	 * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates
+	 * @throws NotSupportedOperationException
+	 */
     public static DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         return buildDecisionTree(probNet, depth, new EvidenceCase());
     }
     
     /**
+     * Builds a decision tree from a ProbNet up to a specified depth, considering given evidence.
      * @param probNet
      * @param depth
      * @param branchEvidence
@@ -122,6 +162,9 @@ import java.io.IOException;
         repaint();
     }
     
+    /**
+     * Expands the tree by one additional level of inference.
+     */
     public void inferenceExpandNextLevel() throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         inferenceExpandLevels(1);
     }
@@ -133,7 +176,13 @@ import java.io.IOException;
         updateVisualInformation(root.getTreeBranch());
     }
     
-    private static void inferenceExpandLevels(DecisionTreeElement root, DecisionTreeNode parent, int n, EvidenceCase branchEvidence) throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
+    /**
+     * Expands the tree by N levels of inference and updates the view.
+     * @param n Number of levels to expand.
+     */
+    private static void inferenceExpandLevels(DecisionTreeElement root, 
+    		DecisionTreeNode parent, int n, EvidenceCase branchEvidence) 
+    				throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         if (root instanceof DecisionTreeBranch || ((DecisionTreeNode) root).getNodeType() != NodeType.UTILITY) {
             if (root instanceof DecisionTreeNode) {
                 parent = (DecisionTreeNode) root;
@@ -183,8 +232,15 @@ import java.io.IOException;
     }
     
     
+    /**
+     * Internal listener to handle GUI actions and mouse interactions.
+     */
     private class TreePanelListener implements ActionListener, MouseListener {
         
+        /**
+         * Dispatches commands for expansion, opening networks, or saving to Graphviz.
+         * @param e The action event.
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
             String actionCommand = e.getActionCommand();
@@ -274,6 +330,10 @@ import java.io.IOException;
         
         /* Listener methods */
         // Open tree contextual menu on right click
+        /**
+         * Handles right-click events to show contextual menus.
+         * @param e The mouse event.
+         */
         @Override
         public void mouseClicked(MouseEvent e) {
             
@@ -316,7 +376,10 @@ import java.io.IOException;
         }
     }
     
-    
+    /**
+     * Retrieves the root logical node of the tree.
+     * @return The {@link DecisionTreeNode} at the top of the hierarchy.
+     */
     public DecisionTreeNode getDecisionTreeNode() {
         VisualDecisionTree dt = getJTree();
         TreeModel model = dt.getModel();

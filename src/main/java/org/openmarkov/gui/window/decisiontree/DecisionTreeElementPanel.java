@@ -15,20 +15,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-@SuppressWarnings("serial") public abstract class DecisionTreeElementPanel extends JPanel {
-	/**
-	 * Container of SummaryBox' text or the variable icon
-	 */
+/**
+ * Abstract base panel for representing decision tree elements in the GUI.
+ * Provides the basic layout and structure for nodes and branches.
+ */
+@SuppressWarnings("serial") 
+public abstract class DecisionTreeElementPanel extends JPanel {
+
+	/** Container of SummaryBox' text or the variable's icon. */
 	protected JLabel leftLabel = new JLabel();
-	/**
-	 * Container of leaf data: Potential description or value
-	 */
+	
+	/**Container for leaf specific data, such as potential descriptions or values. */
 	protected JLabel rightLabel = new JLabel();
 
+    /** List of child panels in the tree hierarchy. */
 	protected List<DecisionTreeElementPanel> children;
 	
+    /** Formatter for displaying numerical values with four decimal places. */
 	DecimalFormat df = new DecimalFormat("0.0000", new DecimalFormatSymbols(Locale.US));
 
+    /**
+     * Initializes the panel with a BorderLayout and default white background.
+     */
 	public DecisionTreeElementPanel() {
 		super(new BorderLayout());
 		this.add(leftLabel, BorderLayout.WEST);
@@ -38,17 +46,28 @@ import java.util.Locale;
 		children = new ArrayList<>();
 	}
 
+    /**
+     * Updates the panel's visual state based on its current status in the JTree.
+     * * @param selected True if the element is selected.
+     * @param expanded True if the element's children are visible.
+     * @param leaf True if the element has no children.
+     * @param row The display row index.
+     * @param hasFocus True if the element currently has keyboard focus.
+     */
 	public abstract void update(boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus);
 
-	/**
-	 * Returns the children.
-	 *
-	 * @return the children.
-	 */
+    /**
+     * Returns the list of child panels.
+     * @return A list containing the children of this panel.
+     */
 	public List<DecisionTreeElementPanel> getChildren() {
 		return children;
 	}
 
+    /**
+     * Adds a child panel to this element's hierarchy.
+     * @param child The panel to be added as a child.
+     */
 	public void addChild(DecisionTreeElementPanel child) {
 		children.add(child);
 	}

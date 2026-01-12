@@ -12,13 +12,22 @@ import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 
-@SuppressWarnings("serial") public class VisualDecisionTree extends JTree{
+@SuppressWarnings("serial")
+/**
+ * Visual representation of a decision tree using a JTree component.
+ */
+public class VisualDecisionTree extends JTree{
 
 	/**
 	 * Object to convert coordinates of the screen to the panel and vice versa.
 	 */
 	protected Zoom zoom;
-
+	
+	/**
+	 * Constructs a VisualDecisionTree with the specified DecisionTreeModel.
+	 *
+	 * @param model the decision tree model to be displayed.
+	 */
 	public VisualDecisionTree(DecisionTreeModel model) {
 		super(model);
 		getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);

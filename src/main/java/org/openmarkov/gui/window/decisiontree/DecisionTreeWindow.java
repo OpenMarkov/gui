@@ -13,11 +13,29 @@ import org.openmarkov.gui.window.ZoomableContentPanel;
 
 import java.awt.*;
 
-@SuppressWarnings("serial") public class DecisionTreeWindow extends ZoomableContentPanel {
+
+/**
+ * A zoomable window container that hosts a {@link DecisionTreePanel}.
+ * It acts as a bridge between the decision tree visualization and the main network panel.
+ */
+@SuppressWarnings("serial") 
+public class DecisionTreeWindow extends ZoomableContentPanel {
     
+	/** The panel containing the visual representation of the decision tree. */
     private final DecisionTreePanel decisionTreePanel;
+    
+    /** The source network panel associated with this tree window. */
     private final NetworkPanel networkPanel;
     
+    /**
+     * Creates a new window to display the decision tree derived from a network panel.
+     * @param networkPanel The panel containing the probabilistic network.
+     * @throws IncompatibleEvidenceException
+     * @throws NotEvaluableNetworkException If
+     * @throws NonProjectablePotentialException 
+     * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates 
+     * @throws NotSupportedOperationException 
+     */
     public DecisionTreeWindow(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         this.setLayout(new BorderLayout());
         this.networkPanel = networkPanel;
@@ -27,15 +45,21 @@ import java.awt.*;
         this.setBackground(Color.blue);
     }
     
+    /**
+     * Handles the window closure by unregistering itself from the parent network panel.
+     * @return True if the window closed successfully.
+     */
     @Override public boolean close() {
         this.networkPanel.removeDecisionTreeWindows(null);
         return super.close();
     }
     
+    /** {@inheritDoc} */
     @Override public double getZoom() {
         return decisionTreePanel.getZoom();
     }
     
+    /** {@inheritDoc} */
     @Override public void setZoom(double zoom) {
         decisionTreePanel.setZoom(zoom);
     }
