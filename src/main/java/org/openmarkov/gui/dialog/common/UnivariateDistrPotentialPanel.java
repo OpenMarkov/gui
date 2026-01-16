@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.AugmentedTable;
+import org.openmarkov.core.model.network.potential.AugmentedProbTable;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.gui.component.AugmentedValuesTable;
@@ -39,8 +39,8 @@ public class UnivariateDistrPotentialPanel
     protected List<Variable> pseudoVariablesDistribution = null;
     
     /**
-     * Variables of the AugmentedTablePotential.
-     * The attribute {@code variables} contains the variables of the AugmentedTable
+     * Variables of the AugmentedProbTablePotential.
+     * The attribute {@code variables} contains the variables of the AugmentedProbTable
      */
     protected List<Variable> potentialVariables;
     
@@ -70,7 +70,7 @@ public class UnivariateDistrPotentialPanel
         potentialVariables = potential.getVariables();
         tablePotential = ((UnivariateDistrPotential) potential).getDistributionTable();
         
-        //The list of variables of the AugmentedTable of TablePotential
+        //The list of variables of the AugmentedProbTable of TablePotential
         variables = tablePotential.getVariables();
         
         pseudoVariablesDistribution = ((UnivariateDistrPotential) potential).getDistributionTable().getVariables();
@@ -78,7 +78,7 @@ public class UnivariateDistrPotentialPanel
         
         // Creating the table; class ValuesTable
         
-        valuesTable = new AugmentedValuesTable(node, getTableModel(), (AugmentedTable) tablePotential, modifiable);
+        valuesTable = new AugmentedValuesTable(node, getTableModel(), (AugmentedProbTable) tablePotential, modifiable);
         valuesTable.setName("PotentialUnivariatePanel.valuesTable");
         valuesTable.setVisible(true);
         modifiable = true;
@@ -217,7 +217,7 @@ public class UnivariateDistrPotentialPanel
         int numColumns = values[0].length;
         
         // rounding initial values
-        String[] initialValues = ((AugmentedTable) tablePotential).getFunctionValues();
+        String[] initialValues = ((AugmentedProbTable) tablePotential).getFunctionValues();
         for (int j = 1; j <= numColumns - 1; j++) {
             
             // put the values on the table

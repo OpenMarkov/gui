@@ -11,8 +11,8 @@ import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
-import org.openmarkov.core.model.network.potential.AugmentedTable;
-import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
+import org.openmarkov.core.model.network.potential.AugmentedProbTable;
+import org.openmarkov.core.model.network.potential.AugmentedProbTablePotential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
@@ -43,13 +43,13 @@ import java.util.List;
 
     
     /**
-     * The AugmentedTable potential
+     * The AugmentedProbTable potential
      */
-    private AugmentedTablePotential newAugmentedTablePotential;
+    private AugmentedProbTablePotential newAugmentedProbTablePotential;
     /**
      * Old table potential
      */
-    private AugmentedTablePotential oldAugmentedTablePotential;
+    private AugmentedProbTablePotential oldAugmentedProbTablePotential;
     
     /**
      * The UnivariateDistr Potential
@@ -68,7 +68,7 @@ import java.util.List;
     /**
      * the table potential
      */
-    private AugmentedTable newAugmentedTable;
+    private AugmentedProbTable newAugmentedProbTable;
     private String[] newAugmentedValues;
     
     /**
@@ -90,39 +90,39 @@ import java.util.List;
      */
     public AugmentedPotentialValueEdit(Node node, String newValue, int row, int col) {
         super(node, null, null);
-        boolean isAugmentedTablePotential = false;
+        boolean isAugmentedProbTablePotential = false;
         
         this.node = node;
         oldPotential = node.getPotentials().get(0);
-        if (oldPotential instanceof AugmentedTablePotential oldAugmentedPotential) {
-            oldAugmentedTablePotential = oldAugmentedPotential;
-            newAugmentedTablePotential = new AugmentedTablePotential(oldAugmentedTablePotential);
-            newPotential = newAugmentedTablePotential;
-            newAugmentedTable = newAugmentedTablePotential.getAugmentedTable();
-            newAugmentedValues = newAugmentedTable.getFunctionValues();
-            isAugmentedTablePotential = true;
+        if (oldPotential instanceof AugmentedProbTablePotential oldAugmentedPotential) {
+            oldAugmentedProbTablePotential = oldAugmentedPotential;
+            newAugmentedProbTablePotential = new AugmentedProbTablePotential(oldAugmentedProbTablePotential);
+            newPotential = newAugmentedProbTablePotential;
+            newAugmentedProbTable = newAugmentedProbTablePotential.getAugmentedProbTable();
+            newAugmentedValues = newAugmentedProbTable.getFunctionValues();
+            isAugmentedProbTablePotential = true;
         } else {
             oldUnivariateDistrPotential = (UnivariateDistrPotential) oldPotential;
             newUnivariateDistrPotential = new UnivariateDistrPotential(oldUnivariateDistrPotential);
             newPotential = newUnivariateDistrPotential;
-            newAugmentedTable = newUnivariateDistrPotential.getAugmentedTable();
-            newAugmentedValues = newAugmentedTable.getFunctionValues();
+            newAugmentedProbTable = newUnivariateDistrPotential.getAugmentedProbTable();
+            newAugmentedValues = newAugmentedProbTable.getFunctionValues();
         }
         this.row = row;
         this.col = col;
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
-        this.setIndexSelected(PotentialsTablePanelOperations.calculateLastEditableRow(newAugmentedTable) - row);
+        this.setIndexSelected(PotentialsTablePanelOperations.calculateLastEditableRow(newAugmentedProbTable) - row);
         //Set the entire column to "Complement"
-        if (isAugmentedTablePotential) {
-            int firstEditableRow = PotentialsTablePanelOperations.calculateFirstEditableRow(newAugmentedTable);
-            int lastEditableRow = PotentialsTablePanelOperations.calculateLastEditableRow(newAugmentedTable);
+        if (isAugmentedProbTablePotential) {
+            int firstEditableRow = PotentialsTablePanelOperations.calculateFirstEditableRow(newAugmentedProbTable);
+            int lastEditableRow = PotentialsTablePanelOperations.calculateLastEditableRow(newAugmentedProbTable);
             
             for (int i = firstEditableRow; i <= lastEditableRow; i++) {
-                int index = PotentialsTablePanelOperations.getPotentialIndex(i, col, newAugmentedTable);
+                int index = PotentialsTablePanelOperations.getPotentialIndex(i, col, newAugmentedProbTable);
                 newAugmentedValues[index] = "Complement";
             }
         }
-        this.indexSelected = PotentialsTablePanelOperations.getPotentialIndex(row, col, newAugmentedTable);
+        this.indexSelected = PotentialsTablePanelOperations.getPotentialIndex(row, col, newAugmentedProbTable);
         newAugmentedValues[indexSelected] = newValue;
     }
     
@@ -161,8 +161,8 @@ import java.util.List;
      * @return the position in the table
      */
     public int getRowPosition(int position) {
-        int lastRow = PotentialsTablePanelOperations.calculateLastEditableRow(newAugmentedTable);
-        return lastRow - position % newAugmentedTable.getDimensions()[0];
+        int lastRow = PotentialsTablePanelOperations.calculateLastEditableRow(newAugmentedProbTable);
+        return lastRow - position % newAugmentedProbTable.getDimensions()[0];
     }
     
     /**

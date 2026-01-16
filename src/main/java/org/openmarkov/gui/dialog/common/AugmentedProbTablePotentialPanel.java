@@ -13,8 +13,8 @@ import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.AugmentedTable;
-import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
+import org.openmarkov.core.model.network.potential.AugmentedProbTable;
+import org.openmarkov.core.model.network.potential.AugmentedProbTablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.gui.component.AugmentedValuesTable;
 import org.openmarkov.gui.component.AugmentedValuesTableModel;
@@ -54,37 +54,37 @@ import java.util.List;
  *
  * @author carmenyago Apr/2017
  */
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "AugmentedTable")
-public class AugmentedTablePotentialPanel
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "AugmentedProbTable")
+public class AugmentedProbTablePotentialPanel
         extends TablePotentialPanel {
     /**
-     * Variables of the AugmentedTablePotential.
-     * The attribute {@code variables} contains the variables of the AugmentedTable
+     * Variables of the AugmentedProbTablePotential.
+     * The attribute {@code variables} contains the variables of the AugmentedProbTable
      */
     protected List<Variable> potentialVariables;
     
-    public AugmentedTablePotentialPanel() {
+    public AugmentedProbTablePotentialPanel() {
         super();
     }
     
     /**
      * This method creates, initialises, and displays an AugmentedValuesTable object for the first potential of the node
      *
-     * @param node : node whose first potential is a AugmentedTablePotential
+     * @param node : node whose first potential is a AugmentedProbTablePotential
      */
-    public AugmentedTablePotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException {
+    public AugmentedProbTablePotentialPanel(Node node) throws ThereIsNoPotentialsInNodeException {
         super();
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
         this.node = node;
         // This panel displays the first potential of the node
         potential = node.getFirstPotential();
         //The table associated to tablePotential
-        tablePotential = ((AugmentedTablePotential) potential).getAugmentedTable();
+        tablePotential = ((AugmentedProbTablePotential) potential).getAugmentedProbTable();
         
-        //The list of variables of the AugmentedTablePotential
+        //The list of variables of the AugmentedProbTablePotential
         potentialVariables = potential.getVariables();
         
-        //The list of variables of the AugmentedTable of TablePotential
+        //The list of variables of the AugmentedProbTable of TablePotential
         variables = tablePotential.getVariables();
         
         // Creating the table; class AugmentedValuesTable
@@ -261,7 +261,7 @@ public class AugmentedTablePotentialPanel
         int numColumns = values[0].length;
         
         // rounding initial values
-        String[] initialValues = ((AugmentedTable) tablePotential).getFunctionValues();
+        String[] initialValues = ((AugmentedProbTable) tablePotential).getFunctionValues();
         for (int j = 1; j <= numColumns - 1; j++) {
             
             // put the values on the table
@@ -374,7 +374,7 @@ public class AugmentedTablePotentialPanel
         
         @Override public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 1) {
-                List<Variable> parameterVariables = ((AugmentedTablePotential) potential).getParameterVariables();
+                List<Variable> parameterVariables = ((AugmentedProbTablePotential) potential).getParameterVariables();
                 ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables,
                                                                                              null);
                 expressionDialog.setVisible(true);

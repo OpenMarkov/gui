@@ -14,7 +14,7 @@ import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
-import org.openmarkov.core.model.network.potential.AugmentedTable;
+import org.openmarkov.core.model.network.potential.AugmentedProbTable;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
@@ -47,7 +47,7 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
     /**
      * The new distributionTable
      */
-    private AugmentedTable newDistributionTable;
+    private AugmentedProbTable newDistributionTable;
     
     /**
      * Pseudo-util class with common operations used  in potential tables

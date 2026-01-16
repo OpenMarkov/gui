@@ -17,8 +17,8 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
-import org.openmarkov.core.model.network.potential.AugmentedTable;
-import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
+import org.openmarkov.core.model.network.potential.AugmentedProbTable;
+import org.openmarkov.core.model.network.potential.AugmentedProbTablePotential;
 import org.openmarkov.core.model.network.potential.BinomialPotential;
 import org.openmarkov.core.model.network.potential.FunctionPotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -82,8 +82,8 @@ public class LinkInversionWithPotentialsUpdateValidator {
      */
     private static boolean validPotentialType(Potential potential) {
         
-        return (!(potential instanceof AugmentedTable ||
-                potential instanceof AugmentedTablePotential ||
+        return (!(potential instanceof AugmentedProbTable ||
+                potential instanceof AugmentedProbTablePotential ||
                 potential instanceof BinomialPotential ||
                 potential instanceof FunctionPotential ||
                 potential instanceof SameAsPrevious ||
@@ -112,8 +112,8 @@ public class LinkInversionWithPotentialsUpdateValidator {
     
     private static boolean validPotential(Potential potential) {
         
-        return (!(potential instanceof AugmentedTable ||
-                potential instanceof AugmentedTablePotential ||
+        return (!(potential instanceof AugmentedProbTable ||
+                potential instanceof AugmentedProbTablePotential ||
                 potential instanceof BinomialPotential ||
                 potential instanceof FunctionPotential ||
                 potential instanceof SameAsPrevious ||

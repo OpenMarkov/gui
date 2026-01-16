@@ -13,8 +13,8 @@ import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.potential.AugmentedTable;
-import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
+import org.openmarkov.core.model.network.potential.AugmentedProbTable;
+import org.openmarkov.core.model.network.potential.AugmentedProbTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
@@ -58,19 +58,19 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
      */
     public AugmentedValuesTable(Node node, ValuesTableModel tableModel, final boolean modifiable) {
         super(node, tableModel, modifiable);
-        this.tablePotential = ((AugmentedTablePotential) potential).getAugmentedTable();
+        this.tablePotential = ((AugmentedProbTablePotential) potential).getAugmentedProbTable();
     }
     
     /**
      * @param node
      * @param tableModel
-     * @param augmentedTable
+     * @param AugmentedProbTable
      * @param modifiable
      */
-    public AugmentedValuesTable(Node node, ValuesTableModel tableModel, AugmentedTable augmentedTable,
+    public AugmentedValuesTable(Node node, ValuesTableModel tableModel, AugmentedProbTable AugmentedProbTable,
                                 final boolean modifiable) {
         super(node, tableModel, modifiable);
-        this.tablePotential = augmentedTable;
+        this.tablePotential = AugmentedProbTable;
     }
     
     /**
@@ -180,18 +180,18 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
     public void augmentedPotentialValueEditHappened(AugmentedPotentialValueEdit edit) {
         int position = edit.getIndexSelected();
         Potential editPotential = edit.getNewPotential();
-        AugmentedTable editTable;
-        if (editPotential instanceof AugmentedTablePotential) {
-            editTable = ((AugmentedTablePotential) editPotential).getAugmentedTable();
+        AugmentedProbTable editTable;
+        if (editPotential instanceof AugmentedProbTablePotential) {
+            editTable = ((AugmentedProbTablePotential) editPotential).getAugmentedProbTable();
             
         } else {
-            editTable = ((UnivariateDistrPotential) editPotential).getAugmentedTable();
+            editTable = ((UnivariateDistrPotential) editPotential).getAugmentedProbTable();
         }
         String[] functionValues = editTable.getFunctionValues();
         if (position >= 0) {
             int rowPosition = edit.getRowPosition(position);
             int columnPosition = edit.getColumnPosition();
-            if (editPotential instanceof AugmentedTablePotential) {
+            if (editPotential instanceof AugmentedProbTablePotential) {
                 for (int i = lastEditableRow; i <= lastEditableRow; i++) {
                     super.getModel().setValueAt("Complement", i, columnPosition);
                 }
@@ -209,11 +209,11 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
         //if (event.getEdit () instanceof AugmentedPotentialValueEdit)
         AugmentedPotentialValueEdit edit = (AugmentedPotentialValueEdit) event.getEdit();
         Potential editPotential = edit.getNewPotential();
-        AugmentedTable editTable;
-        if (editPotential instanceof AugmentedTablePotential) {
-            editTable = ((AugmentedTablePotential) editPotential).getAugmentedTable();
+        AugmentedProbTable editTable;
+        if (editPotential instanceof AugmentedProbTablePotential) {
+            editTable = ((AugmentedProbTablePotential) editPotential).getAugmentedProbTable();
         } else {
-            editTable = ((UnivariateDistrPotential) editPotential).getAugmentedTable();
+            editTable = ((UnivariateDistrPotential) editPotential).getAugmentedProbTable();
         }
         super.getModel().setValueAt(editTable.getFunctionValues()[edit.getIndexSelected()], edit.getRowPosition(),
                                     edit.getColumnPosition());

@@ -12,7 +12,7 @@ import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
+import org.openmarkov.core.model.network.potential.AugmentedProbTablePotential;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -61,8 +61,8 @@ import java.util.List;
 		Potential nodePotential = node.getPotentials().get(0);
         //CMI
         Potential potentialForTakingVariables = switch (nodePotential) {
-            case UnivariateDistrPotential univariateDistrPotential -> univariateDistrPotential.getAugmentedTable();
-            case AugmentedTablePotential augmentedTablePotential -> augmentedTablePotential.getAugmentedTable();
+            case UnivariateDistrPotential univariateDistrPotential -> univariateDistrPotential.getAugmentedProbTable();
+            case AugmentedProbTablePotential AugmentedProbTablePotential -> AugmentedProbTablePotential.getAugmentedProbTable();
             case ExactDistrPotential exactDistrPotential -> exactDistrPotential.getTablePotential();
             case null, default -> nodePotential;
         };
