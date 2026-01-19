@@ -11,7 +11,8 @@ import org.openmarkov.gui.configuration.LocalPreferences;
 import java.io.File;
 import java.util.HashMap;
 
-@SuppressWarnings("serial") public class DBWriterOMFileChooser extends DBOMFileChooser {
+@SuppressWarnings("serial") public class DBWriterOMFileChooser extends CommonDBOMFileChooser {
+ 
 	public DBWriterOMFileChooser(boolean acceptAllFiles) {
 		super(acceptAllFiles);
 		HashMap<String, String> writersInfo = caseDbManager.getAllWriters();
@@ -23,7 +24,4 @@ import java.util.HashMap;
         setCurrentDirectory(currentDirectory);
 	}
 	
-	public DBWriterOMFileChooser() {
-		this(false);
-	}
 }

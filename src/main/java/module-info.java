@@ -43,6 +43,7 @@ open module org.openmarkov.gui {
     exports org.openmarkov.gui.window.decisiontree;
     exports org.openmarkov.gui.dialog;
     exports org.openmarkov.gui.exception;
+    exports org.openmarkov.gui.component;
     exports org.openmarkov.gui.graphic;
     
     uses org.openmarkov.core.localize.spi.LocalizeResourcesProvider;

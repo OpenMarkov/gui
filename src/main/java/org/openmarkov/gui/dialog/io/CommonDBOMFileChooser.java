@@ -13,18 +13,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
-@SuppressWarnings("serial") public class DBOMFileChooser extends OMFileChooser {
+public abstract class CommonDBOMFileChooser extends OMFileChooser {
+ 
 	protected static CaseDatabaseManager caseDbManager = new CaseDatabaseManager();
     
-    public DBOMFileChooser(boolean acceptAllFiles) {
+    public CommonDBOMFileChooser(boolean acceptAllFiles) {
         super();
         setAcceptAllFileFilterUsed(acceptAllFiles);
+        setCurrentDirectory(LocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.get());
         rescanCurrentDirectory();
-        File currentDirectory = LocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.get();
-		setCurrentDirectory(currentDirectory);
 	}
 
 	@Override public int showOpenDialog(Component parent) {
+        setCurrentDirectory(LocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.get());
 		int result = super.showOpenDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
             LocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.set(getSelectedFile().getAbsoluteFile());
@@ -33,6 +34,7 @@ import java.io.File;
 	}
 
 	@Override public int showSaveDialog(Component parent) {
+        setCurrentDirectory(LocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.get());
 		int result = super.showSaveDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
             LocalPreferences.LATEST_SAVED_DATASET_FORMAT.set(((FileFilterAll) getFileFilter()).getFileDescription());

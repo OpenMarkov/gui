@@ -1339,7 +1339,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param currentNetworkPanel
      */
     private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException {
-        OMFileChooser evidenceOMFileChooser = new DBReaderOMFileChooser();
+        OMFileChooser evidenceOMFileChooser = new DBReaderOMFileChooser(false);
         evidenceOMFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title"));
         // Set last used evidence format as default
         String lastFileFilter = LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.get();
@@ -1356,7 +1356,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 throw new UnrecoverableException(e);
             }
             ProbNet currentNet = currentNetworkPanel.getProbNet();
-            CaseDatabase caseDatabase = caseDbReader.load(evidenceOMFileChooser.getSelectedFile().getAbsolutePath());
+            CaseDatabase caseDatabase = caseDbReader.load(evidenceOMFileChooser.getSelectedFile());
             List<Variable> variables = caseDatabase.getVariables();
             int[][] cases = caseDatabase.getCases();
             for (int i = 0; i < cases.length; ++i) {

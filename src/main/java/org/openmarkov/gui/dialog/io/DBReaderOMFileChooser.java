@@ -8,7 +8,8 @@ package org.openmarkov.gui.dialog.io;
 
 import java.util.HashMap;
 
-@SuppressWarnings("serial") public class DBReaderOMFileChooser extends DBOMFileChooser {
+@SuppressWarnings("serial") public class DBReaderOMFileChooser extends CommonDBOMFileChooser {
+    
     public DBReaderOMFileChooser(boolean acceptAllFiles) {
 		super(acceptAllFiles);
 		HashMap<String, String> writersInfo = caseDbManager.getAllReaders();
@@ -16,8 +17,5 @@ import java.util.HashMap;
 			addChoosableFileFilter(new FileFilterAll(extension, writersInfo.get(extension)));
 		}
 	}
-    
-    public DBReaderOMFileChooser() {
-		this(false);
-	}
+ 
 }
