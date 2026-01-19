@@ -1,11 +1,10 @@
 package org.openmarkov.gui.configuration;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
+import org.openmarkov.gui.configuration.gson.GsonCommon;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -74,11 +73,6 @@ public final class LocalPreference<T> {
             .findFirst()
             .orElse(LocalPreferenceResolveStrategy.SESSION);
     
-    private static final Gson GSON = new GsonBuilder()
-            .setPrettyPrinting()
-            .registerTypeAdapter(java.io.File.class, new GsonAdapters.FileAdapter())
-            .create();
-    
     private final @NotNull List<String> preferencePath;
     private final @NotNull Supplier<? extends T> defaultValue;
     private final @NotNull Predicate<Object> verifyIsInstance;
@@ -93,8 +87,8 @@ public final class LocalPreference<T> {
     
     public static <T extends Serializable> LocalPreference<T> of(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @Nullable TypeToken<T> typeToken) {
         return new LocalPreference<>(preferencePath, defaultValue, null, null,
-                                     (string) -> GSON.fromJson(string, typeToken),
-                                     (value) -> LocalPreference.GSON.toJson(value, typeToken.getType()));
+                                     (string) -> GsonCommon.GSON.fromJson(string, typeToken),
+                                     (value) -> GsonCommon.GSON.toJson(value, typeToken.getType()));
     }
     
     LocalPreference(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @Nullable Class<T> tClass, @Nullable Predicate<Object> verifyIsInstance, Function<String, T> deserializeWith, Function<T, String> serializeWith) {

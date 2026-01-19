@@ -125,6 +125,9 @@ public class MainPanel extends JPanel {
                 InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK
         ), "navigatePrevious");
         
+        this.mainPanelListenerAssistant = new MainPanelListenerAssistant(this);
+        this.mainMenu = new MainMenu(this, mainPanelListenerAssistant);
+
         this.networksTabPanel.addChangeListener(e -> {
             var selectedComponent = this.networksTabPanel.getSelectedComponent();
             switch (selectedComponent) {
@@ -141,9 +144,9 @@ public class MainPanel extends JPanel {
                 
                 }
             }
+            ;
+            this.mainMenu.reInitialize();
         });
-        this.mainPanelListenerAssistant = new MainPanelListenerAssistant(this);
-        this.mainMenu = new MainMenu(this, mainPanelListenerAssistant);
         this.initialize();
     }
     
@@ -156,6 +159,9 @@ public class MainPanel extends JPanel {
      * @return The current ProbNet opened in the Main Panel.
      */
     public static @Nullable ProbNet getCurrentProbNet() {
+        if (MainGUI.INSTANCE == null) {
+            return null;
+        }
         MainPanel panelInstance = MainGUI.INSTANCE.mainPanel;
         if (panelInstance == null) {
             return null;

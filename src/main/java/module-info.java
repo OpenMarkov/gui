@@ -39,9 +39,11 @@ open module org.openmarkov.gui {
     exports org.openmarkov.gui.dialog.costeffectiveness;
     exports org.openmarkov.gui.dialog.treeadd;
     exports org.openmarkov.gui.configuration;
+    exports org.openmarkov.gui.configuration.gson;
     exports org.openmarkov.gui.window.decisiontree;
     exports org.openmarkov.gui.dialog;
     exports org.openmarkov.gui.exception;
+    exports org.openmarkov.gui.graphic;
     
     uses org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
     provides org.openmarkov.core.localize.spi.LocalizeResourcesProvider with GUIResourceBundleProvider;

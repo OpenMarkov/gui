@@ -52,6 +52,7 @@
     <SaveNetwork>
         <Title value="Save network"/>
     </SaveNetwork>
+    <SaveNetworkImage value="Save image of network"/>
     <ExceptionInvalidState>
         <Text value="Invalid State. "/>
         <Title value="Error - Invalid State"/>

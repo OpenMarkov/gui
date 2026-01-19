@@ -1,4 +1,4 @@
-package org.openmarkov.gui.configuration;
+package org.openmarkov.gui.configuration.gson;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

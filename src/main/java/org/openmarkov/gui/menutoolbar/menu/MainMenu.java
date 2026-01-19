@@ -8,6 +8,7 @@
 package org.openmarkov.gui.menutoolbar.menu;
 
 import com.google.gson.reflect.TypeToken;
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.gui.component.LastRecentFilesMenuItem;
 import org.openmarkov.gui.configuration.LastOpenFiles;
 import org.openmarkov.gui.configuration.LocalPreferences;
@@ -251,7 +252,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     /**
      * Object that represents the menu 'Tools'.
      */
-    private JMenu toolsMenu = null;
+    private @Nullable JMenu toolsMenu = null;
     /**
      * Object that represents the item 'Tools - Configuration'.
      */
@@ -310,6 +311,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
      * This method initializes the instance.
      */
     public void reInitialize() {
+        this.toolsMenu = null;
         removeAll();
         add(getFileMenu());
         add(getEditMenu());
@@ -1354,8 +1356,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
                 //Add all of the sorted plugins of the group to the menu.
                 for (ToolPlugin plugin : plugins) {
                     var menuItem = ToolPluginManager.toolPluginToMenuItem(plugin);
-                    //TODO: This action listener is likely not needed.
-                    menuItem.addActionListener(listener);
+                    menuItem.setEnabled(plugin.enabled());
                     toolsMenu.add(menuItem);
                 }
                 //Add separator only if this group isn't the last (To avoid having a separator that is empty).

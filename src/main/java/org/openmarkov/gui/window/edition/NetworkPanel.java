@@ -65,6 +65,9 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
      */
     private String networkFile = null;
     
+    
+    private JScrollPane editorScrollPanel;
+    
     /**
      * Format of the file where the network is saved (updated or not).
      */
@@ -113,7 +116,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
         // splitPane.setTopComponent(getNetworkScrollPanel());
         // splitPane.setBottomComponent(getPropertiesScrollPanel());
         
-        var editorScrollPanel = new JScrollPane();
+        this.editorScrollPanel = new JScrollPane();
         editorScrollPanel.setViewportView(editorPanel);
         editorScrollPanel.getVerticalScrollBar().setUnitIncrement(25);
         add(editorScrollPanel);
@@ -153,6 +156,10 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
      */
     public boolean getModified() {
         return modified;
+    }
+    
+    public JScrollPane getEditorScrollPanel() {
+        return this.editorScrollPanel;
     }
     
     public void addOnModification(Consumer<NetworkPanel> action) {
@@ -777,4 +784,5 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
     public void removeDecisionTreeWindows(DecisionTreeWindow decisionTreeWindows) {
         this.decisionTreeWindows.remove(decisionTreeWindows);
     }
+    
 }

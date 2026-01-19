@@ -158,7 +158,7 @@ import java.io.IOException;
      * LastConnection preference to current Time
      */
     private static void doReadPreferences() {
-        LocalPreferences.getAllPreferences().forEach(LocalPreference::initialize);
+        LocalPreferences.initializeAllPreferences();
     }
     
     /**

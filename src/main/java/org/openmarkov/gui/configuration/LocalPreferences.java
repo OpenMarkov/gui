@@ -148,4 +148,7 @@ public final class LocalPreferences {
         return ALL_PREFERENCES;
     }
     
+    public static void initializeAllPreferences() {
+        //ALL_PREFERENCES.forEach(LocalPreference::initialize);
+    }
 }

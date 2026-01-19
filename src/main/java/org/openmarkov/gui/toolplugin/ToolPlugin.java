@@ -60,6 +60,10 @@ public interface ToolPlugin {
     
     int priorityInGroup();
     
+    default boolean enabled() {
+        return true;
+    }
+    
     /**
      * This method is called when the user clicks on this Plugin from the {@code Tools} toolbar.
      * <p>

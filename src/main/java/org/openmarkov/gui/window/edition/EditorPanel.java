@@ -113,6 +113,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * Dialog for revelation arc edition
      */
     RevelationArcEditDialog revelationArcDialog = null;
+    
     /**
      * Maximum width of the panel.
      */
@@ -233,6 +234,14 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         //this.setBackground(Color.white);
         //adjustPanelDimension ();
         setZoomToFitNetwork();
+    }
+    
+    public double getCurrentWidth() {
+        return this.currentWidth;
+    }
+    
+    public double getCurrentHeight() {
+        return this.currentHeight;
     }
     
     /**
@@ -2264,8 +2273,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void adjustPanelDimension() {
         double[] bounds = getBounds((Graphics2D) getGraphics());
-        currentWidth = Math.min(MAX_WIDTH, bounds[1]);
-        currentHeight = Math.min(MAX_HEIGHT, bounds[3]);
+        this.currentWidth = Math.min(MAX_WIDTH, bounds[1]);
+        this.currentHeight = Math.min(MAX_HEIGHT, bounds[3]);
         Dimension newDimension = new Dimension((int) Math.round(getNewWidth()), (int) Math.round(getNewHeight()));
         setPreferredSize(newDimension);
         setSize(newDimension);

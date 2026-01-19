@@ -73,7 +73,7 @@ public class Segment {
 		endPoint = newEndPoint;
 		if (newStartPoint.getX() == newEndPoint.getX()) {
 			if (newStartPoint.getY() == newEndPoint.getY()) {
-				throw new UnrecoverableException(new InvalidArgumentException(newStartPoint.getY(), "Y for both start and end points", "both Y coordinates should be different"));
+                //throw new UnrecoverableException(new InvalidArgumentException(newStartPoint.getY(), "Y for both start and end points", "both Y coordinates should be different"));
 			}
 			segmentType = SEGMENT_VERTICAL;
 			m = 0;
