@@ -804,6 +804,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     
     private boolean requestPotentialValues(Window owner, Node node, boolean newNode, boolean readOnly) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         potentialsDialog = new PotentialEditDialog(owner, node, newNode, readOnly);
+        visualNetwork.cancelLinkCreation(this);
         return (
                 potentialsDialog.requestValues()// to know if the user has
                         // selected the ok button when

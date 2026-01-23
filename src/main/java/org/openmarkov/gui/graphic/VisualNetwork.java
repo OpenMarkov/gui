@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.util.MovedNodeInfo;
 import org.openmarkov.gui.window.MainGUI;
+import org.openmarkov.gui.window.edition.EditorPanel;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -1127,6 +1128,12 @@ public class VisualNetwork implements PNUndoableEditListener {
             }
         }
         return linkEdit;
+    }
+
+    public void cancelLinkCreation(EditorPanel editorPanel) {
+        newLink = null;
+        newLinkSource = null;
+        editorPanel.repaint();
     }
     
     public void startSelectionRectangle(Point2D.Double position) {
