@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 
 public class EditionModeManager {
     private Map<String, EditionState> editionStates;
-    private Map<String, Class<EditionMode>> editionModeClasses;
+    private Map<String, Class<? extends EditionMode>> editionModeClasses;
     private EditorPanel editorPanel;
     private ProbNet probNet;
     
@@ -64,7 +64,7 @@ public class EditionModeManager {
      *
      * @return a list with the plugins detected with FormatType annotations.
      */
-    private static @NotNull Stream<Class<EditionMode>> findAllEditionStates() {
+    private static @NotNull Stream<Class<? extends EditionMode>> findAllEditionStates() {
         return PluginSearch.init()
                            .annotatedWith(EditionState.class)
                            .childrenOf(EditionMode.class)

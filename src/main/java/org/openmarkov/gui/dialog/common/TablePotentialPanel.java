@@ -64,8 +64,9 @@ import java.util.List;
  * @version 2 - cmyago 19/06/2016 - Changes: 1. adaptation to the new definition of utility node, 2. removing deterministic features
  * 3. when the potential doesn't exit an exception is raised
  */
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Table") public class TablePotentialPanel
-        extends ProbabilityTablePanel {
+//ExactDistrPotential) potential).getTablePotential() : (TablePotential
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = {ExactDistrPotential.class, TablePotential.class})
+public class TablePotentialPanel extends ProbabilityTablePanel {
     /**
      * JTable where show the values.
      */
@@ -84,14 +85,13 @@ import java.util.List;
      * First potential of node;  its class  should be  org.openmarkov.core.model.network.potential.TablePotential or
      * org.openmarkov.core.model.network.potential.TableDeltaPotential
      */
-    protected Potential potential = null;
+    private Potential potential = null;
     
     /**
      * When potential is an instance of TablePotential, tablePotential is potential casted as TablePotential
      * When potential is an instance of TableDeltaPotential, tablePotential=(TablePotential)potential.getTablePotential()
      */
-    
-    protected TablePotential tablePotential = null;
+    private TablePotential tablePotential = null;
     
     /**
      * True if class of zeroPotential is org.openmarkov.core.model.network.potential.TableDeltaPotential
@@ -928,6 +928,22 @@ import java.util.List;
             
         });
         valuesTable.addMouseListener(new DoubleClickListener());
+    }
+    
+    public void setPotential(Potential potential) {
+        this.potential = potential;
+    }
+    
+    public TablePotential getTablePotential() {
+        return this.tablePotential;
+    }
+    
+    public void setTablePotential(TablePotential tablePotential) {
+        this.tablePotential = tablePotential;
+    }
+    
+    public Potential getPotential() {
+        return this.potential;
     }
     
     /**

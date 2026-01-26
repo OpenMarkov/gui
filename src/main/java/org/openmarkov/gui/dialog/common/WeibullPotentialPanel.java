@@ -33,8 +33,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Hazard (Weibull)") public class WeibullPotentialPanel
-        extends PotentialPanel implements ItemListener, ActionListener {
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = WeibullHazardPotential.class)
+public class WeibullPotentialPanel extends PotentialPanel implements ItemListener, ActionListener {
     
     private static final String MATRIX_TYPE_COVARIANCE = "Covariance matrix";
     private static final String MATRIX_TYPE_CHOLESKY = "Cholesky decomposition";

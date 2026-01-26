@@ -22,6 +22,7 @@ import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class NetsIO {
         URL fileToRead = new File(fileName).toURI().toURL();
         ProbNetReader probNetReader = FormatManager.getInstance().getProbNetReader(fileToRead);
         try {
-            return probNetReader.loadProbNetInfo(fileName);
+            return probNetReader.loadProbNetInfo(fileName, new FileInputStream(fileName));
         } catch (RuntimeException e) {
             throw new CorruptNetworkFile(fileToRead, e);
         }

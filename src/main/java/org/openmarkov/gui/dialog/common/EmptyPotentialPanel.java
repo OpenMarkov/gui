@@ -7,10 +7,13 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.potential.*;
 
 import java.awt.*;
 
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Uniform") public class EmptyPotentialPanel
+@SuppressWarnings("serial") @PotentialPanelPlugin(
+        potentialClasses = {UniformPotential.class, CycleLengthShift.class, ProductPotential.class, SameAsPrevious.class, SumPotential.class})
+public class EmptyPotentialPanel
 		extends PotentialPanel {
 	public EmptyPotentialPanel(Node node) {
 		setLayout(new BorderLayout());

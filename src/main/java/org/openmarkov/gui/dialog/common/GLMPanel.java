@@ -40,7 +40,7 @@ import java.util.List;
      * Invoked when the button 'add' is pressed.
      */
     @Override protected void actionPerformedAddValue() {
-        ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, potential.getVariables());
+        ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, potential.getVariables(), null);
         expressionDialog.setVisible(true);
         if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
             int selectedRow = valuesTable.getSelectedRow();

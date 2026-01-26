@@ -30,7 +30,8 @@ import java.util.List;
  * @author jlgozalo
  * @author myebra
  */
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "ICI") public class ICIPotentialsTablePanel
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = ICIPotential.class)
+public class ICIPotentialsTablePanel
         extends ProbabilityTablePanel {
     
     private ICIOptionsPanel iciOptionPanel;

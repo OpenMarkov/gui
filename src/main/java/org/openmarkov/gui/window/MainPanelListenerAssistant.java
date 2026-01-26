@@ -953,11 +953,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 criteria.add(new Criterion());
                 probNet.setDecisionCriteria(criteria);
             }
-            String networkName = stringDatabase.getString("InternalFrame.Title") + " " + frameIndex;
+            String networkName = stringDatabase.getString("InternalFrame.Title");
             probNet.setName(networkName);
             probNet.getPNESupport().setWithUndo(true);
             networkPanels.add(createNewFrame(probNet));
-            frameIndex++;
             // mainPanelMenuAssistant is added as listener to probNet
             // for menus updated purposes.
             probNet.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());

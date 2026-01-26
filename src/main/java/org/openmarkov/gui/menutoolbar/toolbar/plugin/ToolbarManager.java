@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 public class ToolbarManager {
     private MainPanel mainPanel;
-    private Map<String, Class<ToolBarBasic>> toolbarClasses;
+    private Map<String, Class<? extends ToolBarBasic>> toolbarClasses;
     private List<String> activeToolbars = new ArrayList<>();
     
     public ToolbarManager(MainPanel mainPanel) {
@@ -55,7 +55,7 @@ public class ToolbarManager {
      *
      * @return a list with the plugins detected with Toolbar annotations.
      */
-    private static @NotNull Stream<Class<ToolBarBasic>> findAllToolbars() {
+    private static @NotNull Stream<Class<? extends ToolBarBasic>> findAllToolbars() {
         return PluginSearch.init()
                            .annotatedWith(Toolbar.class)
                            .childrenOf(ToolBarBasic.class)

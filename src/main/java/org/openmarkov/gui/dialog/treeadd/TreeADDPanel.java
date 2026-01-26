@@ -11,13 +11,14 @@ import org.openmarkov.core.action.core.SetPotentialEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.gui.dialog.common.PotentialPanel;
 import org.openmarkov.gui.dialog.common.PotentialPanelPlugin;
 
 import java.awt.*;
 
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Tree/ADD") public class TreeADDPanel
-        extends PotentialPanel {
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = TreeADDPotential.class)
+public class TreeADDPanel extends PotentialPanel {
     /**
      * The builder object of Tree - ADDs
      */
@@ -33,9 +34,7 @@ import java.awt.*;
     }
     
     @Override public boolean saveChanges() throws DoEditException {
-        SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, treeADDController.getTreePotential());
-        ProbNet probNet = node.getProbNet();
-        setPotentialEdit.executeEdit();
+        new SetPotentialEdit(node, treeADDController.getTreePotential()).executeEdit();
         return true;
     }
     

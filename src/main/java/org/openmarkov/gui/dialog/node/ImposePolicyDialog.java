@@ -8,8 +8,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
 import org.openmarkov.gui.action.ImposePolicyEdit;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.gui.dialog.common.ICIPotentialsTablePanel;
@@ -18,7 +16,6 @@ import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualNode;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +25,7 @@ public class ImposePolicyDialog extends PotentialEditDialog{
     private Node node;
     private VisualDecisionNode visualDecisionNode;
     private CommentHTMLScrollPane commentPane;
-    private String previouslySelectedPotentialType;
+    private Class<? extends Potential> previouslySelectedPotentialType;
     private int optionPreviouslySelected;
     private Potential lastPolicy;
     /**
@@ -49,12 +46,10 @@ public class ImposePolicyDialog extends PotentialEditDialog{
 
     @Override
     protected void potentialTypeChanged() {
-        String potentialType = (String) getPotentialTypeJCombobox().getSelectedItem();
-        if (!previouslySelectedPotentialType.equals(potentialType)) {
-
-            Potential newPotential = stringToPotential(potentialType);
+        Class<? extends Potential> potentialType = (Class<? extends Potential>) getPotentialTypeJCombobox().getSelectedItem();
+        if (!potentialType.equals(previouslySelectedPotentialType)) {
+            Potential newPotential = instanciatePotential(potentialType);
             visualDecisionNode.setPolicy(newPotential);
-
             updatePotentialPanel();
             previouslySelectedPotentialType = potentialType;
             optionPreviouslySelected = getPotentialTypeJCombobox().getSelectedIndex();
@@ -63,7 +58,6 @@ public class ImposePolicyDialog extends PotentialEditDialog{
             getComponentsPanel().repaint();
             this.repaint();
             this.pack();
-
         }
 
     }
@@ -122,7 +116,6 @@ public class ImposePolicyDialog extends PotentialEditDialog{
                 throw new UnrecoverableException(e);
             }
         }
-        potentialManager = new PotentialManager();
         // Set default title
         setTitle("NodePotentialDialog.Title");
         configureComponentsPanel();

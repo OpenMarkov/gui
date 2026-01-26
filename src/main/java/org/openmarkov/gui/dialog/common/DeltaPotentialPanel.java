@@ -12,7 +12,6 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.DeltaPotential;
@@ -24,7 +23,8 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Delta") public class DeltaPotentialPanel
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = DeltaPotential.class)
+public class DeltaPotentialPanel
         extends PotentialPanel {
     
     private JComboBox<String> stateComboBox;

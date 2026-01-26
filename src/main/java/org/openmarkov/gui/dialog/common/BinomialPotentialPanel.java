@@ -10,7 +10,6 @@ package org.openmarkov.gui.dialog.common;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.BinomialPotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -20,7 +19,8 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Binomial") public class BinomialPotentialPanel
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = BinomialPotential.class)
+public class BinomialPotentialPanel
         extends PotentialPanel {
     
     private JSpinner NSpinner;

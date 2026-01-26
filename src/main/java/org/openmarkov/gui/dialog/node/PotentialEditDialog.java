@@ -13,7 +13,7 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.*;
-import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
+import org.openmarkov.core.model.network.potential.plugin.PotentialUtils;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
 import org.openmarkov.gui.dialog.common.*;
@@ -28,7 +28,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Dialog box to edit all type of potentials ( TablePotential and TreeADDs ). If
@@ -50,7 +52,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
     /**
      * The JComboBox object that shows all the potentials types
      */
-    private JComboBox<String> potentialTypeComboBox;
+    private JComboBox<Class<? extends Potential>> potentialTypeComboBox;
     /**
      * The node edited
      */
@@ -65,10 +67,6 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
      */
     private JLabel lblPotentialType;
     /**
-     * Relation Type Manager
-     */
-    protected PotentialManager potentialManager;
-    /**
      * Panel of the graphic editor
      */
     private PotentialPanel potentialPanel;
@@ -77,7 +75,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
      * Option deselected in the jComboboxRelationType
      */
     private int optionPreviouslySelected = 0;
-    private String previouslySelectedPotentialType = "";
+    private Class<? extends Potential> previouslySelectedPotentialType = null;
     /**
      * If true, values inside the dialog will not be editable
      */
@@ -116,7 +114,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
     
     private Potential lastPotential;
     
-
+    
     /**
      * Creates the dialog.
      */
@@ -154,8 +152,8 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
     public PotentialEditDialog(Window owner, Node node, boolean newElement) {
         this(owner, node, newElement, false);
     }
-
-    public  PotentialEditDialog (Window owner, VisualNode visualNode){
+    
+    public PotentialEditDialog(Window owner, VisualNode visualNode) {
         super(owner);
         this.visualNode = visualNode;
         this.node = visualNode.getNode();
@@ -163,7 +161,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
         node.getProbNet().getPNESupport().openParenthesis();
         List<Potential> potentials = node.getPotentials();
         if (!potentials.isEmpty() && potentials.get(0).getComment() != null && !potentials.get(0).getComment()
-                .isEmpty()) {
+                                                                                          .isEmpty()) {
             commentPane.setCommentHTMLTextPaneText(potentials.get(0).getComment());
         }
         Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -185,7 +183,6 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
      * This method configures the dialog box.
      */
     private void initialize() {
-        potentialManager = new PotentialManager();
         // Set default title
         setTitle("NodePotentialDialog.Title");
         configureComponentsPanel();
@@ -244,16 +241,14 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
     /**
      * @return ComboBox with the types of families of relation to be used
      */
-    protected JComboBox<String> getPotentialTypeJCombobox() {
+    protected JComboBox<Class<? extends Potential>> getPotentialTypeJCombobox() {
         if (potentialTypeComboBox == null) {
-            List<String> filteredPotentialNames = potentialManager.getFilteredPotentials(node);
-            Collections.sort(filteredPotentialNames);
-            potentialTypeComboBox = new JComboBox<>(filteredPotentialNames.toArray(new String[0]));
-            String currentPotentialType = node.getPotentials()
-                                              .get(0)
-                                              .getClass()
-                                              .getAnnotation(PotentialType.class)
-                                              .name();
+            List<Class<? extends Potential>> filteredPotentialNames = PotentialUtils.getFilteredPotentialClasses(node);
+            filteredPotentialNames.sort(Comparator.comparing(PotentialUtils::getPotentialName));
+            potentialTypeComboBox = new JComboBox<>(filteredPotentialNames.toArray(new Class[0]));
+            potentialTypeComboBox.setRenderer(new JComboBoxFunctionRender<Class<? extends Potential>>(PotentialUtils::getPotentialName));
+            
+            String currentPotentialType = PotentialUtils.getPotentialName(node.getPotentials().getFirst().getClass());
             // Compute the number of columns of the conditional probability table
             int tableColumns = 1;
             for (Node parent : node.getParents()) {
@@ -292,18 +287,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
      */
     protected PotentialPanel getPotentialPanel() {
         if (potentialPanel == null) {
-            String potentialName = (String) potentialTypeComboBox.getSelectedItem();
-            String potentialFamily = potentialManager.getPotentialsFamily(potentialName);
-            //Adaptation to deal with ExactDistrPotential too
-            if (potentialName.equals("Exact")) {
-                potentialPanel = PotentialPanelManager.getInstance()
-                                                      .getPotentialPanel("Table", potentialManager.getPotentialsFamily("Table"), node);
-                
-            } else
-                potentialPanel = PotentialPanelManager.getInstance()
-                                                      .getPotentialPanel(potentialName, potentialFamily, node);
-
-
+            potentialPanel = PotentialPanelManager.getInstance().createPotentialPanel(node);
             potentialPanel.setReadOnly(readOnly);
             potentialPanel.suscribePanelResizeEventListener(this);
         }
@@ -343,8 +327,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
     private void showFields(Node node) throws ThereIsNoPotentialsInNodeException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         // The element order in PotentialType object are same that
         // JComboBoxRelationType
-        previouslySelectedPotentialType = node.getFirstPotential().getClass().getAnnotation(PotentialType.class)
-                                              .name();
+        previouslySelectedPotentialType = node.getFirstPotential().getClass();
         getPotentialTypeJCombobox().setSelectedItem(previouslySelectedPotentialType);
         updatePotentialPanel();
         // Elvira do not distinguish between DISCRETE and DISCRETIZED
@@ -570,12 +553,12 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
     }
     
     protected void potentialTypeChanged() {
-        String potentialType = (String) potentialTypeComboBox.getSelectedItem();
+        Class<? extends Potential> potentialType = (Class<? extends Potential>) potentialTypeComboBox.getSelectedItem();
         if (!previouslySelectedPotentialType.equals(potentialType)) {
-
-            Potential newPotential = stringToPotential(potentialType);
+            
+            Potential newPotential = instanciatePotential(potentialType);
             node.setPotentialConsistently(newPotential);
-
+            
             updatePotentialPanel();
             previouslySelectedPotentialType = potentialType;
             optionPreviouslySelected = potentialTypeComboBox.getSelectedIndex();
@@ -586,6 +569,26 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
             this.pack();
             
         }
+    }
+    
+    static class JComboBoxFunctionRender<T> extends DefaultListCellRenderer {
+        
+        private final Function<T, String> mapper;
+        
+        JComboBoxFunctionRender(Function<T, String> mapper) {
+            this.mapper = mapper;
+        }
+        
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value,
+                                                      int index, boolean isSelected,
+                                                      boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            this.setText(this.mapper.apply((T) value));
+            return this;
+        }
+        
+        
     }
     
     /**
@@ -617,7 +620,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
     }
     
     @Override protected void doCancelClickBeforeHide() {
-        if(lastPotential != null)
+        if (lastPotential != null)
             node.setPotentialConsistently(lastPotential);
         getPotentialPanel().close();
         node.getProbNet().getPNESupport().closeParenthesis();
@@ -680,7 +683,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
                     // TODO definir el comportamiento para los demás tipos de potenciales
                     if (potential instanceof UniformPotential || potential instanceof TablePotential) {
                         getPotentialTypeJCombobox()
-                                .setSelectedItem(potential.getClass().getAnnotation(PotentialType.class).name());
+                                .setSelectedItem(PotentialUtils.getPotentialName(potential.getClass()));
                         // getJComboBoxRelationType().setEnabled(false);
                     }
                     break;
@@ -754,47 +757,29 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
         // Finally, the value of enable is returned
         return enable;
     }
-
-    protected JComboBox<String> getPotentialTypeComboBox(){
-        return potentialTypeComboBox;
-    }
-    protected void setPotentialTypeComboBox(JComboBox<String> potentialTypeComboBox){
-        this.potentialTypeComboBox = potentialTypeComboBox;
-    }
-
-    protected PotentialManager getPotentialManager(){
-        return potentialManager;
-    }
-
-    protected Node getNode(){
+    
+    protected Node getNode() {
         return node;
     }
-
-    protected Potential stringToPotential(String potentialType){
+    
+    protected Potential instanciatePotential(Class<? extends Potential> potentialType) {
         lastPotential = node.getPotentials().get(0);
-        Potential newPotential;
-
-        PotentialManager relationTypeManager = new PotentialManager();
-
         assert potentialType != null;
-        if (potentialType.equals(PotentialManager.getPotentialName(CycleLengthShift.class))) {
-            newPotential = relationTypeManager
-                    .getByName(potentialType, lastPotential.getVariables(), lastPotential.getPotentialRole(), node.getProbNet().getCycleLength());
-        } else {
-            newPotential = relationTypeManager.getByName(potentialType, lastPotential.getVariables(), lastPotential.getPotentialRole());
+        if (potentialType == CycleLengthShift.class) {
+            return PotentialUtils.instanciateSafely(potentialType, lastPotential.getVariables(),
+                                                    lastPotential.getPotentialRole(), node.getProbNet()
+                                                                                          .getCycleLength());
         }
-
-        return newPotential;
-
+        return PotentialUtils.instanciateSafely(potentialType, lastPotential.getVariables(), lastPotential.getPotentialRole());
     }
-
-    protected String getPreviouslySelectedPotentialType(){
+    
+    protected Class<? extends Potential> getPreviouslySelectedPotentialType() {
         return this.previouslySelectedPotentialType;
     }
-
-    protected int getOptionPreviouslySelected(){
+    
+    protected int getOptionPreviouslySelected() {
         return this.optionPreviouslySelected;
     }
-
+    
     
 }

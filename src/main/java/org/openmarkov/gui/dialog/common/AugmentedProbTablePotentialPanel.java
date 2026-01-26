@@ -7,21 +7,22 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.apache.commons.compress.MemoryLimitException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
-import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.AugmentedProbTable;
 import org.openmarkov.core.model.network.potential.AugmentedProbTablePotential;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.gui.component.AugmentedValuesTable;
 import org.openmarkov.gui.component.AugmentedValuesTableModel;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.gui.component.ValuesTable;
 import org.openmarkov.gui.component.ValuesTableModel;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
+import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,9 +55,9 @@ import java.util.List;
  *
  * @author carmenyago Apr/2017
  */
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "AugmentedProbTable")
-public class AugmentedProbTablePotentialPanel
-        extends TablePotentialPanel {
+
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = AugmentedProbTablePotential.class)
+public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
     /**
      * Variables of the AugmentedProbTablePotential.
      * The attribute {@code variables} contains the variables of the AugmentedProbTable
@@ -65,6 +66,22 @@ public class AugmentedProbTablePotentialPanel
     
     public AugmentedProbTablePotentialPanel() {
         super();
+    }
+    
+    @Override public void setPotential(Potential potential) {
+        super.setPotential((AugmentedProbTablePotential) potential);
+    }
+    
+    @Override public void setTablePotential(TablePotential tablePotential) {
+        super.setTablePotential((AugmentedProbTable) tablePotential);
+    }
+    
+    @Override public AugmentedProbTablePotential getPotential() {
+        return (AugmentedProbTablePotential) super.getPotential();
+    }
+    
+    @Override public AugmentedProbTable getTablePotential() {
+        return (AugmentedProbTable) super.getTablePotential();
     }
     
     /**
@@ -77,15 +94,15 @@ public class AugmentedProbTablePotentialPanel
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
         this.node = node;
         // This panel displays the first potential of the node
-        potential = node.getFirstPotential();
+        setPotential(node.getFirstPotential());
         //The table associated to tablePotential
-        tablePotential = ((AugmentedProbTablePotential) potential).getAugmentedProbTable();
+        setTablePotential(getPotential().getAugmentedProbTable());
         
         //The list of variables of the AugmentedProbTablePotential
-        potentialVariables = potential.getVariables();
+        potentialVariables = getPotential().getVariables();
         
         //The list of variables of the AugmentedProbTable of TablePotential
-        variables = tablePotential.getVariables();
+        variables = getTablePotential().getVariables();
         
         // Creating the table; class AugmentedValuesTable
         valuesTable = new AugmentedValuesTable(node, getTableModel(), modifiable);
@@ -111,7 +128,7 @@ public class AugmentedProbTablePotentialPanel
      *
      * @return the tableModel of valuesTable.
      *
-     * @see org.openmarkov.gui.component.ValuesTable
+     * @see ValuesTable
      * revised--&gt;minor changes
      */
     @Override protected ValuesTableModel getTableModel() {
@@ -221,7 +238,7 @@ public class AugmentedProbTablePotentialPanel
     @Override protected Object[][] createEmptyTable() {
         
         int numColumns = 1; // Variables column
-        
+        AugmentedProbTable tablePotential = getTablePotential();
         // First editable row coincides with the number of parents
         //CHANGE (minor node by tablePotential
         firstEditableRow = PotentialsTablePanelOperations.calculateFirstEditableRow(tablePotential);
@@ -260,8 +277,8 @@ public class AugmentedProbTablePotentialPanel
         
         int numColumns = values[0].length;
         
-        // rounding initial values
-        String[] initialValues = ((AugmentedProbTable) tablePotential).getFunctionValues();
+        AugmentedProbTable tablePotential = getTablePotential();
+        String[] initialValues = tablePotential.getFunctionValues();
         for (int j = 1; j <= numColumns - 1; j++) {
             
             // put the values on the table
@@ -281,6 +298,7 @@ public class AugmentedProbTablePotentialPanel
      * Override because we need the variables in tablePotential no in potential
      */
     @Override protected long setNumberOfPostions() {
+        AugmentedProbTable tablePotential = getTablePotential();
         long numPositions = 1;
         for (Variable variable : tablePotential.getVariables()) {
             numPositions = numPositions * variable.getNumStates();
@@ -367,6 +385,15 @@ public class AugmentedProbTablePotentialPanel
         valuesTable.addMouseListener(new MouseClickedListener());
     }
     
+    @Override
+    public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong, DoEditException {
+        return super.saveChanges();
+    }
+    
+    @Override public void close() {
+        super.close();
+    }
+    
     /**
      * This class overrides the double click listener calling the
      */
@@ -374,15 +401,19 @@ public class AugmentedProbTablePotentialPanel
         
         @Override public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 1) {
-                List<Variable> parameterVariables = ((AugmentedProbTablePotential) potential).getParameterVariables();
-                ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables,
-                                                                                             null);
+                int row = valuesTable.rowAtPoint(e.getPoint());
+                int column = valuesTable.columnAtPoint(e.getPoint());
+                var expression = valuesTable.getValueAt(row, column).toString();
+                AugmentedProbTablePotential potential = getPotential();
+                List<Variable> parameterVariables = potential.getParameterVariables();
+                ArithmeticExpressionDialog expressionDialog =
+                        new ArithmeticExpressionDialog(null, parameterVariables, expression);
                 expressionDialog.setVisible(true);
                 if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
                     String function = expressionDialog.getExpression();
-                    int row = valuesTable.rowAtPoint(e.getPoint());
-                    int column = valuesTable.columnAtPoint(e.getPoint());
                     valuesTable.setValueAt(function, row, column);
+                    //TODO: Continue here changing String expressions to VariableExpression expressions.
+                    //valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column);
                 }
             }
             if (e.getClickCount() == 2) {

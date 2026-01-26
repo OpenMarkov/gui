@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.common;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.FunctionPotential;
 
@@ -21,8 +20,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Function") public class FunctionPotentialPanel
-        extends PotentialPanel {
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = FunctionPotential.class)
+public class FunctionPotentialPanel extends PotentialPanel {
     
     /**
      * Panel with the function
@@ -111,7 +110,9 @@ import java.util.List;
     private class FunctionTextAreaMouseListener extends MouseAdapter {
         @Override public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
-                ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parents, function);
+                ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, potential.getVariables()
+                                                                                                            .subList(1, potential.getVariables()
+                                                                                                                                 .size()), function);
                 expressionDialog.setVisible(true);
                 if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
                     function = expressionDialog.getExpression();

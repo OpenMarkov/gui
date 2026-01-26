@@ -46,7 +46,7 @@ public final class ToolPluginManager {
     /**
      * List of loaded tool plugins.
      */
-    private final List<ToolPlugin> plugins;
+    private final List<? extends ToolPlugin> plugins;
     
     /**
      * Private constructor.
@@ -58,7 +58,7 @@ public final class ToolPluginManager {
                 .findAllToolPlugins()
                 .map(toolPluginClass -> {
                     try {
-                        Constructor<ToolPlugin> noArgsConstructors = toolPluginClass.getDeclaredConstructor();
+                        Constructor<? extends ToolPlugin> noArgsConstructors = toolPluginClass.getDeclaredConstructor();
                         noArgsConstructors.setAccessible(true);
                         return noArgsConstructors.newInstance();
                     } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
@@ -85,11 +85,11 @@ public final class ToolPluginManager {
      *
      * @return a list of Plugin Tools classes.
      */
-    private static Stream<Class<ToolPlugin>> findAllToolPlugins() {
+    private static Stream<Class<? extends ToolPlugin>> findAllToolPlugins() {
         return PluginSearch.init().childrenOf(ToolPlugin.class).stream();
     }
     
-    public List<ToolPlugin> getAllToolPlugins() {
+    public List<? extends ToolPlugin> getAllToolPlugins() {
         return this.plugins;
     }
     

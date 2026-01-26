@@ -7,11 +7,13 @@
 
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.core.model.network.potential.Potential;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface PotentialPanelPlugin {
-	String potentialType();
+    Class<? extends Potential>[] potentialClasses();
 }

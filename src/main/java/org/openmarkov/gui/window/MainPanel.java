@@ -32,6 +32,7 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -127,7 +128,7 @@ public class MainPanel extends JPanel {
         
         this.mainPanelListenerAssistant = new MainPanelListenerAssistant(this);
         this.mainMenu = new MainMenu(this, mainPanelListenerAssistant);
-
+        
         this.networksTabPanel.addChangeListener(e -> {
             var selectedComponent = this.networksTabPanel.getSelectedComponent();
             switch (selectedComponent) {
@@ -302,8 +303,8 @@ public class MainPanel extends JPanel {
             case INFERENCE -> {
                 getToolBarPanel().remove(getEditionToolBar());
                 getInferenceToolBar().setExpansionThreshold(this.getMainPanelListenerAssistant().
-                                                                           getCurrentNetworkPanel()
-                                                                           .getExpansionThreshold());
+                                                                getCurrentNetworkPanel()
+                                                                .getExpansionThreshold());
                 getToolBarPanel().add(getInferenceToolBar(), 1);
             }
         }
@@ -454,41 +455,46 @@ public class MainPanel extends JPanel {
         }
     }
     
-    public void addCloseableTab(String title, ZoomableContentPanel component) {
-        var uniqueTitle = title;
-        var presentNames = IntStream.range(0, this.networksTabPanel.getTabCount())
-                                    .mapToObj(this.networksTabPanel::getTitleAt)
-                                    .collect(Collectors.toSet());
+    private static class TabHeader extends JPanel {
         
-        int appendedIndex = 2;
-        while (presentNames.contains(uniqueTitle)) {
-            uniqueTitle = title + " (" + appendedIndex + ")";
-            appendedIndex++;
+        private final JLabel titleLabel;
+        private final JButton closeButton;
+        
+        TabHeader(String title) {
+            super(new FlowLayout());
+            this.setFocusable(false);
+            this.setOpaque(false);
+            
+            this.titleLabel = new JLabel(title);
+            this.add(titleLabel);
+            
+            this.closeButton = new JButton("✖");
+            closeButton.setFocusable(false);
+            closeButton.setMargin(new Insets(0, 0, 0, 0));
+            this.add(closeButton);
         }
+    }
+    
+    public void addCloseableTab(String title, ZoomableContentPanel component) {
+        var uniqueTitle = getUniqueTitle(title, null);
         this.networksTabPanel.addTab(uniqueTitle, component);
-        JPanel tabPanel = new JPanel(new FlowLayout());
-        tabPanel.setFocusable(false);
-        tabPanel.setOpaque(false);
-        JLabel titleLabel = new JLabel(uniqueTitle);
-        tabPanel.add(titleLabel);
+        
+        TabHeader header = new TabHeader(uniqueTitle);
+        header.closeButton.addActionListener(e -> component.close());
+        this.networksTabPanel.setTabComponentAt(this.networksTabPanel.getTabCount() - 1, header);
+        Component tabComponent = this.networksTabPanel.getTabComponentAt(this.networksTabPanel.getTabCount() - 1);
+        
         if (component instanceof NetworkPanel networkPanel) {
             networkPanel.addOnModification(networkP -> {
                 if (networkP.getModified()) {
-                    titleLabel.setForeground(new Color(212, 56, 56));
+                    header.titleLabel.setForeground(new Color(212, 56, 56));
                 } else {
-                    titleLabel.setForeground(null);
+                    header.titleLabel.setForeground(null);
                 }
+                String uniqueTitleOnChange = this.getUniqueTitle(networkPanel.probNet.getName(), Set.of(this.networksTabPanel.indexOfTabComponent(tabComponent)));
+                header.titleLabel.setText(uniqueTitleOnChange);
             });
         }
-        
-        
-        JButton closeButton = new JButton("✖");
-        closeButton.setFocusable(false);
-        closeButton.setMargin(new Insets(0, 0, 0, 0));
-        closeButton.addActionListener(e -> component.close());
-        tabPanel.add(closeButton);
-        this.networksTabPanel.setTabComponentAt(this.networksTabPanel.getTabCount() - 1, tabPanel);
-        Component tabComponent = this.networksTabPanel.getTabComponentAt(this.networksTabPanel.getTabCount() - 1);
         
         tabComponent.addMouseListener(new MouseListener() {
             @Override public void mouseClicked(MouseEvent e) {
@@ -592,6 +598,23 @@ public class MainPanel extends JPanel {
             
             }
         });
+    }
+    
+    private String getUniqueTitle(String title, @Nullable Set<Integer> tabIndexesToSkip) {
+        String uniqueTitle = title;
+        IntStream indexes = IntStream.range(0, this.networksTabPanel.getTabCount());
+        if (tabIndexesToSkip != null && !tabIndexesToSkip.isEmpty()) {
+            indexes = indexes.filter(index -> !tabIndexesToSkip.contains(index));
+        }
+        var presentNames = indexes
+                .mapToObj(index -> ((TabHeader) this.networksTabPanel.getTabComponentAt(index)).titleLabel.getText())
+                .collect(Collectors.toSet());
+        int appendedIndex = 2;
+        while (presentNames.contains(uniqueTitle)) {
+            uniqueTitle = title + " (" + appendedIndex + ")";
+            appendedIndex++;
+        }
+        return uniqueTitle;
     }
     
 }

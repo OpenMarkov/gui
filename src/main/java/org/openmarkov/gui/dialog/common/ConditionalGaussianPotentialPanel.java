@@ -23,10 +23,10 @@ import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 import org.openmarkov.gui.util.Utilities;
 
 import javax.swing.*;
-import javax.swing.event.UndoableEditEvent;
 import java.awt.*;
 
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Conditional Gaussian")
+
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = ConditionalGaussianPotential.class)
 public class ConditionalGaussianPotentialPanel
         extends PotentialPanel implements PNUndoableEditListener {
     

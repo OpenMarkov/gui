@@ -25,6 +25,7 @@ open module org.openmarkov.gui {
     requires com.google.gson;
     requires java.xml;
     requires colt;
+    requires com.google.errorprone.annotations;
     
     exports org.openmarkov.gui.action;
     exports org.openmarkov.gui.localize;

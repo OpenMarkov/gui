@@ -14,6 +14,8 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.AugmentedProbTable;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.gui.component.AugmentedValuesTable;
@@ -32,9 +34,8 @@ import java.util.List;
 /**
  *
  */
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "UnivariateDistr")
-public class UnivariateDistrPotentialPanel
-        extends TablePotentialPanel {
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = UnivariateDistrPotential.class)
+public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
     
     protected List<Variable> pseudoVariablesDistribution = null;
     
@@ -48,6 +49,22 @@ public class UnivariateDistrPotentialPanel
      *
      */
     protected String previouslySelectedDistribution = "";
+    
+    @Override public void setPotential(Potential potential) {
+        super.setPotential((UnivariateDistrPotential) potential);
+    }
+    
+    @Override public AugmentedProbTable getTablePotential() {
+        return (AugmentedProbTable) super.getTablePotential();
+    }
+    
+    @Override public void setTablePotential(TablePotential tablePotential) {
+        super.setTablePotential((AugmentedProbTable) tablePotential);
+    }
+    
+    @Override public UnivariateDistrPotential getPotential() {
+        return (UnivariateDistrPotential) super.getPotential();
+    }
     
     /**
      * Constructor used by CPTablePanel
@@ -65,20 +82,20 @@ public class UnivariateDistrPotentialPanel
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
         
         this.node = node;
-        potential = node.getFirstPotential();
+        setPotential(node.getFirstPotential());
         //The list of variables of the UnivariateDistrPotential
-        potentialVariables = potential.getVariables();
-        tablePotential = ((UnivariateDistrPotential) potential).getDistributionTable();
+        potentialVariables = getPotential().getVariables();
+        setTablePotential(getPotential().getDistributionTable());
         
         //The list of variables of the AugmentedProbTable of TablePotential
-        variables = tablePotential.getVariables();
+        variables = getTablePotential().getVariables();
         
-        pseudoVariablesDistribution = ((UnivariateDistrPotential) potential).getDistributionTable().getVariables();
-        previouslySelectedDistribution = ((UnivariateDistrPotential) potential).getProbDensFunctionName();
+        pseudoVariablesDistribution = getPotential().getDistributionTable().getVariables();
+        previouslySelectedDistribution = getPotential().getProbDensFunctionName();
         
         // Creating the table; class ValuesTable
         
-        valuesTable = new AugmentedValuesTable(node, getTableModel(), (AugmentedProbTable) tablePotential, modifiable);
+        valuesTable = new AugmentedValuesTable(node, getTableModel(), getTablePotential(), modifiable);
         valuesTable.setName("PotentialUnivariatePanel.valuesTable");
         valuesTable.setVisible(true);
         modifiable = true;
@@ -179,18 +196,18 @@ public class UnivariateDistrPotentialPanel
         
         // First editable row coincides with the number of parents
         //CHANGE (minor node by tablePotential
-        firstEditableRow = PotentialsTablePanelOperations.calculateFirstEditableRow(tablePotential);
+        firstEditableRow = PotentialsTablePanelOperations.calculateFirstEditableRow(getTablePotential());
         
         // The baseIndexForCoordinates is the first editable row--&gt;What for--&gt;UNCLEAR
         // The property baseIndexForCoordinates is not Visible. baseIndexForCoordinates= row
         setBaseIndexForCoordinates(firstEditableRow);
         
         // Number of data elements of tablePotential
-        int tableSize = tablePotential
+        int tableSize = getTablePotential()
                 .getTableSize();//--&gt;UNCLEAR What happens when there is no parent (f.e. when Tree/ADD )
         
         // Number of states of the variable of the node; if isTableDeltaPotential numDimensions=1
-        int numDimensions = tablePotential.getDimensions()[0];
+        int numDimensions = getTablePotential().getDimensions()[0];
         // Parent variables + states of node variable
         int numRows = firstEditableRow + numDimensions;
         lastEditableRow = numRows - 1;
@@ -217,12 +234,12 @@ public class UnivariateDistrPotentialPanel
         int numColumns = values[0].length;
         
         // rounding initial values
-        String[] initialValues = ((AugmentedProbTable) tablePotential).getFunctionValues();
+        String[] initialValues = getTablePotential().getFunctionValues();
         for (int j = 1; j <= numColumns - 1; j++) {
             
             // put the values on the table
             for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {
-                int potentialIndex = PotentialsTablePanelOperations.getPotentialIndex(i, j, tablePotential);
+                int potentialIndex = PotentialsTablePanelOperations.getPotentialIndex(i, j, getTablePotential());
                 String value = initialValues[potentialIndex];
                 values[i][j] = value;
             }
@@ -238,7 +255,7 @@ public class UnivariateDistrPotentialPanel
      */
     @Override protected long setNumberOfPostions() {
         long numPositions = 1;
-        for (Variable variable : tablePotential.getVariables()) {
+        for (Variable variable : getTablePotential().getVariables()) {
             numPositions = numPositions * variable.getNumStates();
         }
         setPosition(numPositions);
@@ -263,7 +280,7 @@ public class UnivariateDistrPotentialPanel
     @Override protected EvidenceCase getConfiguration(int col)
             throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         
-        List<Variable> parents = variables.subList(1, potential.getNumVariables());
+        List<Variable> parents = variables.subList(1, getPotential().getNumVariables());
         
         EvidenceCase evidence = new EvidenceCase();
         
@@ -277,7 +294,7 @@ public class UnivariateDistrPotentialPanel
         // gets the configuration of startPosition--&gt; the data position in tablePotential corresponding to
         // the beginning of the column
         // I suppose configuration=[Node Variable, parent_1,----,parent_n]
-        int[] configuration = tablePotential.getConfiguration(startPosition);
+        int[] configuration = getTablePotential().getConfiguration(startPosition);
         
         // Extracts the configuration of the parents from configuration
         // It is the same for every cell of the selected column
@@ -340,7 +357,7 @@ public class UnivariateDistrPotentialPanel
      */
     @Override protected void doubleClickEvent(MouseEvent e) {
         
-        List<Variable> parameterVariables = ((UnivariateDistrPotential) potential).getParameterVariables();
+        List<Variable> parameterVariables = getPotential().getParameterVariables();
         int row = valuesTable.rowAtPoint(e.getPoint());
         int column = valuesTable.columnAtPoint(e.getPoint());
         String function = (String) valuesTable.getValueAt(row, column);

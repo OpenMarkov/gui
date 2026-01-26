@@ -16,11 +16,10 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import javax.swing.*;
-import javax.swing.event.UndoableEditEvent;
 import java.awt.*;
 
 @SuppressWarnings("serial")
-@PotentialPanelPlugin(potentialType = "Discretized Cauchy")
+@PotentialPanelPlugin(potentialClasses = DiscretizedCauchyPotential.class)
 public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements PNUndoableEditListener {
     
     private JButton editMedianButton;
