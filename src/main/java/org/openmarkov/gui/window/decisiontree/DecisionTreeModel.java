@@ -10,9 +10,9 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import org.openmarkov.core.decisiontree.DecisionTreeBranch;
-import org.openmarkov.core.decisiontree.DecisionTreeElement;
-import org.openmarkov.core.decisiontree.DecisionTreeNode;
+import org.openmarkov.core.model.decisiontree.DecisionTreeBranch;
+import org.openmarkov.core.model.decisiontree.DecisionTreeElement;
+import org.openmarkov.core.model.decisiontree.DecisionTreeNode;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -7,9 +7,9 @@
 
 package org.openmarkov.gui.window.decisiontree;
 
-import org.openmarkov.core.decisiontree.DecisionTreeBranch;
-import org.openmarkov.core.decisiontree.DecisionTreeElement;
-import org.openmarkov.core.decisiontree.DecisionTreeNode;
+import org.openmarkov.core.model.decisiontree.DecisionTreeBranch;
+import org.openmarkov.core.model.decisiontree.DecisionTreeElement;
+import org.openmarkov.core.model.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.MulticriteriaOptions.Type;
 import org.openmarkov.core.model.network.CEP;

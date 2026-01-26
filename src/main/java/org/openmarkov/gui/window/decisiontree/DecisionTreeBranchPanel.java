@@ -7,8 +7,8 @@
 
 package org.openmarkov.gui.window.decisiontree;
 
-import org.openmarkov.core.decisiontree.DecisionTreeBranch;
-import org.openmarkov.core.decisiontree.DecisionTreeNode;
+import org.openmarkov.core.model.decisiontree.DecisionTreeBranch;
+import org.openmarkov.core.model.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.model.network.NodeType;
 
 /**
