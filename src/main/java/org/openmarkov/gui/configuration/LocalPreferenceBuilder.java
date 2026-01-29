@@ -47,8 +47,8 @@ public final class LocalPreferenceBuilder<T> {
     }
     
     public LocalPreference<T> build() {
-        Function<String, T> fromString = this.deserializeWith != null ? this.deserializeWith : LocalPreferencesUtils::javaDeserialize;
-        Function<T, String> intoString = this.serializeWith != null ? this.serializeWith : LocalPreferencesUtils::javaSerialize;
+        Function<String, T> fromString = this.deserializeWith != null ? this.deserializeWith : JavaSerializationUtils::javaDeserialize;
+        Function<T, String> intoString = this.serializeWith != null ? this.serializeWith : JavaSerializationUtils::javaSerialize;
         Predicate<Object> verifyIsInstance = this.verifyIsInstance != null ? this.verifyIsInstance : o -> true;
         Class<T> tClass = this.tClass != null ? this.tClass : (Class<T>) Object.class;
         

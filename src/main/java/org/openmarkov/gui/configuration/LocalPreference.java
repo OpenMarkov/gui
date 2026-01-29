@@ -92,8 +92,8 @@ public final class LocalPreference<T> {
     }
     
     LocalPreference(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @Nullable Class<T> tClass, @Nullable Predicate<Object> verifyIsInstance, Function<String, T> deserializeWith, Function<T, String> serializeWith) {
-        deserializeWith = deserializeWith != null ? deserializeWith : LocalPreferencesUtils::javaDeserialize;
-        serializeWith = serializeWith != null ? serializeWith : LocalPreferencesUtils::javaSerialize;
+        deserializeWith = deserializeWith != null ? deserializeWith : JavaSerializationUtils::javaDeserialize;
+        serializeWith = serializeWith != null ? serializeWith : JavaSerializationUtils::javaSerialize;
         verifyIsInstance = verifyIsInstance != null ? verifyIsInstance : o -> true;
         tClass = tClass != null ? tClass : (Class<T>) Object.class;
         

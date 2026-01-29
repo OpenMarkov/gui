@@ -5,7 +5,7 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Map;
 
-public final class LocalPreferencesUtils {
+public final class JavaSerializationUtils {
     
     public static <T> T javaDeserialize(String string) {
         byte[] bytes = Base64.getDecoder().decode(string);
