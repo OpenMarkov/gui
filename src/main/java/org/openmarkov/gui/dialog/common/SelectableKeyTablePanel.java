@@ -95,7 +95,6 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
             State selectedState = states[states.length - row - 1];
             RevelationStateEdit arcEdit = new RevelationStateEdit(link, selectedState, (Boolean) data);
             try {
-                ProbNet probNet = node.getProbNet();
                 arcEdit.executeEdit();
             } catch (DoEditException ex) {
                 throw new UnrecoverableException(ex);

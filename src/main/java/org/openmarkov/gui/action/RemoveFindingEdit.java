@@ -37,12 +37,14 @@ public class RemoveFindingEdit extends PNEdit {
         } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             throw new UnreacheableException(e);
         }
+
     }
     
     @Override
     public void redo() {
         super.redo();
-        
+        evidenceCase.removeFinding(variable);
+        visualNode.setPreResolutionFinding(false);
     }
     
 }

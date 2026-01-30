@@ -784,7 +784,6 @@ public final class NodeDefinitionPanel extends JPanel
             if (itemSelected != null && e.getStateChange() == ItemEvent.SELECTED) {
                 RelevanceEdit relevanceEdit = new RelevanceEdit(node, Double.parseDouble(itemSelected));
                 try {
-                    ProbNet probNet = node.getProbNet();
                     relevanceEdit.executeEdit();
                 } catch (DoEditException e1) {
                     throw new UnrecoverableException(e1);
