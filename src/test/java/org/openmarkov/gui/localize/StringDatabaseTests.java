@@ -115,7 +115,9 @@ public class StringDatabaseTests {
 	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
-	@Test public final void testGetBundleDialogs() throws MissingResourceException {
+    @Test
+    @Tag(TestSpeed.MEDIUM)
+    public final void testGetBundleDialogs() throws MissingResourceException {
 		StringDatabase.getUniqueInstance().setLanguage("en");
 		getStringDialogs();
 		StringDatabase.getUniqueInstance().setLanguage("es");
@@ -157,7 +159,9 @@ public class StringDatabaseTests {
 	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
-	@Test public final void testGetBundleMenus() throws MissingResourceException {
+    @Test
+    @Tag(TestSpeed.MEDIUM)
+    public final void testGetBundleMenus() throws MissingResourceException {
 		StringDatabase.getUniqueInstance().setLanguage("en");
 		getStringMenus();
 		StringDatabase.getUniqueInstance().setLanguage("es");
