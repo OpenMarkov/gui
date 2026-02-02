@@ -8,6 +8,7 @@
 package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.core.PotentialChangeEdit;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
@@ -16,6 +17,7 @@ import org.openmarkov.core.model.network.potential.AugmentedProbTablePotential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,7 +42,7 @@ import java.util.List;
      * Index of the value selected
      */
     private int indexSelected;
-
+    
     
     /**
      * The AugmentedProbTable potential
@@ -69,13 +71,13 @@ import java.util.List;
      * the table potential
      */
     private AugmentedProbTable newAugmentedProbTable;
-    private String[] newAugmentedValues;
+    private VariableExpression[] newAugmentedValues;
     
     /**
      * Node
      */
     private Node node;
-
+    
     // Constructor
     
     /**
@@ -83,12 +85,12 @@ import java.util.List;
      * edited, the new value of the potential, the row and column where is the
      * value to be modified and a priority list for potentials updating.
      *
-     * @param node                 the node to be edited
-     * @param newValue             the new value
-     * @param col                  the column in the edited table
-     * @param row                  the row in the edited table
+     * @param node     the node to be edited
+     * @param newValue the new value
+     * @param col      the column in the edited table
+     * @param row      the row in the edited table
      */
-    public AugmentedPotentialValueEdit(Node node, String newValue, int row, int col) {
+    public AugmentedPotentialValueEdit(Node node, VariableExpression newValue, int row, int col) {
         super(node, null, null);
         boolean isAugmentedProbTablePotential = false;
         
@@ -119,7 +121,7 @@ import java.util.List;
             
             for (int i = firstEditableRow; i <= lastEditableRow; i++) {
                 int index = PotentialsTablePanelOperations.getPotentialIndex(i, col, newAugmentedProbTable);
-                newAugmentedValues[index] = "Complement";
+                newAugmentedValues[index] = new VariableExpression(Collections.emptyList(), "Complement");
             }
         }
         this.indexSelected = PotentialsTablePanelOperations.getPotentialIndex(row, col, newAugmentedProbTable);
@@ -132,6 +134,7 @@ import java.util.List;
      *
      * @param node             - the node to be edited
      * @param distributionName - the name of the distribution to be created. Represents the attribute name in ProbDensFunctionType which represents the distribution class
+     *
      * @see org.openmarkov.core.model.network.potential.UnivariateDistrPotential
      */
     public AugmentedPotentialValueEdit(Node node, String distributionName) {
@@ -158,6 +161,7 @@ import java.util.List;
      * Gets the row position associated to value edited if priorityList exists
      *
      * @param position position of the value in the array of values
+     *
      * @return the position in the table
      */
     public int getRowPosition(int position) {

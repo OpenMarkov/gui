@@ -8,6 +8,7 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.FunctionPotential;
@@ -31,7 +32,7 @@ public class FunctionPotentialPanel extends PotentialPanel {
     /**
      *
      */
-    protected String function;
+    protected VariableExpression function;
     /**
      * Variables list
      */
@@ -86,10 +87,10 @@ public class FunctionPotentialPanel extends PotentialPanel {
         if (function == null) {
             function = FunctionPotential.DEFAULT_FUNCTION;
         }
-        functionTextArea.setText(function);
+        functionTextArea.setText(function.asStringExpression());
     }
     
-    public String getFunction() {
+    public VariableExpression getFunction() {
         return function;
     }
     
@@ -110,13 +111,13 @@ public class FunctionPotentialPanel extends PotentialPanel {
     private class FunctionTextAreaMouseListener extends MouseAdapter {
         @Override public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
-                ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, potential.getVariables()
-                                                                                                            .subList(1, potential.getVariables()
-                                                                                                                                 .size()), function);
+                List<Variable> availableVariables = potential.getVariables()
+                                                             .subList(1, potential.getVariables().size());
+                ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, availableVariables, function.asStringExpression());
                 expressionDialog.setVisible(true);
                 if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
-                    function = expressionDialog.getExpression();
-                    functionTextArea.setText(function);
+                    function = new VariableExpression(availableVariables, expressionDialog.getExpression());
+                    functionTextArea.setText(function.asStringExpression());
                 }
             }
         }

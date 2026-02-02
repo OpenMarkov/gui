@@ -25,6 +25,7 @@ import org.openmarkov.gui.component.ValuesTableModel;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -132,13 +133,11 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
      * revised--&gt;minor changes
      */
     @Override protected ValuesTableModel getTableModel() {
-        AugmentedValuesTableModel tableModel;
-        if ((valuesTable == null) || (valuesTable.getTableModel() == null))
-            tableModel = new AugmentedValuesTableModel(data, columns, firstEditableRow);
-        else
-            tableModel = (AugmentedValuesTableModel) valuesTable.getModel();
+        if ((valuesTable == null) || (valuesTable.getTableModel() == null)) {
+            return new AugmentedValuesTableModel(data, columns, firstEditableRow);
+        }
+        return (AugmentedValuesTableModel) valuesTable.getModel();
         
-        return tableModel;
     }
     
     /**
@@ -278,13 +277,13 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
         int numColumns = values[0].length;
         
         AugmentedProbTable tablePotential = getTablePotential();
-        String[] initialValues = tablePotential.getFunctionValues();
+        VariableExpression[] initialValues = tablePotential.getFunctionValues();
         for (int j = 1; j <= numColumns - 1; j++) {
             
             // put the values on the table
             for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {
                 int potentialIndex = PotentialsTablePanelOperations.getPotentialIndex(i, j, tablePotential);
-                String value = initialValues[potentialIndex];
+                VariableExpression value = initialValues[potentialIndex];
                 values[i][j] = value;
             }
         }
@@ -411,7 +410,7 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
                 expressionDialog.setVisible(true);
                 if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
                     String function = expressionDialog.getExpression();
-                    valuesTable.setValueAt(function, row, column);
+                    valuesTable.setValueAt(new VariableExpression(variables, expressionDialog.getExpression()), row, column);
                     //TODO: Continue here changing String expressions to VariableExpression expressions.
                     //valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column);
                 }

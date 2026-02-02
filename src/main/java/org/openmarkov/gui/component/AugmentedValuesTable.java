@@ -12,6 +12,7 @@ import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.AugmentedProbTable;
 import org.openmarkov.core.model.network.potential.AugmentedProbTablePotential;
@@ -97,17 +98,12 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
      * check the value to modify in the table and sets
      */
     @Override public void setValueAt(Object newValue, int row, int col) {
-        
         Object oldValue = getValueAt(row, col);
-        
-        String oldValueString = (String) oldValue;
-        String newValueString = (String) newValue;
-        if (oldValueString.equals(newValueString))
+        if (oldValue.equals(newValue)) {
             return;
-        
-        Object[][] notEditablePositions = getTableModel().getNotEditablePositions();
-        AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, newValueString, row, col
-        );
+        }
+        VariableExpression expression = (VariableExpression) newValue;
+        AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, expression, row, col);
         try {
             nodePotentialEdit.executeEdit();
         } catch (DoEditException e) {
@@ -187,7 +183,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
         } else {
             editTable = ((UnivariateDistrPotential) editPotential).getAugmentedProbTable();
         }
-        String[] functionValues = editTable.getFunctionValues();
+        VariableExpression[] functionValues = editTable.getFunctionValues();
         if (position >= 0) {
             int rowPosition = edit.getRowPosition(position);
             int columnPosition = edit.getColumnPosition();
@@ -196,9 +192,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
                     super.getModel().setValueAt("Complement", i, columnPosition);
                 }
             }
-            
-            String a = functionValues[position];
-            super.getModel().setValueAt(a, rowPosition, columnPosition);
+            super.getModel().setValueAt(functionValues[position], rowPosition, columnPosition);
         }
     }
     

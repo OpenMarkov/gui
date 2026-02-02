@@ -8,6 +8,7 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.GLMPotential;
 
@@ -99,7 +100,7 @@ import java.awt.event.ActionListener;
         this.node = node;
         this.potential = (GLMPotential) this.node.getPotentials().get(0);
         double[] coefficients = potential.getCoefficients();
-        String[] covariates = potential.getCovariates();
+        VariableExpression[] covariates = potential.getCovariates();
         regressionPanel.setData(potential);
         
         DefaultTableModel covarianceTableModel = new CovarianceTableModel();
@@ -135,7 +136,7 @@ import java.awt.event.ActionListener;
     @Override
     public boolean saveChanges() throws DoEditException {
         GLMPotential newPotential = (GLMPotential) this.potential.copy();
-        String[] covariates = regressionPanel.getCovariates();
+        VariableExpression[] covariates = regressionPanel.getCovariates();
         double[] coefficients = regressionPanel.getCoefficients();
         
         double[] uncertaintyMatrix = null;

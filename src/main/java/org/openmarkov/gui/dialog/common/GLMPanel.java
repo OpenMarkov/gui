@@ -6,11 +6,10 @@
  */
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GLMPotential;
-import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -94,7 +93,7 @@ import java.util.List;
     public void setData(GLMPotential potential) {
         this.potential = potential;
         double[] coefficients = potential.getCoefficients();
-        String[] covariates = potential.getCovariates();
+        VariableExpression[] covariates = potential.getCovariates();
         Object[][] data = new Object[covariates.length][2];
         for (int i = 0; i < covariates.length; ++i) {
             data[i][0] = covariates[i];
@@ -112,11 +111,12 @@ import java.util.List;
         return coefficients;
     }
     
-    public String[] getCovariates() {
+    public VariableExpression[] getCovariates() {
         int rowCount = tableModel.getRowCount();
-        String[] covariates = new String[rowCount];
+        VariableExpression[] covariates = new VariableExpression[rowCount];
         for (int i = 0; i < rowCount; ++i) {
-            covariates[i] = tableModel.getValueAt(i, 0).toString();
+            Object valueAt = tableModel.getValueAt(i, 0);
+            covariates[i] = (VariableExpression) valueAt;
         }
         return covariates;
     }
@@ -125,11 +125,11 @@ import java.util.List;
         super.valueChanged(e);
         int row = valuesTable.getSelectedRow();
         if (row >= 0 && row < tableModel.getRowCount()) {
-            String covariate = tableModel.getValueAt(row, 0).toString();
+            VariableExpression covariate = (VariableExpression) tableModel.getValueAt(row, 0);
             boolean isMandatory = false;
-            String[] mandatoryCovariates = GLMPotential.getMandatoryCovariates();
-            for (String mandatoryCovariate : mandatoryCovariates) {
-                isMandatory |= mandatoryCovariate.equals(covariate);
+            VariableExpression[] mandatoryCovariates = GLMPotential.getMandatoryCovariates();
+            for (VariableExpression mandatoryCovariate : mandatoryCovariates) {
+                isMandatory |= mandatoryCovariate.asStringExpression().equals(covariate.asStringExpression());
             }
             setEnabledRemoveValue(!isMandatory);
             setEnabledAddValue(!isMandatory);
@@ -153,20 +153,19 @@ import java.util.List;
         @Override public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2 && valuesTable.getSelectedColumn() == 0) {
                 int selectedRow = valuesTable.getSelectedRow();
-                String covariate = tableModel.getValueAt(selectedRow, 0).toString();
+                VariableExpression covariate = (VariableExpression) tableModel.getValueAt(selectedRow, 0);
                 boolean isMandatory = false;
-                String[] mandatoryCovariates = GLMPotential.getMandatoryCovariates();
-                for (String mandatoryCovariate : mandatoryCovariates) {
-                    isMandatory |= mandatoryCovariate.equals(covariate);
+                VariableExpression[] mandatoryCovariates = GLMPotential.getMandatoryCovariates();
+                for (VariableExpression mandatoryCovariate : mandatoryCovariates) {
+                    isMandatory |= mandatoryCovariate.asStringExpression().equals(covariate.asStringExpression());
                 }
                 if (!isMandatory) {
                     List<Variable> variables = potential.getVariables();
                     variables.remove(potential.getConditionedVariable());
-                    ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, variables,
-                                                                                                 covariate);
+                    ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, variables, covariate.asStringExpression());
                     expressionDialog.setVisible(true);
                     if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
-                        tableModel.setValueAt(expressionDialog.getExpression(), selectedRow, 0);
+                        tableModel.setValueAt(new VariableExpression(variables, expressionDialog.getExpression()), selectedRow, 0);
                     }
                 }
             }

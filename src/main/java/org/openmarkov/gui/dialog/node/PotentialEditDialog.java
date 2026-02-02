@@ -461,7 +461,6 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
                                                          .getDistributionName(distributionUnivariateName, distributionParameters);
         if (!previouslySelectedDistributionName.equals(distributionName)) {
             AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, distributionName);
-            ProbNet probNet = node.getProbNet();
             nodePotentialEdit.executeEdit();
             updatePotentialPanel();
             previouslySelectedDistributionName = distributionName;

@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
@@ -234,13 +235,13 @@ public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
         int numColumns = values[0].length;
         
         // rounding initial values
-        String[] initialValues = getTablePotential().getFunctionValues();
+        VariableExpression[] initialValues = getTablePotential().getFunctionValues();
         for (int j = 1; j <= numColumns - 1; j++) {
             
             // put the values on the table
             for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {
                 int potentialIndex = PotentialsTablePanelOperations.getPotentialIndex(i, j, getTablePotential());
-                String value = initialValues[potentialIndex];
+                VariableExpression value = initialValues[potentialIndex];
                 values[i][j] = value;
             }
         }
@@ -360,12 +361,11 @@ public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
         List<Variable> parameterVariables = getPotential().getParameterVariables();
         int row = valuesTable.rowAtPoint(e.getPoint());
         int column = valuesTable.columnAtPoint(e.getPoint());
-        String function = (String) valuesTable.getValueAt(row, column);
-        ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables,
-                                                                                     function);
+        VariableExpression function = (VariableExpression) valuesTable.getValueAt(row, column);
+        ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables, function.asStringExpression());
         expressionDialog.setVisible(true);
         if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
-            function = expressionDialog.getExpression();
+            function = new VariableExpression(parameterVariables, expressionDialog.getExpression());
             //int row = valuesTable.rowAtPoint(e.getPoint());
             //int column = valuesTable.columnAtPoint(e.getPoint());
             valuesTable.setValueAt(function, row, column);

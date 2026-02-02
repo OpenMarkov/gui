@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.common;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -124,7 +125,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         List<Variable> variables = potential.getVariables();
         Variable timeVariable = potential.getTimeVariable();
         double[] coefficients = potential.getCoefficients();
-        String[] covariates = potential.getCovariates();
+        VariableExpression[] covariates = potential.getCovariates();
         regressionPanel.setData(potential);
         
         timeVariableComboBox.removeAllItems();
@@ -175,7 +176,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     
     @Override public boolean saveChanges() throws DoEditException {
         WeibullHazardPotential oldPotential = (WeibullHazardPotential) this.node.getPotentials().get(0);
-        String[] covariates = regressionPanel.getCovariates();
+        VariableExpression[] covariates = regressionPanel.getCovariates();
         double[] coefficients = regressionPanel.getCoefficients();
         String selectedTimeVariable = timeVariableComboBox.getSelectedItem().toString();
         Variable timeVariable = node.getProbNet().getVariable(selectedTimeVariable);
