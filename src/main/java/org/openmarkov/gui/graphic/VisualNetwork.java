@@ -796,9 +796,7 @@ public class VisualNetwork implements PNUndoableEditListener {
      * @return a list containing all the nodes in the network.
      */
     public List<VisualNode> getAllNodes() {
-        
         return visualNodes;
-        
     }
     
     /**
@@ -830,6 +828,10 @@ public class VisualNetwork implements PNUndoableEditListener {
             }
         }
         return links;
+    }
+    
+    public List<VisualLink> getVisualLinks() {
+        return this.visualLinks;
     }
     
     /**

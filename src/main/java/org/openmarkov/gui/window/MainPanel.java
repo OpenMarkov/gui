@@ -160,18 +160,7 @@ public class MainPanel extends JPanel {
      * @return The current ProbNet opened in the Main Panel.
      */
     public static @Nullable ProbNet getCurrentProbNet() {
-        if (MainGUI.INSTANCE == null) {
-            return null;
-        }
-        MainPanel panelInstance = MainGUI.INSTANCE.mainPanel;
-        if (panelInstance == null) {
-            return null;
-        }
-        MainPanelListenerAssistant listenerAssistant = panelInstance.getMainPanelListenerAssistant();
-        if (listenerAssistant == null) {
-            return null;
-        }
-        NetworkPanel currentNetworkPanel = listenerAssistant.getCurrentNetworkPanel();
+        NetworkPanel currentNetworkPanel = MainPanel.getCurrentNetworkPanel();
         if (currentNetworkPanel == null) {
             return null;
         }
@@ -187,6 +176,9 @@ public class MainPanel extends JPanel {
      * @return The current NetworkPanel opened in the Main Panel.
      */
     public static @Nullable NetworkPanel getCurrentNetworkPanel() {
+        if (MainGUI.INSTANCE == null) {
+            return null;
+        }
         MainPanel panelInstance = MainGUI.INSTANCE.mainPanel;
         if (panelInstance == null) {
             return null;
