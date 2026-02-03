@@ -243,29 +243,18 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
      */
     protected JComboBox<Class<? extends Potential>> getPotentialTypeJCombobox() {
         if (potentialTypeComboBox == null) {
-            List<Class<? extends Potential>> filteredPotentialNames = PotentialUtils.getFilteredPotentialClasses(node);
+            Class<? extends Potential> potentialClass = node.getPotentials().getFirst().getClass();
+            List<Class<? extends Potential>> filteredPotentialNames = new ArrayList<>(PotentialUtils.getFilteredPotentialClasses(node));
+            if (!filteredPotentialNames.contains(potentialClass)) {
+                filteredPotentialNames.add(potentialClass);
+            }
             filteredPotentialNames.sort(Comparator.comparing(PotentialUtils::getPotentialName));
             potentialTypeComboBox = new JComboBox<>(filteredPotentialNames.toArray(new Class[0]));
             potentialTypeComboBox.setRenderer(new JComboBoxFunctionRender<Class<? extends Potential>>(PotentialUtils::getPotentialName));
-            
-            String currentPotentialType = PotentialUtils.getPotentialName(node.getPotentials().getFirst().getClass());
-            // Compute the number of columns of the conditional probability table
-            int tableColumns = 1;
-            for (Node parent : node.getParents()) {
-                tableColumns *= parent.getVariable().getNumStates();
-            }
-            System.out.println(tableColumns);
-            
-            potentialTypeComboBox.setSelectedItem(currentPotentialType);
+            potentialTypeComboBox.setSelectedItem(potentialClass);
             potentialTypeComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
             potentialTypeComboBox.setName("jComboBoxRelationType");
-            potentialTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
-                @Override public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    
-                    potentialTypeChanged();
-                }
-            });
-            
+            potentialTypeComboBox.addActionListener(evt -> potentialTypeChanged());
             potentialTypeComboBox.setEnabled(!readOnly);
         }
         return potentialTypeComboBox;
@@ -681,8 +670,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
                     Potential potential = node.getPotentials().get(0);
                     // TODO definir el comportamiento para los demás tipos de potenciales
                     if (potential instanceof UniformPotential || potential instanceof TablePotential) {
-                        getPotentialTypeJCombobox()
-                                .setSelectedItem(PotentialUtils.getPotentialName(potential.getClass()));
+                        getPotentialTypeJCombobox().setSelectedItem(potential.getClass());
                         // getJComboBoxRelationType().setEnabled(false);
                     }
                     break;
