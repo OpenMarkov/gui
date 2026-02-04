@@ -14,8 +14,8 @@ import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialUtils;
-import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
+import org.openmarkov.gui.commonComponents.JComboBoxFunctionRender;
 import org.openmarkov.gui.dialog.common.*;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 import org.openmarkov.gui.exception.NotEnoughtMemoryException;
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Dialog box to edit all type of potentials ( TablePotential and TreeADDs ). If
@@ -557,26 +556,6 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
             this.pack();
             
         }
-    }
-    
-    static class JComboBoxFunctionRender<T> extends DefaultListCellRenderer {
-        
-        private final Function<T, String> mapper;
-        
-        JComboBoxFunctionRender(Function<T, String> mapper) {
-            this.mapper = mapper;
-        }
-        
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value,
-                                                      int index, boolean isSelected,
-                                                      boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            this.setText(this.mapper.apply((T) value));
-            return this;
-        }
-        
-        
     }
     
     /**

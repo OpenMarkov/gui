@@ -10,6 +10,8 @@ package org.openmarkov.gui.dialog.io;
 import org.apache.commons.io.FileUtils;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.ParserException;
+import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -69,6 +71,8 @@ public class NetsIO {
         ProbNetReader probNetReader = FormatManager.getInstance().getProbNetReader(fileToRead);
         try {
             return probNetReader.loadProbNetInfo(fileName, new FileInputStream(fileName));
+        } catch (UnrecoverableException | UnreacheableException e) {
+            throw e;
         } catch (RuntimeException e) {
             throw new CorruptNetworkFile(fileToRead, e);
         }

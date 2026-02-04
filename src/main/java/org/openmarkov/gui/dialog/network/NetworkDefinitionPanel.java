@@ -11,19 +11,18 @@ import org.openmarkov.core.action.core.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.core.NetworkCommentEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
+import org.openmarkov.core.model.network.type.plugin.NetworkTypeUtils;
+import org.openmarkov.gui.commonComponents.JComboBoxFunctionRender;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.java.classUtils.ClassUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Panel to set the definition of a network.
@@ -47,7 +46,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
     /**
      * The Network Types Combo Box Drop Down List
      */
-    private JComboBox<String> jComboBoxNetworkTypes = null;
+    private JComboBox<Class<? extends NetworkType>> jComboBoxNetworkTypes = null;
     /**
      * The Network Definition Comment Label
      */
@@ -66,7 +65,6 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
     private boolean newNetwork;
     private ProbNet probNet;
     private NetworkPropertiesDialog parent;
-    private NetworkTypeManager networkTypeManager;
     
     /**
      * Constructor.
@@ -88,7 +86,6 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
      */
     private void initialize() {
         setName("NetworkDefinitionPanel");
-        networkTypeManager = new NetworkTypeManager();
         final GroupLayout groupLayout = new GroupLayout(this);
         groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
                 groupLayout.createSequentialGroup().addContainerGap().addGroup(
@@ -160,28 +157,23 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
      *
      * @return jComboBoxNetworkTypes the comboBox of the Network Types field
      */
-    private JComboBox<String> getJComboBoxNetworkTypes() {
+    private JComboBox<Class<? extends NetworkType>> getJComboBoxNetworkTypes() {
         if (jComboBoxNetworkTypes == null) {
-            Set<String> networkTypeNames = networkTypeManager.getNetworkTypeNames();
-            List<String> networkTypes = new ArrayList<>(networkTypeNames.size());
-            for (String networkType : networkTypeNames) {
-                networkTypes.add(stringDatabase.getString("NetworkDefinitionPanel.NetworkTypes.Items." + networkType));
-            }
-            Collections.sort(networkTypes);
-            String[] networkTypeArray = new String[networkTypes.size()];
-            networkTypes.toArray(networkTypeArray);
-            jComboBoxNetworkTypes = new JComboBox<String>(networkTypeArray);
+            Class[] networkClasses = NetworkTypeUtils.NETWORK_TYPE_CLASSES
+                    .stream()
+                    .filter(ClassUtils::isConcrete)
+                    .toArray(Class[]::new);
+            jComboBoxNetworkTypes = new JComboBox<>(networkClasses);
+            jComboBoxNetworkTypes.setRenderer(new JComboBoxFunctionRender<Class<? extends NetworkType>>(
+                    networkTypeClass -> NetworkTypeUtils.getInfo(networkTypeClass).visualName()));
             jComboBoxNetworkTypes.setName("jComboBoxNetworkTypes");
             jComboBoxNetworkTypes.setEditable(false);
             //
             if (newNetwork) {
                 // Set Bayesian Network as default
-                jComboBoxNetworkTypes.setSelectedItem(
-                        stringDatabase.getString("NetworkDefinitionPanel.NetworkTypes.Items.BayesianNetwork"));
+                jComboBoxNetworkTypes.setSelectedItem(BayesianNetworkType.class);
             } else {
-                jComboBoxNetworkTypes.setSelectedItem(stringDatabase.getString(
-                        "NetworkDefinitionPanel.NetworkTypes.Items." + NetworkTypeManager
-                                .getName(probNet.getNetworkType())));
+                jComboBoxNetworkTypes.setSelectedItem(probNet.getNetworkType().getClass());
                 jComboBoxNetworkTypes.addActionListener(arg0 -> {
                     try {
                         networkTypeChanged();
@@ -250,8 +242,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
      * @param probNet network from where load the information.
      */
     private void setFieldsFromProperties(ProbNet probNet) {
-        getJComboBoxNetworkTypes().setSelectedItem(stringDatabase.getString(
-                "NetworkDefinitionPanel.NetworkTypes.Items." + NetworkTypeManager.getName(probNet.getNetworkType())));
+        getJComboBoxNetworkTypes().setSelectedItem(probNet.getNetworkType().getClass());
         // set the title for comment
         MessageFormat messageForm = new MessageFormat(
                 stringDatabase.getString("NetworkDefinitionPanel." + "CommentHTMLScrollPaneNetworkDefinition.Text"));
@@ -287,16 +278,11 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
     }
     
     private void networkTypeChanged() throws DoEditException {
-        String itemSelected = (String) jComboBoxNetworkTypes.getSelectedItem();
+        Class<? extends NetworkType> itemSelected = (Class<? extends NetworkType>) jComboBoxNetworkTypes.getSelectedItem();
         if (itemSelected == null) {
             return;
         }
-        NetworkType selectedNetworkType = null;
-        for (String networkTypeName : networkTypeManager.getNetworkTypeNames()) {
-            if (itemSelected.equals(stringDatabase.getString("NetworkDefinitionPanel.NetworkTypes.Items." + networkTypeName))) {
-                selectedNetworkType = networkTypeManager.getNetworkType(networkTypeName);
-            }
-        }
+        NetworkType selectedNetworkType = NetworkTypeUtils.safeInstanciate(itemSelected);
         if (selectedNetworkType == null) {
             return;
         }
@@ -323,14 +309,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
     }
     
     public NetworkType getNetworkType() {
-        org.openmarkov.core.model.network.type.NetworkType selectedNetworkType = null;
-        for (String networkTypeName : networkTypeManager.getNetworkTypeNames()) {
-            if (jComboBoxNetworkTypes.getSelectedItem()
-                                     .equals(stringDatabase.getString("NetworkDefinitionPanel.NetworkTypes.Items." + networkTypeName))) {
-                selectedNetworkType = networkTypeManager.getNetworkType(networkTypeName);
-            }
-        }
-        return selectedNetworkType;
+        return NetworkTypeUtils.safeInstanciate((Class<? extends NetworkType>) jComboBoxNetworkTypes.getSelectedItem());
     }
     
     public String getNetworkComment() {
