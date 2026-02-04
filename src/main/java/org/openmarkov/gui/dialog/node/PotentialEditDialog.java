@@ -404,8 +404,8 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
             univariateDistrComboBox = new JComboBox<String>();
             univariateDistrComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
             univariateDistrComboBox.setName("jComboBoxDistr");
-            univariateDistrComboBox.addActionListener(new java.awt.event.ActionListener() {
-                @Override public void actionPerformed(java.awt.event.ActionEvent evt) {
+            univariateDistrComboBox.addActionListener(new ActionListener() {
+                @Override public void actionPerformed(ActionEvent evt) {
                     String univariateName = (String) univariateDistrComboBox.getSelectedItem();
                     showUnivariateDistrParametrizationComboBox(univariateName);
                 }
@@ -542,8 +542,20 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
     protected void potentialTypeChanged() {
         Class<? extends Potential> potentialType = (Class<? extends Potential>) potentialTypeComboBox.getSelectedItem();
         if (!previouslySelectedPotentialType.equals(potentialType)) {
-            
-            Potential newPotential = instanciatePotential(potentialType);
+            Potential newPotential = null;
+            /*
+            if(potentialType== TablePotential.class){
+                try {
+                    newPotential=node.getPotentials().get(0).tableProject(null, null).getFirst();
+                } catch (NonProjectablePotentialException | RuntimeException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(newPotential==null){
+                newPotential = instanciatePotential(potentialType);
+            }
+            */
+            newPotential = instanciatePotential(potentialType);
             node.setPotentialConsistently(newPotential);
             
             updatePotentialPanel();
@@ -579,9 +591,10 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
             node.getPotentials().get(0).setComment(comment);
         }
         SetPotentialEdit setPotentialEdit;
-        setPotentialEdit = new SetPotentialEdit(node, lastPotential, node.getPotential());
+        Potential newPotential = node.getPotential();
+        setPotentialEdit = new SetPotentialEdit(node, lastPotential, newPotential);
         node.getProbNet().getPNESupport().closeParenthesis();
-        node.getProbNet().getPNESupport().undo();
+        node.getProbNet().getPNESupport().removeLastEdit();
         setPotentialEdit.executeEdit();
         return true;
     }

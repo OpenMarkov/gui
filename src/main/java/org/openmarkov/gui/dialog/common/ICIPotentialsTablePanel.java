@@ -109,7 +109,6 @@ public class ICIPotentialsTablePanel
         } else {
             row = 0;
         }
-        
         return row;
     }
     
