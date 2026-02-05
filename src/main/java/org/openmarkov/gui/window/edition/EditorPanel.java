@@ -803,7 +803,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     private boolean requestPotentialValues(Window owner, Node node, boolean newNode, boolean readOnly) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
-        potentialsDialog = new PotentialEditDialog(owner, node, newNode, readOnly);
+        potentialsDialog = new PotentialEditDialog(owner, node, readOnly);
         visualNetwork.cancelLinkCreation(this);
         return (
                 potentialsDialog.requestValues()// to know if the user has
@@ -939,10 +939,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void imposePolicyInNode()
             throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
-        VisualNode visualNode;
+        VisualDecisionNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
-            visualNode = selectedNode.get(0);
+            visualNode = (VisualDecisionNode) selectedNode.get(0);
             if (!requestImposePolicyValues(Utilities.getOwner(this), visualNode)) {
                 // if user cancels policy imposition then no potential is
                 // restored to the node
@@ -957,10 +957,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * This method edits an imposed policy of a decision node.
      */
     public void editNodePolicy() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
-        VisualNode visualNode;
+        VisualDecisionNode visualNode;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
-            visualNode = selectedNode.get(0);
+            visualNode = (VisualDecisionNode) selectedNode.get(0);
             if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
                 //Node node = visualNode.getNode();
                 // TODO manage other kind of policy types from the interface
@@ -998,7 +998,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         repaint();
     }
     
-    private static boolean requestImposePolicyValues(Window owner, VisualNode visualNode) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    private static boolean requestImposePolicyValues(Window owner, VisualDecisionNode visualNode) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         ImposePolicyDialog imposePolicyDialog = new ImposePolicyDialog(owner, visualNode);
         imposePolicyDialog.setTitle("ImposePolicydialog.Title");
         return (imposePolicyDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
@@ -1019,7 +1019,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             Potential expectedUtility = veExpectedUtilityDecision.getExpectedUtility();
             Node dummyNode = new Node(new ProbNet(), node.getVariable(), node.getNodeType());
             dummyNode.setPotential(expectedUtility);
-            PotentialEditDialog expectedUtilityDialog = new PotentialEditDialog(Utilities.getOwner(this), dummyNode, false, true);
+            PotentialEditDialog expectedUtilityDialog = new PotentialEditDialog(Utilities.getOwner(this), dummyNode, true);
             expectedUtilityDialog.setTitle("ExpectedUtilityDialog.Title");
             expectedUtilityDialog.requestValues();
         }
@@ -1055,7 +1055,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 dummyProbNet.addLink(variable, conditionedVariable, true);
             }
             PotentialEditDialog optimalPolicyDialog =
-                    new PotentialEditDialog(Utilities.getOwner(this), dummy, false, true);
+                    new PotentialEditDialog(Utilities.getOwner(this), dummy, true);
             optimalPolicyDialog.setTitle("OptimalPolicyDialog.Title");
             optimalPolicyDialog.requestValues();
         }

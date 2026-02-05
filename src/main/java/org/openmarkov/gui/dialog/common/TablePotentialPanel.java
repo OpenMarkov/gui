@@ -167,6 +167,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         // If the ScrollPane is not created, initialise it and set the Viewport.
         // Then add the element to the Layout.
         add(getValuesTableScrollPane(), BorderLayout.CENTER);
+        add(new JButton(), BorderLayout.NORTH);
         
         repaint();
     }

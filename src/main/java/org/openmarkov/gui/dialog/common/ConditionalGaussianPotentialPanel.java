@@ -77,7 +77,7 @@ public class ConditionalGaussianPotentialPanel
     
     private void editMeanPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), meanDummyNode,
-                                                                          false, isReadOnly());
+                                                                          isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             // TODO: Do nothing?
         } else {
@@ -87,7 +87,7 @@ public class ConditionalGaussianPotentialPanel
     
     private void editVariancePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), varianceDummyNode,
-                                                                          false, isReadOnly());
+                                                                          isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             // TODO: Do nothing?
         } else {

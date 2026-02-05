@@ -66,7 +66,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     }
     
     private void editMedianPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
-        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), medianDummyNode, false, isReadOnly());
+        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), medianDummyNode, isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             // TODO: Do nothing?
         } else {
@@ -75,7 +75,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     }
     
     private void editScalePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
-        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), scaleDummyNode, false, isReadOnly());
+        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), scaleDummyNode, isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             // TODO: Do nothing?
         } else {
