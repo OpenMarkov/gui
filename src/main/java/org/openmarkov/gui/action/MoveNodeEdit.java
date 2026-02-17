@@ -48,25 +48,11 @@ public class MoveNodeEdit extends PNEdit {
     }
     
     @Override protected void doEdit() {
-        Node node;
-        int i = 0;
-        for (String name : namesNode) {
-            node = probNet.getNode(name);
-            node.setCoordinateX(newPositions.get(i).getX());
-            node.setCoordinateY(newPositions.get(i).getY());
-            i++;
-        }
+        probNet.moveNode(namesNode,newPositions);
     }
     
     @Override public void undo() {
         super.undo();
-        int i = 0;
-        Node node;
-        for (String name : namesNode) {
-            node = probNet.getNode(name);
-            node.setCoordinateX(lastPositions.get(i).getX());
-            node.setCoordinateY(lastPositions.get(i).getY());
-            i++;
-        }
+        probNet.moveNode(namesNode,lastPositions);
     }
 }

@@ -666,7 +666,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         UncertainValuesEdit uncertEdit = new UncertainValuesEdit(node, uncertDialog.getUncertainColumn(),
                                                                  uncertDialog.getValuesColumn(), uncertDialog.getPosBase(), selectedColumn,
                                                                  uncertDialog.isChanceVariable());
-        ProbNet probNet = node.getProbNet();
         uncertEdit.executeEdit();
         if (selectedColumn > 0) {
             ((ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)).setMark(selectedColumn - 1);

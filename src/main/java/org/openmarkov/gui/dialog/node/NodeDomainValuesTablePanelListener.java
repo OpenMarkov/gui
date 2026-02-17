@@ -171,7 +171,6 @@ public class NodeDomainValuesTablePanelListener
             PrecisionEdit precisionEdit = new PrecisionEdit(getPanel().getNode(),
                                                             (Double) getPanel().getJFormattedTextFieldPrecision()
                                                                                .getValue());
-            ProbNet probNet = getPanel().getNode().getProbNet();
             try {
                 precisionEdit.executeEdit();
             } catch (DoEditException e) {
@@ -181,7 +180,6 @@ public class NodeDomainValuesTablePanelListener
                     .toString());
         } else if (evt.getSource().equals(getPanel().getJTextFieldUnit())) {
             UnitEdit unitEdit = new UnitEdit(getPanel().getNode(), getPanel().getJTextFieldUnit().getText());
-            ProbNet probNet = getPanel().getNode().getProbNet();
             try {
                 unitEdit.executeEdit();
             } catch (DoEditException e) {
