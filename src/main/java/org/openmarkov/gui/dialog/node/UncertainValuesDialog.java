@@ -335,7 +335,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     
     private void fillDistributionsTableModel(Variable variable, EvidenceCase configuration, TablePotential potential) throws NonProjectablePotentialException {
         potential.getUncertainValues();
-        TablePotential projectedPotential = potential.tableProject(configuration, null).get(0);
+        TablePotential projectedPotential = potential.tableProject(configuration, null);
         UncertainValue[] projectedUncertainTable = projectedPotential.getUncertainValues();
         // Get the table of uncertain values
         UncertainValue[] uncertainTable = !hasUncertainValues(projectedUncertainTable) ?

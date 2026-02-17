@@ -315,11 +315,20 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.EDITION_MODE_PREFIX -> activateEditionMode(actionCommand);
             case ActionCommands.CHANGE_WORKING_MODE, ActionCommands.CHANGE_TO_INFERENCE_MODE,
                  ActionCommands.CHANGE_TO_EDITION_MODE -> {
+                NetworkPanel.WorkingMode initialWorkingMode = getCurrentNetworkPanel().getWorkingMode();
                 try {
-                    setNewWorkingMode();
+                    toggleWorkingMode();
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ConstraintViolatedException ex) {
+                    //On fail, go back to the previous working mode.
+                    try {
+                        setWorkingMode(initialWorkingMode, initialWorkingMode);
+                    } catch (NotEvaluableNetworkException | NonProjectablePotentialException |
+                             NotEnoughtMemoryException | IncompatibleEvidenceException |
+                             CannotNormalizePotentialException | ConstraintViolatedException exc) {
+                        throw new UnreacheableException(exc);
+                    }
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -1438,28 +1447,28 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * This method establishes the network working mode (edition or inference),
      * by setting the opposite to the current one.
      */
-    private void setNewWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    private void toggleWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         NetworkPanel.WorkingMode currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
-        NetworkPanel.WorkingMode newWorkingMode = null;
+        NetworkPanel.WorkingMode newWorkingMode = switch (currentWorkingMode) {
+            case EDITION -> NetworkPanel.WorkingMode.INFERENCE;
+            case INFERENCE -> NetworkPanel.WorkingMode.EDITION;
+        };
+        setWorkingMode(currentWorkingMode, newWorkingMode);
+    }
+    
+    private void setWorkingMode(NetworkPanel.WorkingMode currentWorkingMode, NetworkPanel.WorkingMode newWorkingMode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         boolean performInference = true;
-        switch (currentWorkingMode) {
-            case EDITION -> {
-                newWorkingMode = NetworkPanel.WorkingMode.INFERENCE;
-                
-                // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
-                InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
-                                                                           Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
-                
-                if (dialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
-                    newWorkingMode = NetworkPanel.WorkingMode.EDITION;
-                    performInference = false;
-                }
-                // Set as launched
-                //getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
-            }
-            case INFERENCE -> {
+        if (currentWorkingMode == NetworkPanel.WorkingMode.EDITION) {
+            // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
+            InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
+                                                                       Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+            
+            if (dialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
                 newWorkingMode = NetworkPanel.WorkingMode.EDITION;
+                performInference = false;
             }
+            // Set as launched
+            //getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
         }
         mainPanel.setToolBarPanel(newWorkingMode);
         mainPanel.changeWorkingModeButton(newWorkingMode);

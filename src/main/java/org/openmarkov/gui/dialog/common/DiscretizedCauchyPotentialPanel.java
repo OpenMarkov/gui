@@ -111,7 +111,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     }
     
     private void update() throws NonProjectablePotentialException {
-        TablePotential projectedPotential = newPotential.tableProject(new EvidenceCase(), null).get(0);
+        TablePotential projectedPotential = newPotential.tableProject(new EvidenceCase(), null);
         // TODO update table with projected potential
     }
     

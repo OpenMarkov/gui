@@ -116,7 +116,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
         this.node = node;
         Potential lastPotential = this.node.getPotential();
         if (lastPotential != null) {
-            this.originalPotential = this.node.getPotential().copy();
+            this.originalPotential = this.node.getPotential().deepCopy(this.node.getProbNet());
         } else {
             this.originalPotential = null;
         }
@@ -476,14 +476,14 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
         }
         if (newPotential == null && potentialType == TablePotential.class) {
             try {
-                newPotential = this.node.getPotentials().getFirst().tableProject(null, null).getFirst();
+                newPotential = this.node.getPotentials().getFirst().tableProject(null, null);
             } catch (NonProjectablePotentialException | RuntimeException e) {
             }
         }
         if (newPotential == null && potentialType == TablePotential.class) {
             try {
                 newPotential = this.instanciatePotential(potentialType, currentPotential.getVariables())
-                                   .tableProject(null, null).getFirst();
+                                   .tableProject(null, null);
             } catch (NonProjectablePotentialException | RuntimeException e) {
             }
         }
