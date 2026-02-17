@@ -11,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
+import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.gui.window.MainGUI;
 
 import javax.swing.*;
 
@@ -40,38 +43,11 @@ import javax.swing.*;
  */
 public interface ToolPlugin {
     
-    /**
-     * A representative name for this plugin that allows to recognize the plugin.
-     *
-     * @return a representative name for this plugin.
-     */
-    @NotNull String menuOptionText();
-    
-    /**
-     * A mnemonic associated with this ToolPlugin, which might be null to denote there is no mnemonic.
-     *
-     * @return A mnemonic associated with this ToolPlugin.
-     */
-    @Nullable default Character mnemonic() {
-        return null;
-    }
+    JMenuItem toMenuItem();
     
     @NotNull ToolPluginGroup pluginGroup();
     
     int priorityInGroup();
-    
-    default boolean enabled() {
-        return true;
-    }
-    
-    /**
-     * This method is called when the user clicks on this Plugin from the {@code Tools} toolbar.
-     * <p>
-     * Most of {@code tool plugin} usually create a dialog where the main execution of the {@code tool plugin} happens.
-     *
-     * @param parent The frame where the menu item the user clicks is located at.
-     */
-    void showDialog(@Nullable JFrame parent) throws Exception;
     
     enum ToolPluginGroup {
         ANALYSIS,
@@ -81,4 +57,38 @@ public interface ToolPlugin {
         UNCATEGORIZED;
     }
     
+    public static @NotNull JMenuItem commonToJMenuItem(CommonToJMenuItem info) {
+        
+        
+        JMenuItem menuItem = new JMenuItem();
+        menuItem.addActionListener(e -> {
+            try {
+                info.onClickAction().accept(MainGUI.INSTANCE.mainPanel.getMainFrame());
+            } catch (UnrecoverableException | UnreacheableException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                throw new UnrecoverableException(ex);
+            }
+        });
+        menuItem.setText(info.title());
+        var mnemonic = info.mnemonic();
+        if (mnemonic != null) {
+            menuItem.setMnemonic(mnemonic);
+        }
+        menuItem.setEnabled(info.enabled());
+        return menuItem;
+    }
+    
+    record CommonToJMenuItem(
+            @NotNull String title,
+            @Nullable Character mnemonic,
+            boolean enabled,
+            @NotNull ThrowingConsumer<JFrame, ? extends Exception> onClickAction
+    ) {
+    }
+    
+    @FunctionalInterface
+    interface ThrowingConsumer<T, E extends Exception> {
+        void accept(T t) throws E;
+    }
 }

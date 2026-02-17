@@ -3,6 +3,7 @@ package org.openmarkov.gui.configuration;
 import com.google.gson.reflect.TypeToken;
 import org.openmarkov.gui.dialog.common.WindowDimensions;
 import org.openmarkov.gui.dialog.io.OMFileChooser;
+import org.openmarkov.gui.toolplugin.UILookAndFeelPlugin;
 
 import java.awt.*;
 import java.io.File;
@@ -44,6 +45,10 @@ public final class LocalPreferences {
     
     public static final LocalPreference<Boolean> PREFERS_DARK_THEME = LocalPreference
             .of("user_interface/prefers_dark_theme", () -> false, new TypeToken<>() {
+            });
+    
+    public static final LocalPreference<UILookAndFeelPlugin.Theme> PREFERRED_THEME = LocalPreference
+            .of("user_interface/prefered_theme", () -> UILookAndFeelPlugin.Theme.SYSTEM, new TypeToken<>() {
             });
     
     public static final LocalPreference<String> PREFERENCE_LANGUAGE = LocalPreference

@@ -15,6 +15,7 @@ import org.openmarkov.plugin.PluginSearch;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
@@ -66,7 +67,7 @@ public final class ToolPluginManager {
                         throw new UnreacheableException(e);
                     }
                 })
-                .sorted(Comparator.comparing(ToolPlugin::menuOptionText))
+                //.sorted(Comparator.comparing(ToolPlugin::menuOptionText))
                 .toList();
     }
     
@@ -91,37 +92,6 @@ public final class ToolPluginManager {
     
     public List<? extends ToolPlugin> getAllToolPlugins() {
         return this.plugins;
-    }
-    
-    /**
-     * Creates a JMenuItem to represent this ToolPlugin.
-     * <p>
-     * The JMenuItem's text will be equal to {@link ToolPlugin#menuOptionText()}.
-     * <p>
-     * When clicking on the JMenuItem, {@link ToolPlugin#showDialog(JFrame)} will be triggered.
-     *
-     * @param toolPlugin the plugin to represent via a {@link JMenuItem}.
-     * @return a JMenuItem to represent this ToolPlugin
-     */
-    public static @NotNull JMenuItem toolPluginToMenuItem(ToolPlugin toolPlugin) {
-        JMenuItem menuItem = new JMenuItem();
-        menuItem.setAction(new AbstractAction() {
-            @Override public void actionPerformed(ActionEvent e) {
-                try {
-                    toolPlugin.showDialog(MainGUI.INSTANCE.mainPanel.getMainFrame());
-                } catch (Exception ex) {
-                    UnrecoverableException unrecoverableException = new UnrecoverableException(ex);
-                    throw unrecoverableException;
-                }
-            }
-        });
-        menuItem.setName(toolPlugin.getClass().getSimpleName());
-        menuItem.setText(toolPlugin.menuOptionText());
-        var mnemonic = toolPlugin.mnemonic();
-        if (mnemonic != null) {
-            menuItem.setMnemonic(mnemonic);
-        }
-        return menuItem;
     }
     
 }

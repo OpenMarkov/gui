@@ -59,6 +59,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
@@ -558,18 +559,14 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 }
             }
             case ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC -> {
-                ToolPlugin cePlugin;
                 try {
-                    cePlugin = (ToolPlugin) Class.forName("org.openmarkov.costEffectiveness.CostEffectivenessPlugin")
-                                                 .getDeclaredConstructor().newInstance();
-                } catch (InstantiationException | ClassNotFoundException | IllegalAccessException |
+                    Method ceMethod = Class.forName("org.openmarkov.costEffectiveness.CostEffectivenessPlugin")
+                                           .getDeclaredMethod("onClick");
+                    ceMethod.setAccessible(true);
+                    ceMethod.invoke(null);
+                } catch (ClassNotFoundException | IllegalAccessException |
                          NoSuchMethodException | InvocationTargetException ex) {
                     throw new UnreacheableException(ex);
-                }
-                try {
-                    cePlugin.showDialog(MainGUI.INSTANCE.mainPanel.getMainFrame());
-                } catch (Exception ex) {
-                    throw new UnrecoverableException(ex);
                 }
             }
             case ActionCommands.CHANCE_CREATION, ActionCommands.UNCERTAINTY_REMOVE, ActionCommands.UNCERTAINTY_EDIT,

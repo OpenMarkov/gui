@@ -1351,13 +1351,10 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
             while (pluginsByGroupIterator.hasNext()) {
                 var plugins = pluginsByGroupIterator.next().getValue();
                 //Sort all plugins in this group by priority and then by name.
-                plugins.sort(Comparator.comparing(ToolPlugin::priorityInGroup)
-                                       .thenComparing(ToolPlugin::menuOptionText));
+                plugins.sort(Comparator.comparing(ToolPlugin::priorityInGroup));
                 //Add all of the sorted plugins of the group to the menu.
                 for (ToolPlugin plugin : plugins) {
-                    var menuItem = ToolPluginManager.toolPluginToMenuItem(plugin);
-                    menuItem.setEnabled(plugin.enabled());
-                    toolsMenu.add(menuItem);
+                    toolsMenu.add(plugin.toMenuItem());
                 }
                 //Add separator only if this group isn't the last (To avoid having a separator that is empty).
                 if (pluginsByGroupIterator.hasNext()) {

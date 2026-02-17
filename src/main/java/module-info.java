@@ -46,6 +46,7 @@ open module org.openmarkov.gui {
     exports org.openmarkov.gui.exception;
     exports org.openmarkov.gui.component;
     exports org.openmarkov.gui.graphic;
+    exports org.openmarkov.gui.componentBuilder;
     
     uses org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
     provides org.openmarkov.core.localize.spi.LocalizeResourcesProvider with GUIResourceBundleProvider;

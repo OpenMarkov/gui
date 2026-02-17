@@ -145,7 +145,6 @@ public class MainPanel extends JPanel {
                 
                 }
             }
-            ;
             this.mainMenu.reInitialize();
         });
         this.initialize();
