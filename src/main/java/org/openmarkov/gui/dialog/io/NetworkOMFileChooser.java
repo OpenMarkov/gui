@@ -20,9 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -42,22 +40,12 @@ import java.util.List;
         setAcceptAllFileFilterUsed(acceptAllfile);
         rescanCurrentDirectory();
 		FormatManager formatManager = FormatManager.getInstance();
-		HashMap<String, String> parsersListForFilters = isOpening ?
+		List<AbstractMap.SimpleEntry<String, String>> parsersListForFilters = isOpening ?
 				formatManager.getReaders() :
 				formatManager.getWriters();
-		List<String> extensionList = new ArrayList<String>();
-		// for (String item : parsersListForFilters.keySet ())
-        List<String> descriptions = new ArrayList<>(parsersListForFilters.keySet());
-		Collections.sort(descriptions);
-		for (String item : descriptions)
-		{
-        	/*
-        	addChoosableFileFilter (new FileFilterAll (parsersListForFilters.get (item), item));
-        	*/
-			String itemExtension = parsersListForFilters.get(item);
-
-			addChoosableFileFilter(new FileFilterAll(itemExtension, item));
-
+		parsersListForFilters.sort(Comparator.comparing(Map.Entry::getKey));
+		for (var item : parsersListForFilters) {
+			addChoosableFileFilter(new FileFilterAll(item.getValue(), item.getKey()));
 		}
 		File currentDirectory = null;
         /*

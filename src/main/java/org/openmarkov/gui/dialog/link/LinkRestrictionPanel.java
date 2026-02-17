@@ -60,7 +60,6 @@ import java.util.List;
 	private boolean modifiable;
 
 	public LinkRestrictionPanel(Link<Node> link) {
-
 		this.link = link;
         node1 = link.getFrom();
         node2 = link.getTo();
@@ -74,7 +73,6 @@ import java.util.List;
 	 * special method to show/hide the values table
 	 */
 	public void showValuesTable(final boolean visible) {
-
 		getLinkRestrictionValuesTable().setVisible(visible);
 	}
 
@@ -85,7 +83,6 @@ import java.util.List;
 	 * @return a new values table.
 	 */
 	protected ValuesTable getLinkRestrictionValuesTable() {
-
 		if (valuesTable == null) {
 			valuesTable = new LinkRestrictionValuesTable(link, getTableModel(), modifiable);
 			valuesTable.setName("LinkRestrictionPanel.valuesTable");
@@ -99,17 +96,11 @@ import java.util.List;
 	 * @return a new tableModel.
 	 */
 	protected ValuesTableModel getTableModel() {
-        
-        LinkRestrictionValuesTableModel tableModel;
-		if (valuesTable == null) {
-			tableModel = new LinkRestrictionValuesTableModel(data, columns, firstEditableRow);
-		} else if (valuesTable.getTableModel() == null) {
-			tableModel = new LinkRestrictionValuesTableModel(data, columns, firstEditableRow);
-		} else {
-			tableModel = (LinkRestrictionValuesTableModel) valuesTable.getModel();
+        if (valuesTable == null || valuesTable.getTableModel() == null) {
+            return new LinkRestrictionValuesTableModel(data, columns, firstEditableRow);
 		}
-		return tableModel;
-	}
+        return (ValuesTableModel) valuesTable.getModel();
+    }
 
 	/**
 	 * This method initializes valuesTableScrollPane.
@@ -117,12 +108,10 @@ import java.util.List;
 	 * @return a new values table scroll pane.
 	 */
 	protected JScrollPane getValuesTableScrollPane() {
-
 		if (valuesTableScrollPane == null) {
 			valuesTableScrollPane = new JScrollPane();
 			valuesTableScrollPane.setName("LinkRestrictionPanel.valuesTableScrollPane");
 			valuesTableScrollPane.setViewportView(getLinkRestrictionValuesTable());
-
 		}
 		return valuesTableScrollPane;
 	}
@@ -282,8 +271,7 @@ import java.util.List;
     private Object[][] setValuesTableSize() {
         setBaseIndexForCoordinates(1);
 		setFirstEditableRow(1);
-
-		setVariables(link.getRestrictionsPotential().getVariables());
+		variables = link.getRestrictionsPotential().getVariables();
 		// create the array of arrays
         Object[][] values = new Object[node2.getVariable().getNumStates() + 1][node1.getVariable().getNumStates() + 1];
 		return values;
@@ -295,7 +283,6 @@ import java.util.List;
 	 * @param newData new data for the table.
 	 */
 	public void setData(Object[][] newData) {
-
 		setData(newData, columns, 0, 0, NodeType.CHANCE);
 	}
 
@@ -307,7 +294,6 @@ import java.util.List;
 	 */
 	public void setData(Object[][] newData, String[] newColumns, int firstEditableRow, int lastEditableRow,
 			NodeType nodeType) {
-
 		showValuesTable(true);
 		data = newData.clone();
 		columns = newColumns.clone();
@@ -318,7 +304,6 @@ import java.util.List;
 		valuesTable.initializeDataModified(false);
 		((ValuesTableModel) valuesTable.getModel()).setFirstEditableRow(firstEditableRow);
 		valuesTable.setLastEditableRow(lastEditableRow);
-
 	}
 
 	/**
@@ -328,7 +313,6 @@ import java.util.List;
 	protected void setCellRenderers() {
 		int size = valuesTable.getColumnCount();
 		boolean[] aux = new boolean[size - 1];
-
 		valuesTable.setDefaultRenderer(Double.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux,
 				(TablePotential) link.getRestrictionsPotential()));
 		valuesTable.setDefaultRenderer(String.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux,
@@ -339,7 +323,6 @@ import java.util.List;
 
 	@Override public void setData(Node node) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override public void close() {
@@ -347,9 +330,7 @@ import java.util.List;
 	}
 
 	private void setVariables(List<Variable> variables) {
-
 		this.variables = variables;
-
 	}
 
 }

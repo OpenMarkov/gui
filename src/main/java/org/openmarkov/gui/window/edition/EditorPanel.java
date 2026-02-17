@@ -2197,7 +2197,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             if (!requestLinkRestrictionValues(Utilities.getOwner(this), link)) {
                 probNet.getPNESupport().undoAndDelete();
             }
-            link.resetRestrictionsPotential();
+            link.tryResetRestrictionsPotential();
             repaint();
         }
     }

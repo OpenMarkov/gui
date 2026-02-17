@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.link;
 
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.localize.StringDatabase;
@@ -22,90 +23,88 @@ import java.text.MessageFormat;
  */
 
 @SuppressWarnings("serial") public class LinkRestrictionEditDialog extends OkCancelHorizontalDialog {
-
-	/****
-	 * The link containing the link restrictions
-	 */
-	private Link<Node> link;
-
-	/**
-	 * Panel of the graphic editor
-	 */
-	private LinkRestrictionPanel linkRestrictionPanel;
-
-	public LinkRestrictionEditDialog(Window owner, Link<Node> link) {
-		super(owner);
-		this.link = link;
-        link.getFrom().getProbNet().getPNESupport().openParenthesis();
-		initialize();
-		setLocationRelativeTo(owner);
-		setMinimumSize(new Dimension(750, 450));
-		setResizable(true);
-	}
-
-	/**
-	 * This method configures the dialog box.
-	 */
-	private void initialize() {
-        
+    
+    /****
+     * The link containing the link restrictions
+     */
+    private Link<Node> link;
+    
+    private final ProbNet probNet;
+    
+    /**
+     * Panel of the graphic editor
+     */
+    private LinkRestrictionPanel linkRestrictionPanel;
+    
+    public LinkRestrictionEditDialog(Window owner, Link<Node> link) {
+        super(owner);
+        this.link = link;
+        probNet = link.getFrom().getProbNet();
+        probNet.getPNESupport().openParenthesis();
+        initialize();
+        setLocationRelativeTo(owner);
+        setMinimumSize(new Dimension(750, 450));
+        setResizable(true);
+    }
+    
+    /**
+     * This method configures the dialog box.
+     */
+    private void initialize() {
         Node node1 = link.getFrom();
         Node node2 = link.getTo();
-		String title = "";
-		if (link != null) {
-			MessageFormat messageForm = new MessageFormat(
+        String title = "";
+        if (link != null) {
+            MessageFormat messageForm = new MessageFormat(
                     StringDatabase.getUniqueInstance().getString("LinkRestrictionDialog.Title"));
-			Object[] labelArgs = new Object[] { node1.getName(), node2.getName() };
-			title = messageForm.format(labelArgs);
-		}
-		setTitle(title);
-		configureComponentsPanel();
-		pack();
-	}
-
-	/**
-	 * Sets up the panel where all components, except the buttons of the buttons
-	 * panel, will be appear.
-	 */
-	private void configureComponentsPanel() {
-		getComponentsPanel().setLayout(new BorderLayout(5, 5));
-
-		getComponentsPanel().add(getLinkRestrictionPanel(), BorderLayout.CENTER);
-	}
-
-	private ProbabilityTablePanel getLinkRestrictionPanel() {
-
-		if (this.linkRestrictionPanel == null) {
-			this.linkRestrictionPanel = new LinkRestrictionPanel(link);
-		}
-		return linkRestrictionPanel;
-	}
-
-	/**
-	 * @return An integer indicating the button clicked by the user when closing
-	 * this dialog
-	 */
-	public int requestValues() {
-		setVisible(true);
-		return selectedButton;
-	}
-
-	/**
-	 * This method carries out the actions when the user presses the OK button
-	 * before hiding the dialog.
-	 *
-	 * @return true if all the fields are correct.
-	 */
-	@Override protected boolean doOkClickBeforeHide() {
-
-		getLinkRestrictionPanel().close();
+            Object[] labelArgs = new Object[]{node1.getName(), node2.getName()};
+            title = messageForm.format(labelArgs);
+        }
+        setTitle(title);
+        configureComponentsPanel();
+        pack();
+    }
+    
+    /**
+     * Sets up the panel where all components, except the buttons of the buttons
+     * panel, will be appear.
+     */
+    private void configureComponentsPanel() {
+        getComponentsPanel().setLayout(new BorderLayout(5, 5));
+        getComponentsPanel().add(getLinkRestrictionPanel(), BorderLayout.CENTER);
+    }
+    
+    private ProbabilityTablePanel getLinkRestrictionPanel() {
+        if (this.linkRestrictionPanel == null) {
+            this.linkRestrictionPanel = new LinkRestrictionPanel(link);
+        }
+        return linkRestrictionPanel;
+    }
+    
+    /**
+     * @return An integer indicating the button clicked by the user when closing
+     * this dialog
+     */
+    public int requestValues() {
+        setVisible(true);
+        return selectedButton;
+    }
+    
+    /**
+     * This method carries out the actions when the user presses the OK button
+     * before hiding the dialog.
+     *
+     * @return true if all the fields are correct.
+     */
+    @Override protected boolean doOkClickBeforeHide() {
+        ProbabilityTablePanel linkRestrictionPanel = getLinkRestrictionPanel();
+        linkRestrictionPanel.close();
         link.getFrom().getProbNet().getPNESupport().closeParenthesis();
-		return true;
-	}
-
-	@Override protected void doCancelClickBeforeHide() {
-        
+        return true;
+    }
+    
+    @Override protected void doCancelClickBeforeHide() {
         link.getFrom().getProbNet().getPNESupport().closeParenthesis();
-
-	}
-
+    }
+    
 }

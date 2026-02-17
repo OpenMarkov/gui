@@ -9,14 +9,10 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,12 +60,7 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	 * list of variables that are shown in this table
 	 */
 	protected List<Variable> variables = null;
-
-	/**
-	 * list of potentials for the variable
-	 */
-	protected List<Potential> listPotentials = null;
-
+	
 	/**
 	 * first editable row (only for temporal storage)
 	 */
@@ -82,15 +73,8 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	 * Properties for options to display in the table
 	 */
 	protected boolean showAllParameters = true;
-	protected boolean showProbabilitiesValues = true;
-	protected boolean showTPCvalues = true;
 	protected boolean showNetValues = true;
-	/**
-	 * The contextualMenu that appears when there is a click on the valuesTable
-	 * Object
-	 */
-	protected ContextualMenuFactory contextualMenuFactory;
-
+	
 	// private Node node;
 	protected EvidenceCase evidenceCase;
 	/**
@@ -98,19 +82,13 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	 */
 	protected int selectedColumn = -1;
 	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-	/**
-	 * base index for coordinates in the table
-	 */
-	private int baseIndexForCoordinates = -1;
-	private JLabel jLabelNodeRelationComment;
-
+	
 	/**
 	 * this is a default constructor with no construction parameters
 	 *
 	 *
 	 */
 	public ProbabilityTablePanel() {
-
 		this(new String[] { "id", "states", "values" }, new Object[][] { new Object[] { 0, null, 0 } }); // default init
 	}
 
@@ -125,75 +103,13 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 		data = newData.clone();
 		repaint();
 	}
-
-	/**
-	 * @return label for the node relation comment
-	 */
-	protected JLabel getJLabelNodeRelationComment() {
-
-		if (jLabelNodeRelationComment == null) {
-			jLabelNodeRelationComment = new JLabel();
-			jLabelNodeRelationComment.setName("jLabelNodeRelationComment");
-			jLabelNodeRelationComment.setText("a Label");
-			jLabelNodeRelationComment
-					.setText(stringDatabase.getString("NodeProbsValuesTablePanel.jLabelNodeRelationComment.Text"));
-		}
-		return jLabelNodeRelationComment;
-	}
-
-	/**
-	 * @return the showAllParameters
-	 */
-	public boolean isShowAllParameters() {
-
-		return showAllParameters;
-	}
-
-	/**
-	 * @return the showProbabilitiesValues
-	 */
-	public boolean isShowProbabilitiesValues() {
-
-		return showProbabilitiesValues;
-	}
-
-	/**
-	 * @return the showTPCvalues
-	 */
-	public boolean isShowTPCvalues() {
-
-		return showTPCvalues;
-	}
-
-	/**
-	 * @return the showNetValues
-	 */
-	public boolean isShowNetValues() {
-
-		return showNetValues;
-	}
-
-	/**
-	 * @param showNetValues the showNetValues to set
-	 */
-	public void setShowNetValues(boolean showNetValues) {
-
-		this.showNetValues = showNetValues;
-        //TODO
-		if (isShowNetValues()) {
-			// show Net values
-		} else {
-			// show compound values
-		}
-	}
-
+	
 	/**
 	 * gets the first row on edition
 	 *
 	 * @return first row for edition
 	 */
 	protected int getFirstEditableRow() {
-
 		return this.firstEditableRow;
 	}
 
@@ -212,7 +128,6 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	 * @return the lastEditableRow
 	 */
 	protected int getLastEditableRow() {
-
 		return lastEditableRow;
 	}
 
@@ -223,14 +138,7 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 
 		this.lastEditableRow = lastEditableRow;
 	}
-
-	/**
-	 * @return the position
-	 */
-    protected long getPosition() {
-		return position;
-	}
-
+	
 	/**
 	 * @param position the position to set
 	 */
@@ -242,23 +150,9 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	 * @return the variables
 	 */
 	protected List<Variable> getVariables() {
-
 		return variables;
 	}
-
-	/**
-	 * @param variables
-	 *            the variables to set
-	 */
-
-	/**
-	 * @param listPotentials the listPotentials to set
-	 */
-	public void setListPotentials(ArrayList<Potential> listPotentials) {
-
-		this.listPotentials = listPotentials;
-	}
-
+	
 	/**
 	 * Set the Base index for the coordinates in the table related to the
 	 * Potential of the variable of this node
@@ -266,25 +160,8 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	 * @param value - the new base index for coordinates in the table
 	 */
 	protected void setBaseIndexForCoordinates(int value) {
-		this.baseIndexForCoordinates = value;
-	}
-
-	public void addParent(Variable parent) {
-
-	}
-
-	public void deleteParent(Variable parent) {
-
-	}
-
-	public void addState(String state) {
-
-	}
-
-	public void deleteState(String state) {
-
-	}
-
+    }
+	
 	// @Override
 	@Override public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
