@@ -17,6 +17,7 @@ import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.core.io.exception.NoWriterForExtensionException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
@@ -1455,10 +1456,27 @@ public class MainPanelListenerAssistant extends WindowAdapter
     
     private void setWorkingMode(NetworkPanel.WorkingMode currentWorkingMode, NetworkPanel.WorkingMode newWorkingMode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         boolean performInference = true;
-        if (currentWorkingMode == NetworkPanel.WorkingMode.EDITION) {
+        boolean isTemporal;
+        boolean isMulticriteria = false;
+
+        ProbNet probNet = getCurrentNetworkPanel().getProbNet();
+
+        isTemporal = !probNet.hasConstraintOfClass(OnlyAtemporalVariables.class);
+        if (probNet.getDecisionCriteria() != null && probNet.getDecisionCriteria().size() > 1) {
+            isMulticriteria = true;
+        }
+        boolean requiredInfereceOptions = false;
+        if (isTemporal) {
+            requiredInfereceOptions = true;
+        }
+
+        if (isMulticriteria) {
+            requiredInfereceOptions = true;
+        }
+
+        if (currentWorkingMode == NetworkPanel.WorkingMode.EDITION && requiredInfereceOptions) {
             // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
-            InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
-                                                                       Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+            InferenceOptionsDialog dialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
             
             if (dialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
                 newWorkingMode = NetworkPanel.WorkingMode.EDITION;
@@ -1467,6 +1485,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             // Set as launched
             //getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
         }
+
         mainPanel.setToolBarPanel(newWorkingMode);
         mainPanel.changeWorkingModeButton(newWorkingMode);
         if (!getNetworkPanels().isEmpty()) {

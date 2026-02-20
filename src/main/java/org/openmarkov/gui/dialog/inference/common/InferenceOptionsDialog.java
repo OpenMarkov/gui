@@ -218,15 +218,12 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
         
-        boolean requiredInfereceOptions = false;
         if (isTemporal) {
             mainPanel.add(getTemporalPanel());
-            requiredInfereceOptions = true;
         }
         
         if (isMulticriteria) {
             mainPanel.add(getMulticriteriaPanel());
-            requiredInfereceOptions = true;
         }
         
         this.add(mainPanel);
@@ -256,7 +253,8 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                 
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
             }
-        } else {
+        }
+        else {
             if (probNet.getInferenceOptions()
                        .getMultiCriteriaOptions()
                        .getMulticriteriaType() == MulticriteriaOptions.Type.UNICRITERION) {
@@ -267,19 +265,15 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
             }
         }
-        
-        if (!requiredInfereceOptions) {
-            this.getJButtonOK().doClick();
-            this.dispose();
-        } else {
-            // Center dialog
-            Toolkit toolkit = Toolkit.getDefaultToolkit();
-            Dimension screenSize = toolkit.getScreenSize();
-            int x = (screenSize.width - this.getWidth()) / 2;
-            int y = (screenSize.height - this.getHeight()) / 2;
-            this.setLocation(x, y);
-            this.setVisible(true);
-        }
+
+        // Center dialog
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        int x = (screenSize.width - this.getWidth()) / 2;
+        int y = (screenSize.height - this.getHeight()) / 2;
+        this.setLocation(x, y);
+        this.setVisible(true);
+
         
     }
     
