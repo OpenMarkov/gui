@@ -8,8 +8,6 @@
 package org.openmarkov.gui.menutoolbar.common;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.gui.window.MainPanel;
-import org.openmarkov.java.enumUtils.EnumUtils;
 
 import java.util.HashMap;
 
@@ -55,7 +53,7 @@ public enum ActionCommands {
     /** Action invoked when the user wants to save a network as another one. */
     SAVEAS_NETWORK("SaveAsNetwork"),
     /** Action invoked when the user wants to close a network. */
-    CLOSE_NETWORK("CloseNetwork"),
+    CLOSE_TAB("CloseNetwork"),
     /** Action invoked when the user wants to load evidence. */
     LOAD_EVIDENCE("LoadEvidence"),
     /** Action invoked when the user wants to save evidence. */

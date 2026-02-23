@@ -14,6 +14,7 @@ import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
+import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
@@ -136,13 +137,14 @@ public class MainPanel extends JPanel {
                     this.getMainPanelMenuAssistant().updateOptionsNetworkDependent(networkPanel);
                     this.getInferenceToolBar().setCurrentEvidenceCaseName(networkPanel.getCurrentCase());
                     this.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);
+                    this.getMainPanelMenuAssistant().setOptionEnabled(ActionCommands.CLOSE_TAB, true);
                 }
                 case DecisionTreeWindow decisionTreeWindow -> {
                     this.getMainPanelMenuAssistant().updateOptionsWindowSelected(false);
                     this.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTreeWindow);
+                    this.getMainPanelMenuAssistant().setOptionEnabled(ActionCommands.CLOSE_TAB, true);
                 }
                 case null, default -> {
-                
                 }
             }
             this.mainMenu.reInitialize();

@@ -69,10 +69,6 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
     private JScrollPane editorScrollPanel;
     
     /**
-     * Format of the file where the network is saved (updated or not).
-     */
-    private String networkFileFormat = null;
-    /**
      * Indicates if the network has been modified.
      */
     private boolean modified = false;
@@ -195,15 +191,6 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      */
     public void setNetworkFile(String name) {
         networkFile = name;
-    }
-    
-    /**
-     * Sets the format of the file where the network is saved.
-     *
-     * @param networkFileFormat format of the file.
-     */
-    public void setNetworkFileFormat(String networkFileFormat) {
-        this.networkFileFormat = networkFileFormat;
     }
     
     /**

@@ -6,6 +6,7 @@
  */
 package org.openmarkov.gui.dialog.io;
 
+import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.gui.configuration.LocalPreferences;
 
 import java.io.File;
@@ -15,10 +16,10 @@ import java.util.HashMap;
  
 	public DBWriterOMFileChooser(boolean acceptAllFiles) {
 		super(acceptAllFiles);
-		HashMap<String, String> writersInfo = caseDbManager.getAllWriters();
-		for (String extension : writersInfo.keySet()) {
-			addChoosableFileFilter(new FileFilterAll(extension, writersInfo.get(extension)));
-		}
+		CaseDatabaseManager.listWriters().forEach(writerClass->{
+			var info = CaseDatabaseManager.info(writerClass);
+			addChoosableFileFilter(new FileFilterAll<>(writerClass, info.extension(), info.name()));
+		});
 		setFileFilter(LocalPreferences.LATEST_SAVED_DATASET_FORMAT.get());
 		File currentDirectory = LocalPreferences.LATEST_SAVED_DATASET_DIRECTORY.get();
         setCurrentDirectory(currentDirectory);

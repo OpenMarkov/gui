@@ -845,9 +845,14 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
         valuesTable.requestFocus();
         valuesTable.editCellAt(newIndex, 1);
+        if(variable.getVariableType() != VariableType.DISCRETIZED) {
+            valuesTable.setValueAt(newStateName, newIndex, 1);
+        }
         var stateNameField = (JTextField) valuesTable.getEditorComponent();
-        stateNameField.selectAll();
         stateNameField.requestFocus();
+        stateNameField.selectAll();
+        stateNameField.setText(newStateName);
+        System.out.println();
     }
     
     /**

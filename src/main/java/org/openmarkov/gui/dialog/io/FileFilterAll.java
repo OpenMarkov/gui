@@ -19,7 +19,7 @@ import java.io.File;
  * @author jmendoza
  * @version 1.0
  */
-public class FileFilterAll extends FileFilterBasic {
+public class FileFilterAll<T> extends FileFilterBasic {
 
 	/**
 	 * Extension of the files that match this filter.
@@ -31,10 +31,17 @@ public class FileFilterAll extends FileFilterBasic {
 	 */
 	private String fileDescription = "OpenMarkov";
 
+	private T formatInfo;
+	
+	public T getFormatInfo() {
+		return this.formatInfo;
+	}
+	
 	/**
 	 * Create a new instance and create a new string resource.
 	 */
-	public FileFilterAll(String extension, String description) {
+	public FileFilterAll(T formatInfo, String extension, String description) {
+		this.formatInfo = formatInfo;
 		formatExtension = extension;
 		setFileDescription(description);
 	}

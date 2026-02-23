@@ -47,7 +47,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
      * (except save).
      */
     public static final ActionCommands[] FILING_ACTION_COMMANDS = {ActionCommands.SAVE_OPEN_NETWORK,
-            ActionCommands.SAVEAS_NETWORK, ActionCommands.CLOSE_NETWORK, ActionCommands.LOAD_EVIDENCE,
+            ActionCommands.SAVEAS_NETWORK, ActionCommands.CLOSE_TAB, ActionCommands.LOAD_EVIDENCE,
             ActionCommands.SAVE_EVIDENCE, ActionCommands.NETWORK_PROPERTIES};
     /**
      * Composed action command that contains all the edition actions (except
@@ -783,7 +783,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         setOptionEnabled(ActionCommands.SAVE_OPEN_NETWORK, value);
         setOptionEnabled(ActionCommands.SAVEAS_NETWORK, value);
         setOptionEnabled(ActionCommands.NETWORK_PROPERTIES, value);
-        setOptionEnabled(ActionCommands.CLOSE_NETWORK, value);
         setOptionEnabled(ActionCommands.LOAD_EVIDENCE, value);
         setOptionEnabled(ActionCommands.SAVE_EVIDENCE, value);
     }
@@ -827,6 +826,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         setOptionEnabled(ActionCommands.DECISION_CREATION, false);
         setOptionEnabled(ActionCommands.UTILITY_CREATION, false);
         setOptionEnabled(ActionCommands.LINK_CREATION, false);
+        
         //mainPanel.getStandardToolBar().getDecisionTreeButton().setSelected(true);
         setZoom(decisionTreeWindow.getZoom());
     }

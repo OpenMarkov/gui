@@ -24,6 +24,7 @@ import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.gui.action.*;
 import org.openmarkov.core.action.base.linkEdits.InvertLinkAndUpdatePotentialsEdit;
+import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.dialog.PropagationOptionsDialog;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.inference.temporalevolution.TemporalEvolutionDialog;
@@ -219,6 +220,17 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         inferenceManager = new InferenceManager();
         editionModeManager = new EditionModeManager(this, probNet);
         editionMode = editionModeManager.getDefaultEditionMode();
+    }
+    
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        switch (LocalPreferences.PREFERRED_THEME.get()) {
+            case SYSTEM, LIGHT -> this.setBackground(Color.WHITE);
+            case DARK -> {
+                //setBackground(Color.GRAY);
+            }
+        }
     }
     
     /**

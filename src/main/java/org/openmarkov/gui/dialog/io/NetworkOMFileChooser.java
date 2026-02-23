@@ -9,6 +9,9 @@ package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.core.io.ProbNetReader;
+import org.openmarkov.core.io.format.annotation.FormatType;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.w3c.dom.Document;
@@ -22,6 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * This class implements a file chooser dialog file to select OpenMarkov files.
@@ -29,48 +34,50 @@ import java.util.List;
  * @author ibermejo
  */
 @SuppressWarnings("serial") public class NetworkOMFileChooser extends OMFileChooser {
-	/**
-	 * Creates a new file chooser that starts in the current directory,
-	 * filtering the files with the file filters.
-	 *
-	 * @param isOpening Indicates if the file chooser is for opening a file (isOpening=true) or for saving (isOpening=false)
-	 */
+    /**
+     * Creates a new file chooser that starts in the current directory,
+     * filtering the files with the file filters.
+     *
+     * @param isOpening Indicates if the file chooser is for opening a file (isOpening=true) or for saving (isOpening=false)
+     */
     public NetworkOMFileChooser(boolean acceptAllfile, boolean isOpening) {
         super();
         setAcceptAllFileFilterUsed(acceptAllfile);
         rescanCurrentDirectory();
-		FormatManager formatManager = FormatManager.getInstance();
-		List<AbstractMap.SimpleEntry<String, String>> parsersListForFilters = isOpening ?
-				formatManager.getReaders() :
-				formatManager.getWriters();
-		parsersListForFilters.sort(Comparator.comparing(Map.Entry::getKey));
-		for (var item : parsersListForFilters) {
-			addChoosableFileFilter(new FileFilterAll(item.getValue(), item.getKey()));
-		}
-		File currentDirectory = null;
+        var parsers = isOpening ? FormatManager.readersClasses() : FormatManager.writersClasses();
+        parsers
+                .sorted(Comparator.comparing(readerClass -> FormatManager.info(readerClass).description()))
+                .forEach(readerClass -> {
+                    String description = FormatManager.info(readerClass).description();
+                    addChoosableFileFilter(new FileFilterAll<>(readerClass, FormatManager.info(readerClass)
+                                                                                         .extension(), description));
+                });
+        
+        
+        File currentDirectory = null;
         /*
         setFileFilter (OpenMarkovPreferences.get (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                                   OpenMarkovPreferences.OPENMARKOV_FORMATS, "pgmx"));
         */
-		//UNCLEAR Where is set pgmx? By default LAST_OPENED_FORMAT=pgmx
-
-		if (isOpening) {
+        //UNCLEAR Where is set pgmx? By default LAST_OPENED_FORMAT=pgmx
+        
+        if (isOpening) {
             currentDirectory = LocalPreferences.LATEST_OPEN_DIRECTORY.get();
             setFileFilter("OpenMarkov");
-		} else {
+        } else {
             setFileFilter(LocalPreferences.LATEST_SAVED_NETWORK_FORMAT.get());
-		}
-
+        }
+        
         setCurrentDirectory(currentDirectory);
     }
     
     public NetworkOMFileChooser() {
-		this(false, true);
-	}
-
-	@Override public int showOpenDialog(Component parent) {
-		int result = super.showOpenDialog(parent);
-		if (result == JFileChooser.APPROVE_OPTION) {
+        this(false, true);
+    }
+    
+    @Override public int showOpenDialog(Component parent) {
+        int result = super.showOpenDialog(parent);
+        if (result == JFileChooser.APPROVE_OPTION) {
             LocalPreferences.LATEST_OPEN_DIRECTORY.set(getSelectedFile());
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
@@ -83,12 +90,12 @@ import java.util.List;
                 throw new UnrecoverableException(e);
             }
         }
-		return result;
-	}
-
-	@Override public int showSaveDialog(Component parent) {
-		int result = super.showSaveDialog(parent);
-		if (result == JFileChooser.APPROVE_OPTION) {
+        return result;
+    }
+    
+    @Override public int showSaveDialog(Component parent) {
+        int result = super.showSaveDialog(parent);
+        if (result == JFileChooser.APPROVE_OPTION) {
             LocalPreferences.LATEST_OPEN_DIRECTORY.set(getSelectedFile());
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
@@ -96,23 +103,23 @@ import java.util.List;
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
             */
             LocalPreferences.LATEST_SAVED_NETWORK_FORMAT.set(((FileFilterAll) getFileFilter()).getFileDescription());
-		}
-		return result;
-	}
-
-	@Override public void approveSelection() {
-		if (getDialogType() == SAVE_DIALOG) {
-			File selectedFile = getSelectedFile();
-			if ((selectedFile != null) && selectedFile.exists()) {
-				int response = JOptionPane.showConfirmDialog(this, "The file " + selectedFile.getName()
-								+ " already exists. Do you want to replace the existing file?", "Ovewrite file",
-						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-				if (response != JOptionPane.YES_OPTION)
-					return;
-			}
-		}
-		super.approveSelection();
-	}
+        }
+        return result;
+    }
+    
+    @Override public void approveSelection() {
+        if (getDialogType() == SAVE_DIALOG) {
+            File selectedFile = getSelectedFile();
+            if ((selectedFile != null) && selectedFile.exists()) {
+                int response = JOptionPane.showConfirmDialog(this, "The file " + selectedFile.getName()
+                                                                     + " already exists. Do you want to replace the existing file?", "Ovewrite file",
+                                                             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if (response != JOptionPane.YES_OPTION)
+                    return;
+            }
+        }
+        super.approveSelection();
+    }
     
     /**
      * Extracts the version of a pgmx file and concatenate it to the String "OpenMarkov" for having the description of the file

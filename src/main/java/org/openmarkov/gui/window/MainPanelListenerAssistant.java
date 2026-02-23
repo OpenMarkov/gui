@@ -15,6 +15,7 @@ import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.core.io.exception.NoWriterForExtensionException;
+import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
@@ -35,7 +36,6 @@ import org.openmarkov.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.*;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.util.PropertyNames;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
@@ -158,7 +158,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.OPEN_NETWORK_URL -> {
                 try {
                     openNetworkURL();
-                } catch (NoReaderForFileException | ParserException | IOException | SAXException ex) {
+                } catch (NoReaderForFileException | ParserException | IOException | SAXException |
+                         CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -256,9 +257,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.CLOSE_NETWORK -> {
+            case ActionCommands.CLOSE_TAB -> {
                 try {
-                    closeCurrentNetwork();
+                    closeCurrentTab();
                 } catch (WriterException ex) {
                     throw new UnrecoverableException(ex);
                 }
@@ -322,7 +323,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     toggleWorkingMode();
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
-                         ConstraintViolatedException ex) {
+                         ConstraintViolatedException | RuntimeException ex) {
                     //On fail, go back to the previous working mode.
                     try {
                         setWorkingMode(initialWorkingMode, initialWorkingMode);
@@ -588,6 +589,20 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
     }
     
+    private void closeCurrentTab() throws WriterException {
+        var selectedComponent = this.mainPanel.getNetworksTabPanel().getSelectedComponent();
+        switch (selectedComponent) {
+            case NetworkPanel networkPanel -> {
+                closeCurrentNetwork();
+            }
+            case null -> {
+            }
+            default -> {
+                this.mainPanel.getNetworksTabPanel().remove(selectedComponent);
+            }
+        }
+    }
+    
     private void defaultActionOnCommand(ActionEvent e, String actionCommand, ActionCommands actionCommandConstant) {
         if (actionCommand.startsWith(ActionCommands.EDITION_MODE_PREFIX.getCommandName())) {
             activateEditionMode(actionCommand);
@@ -762,13 +777,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat) throws WriterException {
         System.out.println(stringDatabase.getString("SavingNetwork.Text") + " " + fileName);
-        NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidence(), fileName,
-                               fileFormat);
+        NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidence(), fileName);
         
         // networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
         networkPanel.setModified(false);
         networkPanel.setNetworkFile(fileName);
-        networkPanel.setNetworkFileFormat(fileFormat);
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
         LastOpenFiles.setLastFileName(fileName);
         LocalPreferences.LATEST_SAVED_DIRECTORY.set(new File(fileName).getAbsoluteFile());
@@ -804,7 +817,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         if (fileName != null) {
             createBackUpNetworkFile(fileName, toBakExtension(networkPanel.getNetworkFile()));
         }
-        return (fileName != null) ? saveNetworkActions(networkPanel, fileName) : saveNetworkAs(networkPanel);
+        return (fileName != null && networkPanel.probNet.getWriter() != null) ? saveNetworkActions(networkPanel, fileName) : saveNetworkAs(networkPanel);
     }
     
     /**
@@ -866,18 +879,27 @@ public class MainPanelListenerAssistant extends WindowAdapter
         fileName = requestNetworkFileToSave((fileName != null) ? fileName
                 : networkPanel.getProbNet().getName());
         */
-        ArrayList<String> fileNameAndFormat = requestNetworkFileAndFormatToSave(
+        ArrayList<Object> fileNameAndFormat = requestNetworkFileAndFormatToSave(
                 (fileName != null) ? fileName : networkPanel.getProbNet().getName());
-        fileName = fileNameAndFormat.get(0);
-        String fileFormat = fileNameAndFormat.get(1);
-        if (fileName != null) {
-            networkPanel.setNetworkFile(fileName);
-            networkPanel.setNetworkFileFormat(fileFormat);
-            networkPanel.getProbNet().setName(new File(fileName).getName());
-            
+        fileName = (String) fileNameAndFormat.get(0);
+        if (fileName == null) {
+            return false;
         }
-        
-        return fileName != null && saveNetworkActions(networkPanel, fileName, fileFormat);
+        String fileFormat = (String) fileNameAndFormat.get(1);
+        networkPanel.setNetworkFile(fileName);
+        networkPanel.getProbNet().setName(new File(fileName).getName());
+        var formatInfo = FormatManager.info((Class<?>) fileNameAndFormat.get(2));
+        networkPanel.getProbNet().setWriter(
+                FormatManager.writersInstances()
+                             .filter(probNetWriter -> FormatManager.formatEquals(formatInfo, FormatManager.info(probNetWriter)))
+                             .findFirst()
+                             .orElse(null));
+        networkPanel.getProbNet().setReader(
+                FormatManager.readersInstances()
+                             .filter(probNetReader -> FormatManager.formatEquals(formatInfo, FormatManager.info(probNetReader)))
+                             .findFirst()
+                             .orElse(null));
+        return saveNetworkActions(networkPanel, fileName, fileFormat);
     }
     
     
@@ -907,17 +929,17 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * @param suggestedFileName
      *
-     * @return a list with the absolute path of of the chosen filename and the file format chosen
+     * @return a list with the absolute path of of the chosen filename, the file format chosen, and the writer class.
      */
-    private ArrayList<String> requestNetworkFileAndFormatToSave(String suggestedFileName) {
+    private ArrayList<Object> requestNetworkFileAndFormatToSave(String suggestedFileName) {
         NetworkOMFileChooser fileChooser = new NetworkOMFileChooser(false, false);
         String title = stringDatabase.getString("SaveNetwork.Title");
         fileChooser.setDialogTitle(title);
         fileChooser.setSelectedFile(new File(suggestedFileName));
         fileChooser.setCurrentDirectory(LocalPreferences.LATEST_SAVED_DIRECTORY.get());
-        ArrayList<String> fileNameAndFormat = new ArrayList<String>();
+        ArrayList<Object> fileNameAndFormat = new ArrayList<Object>();
         String filename = null;
-        String fileFormat = null;
+        FileFilterAll<?> fileFormat = null;
         if (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
             filename = fileChooser.getSelectedFile().getAbsolutePath();
             String chosenFilterExtension = ((FileFilterBasic) fileChooser.getFileFilter()).getFilterExtension();
@@ -934,10 +956,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 }
                 
             }
-            fileFormat = ((FileFilterAll) fileChooser.getFileFilter()).getFileDescription();
+            fileFormat = (FileFilterAll<?>) fileChooser.getFileFilter();
         }
         fileNameAndFormat.add(filename);
-        fileNameAndFormat.add(fileFormat);
+        fileNameAndFormat.add(fileFormat == null ? null : fileFormat.getFileDescription());
+        fileNameAndFormat.add(fileFormat == null ? null : fileFormat.getFormatInfo());
         return fileNameAndFormat;
     }
     
@@ -1066,7 +1089,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * Open a network from a URL.
      */
     //TODO: generalize... It's almost the same as openNetwork...
-    public void openNetworkURL() throws NoReaderForFileException, ParserException, IOException, SAXException {
+    public void openNetworkURL() throws NoReaderForFileException, ParserException, IOException, SAXException, CorruptNetworkFile {
         URL url = requestURLFileToOpen();
         if (url == null) {
             return;

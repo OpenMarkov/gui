@@ -7,12 +7,12 @@
 
 package org.openmarkov.gui.dialog.io;
 
-import org.apache.commons.io.FileUtils;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.exception.WriterException;
+import org.openmarkov.core.io.format.annotation.FormatType;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
@@ -24,7 +24,6 @@ import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.xml.sax.SAXException;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,58 +41,6 @@ public class NetsIO {
     // private constructor for a class with only static members
     private NetsIO() {
     
-    }
-    
-    /**
-     * Opens a network saved in a file and returns the object that contains its
-     * information.
-     *
-     * @param fileName file where the network is saved.
-     *
-     * @return an ProbNetInfo object with the information of the network.
-     *
-     * @throws Exception if the file doesn't exist or the file format isn't correct.
-     */
-    @ToCheck(reasonKind = {ToCheck.ReasonKind.CODE_QUALITY, ToCheck.ReasonKind.EXCEPTIONS_REWORK},
-            reasonDescription = "Reading a network file should always throw the exceptions " +
-                    "ParserException.BadlyStructuredFile and CorruptNetworkFile. However, these exceptions are thrown " +
-                    "in 'getProbNetReader' instead of 'loadProbNetInfo', meaning someplaces read ProbNet files without " +
-                    "the awareness these exceptions give." +
-                    "\n" +
-                    "If it this leads to a reworks of the ProbNetReader interface (where loadProbNetInfo comes from), it" +
-                    " is likely we want it to receive an URL to the file instead of a String containing the filename. " +
-                    "Duplicated methods should be avoided if doing this, as the current implementation duplicates some."
-    )
-    public static ProbNetInfo openNetworkFile(String fileName) throws IOException,
-            SAXException,
-            ParserException, NoReaderForFileException, CorruptNetworkFile {
-        URL fileToRead = new File(fileName).toURI().toURL();
-        ProbNetReader probNetReader = FormatManager.getInstance().getProbNetReader(fileToRead);
-        try {
-            return probNetReader.loadProbNetInfo(fileName, new FileInputStream(fileName));
-        } catch (UnrecoverableException | UnreacheableException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            throw new CorruptNetworkFile(fileToRead, e);
-        }
-        
-        /*
-         * if (fileExtension.contentEquals("elv")) { //return
-         * ElviraParser.getUniqueInstance().loadProbNet(fileName); } else if
-         * (fileExtension.contentEquals("xml")) { /*ProbNet probNet =
-         * XMLReader.getUniqueInstance().loadProbNet(fileName); if (probNet ==
-         * null) { System.out.println("NetsIO.openNetworkFile from " + fileName
-         * + ": probNet null"); } return probNet;
-         */
-        /*
-         * } else if (fileExtension.contentEquals("pgmx")) { ProbNet probNet =
-         * PGMXReader.getUniqueInstance().loadProbNet(fileName); if (probNet ==
-         * null) { System.out.println("NetsIO.openNetworkFile from " + fileName
-         * + ": probNet null"); } return probNet;
-         *
-         * }
-         */
-        
     }
     
     //	/**
@@ -142,18 +89,15 @@ public class NetsIO {
      * @param network    - network to save in the file
      * @param evidence   - list of evidence cases
      * @param fileName   - file where the network is going to be saved
-     * @param fileFormat - the extension and format of file where the network is going to be saved
      */
-    public static void saveNetworkFile(ProbNet network, List<EvidenceCase> evidence, String fileName, String fileFormat) throws WriterException {
+    public static void saveNetworkFile(ProbNet network, List<EvidenceCase> evidence, String fileName) throws WriterException {
         String fileExtension = getFileExtension(fileName);
-        FormatManager formatManager = FormatManager.getInstance();
-        ProbNetWriter probNetWriter = formatManager.getProbNetWriter(fileExtension, fileFormat);
+        ProbNetWriter probNetWriter = network.getWriter();
         try {
             probNetWriter.writeProbNet(fileName, network, evidence);
         } catch (WriterException.UnknownNetworkType e) {
             if (fileExtension.equals("elv")) {
                 new File(fileName).delete();
-                fileName = network.getNetworkType().toString().toLowerCase().replaceAll("_", " ");
             }
             throw e;
         }
@@ -184,8 +128,8 @@ public class NetsIO {
      * @param network  - network to save in the file
      * @param fileName - file where the network is going to be saved
      */
-    public static void saveNetworkFile(ProbNet network, String fileName, String fileFormat) throws WriterException {
-        saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName, fileFormat);
+    public static void saveNetworkFile(ProbNet network, String fileName) throws WriterException {
+        saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName);
     }
     
     private static String getFileExtension(String fileName) {
@@ -201,6 +145,30 @@ public class NetsIO {
     }
     
     /**
+     * Opens a network saved in a file and returns the object that contains its
+     * information.
+     *
+     * @param fileName file where the network is saved.
+     *
+     * @return an ProbNetInfo object with the information of the network.
+     *
+     * @throws Exception if the file doesn't exist or the file format isn't correct.
+     */
+    @ToCheck(reasonKind = {ToCheck.ReasonKind.CODE_QUALITY, ToCheck.ReasonKind.EXCEPTIONS_REWORK},
+            reasonDescription = "Reading a network file should always throw the exceptions " +
+                    "ParserException.BadlyStructuredFile and CorruptNetworkFile. However, these exceptions are thrown " +
+                    "in 'getProbNetReader' instead of 'loadProbNetInfo', meaning someplaces read ProbNet files without " +
+                    "the awareness these exceptions give." +
+                    "\n" +
+                    "If it this leads to a reworks of the ProbNetReader interface (where loadProbNetInfo comes from), it" +
+                    " is likely we want it to receive an URL to the file instead of a String containing the filename. " +
+                    "Duplicated methods should be avoided if doing this, as the current implementation duplicates some."
+    )
+    public static ProbNetInfo openNetworkFile(String fileName) throws IOException, SAXException, ParserException, NoReaderForFileException, CorruptNetworkFile {
+        return NetsIO.openNetworkURL(new File(fileName).toURI().toURL());
+    }
+    
+    /**
      * Opens a network from a URL.
      *
      * @param url The full url of the file to be opened file where the network
@@ -210,22 +178,26 @@ public class NetsIO {
      *
      * @throws Exception if the file doesn't exist or the file format isn't correct.
      */
-    public static ProbNetInfo openNetworkURL(URL url) throws SAXException, IOException, org.openmarkov.core.exception.ParserException, NoReaderForFileException {
+    public static ProbNetInfo openNetworkURL(URL url) throws SAXException, IOException, org.openmarkov.core.exception.ParserException, NoReaderForFileException, CorruptNetworkFile {
         String networkName = url.getPath();
         networkName = networkName.substring(networkName.lastIndexOf('/') + 1);
-        
-        String fileExtension = getFileExtension(networkName);
         FormatManager formatManager = FormatManager.getInstance();
-        
-        File file = FileUtils.toFile(url);
         ProbNetReader probNetReader = formatManager.getProbNetReader(url);
-        
-        ProbNetInfo probNetInfo = probNetReader.loadProbNetInfo(networkName, url.openStream());
-        
-        if (probNetInfo == null) {
-            System.out.println("NetsIO.openNetworkFile from " + networkName + ": probNet null");
+        try {
+            ProbNetInfo probNetInfo = probNetReader.loadProbNetInfo(networkName, url.openStream());
+            FormatType readerFormat = FormatManager.info(probNetReader);
+            ProbNetWriter probNetWriter = FormatManager
+                    .writersInstances()
+                    .filter(writer -> FormatManager.formatEquals(FormatManager.info(writer), readerFormat))
+                    .findFirst().orElse(null);
+            probNetInfo.getProbNet().setReader(probNetReader);
+            probNetInfo.getProbNet().setWriter(probNetWriter);
+            return probNetInfo;
+        } catch (UnrecoverableException | UnreacheableException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw new CorruptNetworkFile(url, e);
         }
-        return probNetInfo;
     }
     
 }

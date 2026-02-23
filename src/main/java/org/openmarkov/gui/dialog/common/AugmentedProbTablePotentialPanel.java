@@ -410,7 +410,7 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
                 expressionDialog.setVisible(true);
                 if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
                     String function = expressionDialog.getExpression();
-                    valuesTable.setValueAt(new VariableExpression(variables, expressionDialog.getExpression()), row, column);
+                    valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column);
                     //TODO: Continue here changing String expressions to VariableExpression expressions.
                     //valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column);
                 }

@@ -534,7 +534,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     private JMenuItem getFileCloseMenuItem() {
         
         if (fileCloseMenuItem == null) {
-            fileCloseMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_CLOSE_MENUITEM, ActionCommands.CLOSE_NETWORK.getCommandName(),
+            fileCloseMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_CLOSE_MENUITEM, ActionCommands.CLOSE_TAB.getCommandName(),
                                                       null,
                                                       KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
             fileCloseMenuItem.addActionListener(listener);
@@ -1464,7 +1464,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
             case ActionCommands.SAVE_NETWORK -> fileSaveMenuItem;
             case ActionCommands.SAVEAS_NETWORK -> fileSaveAsMenuItem;
             case ActionCommands.SAVE_OPEN_NETWORK -> fileSaveOpenMenuItem;
-            case ActionCommands.CLOSE_NETWORK -> fileCloseMenuItem;
+            case ActionCommands.CLOSE_TAB -> fileCloseMenuItem;
             case ActionCommands.LOAD_EVIDENCE -> fileLoadEvidenceMenuItem;
             case ActionCommands.SAVE_EVIDENCE -> fileSaveEvidenceMenuItem;
             case ActionCommands.NETWORK_PROPERTIES -> fileNetworkPropertiesMenuItem;
