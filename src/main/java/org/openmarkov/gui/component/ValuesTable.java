@@ -10,12 +10,11 @@
 
 package org.openmarkov.gui.component;
 
-import org.openmarkov.core.action.base.PNUndoableEditEvent;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.jetbrains.annotations.UnknownNullability;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.UncertainValuesEdit;
 import org.openmarkov.core.exception.*;
-import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -64,7 +63,7 @@ import java.util.ListIterator;
  * @version 3.0 - cmyago - May 2016 - eliminates the different treatment for the Utility nodes.
  * - eliminates the deterministic values
  */
-public class ValuesTable extends KeyTable implements PNUndoableEditListener {
+public class ValuesTable extends KeyTable implements PNEditListener {
     /**
      * first editable Column
      */
@@ -671,12 +670,11 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
         System.out.println("    showingTPCvalues = " + isShowingTPCvalues());
     }
     
-    @Override public void afterEditHappens(PNUndoableEditEvent event) {
-        PNEdit edit = event.getEdit();
-        if (edit instanceof TablePotentialValueEdit) {
-            tablePotentialValueEditHappened((TablePotentialValueEdit) edit);
-        } else if (edit instanceof UncertainValuesEdit) {
-            uncertainValuesEditHappened((UncertainValuesEdit) edit);
+    @Override public void afterEditExecutes(@UnknownNullability PNEdit edit) {
+        if (edit instanceof TablePotentialValueEdit tpEdit) {
+            tablePotentialValueEditHappened(tpEdit);
+        } else if (edit instanceof UncertainValuesEdit uvEdit) {
+            uncertainValuesEditHappened(uvEdit);
         }
     }
     
@@ -740,19 +738,19 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
     /**
      *
      */
-    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
-        if (event.getEdit() instanceof TablePotentialValueEdit edit) {
-            TablePotential editPotential = edit.getPotential();
-            if (!edit.getExactDistrPotential()) {
-                priorityList = edit.getPriorityList();
+    @Override public void afterUndoingEdit(PNEdit edit) {
+        if (edit instanceof TablePotentialValueEdit tpEdit) {
+            TablePotential editPotential = tpEdit.getPotential();
+            if (!tpEdit.getExactDistrPotential()) {
+                priorityList = tpEdit.getPriorityList();
                 for (Integer position : priorityList) {
-                    super.getModel().setValueAt(editPotential.values[position], edit.getRowPosition(position),
-                                                edit.getColumnPosition());
+                    super.getModel().setValueAt(editPotential.values[position], tpEdit.getRowPosition(position),
+                                                tpEdit.getColumnPosition());
                 }
             } else {
-                int position = edit.getColumnPosition() - 1;
+                int position = tpEdit.getColumnPosition() - 1;
                 super.getModel()
-                     .setValueAt(editPotential.values[position], edit.getRowPosition(), edit.getColumnPosition());
+                     .setValueAt(editPotential.values[position], tpEdit.getRowPosition(), tpEdit.getColumnPosition());
             }
         }
     }

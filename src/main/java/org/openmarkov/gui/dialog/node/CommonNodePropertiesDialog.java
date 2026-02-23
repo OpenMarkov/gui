@@ -38,7 +38,7 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog {
 	 */
 	public CommonNodePropertiesDialog(Window owner, Node node, boolean newNode, boolean readOnly) {
 		super(owner, node, newNode, readOnly);
-		node.getProbNet().getPNESupport().openParenthesis();
+        node.getProbNet().getPNESupport().openNewSubEditHistory();
 		initialize();
 		getTabbedPane().addChangeListener(this);
 		setLocationRelativeTo(owner);

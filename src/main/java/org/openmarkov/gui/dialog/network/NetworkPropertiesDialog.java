@@ -92,7 +92,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
         super(owner);
         if (probNet != null) {
             probNet.getPNESupport().setWithUndo(true);
-            probNet.getPNESupport().openParenthesis();
+            probNet.getPNESupport().openNewSubEditHistory();
             this.probNet = probNet;
             newNetwork = false;
             initialize();
@@ -247,7 +247,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
             probNet.setDefaultStates(getNetworkVariablesPanel().getDefaultStates());
         } else {
             probNet.setShowCommentWhenOpening(getNetworkDefinitionPanel().getShowComment());
-            probNet.getPNESupport().closeParenthesis();
+            probNet.getPNESupport().closeSubEditHistory();
         }
         return NetworkDefinitionPanel.checkName();
     }
@@ -260,7 +260,8 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
      */
     @Override protected void doCancelClickBeforeHide() {
         if (!newNetwork) {
-            probNet.getPNESupport().closeParenthesis();
+            probNet.getPNESupport().cancelLastSubEditHistory();
+            //Should cancel instead
         }
     }
     

@@ -8,6 +8,7 @@
 
 package org.openmarkov.gui.dialog.node;
 
+import org.openmarkov.core.action.base.CloseEditStackOptions;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 
@@ -24,7 +25,7 @@ import java.awt.*;
 		super(owner);
 		this.node = node;
 		node.getProbNet().getPNESupport().setWithUndo(true);
-		node.getProbNet().getPNESupport().openParenthesis();
+        node.getProbNet().getPNESupport().openNewSubEditHistory();
 		initialize();
 		setLocationRelativeTo(owner);
 		setName("ReorderVariablesDialog");
@@ -77,7 +78,7 @@ import java.awt.*;
 	 * @return true if the dialog box can be closed.
 	 */
 	@Override protected boolean doOkClickBeforeHide() {
-		node.getProbNet().getPNESupport().closeParenthesis();
+        node.getProbNet().getPNESupport().closeSubEditHistory();
 		return true;
 	}
 
@@ -86,7 +87,7 @@ import java.awt.*;
 	 * before hide the dialog.
 	 */
 	@Override protected void doCancelClickBeforeHide() {
-		node.getProbNet().getPNESupport().closeParenthesis();
+        node.getProbNet().getPNESupport().closeSubEditHistory(CloseEditStackOptions.FORGET);
 		// TODO PNESupport must support more depth levels parenthesis
 		// As current performance edits from ReorderVariablesPanel only be
 		// undone when cancel

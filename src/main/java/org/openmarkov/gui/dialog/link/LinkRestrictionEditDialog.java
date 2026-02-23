@@ -40,7 +40,7 @@ import java.text.MessageFormat;
         super(owner);
         this.link = link;
         probNet = link.getFrom().getProbNet();
-        probNet.getPNESupport().openParenthesis();
+        probNet.getPNESupport().openNewSubEditHistory();
         initialize();
         setLocationRelativeTo(owner);
         setMinimumSize(new Dimension(750, 450));
@@ -99,12 +99,12 @@ import java.text.MessageFormat;
     @Override protected boolean doOkClickBeforeHide() {
         ProbabilityTablePanel linkRestrictionPanel = getLinkRestrictionPanel();
         linkRestrictionPanel.close();
-        link.getFrom().getProbNet().getPNESupport().closeParenthesis();
+        link.getFrom().getProbNet().getPNESupport().closeSubEditHistory();
         return true;
     }
     
     @Override protected void doCancelClickBeforeHide() {
-        link.getFrom().getProbNet().getPNESupport().closeParenthesis();
+        link.getFrom().getProbNet().getPNESupport().cancelLastSubEditHistory();
     }
     
 }

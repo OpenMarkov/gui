@@ -79,7 +79,7 @@ public class AddFindingDialog extends OkCancelHorizontalDialog {
     
     protected void initialize() {
         visualNode.getNode().getProbNet().getPNESupport().setWithUndo(true);
-        visualNode.getNode().getProbNet().getPNESupport().openParenthesis();
+        visualNode.getNode().getProbNet().getPNESupport().openNewSubEditHistory();
         setTitle(stringDatabase.getString("AddFindingDialog.Title"));
         configureComponentsPanel();
         
@@ -189,13 +189,13 @@ public class AddFindingDialog extends OkCancelHorizontalDialog {
         }
         
         
-        visualNode.getNode().getProbNet().getPNESupport().closeParenthesis();
+        visualNode.getNode().getProbNet().getPNESupport().closeSubEditHistory();
         
         return super.doOkClickBeforeHide();
     }
     
     @Override protected void doCancelClickBeforeHide() {
-        visualNode.getNode().getProbNet().getPNESupport().closeParenthesis();
+        visualNode.getNode().getProbNet().getPNESupport().cancelLastSubEditHistory();
     }
     
 }

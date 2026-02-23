@@ -8,9 +8,9 @@
 
 package org.openmarkov.gui.component;
 
+import org.jetbrains.annotations.UnknownNullability;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.PNUndoableEditEvent;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
@@ -22,7 +22,7 @@ import org.openmarkov.gui.exception.MismatchedValueException;
 
 import java.util.ListIterator;
 
-@SuppressWarnings("serial") public class ICIValuesTable extends ValuesTable implements PNUndoableEditListener {
+@SuppressWarnings("serial") public class ICIValuesTable extends ValuesTable implements PNEditListener {
     /**
      * Define the last column of the table that was modified
      */
@@ -91,11 +91,9 @@ import java.util.ListIterator;
         
     }
     
-    @Override public void afterEditHappens(PNUndoableEditEvent arg0) {
+    @Override public void afterEditExecutes(@UnknownNullability PNEdit edit) {
         int priorityListPosition;
-        PNEdit edit = arg0.getEdit();
-        if (edit instanceof ICITablePotentialValueEdit) {
-            ICITablePotentialValueEdit iciEdit = (ICITablePotentialValueEdit) arg0.getEdit();
+        if (edit instanceof ICITablePotentialValueEdit iciEdit) {
             priorityList = iciEdit.getPriorityList();
             if (!iciEdit.getLeakyFlag()) {// noisy parameters
                 double[] noisyPotential = iciEdit.getNewNoisyValues();
@@ -117,9 +115,8 @@ import java.util.ListIterator;
         }
     }
     
-    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
+    @Override public void afterUndoingEdit(PNEdit edit) {
         int priorityListPosition;
-        PNEdit edit = event.getEdit();
         if (edit instanceof ICITablePotentialValueEdit iciEdit) {
             priorityList = iciEdit.getPriorityList();
             if (!iciEdit.getLeakyFlag()) {// noisy parameters

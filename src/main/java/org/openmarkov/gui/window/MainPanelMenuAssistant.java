@@ -7,9 +7,9 @@
 
 package org.openmarkov.gui.window;
 
-import org.openmarkov.core.action.base.PNUndoableEditEvent;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.ChangeNetworkTypeEdit;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.*;
@@ -41,7 +41,7 @@ import java.util.stream.IntStream;
  * @author jmendoza
  * @version 1.2.1 - cmyago - 20/10/2022; 09/11/2022 - disabling "Add Finding" for temporal nodes which are not the first in the temporal sequence and implementing "Temporal evolution by criterion"
  */
-public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableEditListener, SelectionListener {
+public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListener, SelectionListener {
     /**
      * Composed action command that contains all the save and close actions
      * (except save).
@@ -262,7 +262,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
      * @param canUndo
      */
     public void updateOptionsNetworkModified(boolean canUndo, boolean canRedo) {
-        // updateUndoRedo(undoManager);
+        // updateUndoRedo(basicUndoManager);
         // changed by mpalacios
         updateInferenceButtons();
         checkInferenceOptions();
@@ -739,11 +739,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
         setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
     }
     
-    @Override public void afterEditHappens(PNUndoableEditEvent e) {
+    @Override public void afterEditExecutes(PNEdit edit) {
         ProbNet probNet = getCurrentNetworkPanel().getProbNet();
         // update menu options and network agents when network type has been
         // modified
-        if (e.getEdit() instanceof ChangeNetworkTypeEdit) {
+        if (edit instanceof ChangeNetworkTypeEdit) {
             updateOptionsNetworkDependent(getCurrentNetworkPanel());
             // updateNetworkAgents(currentNetworkPanel);
         }
@@ -754,9 +754,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNUndoableE
          */
     }
     
-    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
-        updateOptionsNetworkModified(event.getEdit().getProbNet().getPNESupport().getCanUndo(),
-                                     event.getEdit().getProbNet().getPNESupport().getCanRedo());
+    @Override public void afterUndoingEdit(PNEdit edit) {
+        updateOptionsNetworkModified(edit.getProbNet().getPNESupport().getCanUndo(),
+                                     edit.getProbNet().getPNESupport().getCanRedo());
         /*
          * updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo
          * (), ((PNESupport)event.getSource()).getCanRedo());

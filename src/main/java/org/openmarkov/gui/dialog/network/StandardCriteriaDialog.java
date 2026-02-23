@@ -78,7 +78,7 @@ public class StandardCriteriaDialog extends OkCancelHorizontalDialog {
     @Override protected boolean doOkClickBeforeHide() throws DoEditException {
         
         // This must be a single operation
-        probNet.getPNESupport().openParenthesis();
+        probNet.getPNESupport().openNewSubEditHistory();
         
         // Remove all criterion in the probNet with edits
         while (!probNet.getDecisionCriteria().isEmpty()) {
@@ -102,7 +102,7 @@ public class StandardCriteriaDialog extends OkCancelHorizontalDialog {
             variable.setDecisionCriterion(defaultCriterion);
         }
         
-        probNet.getPNESupport().closeParenthesis();
+        probNet.getPNESupport().closeSubEditHistory();
         this.getParent().repaint();
         return true;
     }

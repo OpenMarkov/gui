@@ -7,8 +7,9 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.base.PNUndoableEditEvent;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.jetbrains.annotations.UnknownNullability;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -28,7 +29,7 @@ import java.awt.*;
 
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = ConditionalGaussianPotential.class)
 public class ConditionalGaussianPotentialPanel
-        extends PotentialPanel implements PNUndoableEditListener {
+        extends PotentialPanel implements PNEditListener {
     
     private JButton editMeanButton;
     private JButton editVarianceButton;
@@ -80,8 +81,18 @@ public class ConditionalGaussianPotentialPanel
                                                                           isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             // TODO: Do nothing?
+            // Answer: Yes, and apparently, it still does the operation. Just try the following scenarios in a
+            // Conditional Gaussian and be amazed:
+            // 1 - Press the "Edit mean" and then in the table change a value and press Ok. Close the remaining
+            // PotentialEditDialogs until going back to the probnet and then open the potential to see the changes
+            // taking effect as you specified.
+            // 2 - Press the "Edit mean" and then in the table change a value and press Cancel. Close the remaining
+            // PotentialEditDialogs until going back to the probnet and then open the potential to see the changes
+            // taking effect, which you specified it should NOT. This will be confusing as if from the initial
+            // PotentialEditDialog you were to open the mean again, you would see that the table would be as you
+            // expected it to be, but by reopening the potential, you will see it is not.
         } else {
-            meanDummyNode.getProbNet().getPNESupport().undoAndDelete();
+        
         }
     }
     
@@ -91,7 +102,7 @@ public class ConditionalGaussianPotentialPanel
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             // TODO: Do nothing?
         } else {
-            varianceDummyNode.getProbNet().getPNESupport().undoAndDelete();
+        
         }
     }
     
@@ -124,12 +135,11 @@ public class ConditionalGaussianPotentialPanel
         // TODO update table with projected potential
     }
     
-    @Override public void afterEditHappens(PNUndoableEditEvent event) {
+    @Override public void afterEditExecutes(@UnknownNullability PNEdit edit) {
         // Update new potential and potential panel
-        if (event.getEdit() instanceof PotentialChangeEdit) {
+        if (edit instanceof PotentialChangeEdit pcEdit) {
             newPotential.setMean(meanDummyNode.getPotentials().get(0));
             newPotential.setVariance(varianceDummyNode.getPotentials().get(0));
-            
             //update();
         }
     }

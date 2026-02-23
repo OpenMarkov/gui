@@ -43,7 +43,7 @@ import java.util.function.Consumer;
  * @author jmendoza
  * @version 1.4 - jrico: Now it also has a reference to its DecisionTreeWindow (if shown).
  */
-public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEditListener {
+public class NetworkPanel extends ZoomableContentPanel implements PNEditListener {
     /**
      * Static field for serializable class.
      */
@@ -605,19 +605,16 @@ public class NetworkPanel extends ZoomableContentPanel implements PNUndoableEdit
         editorPanel.setSelectedAllObjects(selected);
     }
     
-    @Override public void afterEditHappens(PNUndoableEditEvent arg0) {
-        if (arg0.getEdit().getClass() != OpenParenthesisEdit.class &&
-                arg0.getEdit().getClass() != CloseParenthesisEdit.class) {
-            setModified(true);
-        }
+    @Override public void afterEditExecutes(PNEdit arg0) {
+        setModified(true);
     }
     
-    @Override public void beforeEditHappens(PNUndoableEditEvent event) {
+    @Override public void beforeEditExecutes(PNEdit edit) {
         repaint();
     }
     
-    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
-        setModified(event.getEdit().getProbNet().getPNESupport().getCanUndo());
+    @Override public void afterUndoingEdit(PNEdit edit) {
+        setModified(edit.getProbNet().getPNESupport().getCanUndo());
         repaint();
     }
     

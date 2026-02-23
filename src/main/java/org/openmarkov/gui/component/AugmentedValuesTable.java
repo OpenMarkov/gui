@@ -7,9 +7,9 @@
 
 package org.openmarkov.gui.component;
 
+import org.jetbrains.annotations.UnknownNullability;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.PNUndoableEditEvent;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.expression.VariableExpression;
@@ -44,7 +44,7 @@ import java.util.EventObject;
  * @author carmenyago
  * @version 1 Apr/2017
  */
-public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditListener {
+public class AugmentedValuesTable extends ValuesTable implements PNEditListener {
     /**
      * default serial ID
      */
@@ -163,8 +163,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
     /**
      * Updates the edited column
      */
-    @Override public void afterEditHappens(PNUndoableEditEvent event) {
-        PNEdit edit = event.getEdit();
+    @Override public void afterEditExecutes(@UnknownNullability PNEdit edit) {
         if (edit instanceof AugmentedPotentialValueEdit) {
             augmentedPotentialValueEditHappened((AugmentedPotentialValueEdit) edit);
         }
@@ -199,18 +198,20 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
     /**
      * UNCLEAR--&gt;Priority list
      */
-    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
-        //if (event.getEdit () instanceof AugmentedPotentialValueEdit)
-        AugmentedPotentialValueEdit edit = (AugmentedPotentialValueEdit) event.getEdit();
-        Potential editPotential = edit.getNewPotential();
-        AugmentedProbTable editTable;
-        if (editPotential instanceof AugmentedProbTablePotential) {
-            editTable = ((AugmentedProbTablePotential) editPotential).getAugmentedProbTable();
-        } else {
-            editTable = ((UnivariateDistrPotential) editPotential).getAugmentedProbTable();
+    @Override public void afterUndoingEdit(PNEdit edit) {
+        if (edit instanceof AugmentedPotentialValueEdit augmentedEdit) {
+            Potential editPotential = augmentedEdit.getNewPotential();
+            AugmentedProbTable editTable;
+            if (editPotential instanceof AugmentedProbTablePotential) {
+                editTable = ((AugmentedProbTablePotential) editPotential).getAugmentedProbTable();
+            } else {
+                editTable = ((UnivariateDistrPotential) editPotential).getAugmentedProbTable();
+            }
+            super.getModel()
+                 .setValueAt(editTable.getFunctionValues()[augmentedEdit.getIndexSelected()], augmentedEdit.getRowPosition(),
+                             augmentedEdit.getColumnPosition());
         }
-        super.getModel().setValueAt(editTable.getFunctionValues()[edit.getIndexSelected()], edit.getRowPosition(),
-                                    edit.getColumnPosition());
+
     }
     
     /**

@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.node;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.action.base.CloseEditStackOptions;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.SetPotentialEdit;
 import org.openmarkov.core.action.core.SetPotentialVariablesEdit;
@@ -121,7 +122,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
             this.originalPotential = null;
         }
         this.node.getProbNet().getPNESupport().setWithUndo(true);
-        this.node.getProbNet().getPNESupport().openParenthesis();
+        this.node.getProbNet().getPNESupport().openNewSubEditHistory();
         if (potentialInitializer != null) {
             potentialInitializer.accept(this);
         }
@@ -524,8 +525,8 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
         }
         Potential newPotential = this.node.getPotential();
         PNEdit setPotentialEdit = this.generateSetPotentialEdit(this.originalPotential, newPotential);
-        this.node.getProbNet().getPNESupport().closeParenthesis();
-        this.node.getProbNet().getPNESupport().removeLastEdit();
+        this.node.getProbNet().getPNESupport().closeSubEditHistory();
+        //Should cancel without triggering Undo
         setPotentialEdit.executeEdit();
         return true;
     }
@@ -533,7 +534,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
     @Override protected void doCancelClickBeforeHide() {
         this.removePotentialOnClose(this.originalPotential);
         this.getPotentialPanel().close();
-        this.node.getProbNet().getPNESupport().closeParenthesis();
+        this.node.getProbNet().getPNESupport().closeSubEditHistory(CloseEditStackOptions.FORGET);
     }
     
     /**

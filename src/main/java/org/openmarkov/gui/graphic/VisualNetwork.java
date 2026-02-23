@@ -8,11 +8,10 @@
 package org.openmarkov.gui.graphic;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -36,7 +35,7 @@ import java.util.List;
  * @version 1.2 asaez - modified the constructor, the creation of
  * visual nodes and the order of painting nodes
  */
-public class VisualNetwork implements PNUndoableEditListener {
+public class VisualNetwork implements PNEditListener {
     
     /**
      * Network whose visual representation is managed by this object.
@@ -918,7 +917,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         
     }
     
-    @Override public void afterEditHappens(PNUndoableEditEvent e) {
+    @Override public void afterEditExecutes(PNEdit edit) {
         constructVisualInfo();
         if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();
@@ -950,7 +949,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         return visualNode;
     }
     
-    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
+    @Override public void afterUndoingEdit(PNEdit edit) {
         constructVisualInfo();
         if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();

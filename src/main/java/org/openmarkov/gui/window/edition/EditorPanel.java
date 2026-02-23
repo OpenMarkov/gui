@@ -8,7 +8,8 @@
 package org.openmarkov.gui.window.edition;
 
 import org.openmarkov.core.action.base.PNESupport;
-import org.openmarkov.core.action.base.PNUndoableEditEvent;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.action.core.*;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.*;
@@ -22,7 +23,6 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.gui.action.*;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.action.base.linkEdits.InvertLinkAndUpdatePotentialsEdit;
 import org.openmarkov.gui.dialog.PropagationOptionsDialog;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
@@ -63,7 +63,7 @@ import java.util.stream.Collectors;
  * contraction of nodes, - Introduction and elimination of evidence -
  * Management of multiple evidence cases.
  */
-public class EditorPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener, PNUndoableEditListener {
+public class EditorPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener, PNEditListener {
     /**
      * Static field for serializable class.
      */
@@ -105,10 +105,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     PotentialEditDialog potentialsDialog = null;
     
     AddFindingDialog addFindingDialog = null;
-    /****
-     * Dialog for link restriction edition
-     */
-    LinkRestrictionEditDialog linkRestrictionDialog = null;
+    
     /***
      * Dialog for revelation arc edition
      */
@@ -395,12 +392,13 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                     if (!userAcceptedChanges && lastLeftClickProducedANode) {
                         while (true) {
                             if (probNet.getPNESupport()
-                                       .undoAndDelete()
+                                       .undo()
                                        .stream()
                                        .anyMatch(edit -> edit instanceof AddNodeEdit)) {
                                 break;
                             }
                         }
+                        probNet.getPNESupport().removeUndoneEdits();
                     }
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
@@ -726,8 +724,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * undo manager.
      *
      * @param selectedNode
-     *
      * @param newNode
+     *
      * @return
      */
     public boolean changeNodeProperties(VisualNode selectedNode, boolean newNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
@@ -738,8 +736,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             repaint();
             networkChanged = true;
             removeNodeEvidenceInAllCases(selectedNode.getNode());
-        } else {
-            probNet.getPNESupport().undoAndDelete();
         }
         return userAcceptedChanges;
     }
@@ -774,8 +770,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             repaint();
             networkChanged = true;
             removeNodeEvidenceInAllCases(node);
-        } else {
-            cancelAction();
         }
     }
     
@@ -811,21 +805,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                         // closing the dialog
                         == OkCancelHorizontalDialog.OK_BUTTON
         );
-    }
-    
-    /**
-     * This method requests to the user the link restriction properties of a
-     * link.
-     *
-     * @param owner owner window that shows the dialog box.
-     * @param link  object that contains the link restriction properties of the
-     *              link and where changes will be saved.
-     *
-     * @return true, if the user save the changes on node; otherwise, false.
-     */
-    private boolean requestLinkRestrictionValues(Window owner, Link<Node> link) {
-        linkRestrictionDialog = new LinkRestrictionEditDialog(owner, link);
-        return (linkRestrictionDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
     }
     
     // private boolean requestCostEffectiveness(Window owner,
@@ -873,9 +852,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         // TODO be careful with local pNESupport and extern pNESupport
         Window owner = Utilities.getOwner(this);
         NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(owner, probNet);
-        if (!(dialogProperties.showProperties() == OkCancelHorizontalDialog.OK_BUTTON)) {
-            cancelAction();
-        }
+        dialogProperties.showProperties();
     }
     
     /**
@@ -943,11 +920,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
             visualNode = (VisualDecisionNode) selectedNode.get(0);
-            if (!requestImposePolicyValues(Utilities.getOwner(this), visualNode)) {
-                // if user cancels policy imposition then no potential is
-                // restored to the node
-                cancelAction();
-            }
+            requestImposePolicyValues(Utilities.getOwner(this), visualNode);
         }
         setSelectedAllNodes(false);
         repaint();
@@ -966,10 +939,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 // TODO manage other kind of policy types from the interface
                 // node.setPolicyType(PolicyType.OPTIMAL);
                 // Potential imposedPolicy = node.getPotentials ().get (0);
-                if (!requestImposePolicyValues(Utilities.getOwner(this), visualNode)) {
-                    cancelAction();
-                    
-                }
+                requestImposePolicyValues(Utilities.getOwner(this), visualNode);
             }
         }
         setSelectedAllNodes(false);
@@ -1109,14 +1079,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
         VisualNode node = selectedNodes.get(0);
         EvidenceCase currentEvidence = (networkPanel.getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) ?
-                getCurrentEvidenceCase() :
-                preResolutionEvidence;
+                getCurrentEvidenceCase() : preResolutionEvidence;
         Finding finding = currentEvidence.getFinding(node.getNode().getVariable());
-        
-        if (!requestAddFindingValues(Utilities.getOwner(this), node, finding)) {
-            
-            cancelAction();
-        }
+        requestAddFindingValues(Utilities.getOwner(this), node, finding);
         repaint();
         setSelectedAllNodes(false);
         networkPanel.getMainPanel().getInferenceToolBar().setCurrentEvidenceCaseName(currentCase);
@@ -2164,8 +2129,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         repaint();
     }
     
-
-    
     
     /**
      * This method inverts the selected link arc-reversal style
@@ -2194,9 +2157,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
             if (!link.hasRestrictions()) {
                 link.initializesRestrictionsPotential();
             }
-            if (!requestLinkRestrictionValues(Utilities.getOwner(this), link)) {
-                probNet.getPNESupport().undoAndDelete();
-            }
+            new LinkRestrictionEditDialog(Utilities.getOwner(this), link).requestValues();
             link.tryResetRestrictionsPotential();
             repaint();
         }
@@ -2218,9 +2179,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         List<VisualLink> links = visualNetwork.getSelectedLinks();
         if (!links.isEmpty()) {
             Link<Node> link = links.get(0).getLink();
-            if (!requestRevelationArcValues(Utilities.getOwner(this), link)) {
-                probNet.getPNESupport().undoAndDelete();
-            }
+            requestRevelationArcValues(Utilities.getOwner(this), link);
             repaint();
         }
     }
@@ -2312,21 +2271,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         }
     }
     
-    /**
-     * This method sets the network as changed but also modifies the menu so the save button is enabled
-     * This is usually done through edit, but some actions in this class do not use edits
-     * TODO: check whether some actions like removePolicyFromNode should be refactored as edits or not
-     */
-    private void setNetworkChangedWithOutEdit(boolean networkChanged) {
-        this.networkChanged = networkChanged;
-        networkPanel.setModified(networkChanged);
-        if (networkChanged) {
-            networkPanel.getMainPanel().getMainPanelMenuAssistant().updateOptionsNetworkModified(false, false);
-        } else {
-            networkPanel.getMainPanel().getMainPanelMenuAssistant().updateOptionsNetworkSaved();
-        }
-    }
-    
     // The key listener needs a focusable object to listen
     @Override
     public boolean isFocusable() {
@@ -2364,19 +2308,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     public void keyTyped(KeyEvent keyEvent) {
     }
     
-    public void cancelAction() {
-        boolean alreadyModifiedNetwork = networkPanel.getModified();
-        probNet.getPNESupport().undoAndDelete();
-        // We restore the network state to not modified, if it was not already modified
-        if (!alreadyModifiedNetwork) {
-            setNetworkChangedWithOutEdit(false);
-            setSelectedAllNodes(false);
-            repaint();
-        }
-    }
-    
     @Override
-    public void afterUndoingEdit(PNUndoableEditEvent event) {
+    public void afterUndoingEdit(PNEdit edit) {
         List<Finding> findings = preResolutionEvidence.getFindings();
         Set<Variable> findingVariables = findings.stream()
                                                  .map(Finding::getVariable)
@@ -2394,7 +2327,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     @Override
-    public void afterEditHappens(PNUndoableEditEvent e) {
+    public void afterEditExecutes(PNEdit edit) {
         for (Finding finding : preResolutionEvidence.getFindings()) {
             Variable variable = finding.getVariable();
             for (VisualNode visualNode : visualNetwork.getAllNodes()) {
@@ -2407,13 +2340,13 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         repaint();
     }
     
-    @Override public void onEditFailed(PNUndoableEditEvent event, DoEditException exception) {
+    @Override public void onEditFailed(PNEdit edit, DoEditException exception) {
         adjustPanelDimension();
         repaint();
     }
     
     @Override
-    public void onEditViolatesConstraints(PNUndoableEditEvent pnUndoableEditEvent, ConstraintViolatedException ex) {
+    public void onEditViolatesConstraints(PNEdit edit, ConstraintViolatedException ex) {
         adjustPanelDimension();
         repaint();
     }

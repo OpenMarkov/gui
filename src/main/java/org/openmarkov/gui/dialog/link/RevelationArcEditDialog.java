@@ -29,7 +29,7 @@ import java.text.MessageFormat;
 	public RevelationArcEditDialog(Window owner, Link<Node> link) {
 		super(owner);
 		this.link = link;
-        link.getFrom().getProbNet().getPNESupport().openParenthesis();
+        link.getFrom().getProbNet().getPNESupport().openNewSubEditHistory();
 		initialize();
 		setLocationRelativeTo(owner);
 		setMinimumSize(new Dimension(750, 450));
@@ -86,11 +86,11 @@ import java.text.MessageFormat;
 	 */
 	@Override protected boolean doOkClickBeforeHide() {
 		getRevelationArcPanel().saveChanges();
-        link.getFrom().getProbNet().getPNESupport().closeParenthesis();
+        link.getFrom().getProbNet().getPNESupport().closeSubEditHistory();
 		return true;
 	}
 
 	@Override protected void doCancelClickBeforeHide() {
-        link.getFrom().getProbNet().getPNESupport().closeParenthesis();
+        link.getFrom().getProbNet().getPNESupport().cancelLastSubEditHistory();
 	}
 }

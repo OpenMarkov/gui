@@ -89,7 +89,7 @@ public class MoveNodeEditTest {
      */
 	@Tag(TestSpeed.SLOW)
 	@Test public final void testUndoRedo() {
-        var manager = probNet.getPNESupport().getUndoManager();
+		var manager = probNet.getPNESupport().getCurrentEditHistory();
 		assertEquals(node1.getCoordinateX(), 21.0, 0.1);
 		assertEquals(node1.getCoordinateY(), 160.0, 0.1);
 		assertEquals(node2.getCoordinateX(), 101.0, 0.1);

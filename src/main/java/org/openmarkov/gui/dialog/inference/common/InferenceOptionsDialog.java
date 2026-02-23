@@ -945,7 +945,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         if (table != null && table.getCellEditor() != null) {
             table.getCellEditor().stopCellEditing();
         }
-        probNet.getPNESupport().openParenthesis();
+        probNet.getPNESupport().openNewSubEditHistory();
         if (isMulticriteria) {
             MulticriteriaEdit editMulticriteria = new MulticriteriaEdit(probNet, decisionCriteria, multicriteriaOptions);
             editMulticriteria.executeEdit();
@@ -970,7 +970,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
             editTemporal.executeEdit();
         }
         
-        probNet.getPNESupport().closeParenthesis();
+        probNet.getPNESupport().closeSubEditHistory();
         
         return super.doOkClickBeforeHide();
     }

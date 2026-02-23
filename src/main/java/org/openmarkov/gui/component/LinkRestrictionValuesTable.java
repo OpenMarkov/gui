@@ -8,9 +8,9 @@
 
 package org.openmarkov.gui.component;
 
+import org.jetbrains.annotations.UnknownNullability;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.PNUndoableEditEvent;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * manipulation of the Link restriction potential.
  **/
 @SuppressWarnings("serial") public class LinkRestrictionValuesTable extends ValuesTable
-        implements PNUndoableEditListener {
+        implements PNEditListener {
     /***
      * Constant value to describe compatibility of a position of the link
      * restriction potential.
@@ -97,18 +97,15 @@ import java.util.ArrayList;
         }
     }
     
-    @Override public void afterEditHappens(PNUndoableEditEvent event) {
-        PNEdit unEdit = event.getEdit();
-        if (unEdit instanceof LinkRestrictionPotentialValueEdit) {
-            if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit edit) {
-                super.getModel().setValueAt(edit.getNewValue(), edit.getRowPosition(), edit.getColumnPosition());
-            }
+    @Override public void afterEditExecutes(@UnknownNullability PNEdit edit) {
+        if (edit instanceof LinkRestrictionPotentialValueEdit lrEdit) {
+            super.getModel().setValueAt(lrEdit.getNewValue(), lrEdit.getRowPosition(), lrEdit.getColumnPosition());
         }
     }
     
-    @Override public void afterUndoingEdit(PNUndoableEditEvent event) {
-        if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit edit) {
-            super.getModel().setValueAt(edit.getNewValue(), edit.getRowPosition(), edit.getColumnPosition());
+    @Override public void afterUndoingEdit(PNEdit edit) {
+        if (edit instanceof LinkRestrictionPotentialValueEdit lrEdit) {
+            super.getModel().setValueAt(lrEdit.getNewValue(), lrEdit.getRowPosition(), lrEdit.getColumnPosition());
         }
     }
 }

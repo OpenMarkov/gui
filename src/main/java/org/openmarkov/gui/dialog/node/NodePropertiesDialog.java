@@ -320,7 +320,7 @@ public abstract class NodePropertiesDialog extends OkCancelHorizontalDialog impl
 	 * before hide the dialog.
 	 */
 	@Override protected void doCancelClickBeforeHide() {
-		node.getProbNet().getPNESupport().closeParenthesis();
+        node.getProbNet().getPNESupport().cancelLastSubEditHistory();
 	}
 
 	/**
@@ -356,7 +356,7 @@ public abstract class NodePropertiesDialog extends OkCancelHorizontalDialog impl
 		// If the is user is editing a cell, stop the edition to save the data
 		nodeDomainValuesTablePanel.getDiscretizedStatesPanel().stopCellEditing();
         nodeDefinitionPanel.checkNameConstraints();
-        node.getProbNet().getPNESupport().closeParenthesis();
+        node.getProbNet().getPNESupport().closeSubEditHistory();
         return true;
 	}
     

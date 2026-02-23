@@ -8,7 +8,7 @@
 package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial") public class AdvancedPropertiesTablePanel extends KeyTablePanel
-		implements TableModelListener, PNUndoableEditListener {
+        implements TableModelListener, PNEditListener {
     
     protected Object[][] dataTable;
 	private String keyPrefix;

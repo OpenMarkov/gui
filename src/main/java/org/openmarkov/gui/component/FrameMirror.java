@@ -66,7 +66,6 @@ public class FrameMirror extends JComponent {
         contentPane.printAll(imageOfTheFrame.createGraphics());
         
         contentPaneLocation = SwingUtilities.convertPoint(contentPane, 0, 0, this);
-        System.out.println();
     }
     
 }

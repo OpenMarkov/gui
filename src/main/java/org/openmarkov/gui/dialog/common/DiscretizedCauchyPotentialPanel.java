@@ -1,7 +1,8 @@
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.base.PNUndoableEditEvent;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.jetbrains.annotations.UnknownNullability;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
@@ -20,7 +21,7 @@ import java.awt.*;
 
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialClasses = DiscretizedCauchyPotential.class)
-public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements PNUndoableEditListener {
+public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements PNEditListener {
     
     private JButton editMedianButton;
     private JButton editScaleButton;
@@ -70,7 +71,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             // TODO: Do nothing?
         } else {
-            medianDummyNode.getProbNet().getPNESupport().undoAndDelete();
+        
         }
     }
     
@@ -79,7 +80,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
             // TODO: Do nothing?
         } else {
-            scaleDummyNode.getProbNet().getPNESupport().undoAndDelete();
+        
         }
     }
     
@@ -116,9 +117,9 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     }
     
     @Override
-    public void afterEditHappens(PNUndoableEditEvent event) {
+    public void afterEditExecutes(@UnknownNullability PNEdit edit) {
         // Update new potential and potential panel
-        if (event.getEdit() instanceof PotentialChangeEdit) {
+        if (edit instanceof PotentialChangeEdit pcEdit) {
             newPotential.setMedian(medianDummyNode.getPotentials().get(0));
             newPotential.setScale(scaleDummyNode.getPotentials().get(0));
             
