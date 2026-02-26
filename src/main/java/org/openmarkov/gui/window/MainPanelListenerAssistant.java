@@ -1647,19 +1647,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
     
     private void showDecisionTree(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException, NotEnoughtMemoryException {
         try {
-            InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(networkPanel.probNet,
-                                                                                        Utilities.getOwner(mainPanel));
-            if (costEffectivenessDialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
-                return;
-            }
-            switch (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()) {
-                case UNICRITERION -> {
-                    // TODO: Do something for show unicriterion decision tree
-                }
-                case COST_EFFECTIVENESS -> {
-                    // TODO: Do something for show cost-effectiveness decision tree
-                }
-            }
             DecisionTreeWindow decisionTree = new DecisionTreeWindow(networkPanel);
             mainPanel.addCloseableTab("Decision tree for " + networkPanel.probNet.getName(), decisionTree);
             mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
@@ -1685,11 +1672,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
         
         ProbNet probNet = networkPanel.getProbNet();
-        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-                                                                                    Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
-        if (costEffectivenessDialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
-            return;
-        }
+
         if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
             DANEvaluation eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet, networkPanel.getEditorPanel()
                                                                                                       .getPreResolutionEvidence());
