@@ -281,7 +281,37 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
      * Auxiliar constructor that don't force any type of multicriteria analysis (unicriterion or cost-effectiveness)
      **/
     public InferenceOptionsDialog(ProbNet probNet, Window owner) {
-        this(probNet, owner, null);
+        super(owner);
+
+        this.probNet = probNet;
+
+        setTitle(stringDatabase.getString("InferenceOptionsDialog.Title"));
+
+        isTemporal = !probNet.hasConstraintOfClass(OnlyAtemporalVariables.class);
+
+
+        setLocationRelativeTo(owner);
+
+        this.temporalOptions = probNet.getInferenceOptions().getTemporalOptions().clone();
+
+        mainPanel = new JPanel();
+        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+
+        mainPanel.add(getTemporalPanel());
+
+        add(mainPanel);
+        setIconImage(null);
+        setResizable(false);
+
+        pack();
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        int x = (screenSize.width - getWidth()) / 2;
+        int y = (screenSize.height - getHeight()) / 2;
+        setLocation(x, y);
+        setVisible(true);
     }
     
     /**
@@ -839,7 +869,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
             temporalPanel = new JPanel();
             temporalPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
             temporalPanel.setBorder(
-                    new TitledBorder(stringDatabase.getString("NetworkAdvancedPanel.TemporalOptions.Title")));
+                    new TitledBorder(stringDatabase.getString("NetworkTemporalOptionsPanel.TemporalOptions.Title")));
             temporalPanel.add(getNumSlicesPanel());
             temporalPanel.add(getTransitionsPanel());
         }

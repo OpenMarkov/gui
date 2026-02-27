@@ -1223,10 +1223,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
     private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException, NotSupportedOperationException {
         NetworkPanel networkPanelMID = getCurrentNetworkPanel();
         String path = (new File(networkPanelMID.getNetworkFile())).getParent();
-        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-                                                                                    Utilities.getOwner(mainPanel), null);
-        costEffectivenessDialog.getMulticriteriaPanel().setEnabled(false);
-        if (costEffectivenessDialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
+        InferenceOptionsDialog expandNetworkDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel));
+        if (expandNetworkDialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
             return;
         }
 //		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
