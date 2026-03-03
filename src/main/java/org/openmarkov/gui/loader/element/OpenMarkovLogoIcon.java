@@ -19,14 +19,14 @@ import java.awt.*;
 public class OpenMarkovLogoIcon {
 
 	/**
-     * IconBind for the Main OpenMarkov Frame
+	 * IconBind for the Main OpenMarkov Frame
 	 */
-	static final String OPENMARKOV_LOGO_IMAGEICON_16 = "/images/OM_16p4.png";
-    
-    /**
+	static final String OPENMARKOV_LOGO_IMAGEICON_16 = "/icons/openmarkov.png";
+
+	/**
 	 * OpenMarkovLogoIcon unique instance. Used in singleton pattern.
 	 */
-    private static final OpenMarkovLogoIcon INSTANCE = new OpenMarkovLogoIcon();
+	private static final OpenMarkovLogoIcon INSTANCE = new OpenMarkovLogoIcon();
 
 	/**
 	 * default constructor
@@ -41,7 +41,7 @@ public class OpenMarkovLogoIcon {
 	 * @return OpenMarkovLogoIcon single instance (singleton pattern)
 	 */
 	public static OpenMarkovLogoIcon getUniqueInstance() {
-        return INSTANCE;
+		return INSTANCE;
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class OpenMarkovLogoIcon {
 	 * @return the image for 16 points
 	 */
 	public Image getOpenMarkovLogoIconImage16() {
-        return Toolkit.getDefaultToolkit().getImage(getClass().getResource(OPENMARKOV_LOGO_IMAGEICON_16));
+		return Toolkit.getDefaultToolkit().getImage(getClass().getResource(OPENMARKOV_LOGO_IMAGEICON_16));
 	}
- 
+
 }
