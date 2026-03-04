@@ -292,6 +292,9 @@ public class KeyTable extends JTable {
     private void onFocusLost(FocusEvent e) {
         Component componentToFocus = e.getOppositeComponent();
         Component[] components = this.getComponents();
+        if (components == null) {
+            components = new Component[]{};
+        }
         boolean isFocusingASubComponent =
                 componentToFocus == this
                         || Arrays.stream(components).anyMatch(componentToFocus::equals);
