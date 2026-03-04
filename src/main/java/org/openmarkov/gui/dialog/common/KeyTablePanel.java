@@ -37,7 +37,7 @@ import java.util.function.Consumer;
  * @version 1.1 jlgozalo Add support for i18N by having setName() property to
  * all components Change attributes to protected to allow extension
  */
-public class KeyTablePanel extends JPanel implements ActionListener, ListSelectionListener, FocusListener {
+public class KeyTablePanel extends JPanel implements ActionListener, ListSelectionListener {
     
     /**
      * Static field for serializable class.
@@ -185,13 +185,10 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      * @return a new values table.
      */
     public KeyTable getValuesTable() {
-        
         if (valuesTable == null) {
             valuesTable = new KeyTable(getTableModel(), modifiable, true, showHeader);
             valuesTable.setName("KeyTablePanel.valuesTable");
             valuesTable.setListSelectionListener(this);
-            valuesTable.addFocusListener(this);
-            valuesTable.addOnCreateCellEditorComponentListener(component -> component.addFocusListener(this));
         }
         return valuesTable;
     }
@@ -460,10 +457,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      * Stops the editing in any cell of the table, recording the new value.
      */
     public void stopCellEditing() {
-        TableCellEditor currentEditor = valuesTable.getCellEditor();
-        if (currentEditor != null) {
-            currentEditor.stopCellEditing();
-        }
+        getValuesTable().stopCellEditing();
     }
     
     /**
@@ -502,18 +496,4 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
         tableModel.setDataVector(newData, columns);
     }
     
-    @Override public void focusGained(FocusEvent e) {
-    
-    }
-    
-    @Override public void focusLost(FocusEvent e) {
-        Component componentToFocus = e.getOppositeComponent();
-        Component[] components = valuesTable.getComponents();
-        boolean isFocusingASubComponent =
-                componentToFocus == this.valuesTable
-                        || Arrays.stream(components).anyMatch(componentToFocus::equals);
-        if (!isFocusingASubComponent) {
-            stopCellEditing();
-        }
-    }
 }
