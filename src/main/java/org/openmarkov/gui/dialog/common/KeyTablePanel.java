@@ -17,11 +17,18 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.Arrays;
 import java.util.Vector;
+import java.util.function.Consumer;
 
 /**
  * This panel contains a table whose first column represents a key data.
@@ -30,7 +37,7 @@ import java.util.Vector;
  * @version 1.1 jlgozalo Add support for i18N by having setName() property to
  * all components Change attributes to protected to allow extension
  */
-public class KeyTablePanel extends JPanel implements ActionListener, ListSelectionListener {
+public class KeyTablePanel extends JPanel implements ActionListener, ListSelectionListener, FocusListener {
     
     /**
      * Static field for serializable class.
@@ -104,9 +111,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      * this is a default constructor with no construction parameters
      */
     public KeyTablePanel() {
-        reorderable = false;
-        modifiable = false;
-        showHeader = false;
+        this(null, null, false, false, false);
     }
     
     /**
@@ -185,6 +190,8 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
             valuesTable = new KeyTable(getTableModel(), modifiable, true, showHeader);
             valuesTable.setName("KeyTablePanel.valuesTable");
             valuesTable.setListSelectionListener(this);
+            valuesTable.addFocusListener(this);
+            valuesTable.addOnCreateCellEditorComponentListener(component -> component.addFocusListener(this));
         }
         return valuesTable;
     }
@@ -198,7 +205,6 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
         
         if (tableModel == null) {
             tableModel = new DefaultTableModel(data, columns);
-            
         }
         return tableModel;
     }
@@ -378,7 +384,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      * Invoked when the button 'add' is pressed.
      */
     protected void actionPerformedAddValue() throws DoEditException, ThereIsNoNodeInDataException {
-    
+        System.out.println();
     }
     
     /**
@@ -454,9 +460,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      * Stops the editing in any cell of the table, recording the new value.
      */
     public void stopCellEditing() {
-        
         TableCellEditor currentEditor = valuesTable.getCellEditor();
-        
         if (currentEditor != null) {
             currentEditor.stopCellEditing();
         }
@@ -498,4 +502,18 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
         tableModel.setDataVector(newData, columns);
     }
     
+    @Override public void focusGained(FocusEvent e) {
+    
+    }
+    
+    @Override public void focusLost(FocusEvent e) {
+        Component componentToFocus = e.getOppositeComponent();
+        Component[] components = valuesTable.getComponents();
+        boolean isFocusingASubComponent =
+                componentToFocus == this.valuesTable
+                        || Arrays.stream(components).anyMatch(componentToFocus::equals);
+        if (!isFocusingASubComponent) {
+            stopCellEditing();
+        }
+    }
 }

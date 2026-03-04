@@ -57,7 +57,6 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
      * this a default constructor with no construction parameters
      */
     public PrefixedKeyTablePanel() {
-        
         keyPrefix = "";
         initialize();
         getValuesTable().getModel().addTableModelListener(this);

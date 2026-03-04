@@ -16,6 +16,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
  * This class implements a table that has at least one column. The first column
@@ -83,14 +85,14 @@ public class KeyTable extends JTable {
 	 * default
 	 */
 	private boolean showColumnHeader = true;
-
+	
+	private final ArrayList<Consumer<Component>> onCreateCellEditorComponent;
+	
 	/**
 	 * default constructor without construction parameters
 	 */
 	public KeyTable() {
-		created = true;
-		modifiable = false;
-		defaultConfiguration();
+		this(null, false, true);
 	}
 
 	/**
@@ -98,11 +100,11 @@ public class KeyTable extends JTable {
 	 * default column model, and a default selection model.
 	 *
 	 * @param dm            the data model for the table.
-	 * @param newModifiable specifies if the cells (except the first column) are
+	 * @param modifiable specifies if the cells (except the first column) are
 	 *                      modifiable.
 	 */
-	public KeyTable(TableModel dm, boolean newModifiable, boolean firstColumnHidden) {
-		this(dm, newModifiable, firstColumnHidden, true);
+	public KeyTable(TableModel dm, boolean modifiable, boolean firstColumnHidden) {
+		this(dm, modifiable, firstColumnHidden, true);
 	}
 
 	/**
@@ -110,17 +112,16 @@ public class KeyTable extends JTable {
 	 * default column model, and a default selection model.
 	 *
 	 * @param dm            the data model for the table.
-	 * @param newModifiable specifies if the cells (except the first column) are
+	 * @param modifiable specifies if the cells (except the first column) are
 	 *                      modifiable.
 	 */
-	public KeyTable(TableModel dm, boolean newModifiable, boolean firstColumnHidden, boolean showColumnHeader) {
-
+	public KeyTable(TableModel dm, boolean modifiable, boolean firstColumnHidden, boolean showColumnHeader) {
 		super(dm);
-
 		created = true;
-		modifiable = newModifiable;
+		this.modifiable = modifiable;
 		this.firstColumnHidden = firstColumnHidden;
 		this.showColumnHeader = showColumnHeader;
+		this.onCreateCellEditorComponent = new ArrayList<Consumer<Component>>();
 		defaultConfiguration();
 	}
 
@@ -259,7 +260,19 @@ public class KeyTable extends JTable {
 
 		return (!modifiable || (column == 0)) ? null : super.getCellEditor(row, column);
 	}
-
+	
+	@Override public Component prepareEditor(TableCellEditor editor, int row, int column) {
+		Component component = super.prepareEditor(editor, row, column);
+		for (var onCreate : onCreateCellEditorComponent) {
+			onCreate.accept(component);
+		}
+		return component;
+	}
+	
+	public void addOnCreateCellEditorComponentListener(Consumer<Component> onCreate) {
+		this.onCreateCellEditorComponent.add(onCreate);
+	}
+	
 	/**
 	 * Invoked when the row selection changes.
 	 *
