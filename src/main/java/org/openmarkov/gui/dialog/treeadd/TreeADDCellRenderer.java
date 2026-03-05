@@ -8,11 +8,9 @@
 package org.openmarkov.gui.dialog.treeadd;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -161,26 +159,23 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
      * @return the node icon created
      */
     protected Icon createNodeIcon(Variable variable) {
-        Icon icon = null;
         Node node = probNet.getNode(variable);
         if (node == null) {
             node = probNet.getNode(variable.getName());
         }
-        switch (node.getNodeType()) {
-            case CHANCE: {
-                icon = IconFactory.createChanceIcon(variable.getName(), textIconFont);
-                break;
-            }
-            case DECISION: {
-                icon = IconFactory.createDecisionIcon(variable.getName(), textIconFont);
-                break;
-            }
-            case UTILITY: {
-                icon = IconFactory.createUtilityIcon(variable.getName(), textIconFont);
-                break;
-            }
+        NodeType nodeType = null;
+        if (node != null) {
+            nodeType = node.getNodeType();
+        } else if (variable.getName().equals("OD")) {
+            nodeType = NodeType.DECISION;
         }
-        return icon;
+        return switch (nodeType) {
+            case CHANCE -> IconFactory.createChanceIcon(variable.getName(), textIconFont);
+            case DECISION -> IconFactory.createDecisionIcon(variable.getName(), textIconFont);
+            case UTILITY -> IconFactory.createUtilityIcon(variable.getName(), textIconFont);
+            case SV_SUM, SV_PRODUCT ->
+                    throw new UnreacheableException(new NotSupportedOperationException(nodeType.toString() + " is not supported yet"));
+        };
     }
     
     /**
