@@ -297,7 +297,7 @@ public class KeyTable extends JTable {
         }
         boolean isFocusingASubComponent =
                 componentToFocus == this
-                        || Arrays.stream(components).anyMatch(componentToFocus::equals);
+                        || Arrays.stream(components).anyMatch(subComponent -> subComponent == componentToFocus);
         if (!isFocusingASubComponent) {
             stopCellEditing();
         }
