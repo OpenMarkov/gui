@@ -435,6 +435,7 @@
     </MulticriteriaDialog>
     <InferenceOptionsDialog>
         <Title value="Inference options"/>
+        <ExpandNetwork value ="Expand Network"/>
     </InferenceOptionsDialog>
     <OptionsInferenceDialog>
         <Text value="Select the propagation type"/>

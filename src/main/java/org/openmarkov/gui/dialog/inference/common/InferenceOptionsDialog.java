@@ -179,6 +179,8 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
     private JPanel multicriteriaPanel;
     
     private JPanel temporalPanel;
+
+    private boolean expandNetwork = false;
     
     /**
      * Constructor of the dialog
@@ -284,8 +286,9 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         super(owner);
 
         this.probNet = probNet;
+        expandNetwork = true;
 
-        setTitle(stringDatabase.getString("InferenceOptionsDialog.Title"));
+        setTitle(stringDatabase.getString("InferenceOptionsDialog.ExpandNetwork"));
 
         isTemporal = !probNet.hasConstraintOfClass(OnlyAtemporalVariables.class);
 
@@ -298,7 +301,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
-        mainPanel.add(getTemporalPanel());
+        mainPanel.add(getNumSlicesPanel());
 
         add(mainPanel);
         setIconImage(null);
@@ -988,16 +991,17 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
                 throw new InvalidArgumentException("Slices number", numSlicesTextField.getText(), "is not a valid number, as it must be a number between " + Integer.MIN_VALUE + " and " + Integer.MAX_VALUE);
             }
             this.temporalOptions.setHorizon(numSlices);
-            if (beginningOfCycleButton.isSelected()) {
-                this.temporalOptions.setTransition(TemporalOptions.TransitionTime.BEGINNING);
-            } else if (halfCycleButton.isSelected()) {
-                this.temporalOptions.setTransition(TemporalOptions.TransitionTime.HALF);
-            } else if (endOfCycleButton.isSelected()) {
-                this.temporalOptions.setTransition(TemporalOptions.TransitionTime.END);
+            if(!expandNetwork) {
+                if (beginningOfCycleButton.isSelected()) {
+                    this.temporalOptions.setTransition(TemporalOptions.TransitionTime.BEGINNING);
+                } else if (halfCycleButton.isSelected()) {
+                    this.temporalOptions.setTransition(TemporalOptions.TransitionTime.HALF);
+                } else if (endOfCycleButton.isSelected()) {
+                    this.temporalOptions.setTransition(TemporalOptions.TransitionTime.END);
+                }
             }
-            
-            TemporalOptionsEdit editTemporal = new TemporalOptionsEdit(probNet, temporalOptions);
-            editTemporal.executeEdit();
+            probNet.getInferenceOptions().setTemporalOptions(temporalOptions);
+
         }
         
         probNet.getPNESupport().closeSubEditHistory();

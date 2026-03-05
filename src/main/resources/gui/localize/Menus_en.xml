@@ -312,7 +312,7 @@
     </Options>
     <CostEffectiveness>
         <Cycles value="cycles"/>
-        <NumberOfCycles value="Horizon"/>
+        <NumberOfCycles value="Number of cycles"/>
         <NumberOfSimulations value="Number of Simulations"/>
         <InitialAge value="Initial age"/>
         <FinalAge value="Final age"/>
