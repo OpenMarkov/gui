@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * @author ibermejo
  * @version 1.3 cmyago 19/06/2016 - adapted the class to the new utility treatment; minor changes
  */
-public class PotentialEditDialog extends OkCancelHorizontalDialog
+public class PotentialEditDialog extends OkCancelDialog
         implements ActionListener, PanelResizeEventListener {
     
     /**
@@ -604,7 +604,7 @@ public class PotentialEditDialog extends OkCancelHorizontalDialog
     
     private void actionPerformedReorderVariables() throws DoEditException {
         ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, this.node);
-        if (reorderVariablesDialog.requestValues() != OkCancelHorizontalDialog.OK_BUTTON) {
+        if (reorderVariablesDialog.requestValues() != OkCancelDialog.OK_BUTTON) {
             return;
         }
         PotentialPanel potentialPanelForAction = this.getPotentialPanel();

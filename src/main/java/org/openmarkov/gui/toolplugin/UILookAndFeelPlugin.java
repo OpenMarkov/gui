@@ -34,7 +34,7 @@ public class UILookAndFeelPlugin implements ToolPlugin {
     }
     
     @Override public JMenuItem toMenuItem() {
-        return new JMenuItemBuilder("Change UI Feel and Look")
+        return new JMenuItemBuilder("Change UI Look and Feel")
                 .withItems(Arrays.stream(Theme.values()).map(UILookAndFeelPlugin::themeToButton))
                 .build();
     }

@@ -660,7 +660,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             uncertDialog = new UncertainValuesDialog(Utilities.getOwner(this), evidenceCase, tablePotential);
         }
         int button = uncertDialog.requestUncertainValues();
-        if (button != OkCancelHorizontalDialog.OK_BUTTON) {
+        if (button != OkCancelDialog.OK_BUTTON) {
             return;
         }
         UncertainValuesEdit uncertEdit = new UncertainValuesEdit(node, uncertDialog.getUncertainColumn(),

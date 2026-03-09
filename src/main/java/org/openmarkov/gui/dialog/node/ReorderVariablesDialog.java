@@ -10,13 +10,13 @@ package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.action.base.CloseEditStackOptions;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-@SuppressWarnings("serial") public class ReorderVariablesDialog extends OkCancelHorizontalDialog {
+@SuppressWarnings("serial") public class ReorderVariablesDialog extends OkCancelDialog {
 	private JPanel variablesCombinationPanel;
 	private Node node;
 	private ReorderVariablesPanel reorderVariablesPanel;

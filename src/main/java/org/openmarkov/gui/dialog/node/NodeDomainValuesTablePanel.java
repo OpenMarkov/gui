@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.core.NodeReplaceStatesEdit;
 import org.openmarkov.core.action.core.PrecisionEdit;
 import org.openmarkov.core.action.core.VariableTypeEdit;
@@ -19,7 +17,7 @@ import org.openmarkov.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.gui.component.DiscretizeTablePanel;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.util.GUIDefaultStates;
 import org.openmarkov.gui.util.Utilities;
 
@@ -1056,7 +1054,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         // Propagation of the domain in related variables in temporal models
         List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
         //
-        if (standardDomainDialog.requestValues() != OkCancelHorizontalDialog.OK_BUTTON) {
+        if (standardDomainDialog.requestValues() != OkCancelDialog.OK_BUTTON) {
             return;
         }
         List<JRadioButton> radioButtons = ((StandardDomainPanel) (standardDomainDialog.getJPanelStandardDomains()))

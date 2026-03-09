@@ -8,7 +8,7 @@
 package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -18,7 +18,7 @@ import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("serial") public class DistributionParameterDialog extends OkCancelHorizontalDialog {
+@SuppressWarnings("serial") public class DistributionParameterDialog extends OkCancelDialog {
     
     private double[] parameters;
     private List<TextField> parameterTextFields;

@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.NoRowSelectedException;
 
 import javax.swing.*;
@@ -21,7 +20,7 @@ import java.awt.*;
  * @author jmendoza
  * @version 1.1 jlgozalo not showing the id column
  */
-public class KeyListSelectionDialog extends OkCancelHorizontalDialog {
+public class KeyListSelectionDialog extends OkCancelDialog {
 	/**
 	 * Static field for serializable class.
 	 */

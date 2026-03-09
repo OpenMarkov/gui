@@ -12,14 +12,14 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.StrategyTree;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.treeadd.TreeADDCellRenderer;
 import org.openmarkov.gui.dialog.treeadd.TreeADDEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
-@SuppressWarnings("serial") public class InterventionDialog extends OkCancelHorizontalDialog {
+@SuppressWarnings("serial") public class InterventionDialog extends OkCancelDialog {
 
 	public InterventionDialog(Window owner, ProbNet probNet, StrategyTree strategyTree) {
 		super(owner);

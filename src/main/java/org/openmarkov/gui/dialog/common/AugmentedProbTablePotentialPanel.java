@@ -25,7 +25,6 @@ import org.openmarkov.gui.component.ValuesTableModel;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -408,7 +407,7 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
                 ArithmeticExpressionDialog expressionDialog =
                         new ArithmeticExpressionDialog(null, parameterVariables, expression);
                 expressionDialog.setVisible(true);
-                if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
+                if (expressionDialog.getSelectedButton() == OkCancelDialog.OK_BUTTON) {
                     String function = expressionDialog.getExpression();
                     valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column);
                     //TODO: Continue here changing String expressions to VariableExpression expressions.

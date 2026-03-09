@@ -24,9 +24,7 @@ import org.openmarkov.gui.component.AugmentedValuesTableModel;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.gui.component.ValuesTable;
 import org.openmarkov.gui.component.ValuesTableModel;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -364,7 +362,7 @@ public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
         VariableExpression function = (VariableExpression) valuesTable.getValueAt(row, column);
         ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables, function.asStringExpression());
         expressionDialog.setVisible(true);
-        if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (expressionDialog.getSelectedButton() == OkCancelDialog.OK_BUTTON) {
             function = new VariableExpression(parameterVariables, expressionDialog.getExpression());
             //int row = valuesTable.rowAtPoint(e.getPoint());
             //int column = valuesTable.columnAtPoint(e.getPoint());

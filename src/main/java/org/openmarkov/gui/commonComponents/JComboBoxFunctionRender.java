@@ -17,6 +17,9 @@ public class JComboBoxFunctionRender<T> extends DefaultListCellRenderer {
                                                   int index, boolean isSelected,
                                                   boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        if(value == null) {
+            return new JLabel();
+        }
         this.setText(this.mapper.apply((T) value));
         return this;
     }

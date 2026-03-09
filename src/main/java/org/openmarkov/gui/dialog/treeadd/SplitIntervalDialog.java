@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 
 import java.awt.*;
 
@@ -15,7 +15,7 @@ import java.awt.*;
  * @author myebra
  */
 
-@SuppressWarnings("serial") public class SplitIntervalDialog extends OkCancelHorizontalDialog {
+@SuppressWarnings("serial") public class SplitIntervalDialog extends OkCancelDialog {
 
 	private SplitIntervalPanel splitIntervalPanel;
 

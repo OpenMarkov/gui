@@ -26,7 +26,7 @@ import org.openmarkov.gui.action.*;
 import org.openmarkov.core.action.base.linkEdits.InvertLinkAndUpdatePotentialsEdit;
 import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.dialog.PropagationOptionsDialog;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.inference.temporalevolution.TemporalEvolutionDialog;
 import org.openmarkov.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.gui.dialog.link.RevelationArcEditDialog;
@@ -801,7 +801,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         if (owner instanceof MainGUI gui) {
             gui.freeze();
         }
-        boolean result = nodePropertiesDialog.requestProperties() == OkCancelHorizontalDialog.OK_BUTTON;
+        boolean result = nodePropertiesDialog.requestProperties() == OkCancelDialog.OK_BUTTON;
         if (owner instanceof MainGUI gui) {
             gui.unfreeze();
         }
@@ -815,7 +815,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 potentialsDialog.requestValues()// to know if the user has
                         // selected the ok button when
                         // closing the dialog
-                        == OkCancelHorizontalDialog.OK_BUTTON
+                        == OkCancelDialog.OK_BUTTON
         );
     }
     
@@ -838,7 +838,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     private boolean requestRevelationArcValues(Window owner, Link<Node> link) {
         revelationArcDialog = new RevelationArcEditDialog(owner, link);
-        return (revelationArcDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
+        return (revelationArcDialog.requestValues() == OkCancelDialog.OK_BUTTON);
     }
     
     /**
@@ -983,7 +983,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     private static boolean requestImposePolicyValues(Window owner, VisualDecisionNode visualNode) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         ImposePolicyDialog imposePolicyDialog = new ImposePolicyDialog(owner, visualNode);
         imposePolicyDialog.setTitle("ImposePolicydialog.Title");
-        return (imposePolicyDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
+        return (imposePolicyDialog.requestValues() == OkCancelDialog.OK_BUTTON);
     }
     
     
@@ -1102,7 +1102,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     
     private boolean requestAddFindingValues(Window owner, VisualNode node, Finding finding) {
         addFindingDialog = new AddFindingDialog(owner, node, finding, this);
-        return (addFindingDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON);
+        return (addFindingDialog.requestValues() == OkCancelDialog.OK_BUTTON);
     }
     
     /**

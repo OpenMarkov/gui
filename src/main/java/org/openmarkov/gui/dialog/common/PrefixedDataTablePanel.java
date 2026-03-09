@@ -151,7 +151,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
         Object[][] possibleData = absentData;
         KeyListSelectionDialog dialog = new KeyListSelectionDialog(Utilities.getOwner(this), titleToSelectRows, possibleData, columns);
         
-        return (dialog.requestSelectRows() == OkCancelHorizontalDialog.OK_BUTTON) ? dialog.getSelectedRows() : null;
+        return (dialog.requestSelectRows() == OkCancelDialog.OK_BUTTON) ? dialog.getSelectedRows() : null;
         
     }
     

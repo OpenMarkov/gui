@@ -8,14 +8,13 @@
 package org.openmarkov.gui.dialog.io;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -24,7 +23,7 @@ import java.net.URL;
  * @author artasom
  * @version 1.0
  */
-public class URLNetworkChooserDialog extends OkCancelHorizontalDialog {
+public class URLNetworkChooserDialog extends OkCancelDialog {
     
     private static final long serialVersionUID = -5995268997231553014L;
     /**

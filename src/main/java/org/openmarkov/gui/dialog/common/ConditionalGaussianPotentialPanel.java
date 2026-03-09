@@ -79,7 +79,7 @@ public class ConditionalGaussianPotentialPanel
     private void editMeanPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), meanDummyNode,
                                                                           isReadOnly());
-        if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (potentialEditDialog.requestValues() == OkCancelDialog.OK_BUTTON) {
             // TODO: Do nothing?
             // Answer: Yes, and apparently, it still does the operation. Just try the following scenarios in a
             // Conditional Gaussian and be amazed:
@@ -99,7 +99,7 @@ public class ConditionalGaussianPotentialPanel
     private void editVariancePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), varianceDummyNode,
                                                                           isReadOnly());
-        if (potentialEditDialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (potentialEditDialog.requestValues() == OkCancelDialog.OK_BUTTON) {
             // TODO: Do nothing?
         } else {
         

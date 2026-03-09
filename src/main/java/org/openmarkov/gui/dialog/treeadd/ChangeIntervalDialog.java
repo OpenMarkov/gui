@@ -8,14 +8,14 @@
 package org.openmarkov.gui.dialog.treeadd;
 
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 
 import java.awt.*;
 
 /**
  * @author myebra
  */
-@SuppressWarnings("serial") public class ChangeIntervalDialog extends OkCancelHorizontalDialog {
+@SuppressWarnings("serial") public class ChangeIntervalDialog extends OkCancelDialog {
 	private ChangeIntervalPanel changeIntervalPanel;
 	/**
 	 * Dialog string resource.

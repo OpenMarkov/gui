@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.treeadd;
 
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,7 @@ import java.awt.*;
 /**
  * @author myebra
  */
-@SuppressWarnings("serial") public class RemoveVariablesDialog extends OkCancelHorizontalDialog {
+@SuppressWarnings("serial") public class RemoveVariablesDialog extends OkCancelDialog {
 
 	private RemoveVariablesCheckBoxPanel removeVariablesCheckBoxPanel;
 	private TreeADDBranch treeADDBranch;

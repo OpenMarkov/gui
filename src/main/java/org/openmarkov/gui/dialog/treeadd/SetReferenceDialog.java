@@ -9,13 +9,13 @@ package org.openmarkov.gui.dialog.treeadd;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 
-@SuppressWarnings("serial") public class SetReferenceDialog extends OkCancelHorizontalDialog {
+@SuppressWarnings("serial") public class SetReferenceDialog extends OkCancelDialog {
 
 	private TreeADDBranch branch;
 	private JComboBox<String> labels;

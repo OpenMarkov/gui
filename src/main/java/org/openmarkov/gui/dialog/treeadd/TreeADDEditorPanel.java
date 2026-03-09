@@ -21,7 +21,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.exception.*;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
@@ -460,7 +460,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         boolean isRightClosed = branch.getRootVariable().getPartitionedInterval().isRightClosed();
         boolean minBelongsToLeftDomain = !isLeftClosed;
         boolean maxBelongsToLeftDomain = isRightClosed;
-        if (dialog.requestValues() != OkCancelHorizontalDialog.OK_BUTTON) {
+        if (dialog.requestValues() != OkCancelDialog.OK_BUTTON) {
             return;
         }
         ChangeIntervalPanel panel = dialog.getChangeIntervalPanel();
@@ -648,7 +648,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
         SplitIntervalDialog dialog = new SplitIntervalDialog(Utilities.getOwner(this));
         TreeADDModel model = (TreeADDModel) jTree.getModel();
-        if (dialog.requestValues() != OkCancelHorizontalDialog.OK_BUTTON) {
+        if (dialog.requestValues() != OkCancelDialog.OK_BUTTON) {
             return;
         }
         boolean belongsToLeft = false;
@@ -783,7 +783,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         TreeADDPotential parentTreeADD = (TreeADDPotential) path.getParentPath().getLastPathComponent();
         AddVariablesDialog dialog = new AddVariablesDialog(Utilities.getOwner(this), branch, parentTreeADD);
         TreeADDModel model = (TreeADDModel) jTree.getModel();
-        if (dialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (dialog.requestValues() == OkCancelDialog.OK_BUTTON) {
             AddVariablesCheckBoxPanel panel = dialog.getJPanelVariables();
             List<JCheckBox> checkBoxes = panel.getCheckBoxes();
             List<Variable> newVariables = new ArrayList<Variable>();
@@ -812,7 +812,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         TreeADDPotential parentTreeADD = (TreeADDPotential) path.getParentPath().getLastPathComponent();
         RemoveVariablesDialog dialog = new RemoveVariablesDialog(Utilities.getOwner(this), branch, parentTreeADD);
         TreeADDModel model = (TreeADDModel) jTree.getModel();
-        if (dialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (dialog.requestValues() == OkCancelDialog.OK_BUTTON) {
             List<JCheckBox> checkBoxes = ((RemoveVariablesCheckBoxPanel) dialog.getJPanelVariables()).getCheckBoxes();
             List<Variable> variablesToEliminate = new ArrayList<Variable>();
             List<Variable> branchVariables = branch.getPotential().getVariables();
@@ -856,7 +856,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         TreeADDPotential parentTreeADD = (TreeADDPotential) path.getParentPath().getLastPathComponent();
         RemoveStatesDialog dialog = new RemoveStatesDialog(Utilities.getOwner(this), branch, parentTreeADD);
         TreeADDModel model = (TreeADDModel) jTree.getModel();
-        if (dialog.requestValues() != OkCancelHorizontalDialog.OK_BUTTON) {
+        if (dialog.requestValues() != OkCancelDialog.OK_BUTTON) {
             return;
         }
         List<JCheckBox> checkBoxes = ((RemoveStatesCheckBoxPanel) dialog.getJPanelRemoveStates()).getCheckBoxes();
@@ -926,7 +926,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         AddStatesToBranchDialog dialog = new AddStatesToBranchDialog(Utilities.getOwner(this), branch, parentTreeADD);
         TreeADDModel model = (TreeADDModel) jTree.getModel();
         // This must be a treeADD
-        if (dialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (dialog.requestValues() == OkCancelDialog.OK_BUTTON) {
             List<JCheckBox> checkBoxes = ((AddStatesCheckBoxPanel) dialog.getJPanelBranchStates()).getCheckBoxes();
             List<State> newBranchStates = new ArrayList<State>(branch.getBranchStates());
             for (JCheckBox checkBox : checkBoxes) {
@@ -1223,7 +1223,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             dummyProbNet.addLink(variable, conditionedVariable, true);
         }
         PotentialEditDialog dialog = new PotentialEditDialog(Utilities.getOwner(this), dummy, false);
-        if (dialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (dialog.requestValues() == OkCancelDialog.OK_BUTTON) {
             Potential retPotential = dummy.getPotentials().get(0);
             // There is not utilityVariable any more
             /*
@@ -1286,7 +1286,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     private void setReference(ActionEvent ae, TreeADDBranch branch, TreePath path) {
         SetReferenceDialog dialog = new SetReferenceDialog(Utilities.getOwner(this), branch, rootTreeADDPotential);
         dialog.setVisible(true);
-        if (dialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (dialog.getSelectedButton() == OkCancelDialog.OK_BUTTON) {
             TreeADDModel model = (TreeADDModel) jTree.getModel();
             model.notifyTreeStructureChanged(path);
         }

@@ -8,7 +8,7 @@
 package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.window.edition.EditorPanel;
@@ -24,7 +24,7 @@ import java.awt.*;
  * @author asaez
  * @version 1.0
  */
-public class AddFindingDialog extends OkCancelHorizontalDialog {
+public class AddFindingDialog extends OkCancelDialog {
     private static final long serialVersionUID = 5618641549380924577L;
     /**
      * Object where the finding will be set.

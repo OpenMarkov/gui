@@ -25,7 +25,7 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 
-@SuppressWarnings("serial") public class ArithmeticExpressionDialog extends OkCancelHorizontalDialog
+@SuppressWarnings("serial") public class ArithmeticExpressionDialog extends OkCancelDialog
         implements DocumentListener {
     
     private static final Color VALID_EXPRESSION_COLOR = new Color(180, 215, 170);
@@ -212,7 +212,7 @@ import java.util.List;
     
     private void validateExpression() {
         boolean expressionIsValid = isValidExpression();
-        this.getJButtonOK().setEnabled(expressionIsValid);
+        this.getOKButton().setEnabled(expressionIsValid);
         expressionTextField.setBackground(expressionIsValid ? VALID_EXPRESSION_COLOR : INVALID_EXPRESSION_COLOR);
     }
     

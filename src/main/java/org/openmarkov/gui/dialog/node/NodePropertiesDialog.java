@@ -11,7 +11,7 @@ import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -26,7 +26,7 @@ import java.awt.*;
  * @author jmendoza
  * @version 1.3 mpalacios
  */
-public abstract class NodePropertiesDialog extends OkCancelHorizontalDialog implements ChangeListener {
+public abstract class NodePropertiesDialog extends OkCancelDialog implements ChangeListener {
 	/**
 	 * Constant that defines the height of the tables that are shown into the
 	 * dialog box.

@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.PropertyNames;
 
@@ -22,7 +22,7 @@ import java.awt.*;
  * @author jmendoza
  * @version 1.2 jlgozalo new Group layout and semantic errors fixed
  */
-public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements PropertyNames {
+public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyNames {
     private static final long serialVersionUID = -8734100506781534551L;
     /**
      * String database

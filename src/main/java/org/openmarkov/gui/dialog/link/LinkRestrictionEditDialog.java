@@ -10,7 +10,7 @@ package org.openmarkov.gui.dialog.link;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.localize.StringDatabase;
 
@@ -22,7 +22,7 @@ import java.text.MessageFormat;
  * restrictions.
  */
 
-@SuppressWarnings("serial") public class LinkRestrictionEditDialog extends OkCancelHorizontalDialog {
+@SuppressWarnings("serial") public class LinkRestrictionEditDialog extends OkCancelDialog {
     
     /****
      * The link containing the link restrictions

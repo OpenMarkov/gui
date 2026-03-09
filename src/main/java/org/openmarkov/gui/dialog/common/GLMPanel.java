@@ -41,7 +41,7 @@ import java.util.List;
     @Override protected void actionPerformedAddValue() {
         ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, potential.getVariables(), null);
         expressionDialog.setVisible(true);
-        if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (expressionDialog.getSelectedButton() == OkCancelDialog.OK_BUTTON) {
             int selectedRow = valuesTable.getSelectedRow();
             int rowCount = valuesTable.getRowCount();
             tableModel.addRow(new Object[]{expressionDialog.getExpression(), 0.0});
@@ -164,7 +164,7 @@ import java.util.List;
                     variables.remove(potential.getConditionedVariable());
                     ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, variables, covariate.asStringExpression());
                     expressionDialog.setVisible(true);
-                    if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
+                    if (expressionDialog.getSelectedButton() == OkCancelDialog.OK_BUTTON) {
                         tableModel.setValueAt(new VariableExpression(variables, expressionDialog.getExpression()), selectedRow, 0);
                     }
                 }

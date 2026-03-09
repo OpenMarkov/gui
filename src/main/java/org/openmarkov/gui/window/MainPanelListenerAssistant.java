@@ -26,7 +26,7 @@ import org.openmarkov.gui.configuration.LastOpenFiles;
 import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.dialog.*;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.gui.dialog.inference.common.InferenceOptionsDialog;
 import org.openmarkov.gui.dialog.io.*;
@@ -971,7 +971,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private void createNewNetwork() {
         NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(Utilities.getOwner(mainPanel));
-        if (dialogProperties.showProperties() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (dialogProperties.showProperties() == OkCancelDialog.OK_BUTTON) {
             ProbNet probNet = dialogProperties.getProbNet();
             
             // If the probNet has not the OnlyChanceNodes constraint and not has any criterion, we
@@ -1155,7 +1155,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private URL requestURLFileToOpen() {
         URLNetworkChooserDialog urlNetworkChooserDialog = new URLNetworkChooserDialog(Utilities.getOwner(mainPanel));
-        if (urlNetworkChooserDialog.requestNetworkURL() == OkCancelHorizontalDialog.OK_BUTTON) {
+        if (urlNetworkChooserDialog.requestNetworkURL() == OkCancelDialog.OK_BUTTON) {
             return urlNetworkChooserDialog.getNetworkURL();
         }
         return null;
@@ -1223,8 +1223,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
     private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException, NotSupportedOperationException {
         NetworkPanel networkPanelMID = getCurrentNetworkPanel();
         String path = (new File(networkPanelMID.getNetworkFile())).getParent();
-        InferenceOptionsDialog expandNetworkDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel));
-        if (expandNetworkDialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
+        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
+                                                                                    Utilities.getOwner(mainPanel), null);
+        costEffectivenessDialog.getMulticriteriaPanel().setEnabled(false);
+        if (costEffectivenessDialog.getSelectedButton() == OkCancelDialog.CANCEL_BUTTON) {
             return;
         }
 //		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
@@ -1499,7 +1501,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
             InferenceOptionsDialog dialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
             
-            if (dialog.getSelectedButton() == OkCancelHorizontalDialog.CANCEL_BUTTON) {
+            if (dialog.getSelectedButton() == OkCancelDialog.CANCEL_BUTTON) {
                 newWorkingMode = NetworkPanel.WorkingMode.EDITION;
                 performInference = false;
             }

@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
  * @author jmendoza
  * @version 1.2 jlgozalo - 30/05/2010 set OK_BUTTON to default
  */
-public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
+public class OkCancelDialog extends BottomPanelButtonDialog {
 
 	/**
 	 *
@@ -66,7 +66,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 *
 	 * @param owner window that owns the dialog.
 	 */
-	public OkCancelHorizontalDialog(Window owner) {
+	public OkCancelDialog(Window owner) {
 		super(owner);
 		initialize();
 		pack();
@@ -78,25 +78,17 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	private void initialize() {
 		// setSize(550, 310);
 		setName("OKCancelHorizontalDialog");
-		configureButtonsPanel();
-		setDefaultButton(getJButtonOK());
+		addButtonToButtonsPanel(getOKButton());
+		addButtonToButtonsPanel(getCancelButton());
+		setDefaultButton(getOKButton());
 	}
-
-	/**
-	 * Sets up the panel where the buttons of the buttons panel will be appear.
-	 */
-	private void configureButtonsPanel() {
-		addButtonToButtonsPanel(getJButtonOK());
-		addButtonToButtonsPanel(getJButtonCancel());
-	}
-
+	
 	/**
 	 * This method initialises jButtonApply.
 	 *
 	 * @return a new Ok button.
 	 */
-    protected JButton getJButtonOK() {
-        
+    protected JButton getOKButton() {
         if (this.jButtonOK == null) {
             this.jButtonOK = new JButton();
             this.jButtonOK.setName("jButtonApply");
@@ -132,8 +124,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 *
 	 * @return a new Cancel button.
 	 */
-	protected JButton getJButtonCancel() {
-        
+	protected JButton getCancelButton() {
         if (this.jButtonCancel == null) {
             this.jButtonCancel = new JButton();
             this.jButtonCancel.setName("jButtonCancel");
@@ -147,7 +138,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 
 				@Override public void actionPerformed(ActionEvent e) {
 					doCancelClickBeforeHide();
-                    OkCancelHorizontalDialog.this.selectedButton = CANCEL_BUTTON;
+                    OkCancelDialog.this.selectedButton = CANCEL_BUTTON;
 					setVisible(false);
 					dispose();
 				}
@@ -163,7 +154,6 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 * @param b if true, makes the dialog visible, otherwise hides the dialog.
 	 */
 	@Override public void setVisible(boolean b) {
-
 		if (b) {
             this.selectedButton = OK_BUTTON;
 		}
@@ -191,6 +181,5 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	public int getSelectedButton() {
         return this.selectedButton;
 	}
- 
- 
+	
 }

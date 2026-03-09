@@ -7,14 +7,12 @@
 
 package org.openmarkov.gui.dialog.inference.temporalevolution;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.inference.common.ScopeSelectorPanel;
-import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -25,7 +23,7 @@ import java.awt.*;
  * cmyago 20/10/2022 changed call to ScopeSelectorPanel to remove Type (global/one decision) panel; 09/11/2022 implemented "Temporal evolution by criterion"
  *
  */
-public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
+public class TemporalEvolutionDialog extends OkCancelDialog {
     
     private JLabel numSlicesLabel;
     private JTextField numSlicesTextField;

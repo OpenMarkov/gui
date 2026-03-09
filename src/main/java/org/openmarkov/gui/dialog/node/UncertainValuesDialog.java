@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.modelUncertainty.TriangularFunction;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.exception.FamilyDistributionRuleBrokenException;
 import org.openmarkov.core.localize.StringDatabase;
 
@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class UncertainValuesDialog extends OkCancelHorizontalDialog {
+public class UncertainValuesDialog extends OkCancelDialog {
     
     private static final int STATE_COLUMN_INDEX = 0;
     private static final int DISTRIBUTION_COLUMN_INDEX = 1;
@@ -432,7 +432,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     private void initialize() {
         setName("UncertainValuesDialog");
         configureButtonsPanel();
-        setDefaultButton(getJButtonOK());
+        setDefaultButton(getOKButton());
         quitIconsOfButtons();
         pack();
     }
@@ -627,17 +627,17 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     }
     
     private void quitIconsOfButtons() {
-        this.getJButtonOK().setIcon(null);
-        this.getJButtonCancel().setIcon(null);
+        this.getOKButton().setIcon(null);
+        this.getCancelButton().setIcon(null);
     }
     
     /**
      * Sets up the panel where the buttons of the buttons panel will be appear.
      */
     private void configureButtonsPanel() {
-        addButtonToButtonsPanel(getJButtonOK());
+        addButtonToButtonsPanel(getOKButton());
         // addButtonToButtonsPanel(getJButtonRemove());
-        addButtonToButtonsPanel(getJButtonCancel());
+        addButtonToButtonsPanel(getCancelButton());
     }
     
     public class DistributionsTableListener implements TableModelListener {

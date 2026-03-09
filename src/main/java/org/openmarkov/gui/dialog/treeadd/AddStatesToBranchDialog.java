@@ -8,7 +8,7 @@ package org.openmarkov.gui.dialog.treeadd;
 
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +16,7 @@ import java.awt.*;
 /**
  * @author myebra
  */
-@SuppressWarnings("serial") public class AddStatesToBranchDialog extends OkCancelHorizontalDialog {
+@SuppressWarnings("serial") public class AddStatesToBranchDialog extends OkCancelDialog {
 
 	private AddStatesCheckBoxPanel statesCheckBoxPanel;
 	private TreeADDBranch treeADDBranch;

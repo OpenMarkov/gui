@@ -15,7 +15,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -271,7 +271,7 @@ import java.util.List;
                 @Override public void actionPerformed(ActionEvent e) {
                     StandardCriteriaDialog dialog = new StandardCriteriaDialog(owner, probNet);
                     
-                    if (dialog.requestValues() == OkCancelHorizontalDialog.OK_BUTTON) {
+                    if (dialog.requestValues() == OkCancelDialog.OK_BUTTON) {
                         setDataFromCriteria(probNet.getDecisionCriteria());
                     }
                     

@@ -17,7 +17,7 @@ import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.gui.component.ValuesTableCellRenderer;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
@@ -40,7 +40,7 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
+public class InferenceOptionsDialog extends OkCancelDialog {
     
     /**
      * Constant for Criteria column

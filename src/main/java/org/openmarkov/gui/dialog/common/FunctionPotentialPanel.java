@@ -115,7 +115,7 @@ public class FunctionPotentialPanel extends PotentialPanel {
                                                              .subList(1, potential.getVariables().size());
                 ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, availableVariables, function.asStringExpression());
                 expressionDialog.setVisible(true);
-                if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
+                if (expressionDialog.getSelectedButton() == OkCancelDialog.OK_BUTTON) {
                     function = new VariableExpression(availableVariables, expressionDialog.getExpression());
                     functionTextArea.setText(function.asStringExpression());
                 }
