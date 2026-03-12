@@ -77,7 +77,8 @@ import java.util.List;
 			//it is also necessary to delete this agent from the node it was assigned to
 			if (agent != null) {
 				for (Node node : probNet.getNodes()) {
-					if (node.getVariable().getAgent().getString().equals(agentName)) {
+					StringWithProperties nodeAgent = node.getVariable().getAgent();
+					if (nodeAgent!=null && nodeAgent.getString().equals(agentName)) {
 						node.getVariable().setAgent(null);
 					}
 				}
