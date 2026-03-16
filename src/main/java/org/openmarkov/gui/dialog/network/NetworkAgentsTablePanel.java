@@ -47,7 +47,7 @@ import java.util.List;
             dataTable[row][0] = newName;
             if (agentName != newName) {
                 NetworkAgentEdit networkAgentEdit =
-                        new NetworkAgentEdit(probNet, StateAction.RENAME, newName, agentName, dataTable);
+                        new NetworkAgentEdit(probNet, StateAction.RENAME, agentName, dataTable);
                 try {
                     networkAgentEdit.executeEdit();
                     edits.add(networkAgentEdit);
@@ -68,7 +68,7 @@ import java.util.List;
         if (option != null) {
             int newIndex = valuesTable.getRowCount();
             
-            NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.ADD, "", option, null);
+            NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.ADD, option, null);
             //doEdit
             networkAgentEdit.executeEdit();
             edits.add(networkAgentEdit);
@@ -97,7 +97,7 @@ import java.util.List;
     @Override protected void actionPerformedRemoveValue() throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         String agentName = (String) valuesTable.getValueAt(selectedRow, 1);
-        NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.REMOVE, "", agentName, null);
+        NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.REMOVE, agentName, null);
         networkAgentEdit.executeEdit();
         edits.add(networkAgentEdit);
         //StringsWithProperties agents = probNet.getAgents();
@@ -119,7 +119,7 @@ import java.util.List;
         dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
         dataTable[selectedRow - 1][0] = swap;
         
-        NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.UP, "", "", dataTable);
+        NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.UP, "", dataTable);
         networkAgentEdit.executeEdit();
         edits.add(networkAgentEdit);
         setData(dataTable);
@@ -139,7 +139,7 @@ import java.util.List;
         Object swap = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];
         dataTable[selectedRow + 1][0] = swap;
-        NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.DOWN, "", "", dataTable);
+        NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.DOWN, "", dataTable);
         networkAgentEdit.executeEdit();
         edits.add(networkAgentEdit);
         setData(dataTable);
