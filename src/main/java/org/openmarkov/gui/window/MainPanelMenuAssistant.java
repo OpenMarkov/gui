@@ -197,6 +197,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     
     private void checkInferenceOptions() {
         NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
+        if (currentNetworkPanel == null) {
+            setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, false);
+            return;
+        }
         if (currentNetworkPanel.getProbNet()
                                .hasConstraintOfClass(OnlyChanceNodes.class) && currentNetworkPanel.getProbNet()
                                                                                                   .hasConstraintOfClass(OnlyAtemporalVariables.class)) {
@@ -218,29 +222,27 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     }
     
     public void updateInferenceButtons() {
-        if (getCurrentNetworkPanel() == null) {
+        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
+        if (currentNetworkPanel == null) {
             setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
             setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, false);
-            
             return;
         }
-        
-        setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, getCurrentNetworkPanel().getProbNet()
-                                                                                                  .getDecisionCriteria() != null
-                && getCurrentNetworkPanel().getProbNet().getDecisionCriteria().size() > 1);
-        
+        ProbNet probNet = currentNetworkPanel.getProbNet();
+
+        setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC,
+                probNet.getDecisionCriteria() != null && probNet.getDecisionCriteria().size() > 1);
+
         boolean hasUncertainty = false;
-        for (Node node : getCurrentNetworkPanel().getProbNet().getNodes()) {
+        for (Node node : probNet.getNodes()) {
             for (Potential potential : node.getPotentials()) {
                 try {
                     if (potential instanceof SameAsPrevious) {
                         Potential originalPotential = ((SameAsPrevious) potential)
-                                .getOriginalPotential(getCurrentNetworkPanel().getProbNet());
-                        
+                                .getOriginalPotential(probNet);
                         if (originalPotential.isUncertain()) {
                             hasUncertainty = true;
                         }
-                        
                     } else {
                         if (potential.isUncertain()) {
                             hasUncertainty = true;
@@ -251,7 +253,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                 }
             }
         }
-        
+
         setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, hasUncertainty);
     }
     
@@ -301,7 +303,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
      * @param networkPanel
      */
     public void updateNetworkAgents(NetworkPanel networkPanel) {
-        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
+        NetworkPanel currentNetworkPanel = networkPanel;
         if (currentNetworkPanel.getProbNet().isMultiagent()) {
             ArrayList<StringWithProperties> agents = new ArrayList<StringWithProperties>();
             agents.add(new StringWithProperties(StringDatabase.getUniqueInstance().getString("Network.Agent1")));
@@ -325,7 +327,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                                     })
                                     .findFirst().getAsInt();
         mainPanel.getNetworksTabPanel().setSelectedIndex(networkIndex);
-        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
+        NetworkPanel currentNetworkPanel = networkPanel;
         ProbNet currentProbNet = currentNetworkPanel.probNet;
         NetworkPanel.WorkingMode workingMode = currentNetworkPanel.getWorkingMode();
         if (currentNetworkPanel.getByTitle()) {
@@ -568,8 +570,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         boolean canTemporalEvolution = false;
         boolean canCreateNextSliceNode = false;
         NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
-        if (getCurrentNetworkPanel() != null) {
-            workingMode = getCurrentNetworkPanel().getWorkingMode();
+        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
+        if (currentNetworkPanel != null) {
+            workingMode = currentNetworkPanel.getWorkingMode();
         }
         if (selectedNodes.isEmpty()) {
             if (!selectedLinks.isEmpty()) {
@@ -740,11 +743,13 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     }
     
     @Override public void afterEditExecutes(PNEdit edit) {
-        ProbNet probNet = getCurrentNetworkPanel().getProbNet();
+        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
+        if (currentNetworkPanel == null) return;
+        ProbNet probNet = currentNetworkPanel.getProbNet();
         // update menu options and network agents when network type has been
         // modified
         if (edit instanceof ChangeNetworkTypeEdit) {
-            updateOptionsNetworkDependent(getCurrentNetworkPanel());
+            updateOptionsNetworkDependent(currentNetworkPanel);
             // updateNetworkAgents(currentNetworkPanel);
         }
         updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo(), probNet.getPNESupport().getCanRedo());
@@ -791,7 +796,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
      * Shows or hides 'Propagate evidence' option from menu and toolbar.
      */
     public void updatePropagateEvidenceButton() {
-        if (getCurrentNetworkPanel().isAutomaticPropagation()) {
+        NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
+        if (currentNetworkPanel == null) return;
+        if (currentNetworkPanel.isAutomaticPropagation()) {
             mainPanel.getInferenceToolBar().removePropagateNowButton();
             mainPanel.getMainMenu().removePropagateNowItem();
         } else {

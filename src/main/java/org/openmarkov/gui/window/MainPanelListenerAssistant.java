@@ -1012,7 +1012,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(networkPanel);
         // mainPanel.getMainPanelMenuAssistant().updateNetworkAgents(networkPanel);
-        mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
+        mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(networkPanel.getCurrentCase());
         return networkPanel;
     }
     
