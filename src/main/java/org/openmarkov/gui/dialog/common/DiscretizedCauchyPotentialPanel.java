@@ -8,7 +8,7 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 import org.openmarkov.gui.exception.NotEnoughtMemoryException;
-import org.openmarkov.gui.util.Utilities;
+import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -67,8 +67,8 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     }
     
     private void editMedianPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
-        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), medianDummyNode, isReadOnly());
-        if (potentialEditDialog.requestValues() == OkCancelDialog.OK_BUTTON) {
+        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), medianDummyNode, isReadOnly());
+        if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
             // TODO: Do nothing?
         } else {
         
@@ -76,8 +76,8 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     }
     
     private void editScalePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
-        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), scaleDummyNode, isReadOnly());
-        if (potentialEditDialog.requestValues() == OkCancelDialog.OK_BUTTON) {
+        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), scaleDummyNode, isReadOnly());
+        if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
             // TODO: Do nothing?
         } else {
         

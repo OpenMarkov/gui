@@ -72,10 +72,10 @@ import java.text.MessageFormat;
 	 * @return An integer indicating the button clicked by the user when closing
 	 * this dialog
 	 */
-	public int requestValues() {
+    public ChosenOption requestValues() {
 		revelationArcPanel.setFieldsFromProperties(link);
 		setVisible(true);
-		return selectedButton;
+        return getSelectedOption();
 	}
 
 	/**

@@ -271,7 +271,7 @@ import java.util.List;
                 @Override public void actionPerformed(ActionEvent e) {
                     StandardCriteriaDialog dialog = new StandardCriteriaDialog(owner, probNet);
                     
-                    if (dialog.requestValues() == OkCancelDialog.OK_BUTTON) {
+                    if (dialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
                         setDataFromCriteria(probNet.getDecisionCriteria());
                     }
                     

@@ -208,8 +208,8 @@ public class KeyListSelectionDialog extends OkCancelDialog {
 	 * @return OK_BUTTON if the user has pressed the 'Ok' button or CANCEL_BUTTON
 	 * if the user has pressed the 'Cancel' button.
 	 */
-	public int requestSelectRows() {
+    public ChosenOption requestSelectRows() {
 		setVisible(true);
-		return selectedButton;
+        return getSelectedOption();
 	}
 }

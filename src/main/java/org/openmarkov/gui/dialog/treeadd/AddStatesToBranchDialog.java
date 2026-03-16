@@ -72,10 +72,10 @@ import java.awt.*;
 		}
 		return statesCheckBoxPanel;
 	}
-
-	public int requestValues() {
+    
+    public ChosenOption requestValues() {
 		setVisible(true);
-		return selectedButton;
+        return getSelectedOption();
 	}
 
 	/**

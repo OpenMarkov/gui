@@ -362,7 +362,7 @@ public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
         VariableExpression function = (VariableExpression) valuesTable.getValueAt(row, column);
         ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables, function.asStringExpression());
         expressionDialog.setVisible(true);
-        if (expressionDialog.getSelectedButton() == OkCancelDialog.OK_BUTTON) {
+        if (expressionDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
             function = new VariableExpression(parameterVariables, expressionDialog.getExpression());
             //int row = valuesTable.rowAtPoint(e.getPoint());
             //int column = valuesTable.columnAtPoint(e.getPoint());

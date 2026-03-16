@@ -66,12 +66,12 @@ import java.awt.*;
 		return removeVariablesCheckBoxPanel;
 
 	}
-
-	public int requestValues() {
+    
+    public ChosenOption requestValues() {
 
 		setVisible(true);
-
-		return selectedButton;
+        
+        return getSelectedOption();
 	}
 
 	/**

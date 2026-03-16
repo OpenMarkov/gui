@@ -16,7 +16,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.ThereIsNoNodeInDataException;
-import org.openmarkov.gui.util.Utilities;
+import org.openmarkov.gui.util.GUIUtils;
 
 import javax.swing.event.ListSelectionEvent;
 import java.util.ArrayList;
@@ -149,9 +149,9 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
     private Object[][] requestNewData() {
         
         Object[][] possibleData = absentData;
-        KeyListSelectionDialog dialog = new KeyListSelectionDialog(Utilities.getOwner(this), titleToSelectRows, possibleData, columns);
+        KeyListSelectionDialog dialog = new KeyListSelectionDialog(GUIUtils.getOwner(this), titleToSelectRows, possibleData, columns);
         
-        return (dialog.requestSelectRows() == OkCancelDialog.OK_BUTTON) ? dialog.getSelectedRows() : null;
+        return (dialog.requestSelectRows() == OkCancelDialog.ChosenOption.Ok) ? dialog.getSelectedRows() : null;
         
     }
     

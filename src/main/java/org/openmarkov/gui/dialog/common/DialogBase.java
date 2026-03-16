@@ -7,13 +7,18 @@
 
 package org.openmarkov.gui.dialog.common;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.loader.element.IconBind;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.Serial;
 
 /**
  * This class implements a dialog where a the programmer can set a default
@@ -23,15 +28,11 @@ import java.awt.event.WindowEvent;
  * @version 1.0 jmendoza
  */
 public class DialogBase extends JDialog {
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 6121463474893584183L;
-	/**
-	 * Cancel button.
-	 */
-	protected JButton jButtonCancel = null;
+    
+    @Serial
+    private static final long serialVersionUID = 6121463474893584183L;
+    
+    private JButton jButtonCancel = null;
 
 	/**
 	 * Constructor that invokes its superclass constructor and registers a
@@ -45,17 +46,15 @@ public class DialogBase extends JDialog {
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setName("DialogBase");
 		addWindowListener(new WindowAdapter() {
-
 			@Override public void windowClosing(WindowEvent e) {
-
-				if (jButtonCancel != null) {
-					jButtonCancel.doClick();
+                if (DialogBase.this.jButtonCancel != null) {
+                    DialogBase.this.jButtonCancel.doClick();
 				}
 			}
 		});
         ActionListener listener = evt -> {
-            if (jButtonCancel != null) {
-                jButtonCancel.doClick();
+            if (this.jButtonCancel != null) {
+                this.jButtonCancel.doClick();
             }
         };
 		getRootPane().registerKeyboardAction(listener, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
@@ -78,6 +77,32 @@ public class DialogBase extends JDialog {
 	 * @param button button invoked when the key ESC is pressed.
 	 */
 	public void setCancelButton(JButton button) {
-		jButtonCancel = button;
+        this.jButtonCancel = button;
+    }
+    
+    public @Nullable JButton getCancelButton() {
+        return this.jButtonCancel;
+    }
+    
+    public static @NotNull JButton generateGenericCancelButton() {
+        var jButtonCancel = new JButton();
+        jButtonCancel.setName("jButtonCancel");
+        jButtonCancel.setIcon(IconBind.REMOVE_ENABLED.icon());
+        jButtonCancel.setText(StringDatabase.getUniqueInstance()
+                                            .getString("OKCancelHorizontalDialog.jButtonCancel.Text"));
+        jButtonCancel.setMnemonic(StringDatabase.getUniqueInstance()
+                                                .getString("OKCancelHorizontalDialog.jButtonCancel.Mnemonic")
+                                                .charAt(0));
+        jButtonCancel.addActionListener(e -> {
+            var container = jButtonCancel.getParent();
+            while (container != null && !(container instanceof Window)) {
+                container = container.getParent();
+            }
+            if (container instanceof Window window) {
+                window.setVisible(false);
+                window.dispose();
+            }
+        });
+        return jButtonCancel;
 	}
 }

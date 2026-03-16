@@ -21,7 +21,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 import org.openmarkov.gui.exception.NotEnoughtMemoryException;
-import org.openmarkov.gui.util.Utilities;
+import org.openmarkov.gui.util.GUIUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -77,9 +77,9 @@ public class ConditionalGaussianPotentialPanel
     }
     
     private void editMeanPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
-        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), meanDummyNode,
+        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), meanDummyNode,
                                                                           isReadOnly());
-        if (potentialEditDialog.requestValues() == OkCancelDialog.OK_BUTTON) {
+        if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
             // TODO: Do nothing?
             // Answer: Yes, and apparently, it still does the operation. Just try the following scenarios in a
             // Conditional Gaussian and be amazed:
@@ -97,9 +97,9 @@ public class ConditionalGaussianPotentialPanel
     }
     
     private void editVariancePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
-        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(Utilities.getOwner(this), varianceDummyNode,
+        PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), varianceDummyNode,
                                                                           isReadOnly());
-        if (potentialEditDialog.requestValues() == OkCancelDialog.OK_BUTTON) {
+        if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
             // TODO: Do nothing?
         } else {
         

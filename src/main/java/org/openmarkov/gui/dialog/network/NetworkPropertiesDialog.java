@@ -272,9 +272,9 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
      * @return OK_BUTTON if the user has pressed the 'OK' button or
      * CANCEL_BUTTON if the user has pressed the 'Cancel' button.
      */
-    public int showProperties() {
+    public ChosenOption showProperties() {
         setVisible(true);
-        return selectedButton;
+        return getSelectedOption();
     }
     
     /**

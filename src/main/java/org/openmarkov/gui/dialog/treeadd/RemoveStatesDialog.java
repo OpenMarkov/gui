@@ -68,12 +68,12 @@ import java.awt.*;
 		return dissociateStatesCheckBoxPanel;
 
 	}
-
-	public int requestValues() {
+    
+    public ChosenOption requestValues() {
 
 		setVisible(true);
-
-		return selectedButton;
+        
+        return getSelectedOption();
 	}
 
 	/**

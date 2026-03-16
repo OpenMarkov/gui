@@ -35,11 +35,11 @@ public final class UnexpectedThrowableDialog extends BottomPanelButtonDialog {
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         var closeButton = new JButton("Close");
         closeButton.addActionListener(e1 -> this.dispose());
-        this.getButtonsPanel().add(closeButton);
+        this.setCancelButton(closeButton);
         var copyButton = new JButton("Copy");
         copyButton.addActionListener(e1 -> Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
                 new StringSelection(UnexpectedThrowableDialog.stringifyThrowable(e)), null));
-        this.getButtonsPanel().add(copyButton);
+        this.addButtonToButtonsPanel(copyButton);
         this.pack();
         
         if(this.getHeight() > 500){

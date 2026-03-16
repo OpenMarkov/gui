@@ -24,7 +24,7 @@ import org.openmarkov.gui.component.ValuesTableWithLinkRestrictionCellRenderer;
 import org.openmarkov.gui.dialog.node.UncertainValuesDialog;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.UncertaintyContextualMenu;
-import org.openmarkov.gui.util.Utilities;
+import org.openmarkov.gui.util.GUIUtils;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -655,12 +655,12 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         evidenceCase = getEvidenceCaseFromSelectedColumn();
         UncertainValuesDialog uncertDialog;
         if (isExactDistrPotential) {
-            uncertDialog = new UncertainValuesDialog(Utilities.getOwner(this), evidenceCase, (ExactDistrPotential) potential);
+            uncertDialog = new UncertainValuesDialog(GUIUtils.getOwner(this), evidenceCase, (ExactDistrPotential) potential);
         } else {
-            uncertDialog = new UncertainValuesDialog(Utilities.getOwner(this), evidenceCase, tablePotential);
+            uncertDialog = new UncertainValuesDialog(GUIUtils.getOwner(this), evidenceCase, tablePotential);
         }
-        int button = uncertDialog.requestUncertainValues();
-        if (button != OkCancelDialog.OK_BUTTON) {
+        var button = uncertDialog.requestUncertainValues();
+        if (button != OkCancelDialog.ChosenOption.Ok) {
             return;
         }
         UncertainValuesEdit uncertEdit = new UncertainValuesEdit(node, uncertDialog.getUncertainColumn(),

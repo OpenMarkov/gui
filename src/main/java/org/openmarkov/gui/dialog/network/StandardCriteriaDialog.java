@@ -107,11 +107,11 @@ public class StandardCriteriaDialog extends OkCancelDialog {
         return true;
     }
     
-    public int requestValues() {
+    public ChosenOption requestValues() {
         
         setVisible(true);
         
-        return selectedButton;
+        return getSelectedOption();
     }
     
     /**

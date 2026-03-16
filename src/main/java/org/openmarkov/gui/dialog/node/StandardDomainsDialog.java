@@ -51,12 +51,12 @@ import java.awt.*;
 		return standardDomainsPanel;
 
 	}
-
-	public int requestValues() {
+    
+    public ChosenOption requestValues() {
 
 		setVisible(true);
-
-		return selectedButton;
+        
+        return getSelectedOption();
 	}
 
 	/**

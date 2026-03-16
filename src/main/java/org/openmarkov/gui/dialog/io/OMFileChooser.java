@@ -55,7 +55,22 @@ public class OMFileChooser extends JFileChooser {
     @Override public @Nullable File getSelectedFile() {
         File selectedFile = super.getSelectedFile();
         if (selectedFile == null) return null;
-        return OMFileChooser.correctQuotes(selectedFile);
+        
+        return OMFileChooser.applyFilter(OMFileChooser.correctQuotes(selectedFile), getFileFilter());
+    }
+    
+    public @Nullable File getRawSelectedFile() {
+        return super.getSelectedFile();
+    }
+    
+    private static @Nullable File applyFilter(File file, FileFilter fileFilter) {
+        if (fileFilter instanceof FileFilterAll fileFilterAll) {
+            String extension = "." + fileFilterAll.getFilterExtension();
+            if (!file.getName().endsWith(extension)) {
+                file = new File(file.getParentFile(), file.getName() + "." + fileFilterAll.getFilterExtension());
+            }
+        }
+        return file;
     }
     
     private static File correctQuotes(File selectedFile) {

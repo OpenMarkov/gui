@@ -10,6 +10,8 @@ import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * {@code OtherPropertyEdit} is a simple edit that allow modify the additional properties of
@@ -19,18 +21,11 @@ import java.util.LinkedHashMap;
  */
 
 public class OtherPropertyEdit extends PNEdit {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 4325259909756103849L;
 
-	/**
-	 * The last properties before the edition
-	 */
+	private static final long serialVersionUID = 4325259909756103849L;
+	
 	private LinkedHashMap<String, String> oldProperties;
-	/**
-	 * The properties after the the edition
-	 */
+
 	private LinkedHashMap<String, String> newProperties;
 	/**
 	 * The new property
@@ -48,29 +43,7 @@ public class OtherPropertyEdit extends PNEdit {
 	 * The node that the property belongs to
 	 */
 	private Node node = null;
-	/**
-	 * The network that the property belongs to
-	 */
-	//private ProbNet probNet = null;
-	
-	//
-	///**
-	// * The last property before the edition
-	// */
-	//private String[] oldProperty = new String[] {};
-	////private Object[] oldProperty = new Object[] {};
-	///**
-	// * The modified property
-	// */
-	//private String[] modifiedProperty;
-	///**
-	// * index of the property selected in the view
-	// */
-	//private int selectedPropertyIndex;	
-	//
-	////private String[] newData;	
-	//
-	////private String[] oldData;	
+
 
 	/**
 	 * Creates a new {@code OtherPropertyEdit} to carry out the specified
@@ -85,7 +58,7 @@ public class OtherPropertyEdit extends PNEdit {
 		super(node.getProbNet());
 		this.node = node;
 		//this.probNet = node.getProbNet();
-		oldProperties = node.getOtherProperties();
+		this.oldProperties = node.getOtherProperties();
 		this.propertyIndex = propertyIndex;
 		this.newProperty = (otherPropertyAction == "ADD") ? newData : null;
 		this.otherPropertyAction = otherPropertyAction;
@@ -98,146 +71,101 @@ public class OtherPropertyEdit extends PNEdit {
 	 * @param probNet        network.
 	 * @param otherPropertyAction the action to carry out
 	 * @param propertyIndex  the index (in the table) associated to the property to edit
-	 * @param newName     a new string for the property edited if the action is ADD.
 	 */
 	public OtherPropertyEdit(ProbNet probNet, String otherPropertyAction, int propertyIndex, String[] newData) {
 		super(probNet);
 		this.probNet = probNet;
-		oldProperties = probNet.getOtherProperties();
+		this.oldProperties = probNet.getOtherProperties();
 		this.propertyIndex = propertyIndex;
 		this.newProperty = (otherPropertyAction == "ADD") ? newData : null;
 		this.otherPropertyAction = otherPropertyAction;
 	}
 	
 	@Override protected void doEdit() {
-		switch (otherPropertyAction) {
-		case "ADD":
-			// Copy other properties
-			newProperties = new LinkedHashMap<String, String>();
-			for (String key : oldProperties.keySet()) {
-				newProperties.put(key, oldProperties.get(key));
+		switch (this.otherPropertyAction) {
+			case "ADD" -> {
+				// Copy other properties
+				this.newProperties = new LinkedHashMap<>();
+				this.newProperties.putAll(this.oldProperties);
+				// Add new property
+				this.newProperties.put(this.newProperty[0], this.newProperty[1]);
 			}
-			
-			// Add new property
-			newProperties.put(newProperty[0], newProperty[1]);
-			
-			if (node != null) {
-				// Update other properties in node
-				node.setOtherProperties(newProperties);
-			} else if (probNet != null) {
-				// Update other properties in network
-				probNet.setOtherProperties(newProperties);
+			case "REMOVE" -> {
+				// Copy other properties
+				this.newProperties = new LinkedHashMap<>();
+				this.newProperties.putAll(this.oldProperties);
+				// Remove selected property
+				String key = this.oldProperties.keySet().toArray()[this.propertyIndex].toString();
+				this.newProperties.remove(key);
 			}
-			
-			break;
-		case "REMOVE":
-			// Copy other properties
-			newProperties = new LinkedHashMap<String, String>();
-			for (String key : oldProperties.keySet()) {
-				newProperties.put(key, oldProperties.get(key));
-			}
-			
-			// Remove selected property
-			String key = oldProperties.keySet().toArray()[propertyIndex].toString();
-			newProperties.remove(key);
-			
-			if (node != null) {
-				// Update other properties in node
-				node.setOtherProperties(newProperties);
-			} else if (probNet != null) {
-				// Update other properties in network
-				probNet.setOtherProperties(newProperties);
-			}
-			
-			break;
-		case "RENAME":
-			// Get original key of selected property
-			String oldKey = oldProperties.keySet().toArray()[propertyIndex].toString();
-			
-			// Copy other properties
-			newProperties = new LinkedHashMap<String, String>();
-			for (String key1 : oldProperties.keySet()) {
-				if (key1 == oldKey) {
-					newProperties.put(newProperty[0], newProperty[1]);
-				} else {
-					newProperties.put(key1, oldProperties.get(key1));
+			case "RENAME" -> {
+				// Get original key of selected property
+				String oldKey = this.oldProperties.keySet().toArray()[this.propertyIndex].toString();
+				// Copy other properties
+				this.newProperties = new LinkedHashMap<>();
+				for (Map.Entry<String, String> entry : this.oldProperties.entrySet()) {
+					if (Objects.equals(entry.getKey(), oldKey)) {
+						this.newProperties.put(this.newProperty[0], this.newProperty[1]);
+					} else {
+						this.newProperties.put(entry.getKey(), entry.getValue());
+					}
 				}
 			}
-			
-			if (node != null) {
-				// Update other properties in node
-				node.setOtherProperties(newProperties);
-			} else if (probNet != null) {
-				// Update other properties in network
-				probNet.setOtherProperties(newProperties);
-			}
-			break;
-		case "DOWN":
-			// Get original key of selected property
-			String oldKey1 = oldProperties.keySet().toArray()[propertyIndex].toString();
-			String oldKey2 = oldProperties.keySet().toArray()[propertyIndex+1].toString();
-			
-			// Copy other properties
-			newProperties = new LinkedHashMap<String, String>();
-			for (String key1 : oldProperties.keySet()) {
-				if (key1 == oldKey1) {
-					newProperties.put(oldKey2, oldProperties.get(oldKey2));
-				} else if (key1 == oldKey2) {
-					newProperties.put(oldKey1, oldProperties.get(oldKey1));
-				} else {
-					newProperties.put(key1, oldProperties.get(key1));
+			case "DOWN" -> {
+				// Get original key of selected property
+				String oldKey1 = this.oldProperties.keySet().toArray()[this.propertyIndex].toString();
+				String oldKey2 = this.oldProperties.keySet().toArray()[this.propertyIndex + 1].toString();
+				
+				// Copy other properties
+				this.newProperties = new LinkedHashMap<>();
+				for (Map.Entry<String, String> entry : this.oldProperties.entrySet()) {
+					if (entry.getKey() == oldKey1) {
+						this.newProperties.put(oldKey2, this.oldProperties.get(oldKey2));
+					} else if (entry.getKey() == oldKey2) {
+						this.newProperties.put(oldKey1, this.oldProperties.get(oldKey1));
+					} else {
+						this.newProperties.put(entry.getKey(), entry.getValue());
+					}
 				}
 			}
-						
-			if (node != null) {
-				// Update other properties in node
-				node.setOtherProperties(newProperties);
-			} else if (probNet != null) {
-				// Update other properties in network
-				probNet.setOtherProperties(newProperties);
-			}
-			break;
-		case "UP":
-			// Get original key of selected property
-			oldKey1 = oldProperties.keySet().toArray()[propertyIndex-1].toString();
-			oldKey2 = oldProperties.keySet().toArray()[propertyIndex].toString();
-						
-			// Copy other properties
-			newProperties = new LinkedHashMap<String, String>();
-			for (String key1 : oldProperties.keySet()) {
-				if (key1 == oldKey1) {
-					newProperties.put(oldKey2, oldProperties.get(oldKey2));
-				} else if (key1 == oldKey2) {
-					newProperties.put(oldKey1, oldProperties.get(oldKey1));
-				} else {
-					newProperties.put(key1, oldProperties.get(key1));
+			case "UP" -> {
+				// Get original key of selected property
+				String oldKey1 = this.oldProperties.keySet().toArray()[this.propertyIndex - 1].toString();
+				String oldKey2 = this.oldProperties.keySet().toArray()[this.propertyIndex].toString();
+				// Copy other properties
+				this.newProperties = new LinkedHashMap<>();
+				for (String key1 : this.oldProperties.keySet()) {
+					if (key1 == oldKey1) {
+						this.newProperties.put(oldKey2, this.oldProperties.get(oldKey2));
+					} else if (key1 == oldKey2) {
+						this.newProperties.put(oldKey1, this.oldProperties.get(oldKey1));
+					} else {
+						this.newProperties.put(key1, this.oldProperties.get(key1));
+					}
 				}
 			}
-									
-			if (node != null) {
-				// Update other properties in node
-				node.setOtherProperties(newProperties);
-			} else if (probNet != null) {
-				// Update other properties in network
-				probNet.setOtherProperties(newProperties);
-			}
-			break;
 		}
+		
+		setProperties(this.newProperties);
 	}
 	
+	
 	@Override public void undo() {
-		super.undo();
-		if (node != null) {
-			node.setOtherProperties(oldProperties);
-		} else if (probNet != null) {
-			probNet.setOtherProperties(oldProperties);
-		}
+		setProperties(this.oldProperties);
 	}
-
-	// TODO redo() implementation
-
-	public Node getNode() {
-		return node;
+	
+	@Override public void redo() {
+		setProperties(this.newProperties);
+	}
+	
+	private void setProperties(LinkedHashMap<String, String> newProperties) {
+		if (this.node != null) {
+			// Update other properties in node
+			this.node.setOtherProperties(newProperties);
+		} else if (this.probNet != null) {
+			// Update other properties in network
+			this.probNet.setOtherProperties(newProperties);
+		}
 	}
 
 }

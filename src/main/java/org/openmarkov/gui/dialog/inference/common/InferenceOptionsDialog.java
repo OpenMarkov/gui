@@ -8,7 +8,6 @@
 package org.openmarkov.gui.dialog.inference.common;
 
 import org.openmarkov.core.action.core.MulticriteriaEdit;
-import org.openmarkov.core.action.core.TemporalOptionsEdit;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.inference.TemporalOptions;
@@ -973,7 +972,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
     
     @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Override protected boolean doOkClickBeforeHide() throws Exception {
-        selectedButton = OK_BUTTON;
+        super.doOkClickBeforeHide();
         // If the is user is editing a cell, stop the edition to save the data
         if (table != null && table.getCellEditor() != null) {
             table.getCellEditor().stopCellEditing();
@@ -1009,11 +1008,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
         return super.doOkClickBeforeHide();
     }
     
-    @Override protected void doCancelClickBeforeHide() {
-        selectedButton = CANCEL_BUTTON;
-    }
-    
-    public int requestData() {
-        return selectedButton;
+    public ChosenOption requestData() {
+        return getSelectedOption();
     }
 }

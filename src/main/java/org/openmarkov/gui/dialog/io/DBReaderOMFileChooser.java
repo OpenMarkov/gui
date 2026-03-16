@@ -6,7 +6,10 @@
  */
 package org.openmarkov.gui.dialog.io;
 
+import org.openmarkov.core.io.database.CaseDatabaseReader;
+import org.openmarkov.core.io.database.CaseDatabaseWriter;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
+import org.openmarkov.gui.configuration.LocalPreferences;
 
 import java.util.HashMap;
 
@@ -16,7 +19,8 @@ import java.util.HashMap;
 		super(acceptAllFiles);
         CaseDatabaseManager.listReaders().forEach(readerClass->{
 			var info = CaseDatabaseManager.info(readerClass);
-			addChoosableFileFilter(new FileFilterAll<>(readerClass, info.extension(), info.name()));
+            FileFilterAll<? extends Class<? extends CaseDatabaseReader>> filter = new FileFilterAll<>(readerClass, info.extension(), info.name());
+            addChoosableFileFilter(filter);
 		});
 	}
  

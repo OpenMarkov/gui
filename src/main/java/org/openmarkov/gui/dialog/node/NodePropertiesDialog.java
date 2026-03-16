@@ -330,7 +330,7 @@ public abstract class NodePropertiesDialog extends OkCancelDialog implements Cha
 	 * @return OK_BUTTON if the user has pressed the 'Ok' button or
 	 * CANCEL_BUTTON if the user has pressed the 'Cancel' button.
 	 */
-	public int requestProperties() {
+    public ChosenOption requestProperties() {
 		setFieldsFromProperties(node);
 		setVisible(true);
 		// TODO revisar el acceso a los componentes en la siguiente línea
@@ -343,7 +343,7 @@ public abstract class NodePropertiesDialog extends OkCancelDialog implements Cha
 		 * node.getProbNet().getPNESupport().removeUndoableEditListener(
 		 * (getNodeDomainValuesTablePanel().get);
 		 */
-		return selectedButton;
+        return getSelectedOption();
 	}
 
 	/**

@@ -70,11 +70,11 @@ public class AddFindingDialog extends OkCancelDialog {
         
     }
     
-    public int requestValues() {
+    public ChosenOption requestValues() {
         
         setVisible(true);
         
-        return selectedButton;
+        return getSelectedOption();
     }
     
     protected void initialize() {

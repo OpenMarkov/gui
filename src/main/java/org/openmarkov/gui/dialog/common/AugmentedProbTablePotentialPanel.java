@@ -407,7 +407,7 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
                 ArithmeticExpressionDialog expressionDialog =
                         new ArithmeticExpressionDialog(null, parameterVariables, expression);
                 expressionDialog.setVisible(true);
-                if (expressionDialog.getSelectedButton() == OkCancelDialog.OK_BUTTON) {
+                if (expressionDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
                     String function = expressionDialog.getExpression();
                     valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column);
                     //TODO: Continue here changing String expressions to VariableExpression expressions.

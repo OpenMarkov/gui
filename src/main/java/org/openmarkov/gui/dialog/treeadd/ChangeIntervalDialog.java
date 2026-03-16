@@ -71,10 +71,10 @@ import java.awt.*;
 		}
 		return changeIntervalPanel;
 	}
-
-	public int requestValues() {
+    
+    public ChosenOption requestValues() {
 		setVisible(true);
-		return selectedButton;
+        return getSelectedOption();
 	}
 
 	/**

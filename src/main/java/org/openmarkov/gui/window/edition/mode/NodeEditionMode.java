@@ -11,7 +11,7 @@ import org.openmarkov.core.action.core.AddNodeEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.util.GUIDefaultStates;
-import org.openmarkov.gui.util.Utilities;
+import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.window.edition.EditorPanel;
 
 import javax.swing.*;
@@ -30,7 +30,7 @@ public abstract class NodeEditionMode extends EditionMode {
     
     @Override
     public void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException {
-        if (!(SwingUtilities.isLeftMouseButton(e) && Utilities.noMouseModifiers(e))) {
+        if (!(SwingUtilities.isLeftMouseButton(e) && GUIUtils.noMouseModifiers(e))) {
             return;
         }
         if (visualNetwork.getElementInPosition(position, g) != null) {

@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -16,16 +18,16 @@ import java.awt.event.MouseEvent;
  * the application.
  *
  * @author jmendoza
- * @version 1.2 jlgozalo - 10/05/10 - set private constructor, remove functions
+ * @version 1.2 jlgozalo - 10/05/10 - set private constructor, remove functions.
+ * @version 1.3 jrico - Added showDialog.
  * and fix warnings
  */
-public class Utilities {
+public final class GUIUtils {
     
     /**
      * private constructor for a class with only static methods
      */
-    private Utilities() {
-    
+    private GUIUtils() {
     }
     
     /**
@@ -52,9 +54,14 @@ public class Utilities {
      * @return true if the mouse event hasn't modifiers; otherwise, false.
      */
     public static boolean noMouseModifiers(MouseEvent e) {
-        
         return ((e.getModifiersEx() & 0xF) == 0);
-        
     }
     
+    public static void showDialog(@NotNull JDialog dialog) {
+        var parent = dialog.getParent();
+        if (parent != null) {
+            dialog.setLocationRelativeTo(dialog.getParent());
+        }
+        dialog.setVisible(true);
+    }
 }

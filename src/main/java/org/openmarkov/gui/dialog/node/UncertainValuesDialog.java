@@ -293,9 +293,9 @@ public class UncertainValuesDialog extends OkCancelDialog {
         return getUncertainValuesOfClasses(arrayUncertain, types);
     }
     
-    public int requestUncertainValues() {
+    public ChosenOption requestUncertainValues() {
         setVisible(true);
-        return this.selectedButton;
+        return this.getSelectedOption();
     }
     
     public List<Double> getValuesColumn() {
@@ -650,7 +650,7 @@ public class UncertainValuesDialog extends OkCancelDialog {
                                                                                               distributionType);
                 if (!distributionTypes.get(selectedRow).equals(distributionType)) {
                     parameterDialog.setVisible(true);
-                    if (parameterDialog.getSelectedButton() == OK_BUTTON) {
+                    if (parameterDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
                         StringBuilder parameterString = new StringBuilder();
                         for (double parameter : parameterDialog.getParameters()) {
                             parameterString.append(parameter);
@@ -688,7 +688,7 @@ public class UncertainValuesDialog extends OkCancelDialog {
                 DistributionParameterDialog parameterDialog = new DistributionParameterDialog(getOwner(),
                                                                                               distributionType, parameters);
                 parameterDialog.setVisible(true);
-                if (parameterDialog.getSelectedButton() == OK_BUTTON) {
+                if (parameterDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
                     StringBuilder parameterString = new StringBuilder();
                     for (double parameter : parameterDialog.getParameters()) {
                         parameterString.append(parameter);

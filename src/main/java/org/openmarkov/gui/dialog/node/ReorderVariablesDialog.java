@@ -64,11 +64,11 @@ import java.awt.*;
 		}
 		return reorderVariablesPanel;
 	}
-
-	public int requestValues() {
+    
+    public ChosenOption requestValues() {
 		getReorderVariablesPanel();
 		setVisible(true);
-		return selectedButton;
+        return getSelectedOption();
 	}
 
 	/**

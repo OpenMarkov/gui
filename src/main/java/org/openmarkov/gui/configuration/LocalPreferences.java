@@ -71,6 +71,10 @@ public final class LocalPreferences {
             .of("formats/latest_saved_dataset_format", () -> OMFileChooser.DEFAULT_FILE_FORMAT, new TypeToken<>() {
             });
     
+    public static final LocalPreference<String> LATEST_SAVED_DATASET_EXTENSION = LocalPreference
+            .of("formats/latest_saved_dataset_format", () -> "xlsx", new TypeToken<>() {
+            });
+    
     
     public static final LocalPreference<Boolean> PRINT_COMPONENTS_OF_MOUSE_LOCATION = LocalPreference
             .of("developer_tool/print_components_of_mouse_location", () -> false, new TypeToken<>() {

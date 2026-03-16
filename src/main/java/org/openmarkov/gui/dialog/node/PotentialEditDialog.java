@@ -257,13 +257,13 @@ public class PotentialEditDialog extends OkCancelDialog
      * @return An integer indicating the button clicked by the user when closing
      * this dialog
      */
-    public int requestValues() {
+    public ChosenOption requestValues() {
         // Shows the potentials' options table
         if (this.node.getNodeType() == NodeType.DECISION && this.node.getPolicyType() == PolicyType.OPTIMAL && this.readOnly) {
             this.setEnabledDecisionOptions();
         }
         this.setVisible(true);
-        return this.selectedButton;
+        return this.getSelectedOption();
     }
     
     /**
@@ -604,7 +604,7 @@ public class PotentialEditDialog extends OkCancelDialog
     
     private void actionPerformedReorderVariables() throws DoEditException {
         ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, this.node);
-        if (reorderVariablesDialog.requestValues() != OkCancelDialog.OK_BUTTON) {
+        if (reorderVariablesDialog.requestValues() != OkCancelDialog.ChosenOption.Ok) {
             return;
         }
         PotentialPanel potentialPanelForAction = this.getPotentialPanel();

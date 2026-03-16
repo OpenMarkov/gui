@@ -9,6 +9,9 @@ package org.openmarkov.gui.dialog.common;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serial;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 /**
  * This class implements a dialog that has a horizontal button panel in the
@@ -18,116 +21,72 @@ import java.awt.*;
  * @version 1.0 jmendoza
  */
 public class BottomPanelButtonDialog extends DialogBase {
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -4648589019411570235L;
-
-	/**
-	 * Content pane.
-	 */
-	private JPanel jContentPane = null;
-
-	/**
-	 * Panel where the rest of the components, except the buttons of the bottom
-	 * line are placed.
-	 */
-	private JPanel componentsPanel = null;
-
-	/**
-	 * Panel that contains the button panel.
-	 */
-	private JPanel bottomPanel = null;
-
-	/**
-	 * Panel that contains the buttons.
-	 */
-	private JPanel buttonsPanel = null;
-
-	/**
-	 * Constructor that invokes the superclass' constructor and initialises the
-	 * instance.
-	 *
-	 * @param owner window that owns the dialog box.
-	 */
-	public BottomPanelButtonDialog(Window owner) {
-		super(owner);
-		initialize();
-		setName("BottomPanelButtonDialog");
-	}
-
-	/**
-	 * This method initialises this instance.
-	 */
-	private void initialize() {
-		setResizable(false);
-		setModal(true);
-		setContentPane(getJContentPane());
-	}
-
-	/**
-	 * This method initialises jContentPane.
-	 *
-	 * @return a new content panel.
-	 */
-	private JPanel getJContentPane() {
-		if (jContentPane == null) {
-			jContentPane = new JPanel();
-			jContentPane.setLayout(new BorderLayout());
-			jContentPane.add(getComponentsPanel(), BorderLayout.CENTER);
-			jContentPane.add(getBottomPanel(), BorderLayout.SOUTH);
-		}
-		return jContentPane;
-	}
-
-	/**
-	 * This method initialises componentsPanel.
-	 *
-	 * @return a new components panel.
-	 */
-	protected JPanel getComponentsPanel() {
-		if (componentsPanel == null) {
-			componentsPanel = new JPanel();
-		}
-		return componentsPanel;
-	}
-
-	/**
-	 * This method initialises bottomPanel.
-	 *
-	 * @return a new bottom panel.
-	 */
-	protected JPanel getBottomPanel() {
-		if (bottomPanel == null) {
-			bottomPanel = new JPanel();
-			bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-			bottomPanel.add(getButtonsPanel());
-		}
-		return bottomPanel;
-	}
-
-	/**
-	 * This method initialises buttonsPanel.
-	 *
-	 * @return a new panel that contains the buttons.
-	 */
-	protected JPanel getButtonsPanel() {
-		if (buttonsPanel == null) {
-			buttonsPanel = new JPanel();
-			buttonsPanel.setLayout(new GridLayout(1, 0, 10, 10));
-			buttonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		}
-		return buttonsPanel;
-	}
-
-	/**
-	 * This method adds a new button to the buttons panel and a space of 10
-	 * units to the right of this button.
-	 *
-	 * @param button button that will be added to the panel.
-	 */
-	protected void addButtonToButtonsPanel(JButton button) {
-		buttonsPanel.add(button);
-	}
+    
+    @Serial
+    private static final long serialVersionUID = -4648589019411570235L;
+    
+    private final JPanel componentsPanel;
+    private final JPanel buttonsPanel;
+    
+    
+    public BottomPanelButtonDialog(Window owner) {
+        super(owner);
+        this.setName("BottomPanelButtonDialog");
+        this.setResizable(false);
+        this.setModal(true);
+        
+        JPanel jContentPane = new JPanel();
+        jContentPane.setLayout(new BorderLayout());
+        this.componentsPanel = new JPanel();
+        jContentPane.add(this.getComponentsPanel(), BorderLayout.CENTER);
+        
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        this.buttonsPanel = new JPanel();
+        this.buttonsPanel.setLayout(new GridLayout(1, 0, 10, 10));
+        this.buttonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        bottomPanel.add(this.buttonsPanel);
+        jContentPane.add(bottomPanel, BorderLayout.PAGE_END);
+        this.setContentPane(jContentPane);
+    }
+    
+    /**
+     * This method initialises componentsPanel.
+     *
+     * @return a new components panel.
+     */
+    protected final JPanel getComponentsPanel() {
+        return this.componentsPanel;
+    }
+    
+    /**
+     * This method adds a new button to the buttons panel and a space of 10
+     * units to the right of this button.
+     *
+     * @param button button that will be added to the panel.
+     */
+    protected final void addButtonToButtonsPanel(JButton button) {
+        this.buttonsPanel.remove(button);
+        this.buttonsPanel.add(button);
+    }
+    
+    @Override public void setCancelButton(JButton cancelButton) {
+        JButton oldCancelButton = getCancelButton();
+        super.setCancelButton(cancelButton);
+        if (oldCancelButton == null) {
+            this.addButtonToButtonsPanel(cancelButton);
+            return;
+        }
+        var buttonPanelComponents = this.buttonsPanel.getComponents();
+        int oldButtonIndex = IntStream.range(0, buttonPanelComponents.length)
+                                      .filter(componentIndex -> oldCancelButton == buttonPanelComponents[componentIndex])
+                                      .findFirst()
+                                      .orElse(-1);
+        if (oldButtonIndex == -1) {
+            this.buttonsPanel.add(getCancelButton());
+        } else {
+            this.buttonsPanel.remove(oldButtonIndex);
+            this.buttonsPanel.add(getCancelButton(), oldButtonIndex);
+        }
+    }
 }

@@ -154,9 +154,9 @@ public class URLNetworkChooserDialog extends OkCancelDialog {
         return networkURL;
     }
     
-    public int requestNetworkURL() {
+    public ChosenOption requestNetworkURL() {
         setVisible(true);
-        return selectedButton;
+        return getSelectedOption();
     }
     
 }

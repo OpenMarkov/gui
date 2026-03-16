@@ -10,7 +10,7 @@ import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.util.Utilities;
+import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.window.edition.EditorPanel;
 
 import javax.swing.*;
@@ -25,7 +25,7 @@ import java.awt.event.MouseEvent;
     }
     
     @Override public void mousePressed(MouseEvent e, Point2D.Double cursorPosition, Graphics2D g) {
-        if (!(SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1 && Utilities.noMouseModifiers(e))) {
+        if (!(SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1 && GUIUtils.noMouseModifiers(e))) {
             return;
         }
         visualNetwork.startLinkCreation(cursorPosition, g);

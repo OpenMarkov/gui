@@ -36,8 +36,8 @@ import org.openmarkov.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.*;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
+import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.util.PropertyNames;
-import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.inference.algorithm.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
@@ -690,7 +690,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             String message = StringDatabase.getUniqueInstance()
                                            .getFormattedString("NetworkNotSaved.Text", networkPanel.probNet.getName());
             response = JOptionPane
-                    .showConfirmDialog(Utilities.getOwner(mainPanel), message, title, JOptionPane.YES_NO_CANCEL_OPTION,
+                    .showConfirmDialog(GUIUtils.getOwner(mainPanel), message, title, JOptionPane.YES_NO_CANCEL_OPTION,
                                        JOptionPane.WARNING_MESSAGE);
             canClose = switch (response) {
                 case JOptionPane.YES_OPTION -> saveNetwork(networkPanel);
@@ -747,17 +747,17 @@ public class MainPanelListenerAssistant extends WindowAdapter
     //            mainPanel.getMainMenu().rechargeLastOpenFiles();
     //            result = true;
     //        } catch (NotRecognisedNetworkFileExtensionException e) {
-    //            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+    //            JOptionPane.showMessageDialog(GUIUtils.getOwner(mainPanel),
     //                    stringDatabase.getValuesInAString("CanNotRecognisedFileExtension.Text),
     //                    stringDatabase.getValuesInAString("ErrorWindow.Title),
     //                    JOptionPane.ERROR_MESSAGE);
     //        } catch (CanNotWriteNetworkToFileException e) {
-    //            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+    //            JOptionPane.showMessageDialog(GUIUtils.getOwner(mainPanel),
     //                    stringDatabase.getValuesInAString("ErrorSavingNetwork.Text) + ": " + e.getMessage(),
     //                    stringDatabase.getValuesInAString("ErrorWindow.Title),
     //                    JOptionPane.ERROR_MESSAGE);
     //        } catch (Exception e) {
-    //            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+    //            JOptionPane.showMessageDialog(GUIUtils.getOwner(mainPanel),
     //                    stringDatabase.getValuesInAString("Generic I/O error"),
     //                    stringDatabase.getValuesInAString("ErrorWindow.Title),
     //                    JOptionPane.ERROR_MESSAGE);
@@ -916,7 +916,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         fileChooser.setDialogTitle(title);
         fileChooser.setSelectedFile(new File(suggestedFileName));
         String filename = null;
-        if (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showSaveDialog(GUIUtils.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
             filename = fileChooser.getSelectedFile().getAbsolutePath();
             String chosenFilterExtension = ((FileFilterBasic) fileChooser.getFileFilter()).getFilterExtension();
             if (!filename.toLowerCase().endsWith("." + chosenFilterExtension.toLowerCase())) {
@@ -940,7 +940,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         ArrayList<Object> fileNameAndFormat = new ArrayList<Object>();
         String filename = null;
         FileFilterAll<?> fileFormat = null;
-        if (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showSaveDialog(GUIUtils.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
             filename = fileChooser.getSelectedFile().getAbsolutePath();
             String chosenFilterExtension = ((FileFilterBasic) fileChooser.getFileFilter()).getFilterExtension();
             if (!filename.toLowerCase().endsWith("." + chosenFilterExtension.toLowerCase())) {
@@ -970,8 +970,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * dialog box, a new network is created.
      */
     private void createNewNetwork() {
-        NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(Utilities.getOwner(mainPanel));
-        if (dialogProperties.showProperties() == OkCancelDialog.OK_BUTTON) {
+        NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(GUIUtils.getOwner(mainPanel));
+        if (dialogProperties.showProperties() == OkCancelDialog.ChosenOption.Ok) {
             ProbNet probNet = dialogProperties.getProbNet();
             
             // If the probNet has not the OnlyChanceNodes constraint and not has any criterion, we
@@ -1071,7 +1071,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension(500, 300));
             JOptionPane networkMessagePane = new JOptionPane(commentHTMLScrollPaneNetworkComment,
                                                              JOptionPane.INFORMATION_MESSAGE);
-            JDialog networkMessageDialog = networkMessagePane.createDialog(Utilities.getOwner(mainPanel),
+            JDialog networkMessageDialog = networkMessagePane.createDialog(GUIUtils.getOwner(mainPanel),
                                                                            stringDatabase.getString("NetworkCommentWindow.Title"));
             networkMessageDialog.setResizable(true);
             networkMessageDialog.setMinimumSize(new Dimension(500, 300));
@@ -1124,7 +1124,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension(500, 300));
             JOptionPane networkMessagePane = new JOptionPane(commentHTMLScrollPaneNetworkComment,
                                                              JOptionPane.INFORMATION_MESSAGE);
-            JDialog networkMessageDialog = networkMessagePane.createDialog(Utilities.getOwner(mainPanel),
+            JDialog networkMessageDialog = networkMessagePane.createDialog(GUIUtils.getOwner(mainPanel),
                                                                            stringDatabase.getString("NetworkCommentWindow.Title"));
             networkMessageDialog.setResizable(true);
             networkMessageDialog.setMinimumSize(new Dimension(500, 300));
@@ -1142,7 +1142,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         NetworkOMFileChooser fileChooser = new NetworkOMFileChooser();
         fileChooser.setDialogTitle(stringDatabase.getString("OpenNetwork.Title"));
         String fileName = null;
-        if (fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showOpenDialog(GUIUtils.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
             fileName = fileChooser.getSelectedFile().getAbsolutePath();
         }
         return fileName;
@@ -1154,8 +1154,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return complete path of the file, or null if the user selects cancel.
      */
     private URL requestURLFileToOpen() {
-        URLNetworkChooserDialog urlNetworkChooserDialog = new URLNetworkChooserDialog(Utilities.getOwner(mainPanel));
-        if (urlNetworkChooserDialog.requestNetworkURL() == OkCancelDialog.OK_BUTTON) {
+        URLNetworkChooserDialog urlNetworkChooserDialog = new URLNetworkChooserDialog(GUIUtils.getOwner(mainPanel));
+        if (urlNetworkChooserDialog.requestNetworkURL() == OkCancelDialog.ChosenOption.Ok) {
             return urlNetworkChooserDialog.getNetworkURL();
         }
         return null;
@@ -1224,9 +1224,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
         NetworkPanel networkPanelMID = getCurrentNetworkPanel();
         String path = (new File(networkPanelMID.getNetworkFile())).getParent();
         InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-                                                                                    Utilities.getOwner(mainPanel), null);
+                                                                                    GUIUtils.getOwner(mainPanel), null);
         costEffectivenessDialog.getMulticriteriaPanel().setEnabled(false);
-        if (costEffectivenessDialog.getSelectedButton() == OkCancelDialog.CANCEL_BUTTON) {
+        if (costEffectivenessDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Cancel) {
             return;
         }
 //		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
@@ -1262,7 +1262,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 //		if (!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getMultiCriteriaOptions()
 //				.isCeOptionsShowed()) {
 //			InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-//					Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
+//					GUIUtils.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
 //			if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
 //				return;
 //			}
@@ -1356,7 +1356,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         String suggestedFileName = currentNetworkPanel.probNet.getName();
         omFileChooser.setSelectedFile(new File(suggestedFileName));
         omFileChooser.setAcceptAllFileFilterUsed(false);
-        if (omFileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
+        if (omFileChooser.showSaveDialog(GUIUtils.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
             // save the selected file
             System.out.println("Save evidence file " + omFileChooser.getSelectedFile().getAbsolutePath());
         }
@@ -1373,7 +1373,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         // Set last used evidence format as default
         String lastFileFilter = LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.get();
         evidenceOMFileChooser.setFileFilter(lastFileFilter);
-        if ((evidenceOMFileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)) {
+        if ((evidenceOMFileChooser.showOpenDialog(GUIUtils.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)) {
             // load the selected file
             System.out.println("Load evidence file " + evidenceOMFileChooser.getSelectedFile().getAbsolutePath());
             CaseDatabaseManager caseDbManager = new CaseDatabaseManager();
@@ -1499,9 +1499,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
         if (currentWorkingMode == NetworkPanel.WorkingMode.EDITION && requiredInfereceOptions) {
             // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
-            InferenceOptionsDialog dialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+            InferenceOptionsDialog dialog = new InferenceOptionsDialog(probNet, GUIUtils.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
             
-            if (dialog.getSelectedButton() == OkCancelDialog.CANCEL_BUTTON) {
+            if (dialog.getSelectedOption() == OkCancelDialog.ChosenOption.Cancel) {
                 newWorkingMode = NetworkPanel.WorkingMode.EDITION;
                 performInference = false;
             }
@@ -1588,8 +1588,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private void setInferenceOptions(NetworkPanel networkPanel) {
         InferenceOptionsDialog dialog = new InferenceOptionsDialog(networkPanel.getProbNet(),
-                                                                   Utilities.getOwner(mainPanel), null);
-        //MulticriteriaDialog dialog = new MulticriteriaDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
+                                                                   GUIUtils.getOwner(mainPanel), null);
+        //MulticriteriaDialog dialog = new MulticriteriaDialog(networkPanel.getProbNet(), GUIUtils.getOwner(mainPanel));
     }
     
     /**
@@ -1678,9 +1678,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                                                                       .getPreResolutionEvidence());
             StrategyTree strategyTree = eval.getUtility().strategyTrees[0];
             
-            //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
+            //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(GUIUtils.getOwner(mainPanel), probNet, inferenceAlgorithm);
             strategyTree.pruneAndGraftNode("OD");
-            OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel),
+            OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(GUIUtils.getOwner(mainPanel),
                                                                                     probNet, strategyTree);
             optimalStrategyDialog.setVisible(true);
             
@@ -1698,8 +1698,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             
             try {
-                //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
-                OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel),
+                //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(GUIUtils.getOwner(mainPanel), probNet, inferenceAlgorithm);
+                OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(GUIUtils.getOwner(mainPanel),
                                                                                         probNet, veOptimalStrategy);
                 optimalStrategyDialog.setVisible(true);
             } catch (NonProjectablePotentialException e) {

@@ -238,7 +238,7 @@
         </SaveGraphviz>
     </Tree>
     <Tools value="Tools">
-        <DBGenerator value="Generate database randomly">
+        <DBGenerator value="Generate dataset randomly">
             <Mnemonic value="g"/>
         </DBGenerator>
         <CostEffectivenessDeterministic value="Deterministic analysis"/>
