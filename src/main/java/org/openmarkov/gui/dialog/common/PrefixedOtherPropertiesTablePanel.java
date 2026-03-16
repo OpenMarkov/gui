@@ -340,7 +340,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     
     @Override public void tableChanged(TableModelEvent e) {
         int row = e.getLastRow();
-        if (e.getType() != TableModelEvent.UPDATE) {
+        if (e.getType() != TableModelEvent.UPDATE || getValuesTable().getCellEditor()==null) {
             return;
         }
         String newName = ((DefaultTableModel) e.getSource()).getValueAt(row, 1).toString();
@@ -349,7 +349,6 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
         try {
             if (node != null) {
                 OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "RENAME", row, rowData);
-                ProbNet probNet1 = node.getProbNet();
                 otherPropertyEdit.executeEdit();
             } else if (probNet != null) {
                 OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "RENAME", row, rowData);
