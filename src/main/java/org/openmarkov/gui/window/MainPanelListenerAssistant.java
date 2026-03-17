@@ -66,6 +66,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.prefs.BackingStoreException;
 //TODO: remove just because reference to cost-effectiveness was removed
 //import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
@@ -145,6 +146,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
     @Override public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
         ActionCommands actionCommandConstant = ActionCommands.of(actionCommand);
+        OptionalInt recentFileIndex = actionCommandConstant.openRecentFileIndex();
+        if (recentFileIndex.isPresent()) {
+            try {
+                openNetwork(LastOpenFiles.getFilePathAt(recentFileIndex.getAsInt()));
+            } catch (ParserException | IOException | SAXException | NoReaderForFileException |
+                     CorruptNetworkFile ex) {
+                throw new UnrecoverableException(ex);
+            }
+            return;
+        }
         switch (actionCommandConstant) {
             case ActionCommands.NEW_NETWORK -> createNewNetwork();
             case ActionCommands.OPEN_NETWORK -> {
@@ -159,78 +170,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 try {
                     openNetworkURL();
                 } catch (NoReaderForFileException | ParserException | IOException | SAXException |
-                         CorruptNetworkFile ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.OPEN_LAST_1_FILE -> {
-                try {
-                    openNetwork(LastOpenFiles.getFilePathAt(0));
-                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
-                         CorruptNetworkFile ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.OPEN_LAST_2_FILE -> {
-                try {
-                    openNetwork(LastOpenFiles.getFilePathAt(1));
-                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
-                         CorruptNetworkFile ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.OPEN_LAST_3_FILE -> {
-                try {
-                    openNetwork(LastOpenFiles.getFilePathAt(2));
-                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
-                         CorruptNetworkFile ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.OPEN_LAST_4_FILE -> {
-                try {
-                    openNetwork(LastOpenFiles.getFilePathAt(3));
-                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
-                         CorruptNetworkFile ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.OPEN_LAST_5_FILE -> {
-                try {
-                    openNetwork(LastOpenFiles.getFilePathAt(4));
-                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
-                         CorruptNetworkFile ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.OPEN_LAST_6_FILE -> {
-                try {
-                    openNetwork(LastOpenFiles.getFilePathAt(5));
-                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
-                         CorruptNetworkFile ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.OPEN_LAST_7_FILE -> {
-                try {
-                    openNetwork(LastOpenFiles.getFilePathAt(6));
-                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
-                         CorruptNetworkFile ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.OPEN_LAST_8_FILE -> {
-                try {
-                    openNetwork(LastOpenFiles.getFilePathAt(7));
-                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
-                         CorruptNetworkFile ex) {
-                    throw new UnrecoverableException(ex);
-                }
-            }
-            case ActionCommands.OPEN_LAST_9_FILE -> {
-                try {
-                    openNetwork(LastOpenFiles.getFilePathAt(8));
-                } catch (ParserException | IOException | SAXException | NoReaderForFileException |
                          CorruptNetworkFile ex) {
                     throw new UnrecoverableException(ex);
                 }
@@ -582,7 +521,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
                  ActionCommands.LINK_CREATION, ActionCommands.UTILITY_CREATION,
                  ActionCommands.DECISION_CREATION, ActionCommands.LOG, ActionCommands.CHANGE_ACTIVE_CLASS,
                  ActionCommands.ZOOM_PREFIX, ActionCommands.NODES, ActionCommands.ZOOM,
-                 ActionCommands.OBJECT_SELECTION -> {
+                 ActionCommands.OBJECT_SELECTION,
+                 // Handled before this switch by the openRecentFileIndex() guard:
+                 ActionCommands.OPEN_LAST_1_FILE, ActionCommands.OPEN_LAST_2_FILE,
+                 ActionCommands.OPEN_LAST_3_FILE, ActionCommands.OPEN_LAST_4_FILE,
+                 ActionCommands.OPEN_LAST_5_FILE, ActionCommands.OPEN_LAST_6_FILE,
+                 ActionCommands.OPEN_LAST_7_FILE, ActionCommands.OPEN_LAST_8_FILE,
+                 ActionCommands.OPEN_LAST_9_FILE -> {
                 this.defaultActionOnCommand(e, actionCommand, actionCommandConstant);
             }
             case null -> this.defaultActionOnCommand(e, actionCommand, actionCommandConstant);

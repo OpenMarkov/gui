@@ -10,6 +10,7 @@ package org.openmarkov.gui.menutoolbar.common;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.OptionalInt;
 
 /**
  * This class defines the constants used to identify the actions invoked by the
@@ -260,16 +261,38 @@ public enum ActionCommands {
     }
     
     private static final HashMap<String, ActionCommands> COMMAND_NAME_TO_ENUM;
-    
+
+    private static final ActionCommands[] OPEN_LAST_FILE_COMMANDS = {
+        OPEN_LAST_1_FILE, OPEN_LAST_2_FILE, OPEN_LAST_3_FILE,
+        OPEN_LAST_4_FILE, OPEN_LAST_5_FILE, OPEN_LAST_6_FILE,
+        OPEN_LAST_7_FILE, OPEN_LAST_8_FILE, OPEN_LAST_9_FILE
+    };
+
     static {
         COMMAND_NAME_TO_ENUM = new HashMap<>();
         for (ActionCommands command : ActionCommands.values()) {
             ActionCommands.COMMAND_NAME_TO_ENUM.put(command.commandName, command);
         }
     }
-    
+
     public static @Nullable ActionCommands of(String commandName) {
         return ActionCommands.COMMAND_NAME_TO_ENUM.get(commandName);
+    }
+
+    /** Returns the action command for opening the recent file at the given index (0-based),
+     *  or null if the index is out of range. */
+    public static @Nullable ActionCommands openLastFileCommandAt(int index) {
+        if (index < 0 || index >= OPEN_LAST_FILE_COMMANDS.length) return null;
+        return OPEN_LAST_FILE_COMMANDS[index];
+    }
+
+    /** Returns the 0-based index into the recent-files list if this command is one of the
+     *  OPEN_LAST_N_FILE commands, or an empty OptionalInt otherwise. */
+    public OptionalInt openRecentFileIndex() {
+        for (int i = 0; i < OPEN_LAST_FILE_COMMANDS.length; i++) {
+            if (this == OPEN_LAST_FILE_COMMANDS[i]) return OptionalInt.of(i);
+        }
+        return OptionalInt.empty();
     }
     
     /**

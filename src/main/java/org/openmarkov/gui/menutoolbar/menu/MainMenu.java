@@ -625,18 +625,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
             LastRecentFilesMenuItem item = new LastRecentFilesMenuItem();
             item.setName("lastRecentFilesMenuItem" + index);
             item.setText(recentFile);
-            ActionCommands command = switch (index) {
-                case 0 -> ActionCommands.OPEN_LAST_1_FILE;
-                case 1 -> ActionCommands.OPEN_LAST_2_FILE;
-                case 2 -> ActionCommands.OPEN_LAST_3_FILE;
-                case 3 -> ActionCommands.OPEN_LAST_4_FILE;
-                case 4 -> ActionCommands.OPEN_LAST_5_FILE;
-                case 5 -> ActionCommands.OPEN_LAST_6_FILE;
-                case 6 -> ActionCommands.OPEN_LAST_7_FILE;
-                case 7 -> ActionCommands.OPEN_LAST_8_FILE;
-                case 8 -> ActionCommands.OPEN_LAST_9_FILE;
-                default -> null;
-            };
+            ActionCommands command = ActionCommands.openLastFileCommandAt(index);
             if (command != null) {
                 item.setActionCommand(command.getCommandName());
             }
