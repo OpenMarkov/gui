@@ -67,6 +67,8 @@ public class OkCancelDialog extends BottomPanelButtonDialog {
                     selectedOption = ChosenOption.Ok;
                     this.dispose();
                 }
+            } catch (RuntimeException ex) {
+                throw ex;
             } catch (Exception ex) {
                 throw new UnrecoverableException(ex);
             }

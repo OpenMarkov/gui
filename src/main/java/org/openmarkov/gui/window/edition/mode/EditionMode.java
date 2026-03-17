@@ -8,6 +8,7 @@ package org.openmarkov.gui.window.edition.mode;
 
 import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.graphic.VisualNetwork;
@@ -35,9 +36,9 @@ public abstract class EditionMode {
 		this.probNet = probNet;
 	}
     
-    public abstract void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) throws Exception;
-    
-    public abstract void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g) throws Exception;
+    public abstract void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException;
+
+    public abstract void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException;
 
 	public abstract void mouseDragged(MouseEvent e, Point2D.Double position, double diffX, double diffY, Graphics2D g);
 }

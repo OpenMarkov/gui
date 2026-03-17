@@ -356,7 +356,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 int newNodesCount = probNet.getNodes().size();
                 this.lastLeftClickProducedANode = oldNodesCount < newNodesCount;
             }
-        } catch (Exception ex) {
+        } catch (DoEditException ex) {
             throw new UnrecoverableException(ex);
         }
         // Generic functionality regardless of the edition mode
@@ -513,7 +513,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         Point2D.Double position = new Point2D.Double(zoom.screenToPanel(e.getX()), zoom.screenToPanel(e.getY()));
         try {
             editionMode.mouseReleased(e, position, g);
-        } catch (Exception ex) {
+        } catch (DoEditException ex) {
             throw new UnrecoverableException(ex);
         }
     }
