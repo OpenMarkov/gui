@@ -6,7 +6,7 @@
  */
 package org.openmarkov.gui.window.decisiontree;
 
-import org.openmarkov.gui.window.edition.Zoom;
+import org.openmarkov.gui.window.edition.ZoomManager;
 
 import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
@@ -21,7 +21,7 @@ public class VisualDecisionTree extends JTree{
 	/**
 	 * Object to convert coordinates of the screen to the panel and vice versa.
 	 */
-	protected Zoom zoom;
+	protected ZoomManager zoomManager;
 	
 	/**
 	 * Constructs a VisualDecisionTree with the specified DecisionTreeModel.
@@ -36,7 +36,7 @@ public class VisualDecisionTree extends JTree{
 		setRowHeight(0);
 		setCellRenderer(new DecisionTreeCellRenderer());
 		setUI(new DecisionTreeUI());
-		zoom = new Zoom();
+		zoomManager = new ZoomManager();
 	}
 
 	/**
@@ -49,21 +49,21 @@ public class VisualDecisionTree extends JTree{
 		g2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
 		g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g2D.scale(zoom.getZoom(), zoom.getZoom());
+		g2D.scale(zoomManager.getZoom(), zoomManager.getZoom());
 		super.paint(g2D);
 	}
 
 	public double getZoom() {
-		return zoom.getZoom();
+		return zoomManager.getZoom();
 	}
 
 	/**
-	 * Sets the zoom.
+	 * Sets the zoomManager.
 	 *
-	 * @param zoom the zoom to set.
+	 * @param zoom the zoomManager to set.
 	 */
 	protected void setZoom(Double zoom) {
-		this.zoom.setZoom(zoom);
+		this.zoomManager.setZoom(zoom);
 	}
 
 

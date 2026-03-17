@@ -12,54 +12,54 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * This class is used to test the class {@link Zoom}.
+ * This class is used to test the class {@link ZoomManager}.
  *
  * @author jmendoza
  */
-public class ZoomTest {
+public class ZoomManagerTest {
 	/**
 	 * Test the default constructor and the constructor with a value 0 as
 	 * parameter.
 	 */
 	@Test public final void testZoom() {
-		Zoom zoom;
+		ZoomManager zoomManager;
 
-		zoom = new Zoom();
-		assertTrue(zoom.getZoom() == 1.0);
-		zoom = new Zoom(0);
-		assertTrue(zoom.getZoom() == 1.0);
+		zoomManager = new ZoomManager();
+		assertTrue(zoomManager.getZoom() == 1.0);
+		zoomManager = new ZoomManager(0);
+		assertTrue(zoomManager.getZoom() == 1.0);
 	}
 
 	/**
 	 * Test the the constructor with a value non 0 as parameter.
 	 */
 	@Test public final void testZoomDouble() {
-		Zoom zoom;
+		ZoomManager zoomManager;
 
-		zoom = new Zoom(0.5);
-		assertTrue(zoom.getZoom() == 0.5);
+		zoomManager = new ZoomManager(0.5);
+		assertTrue(zoomManager.getZoom() == 0.5);
 	}
 
 	/**
-	 * Test the limits of the zoom.
+	 * Test the limits of the zoomManager.
 	 */
 	@Test public final void testZoomLimits() {
-		Zoom zoom;
+		ZoomManager zoomManager;
 
-		zoom = new Zoom(6.0);
-		assertTrue(zoom.getZoom() == 5.0);
-		zoom = new Zoom(0.01);
-		assertTrue(zoom.getZoom() == 0.1);
+		zoomManager = new ZoomManager(6.0);
+		assertTrue(zoomManager.getZoom() == 5.0);
+		zoomManager = new ZoomManager(0.01);
+		assertTrue(zoomManager.getZoom() == 0.1);
 	}
 
 	/**
 	 * This method tests the method setZoom.
 	 */
 	@Test public final void testSetZoom() {
-		Zoom zoom = new Zoom();
+		ZoomManager zoomManager = new ZoomManager();
 
-		zoom.setZoom(4.5);
-		assertTrue(zoom.getZoom() == 4.5);
+		zoomManager.setZoom(4.5);
+		assertTrue(zoomManager.getZoom() == 4.5);
 	}
 
 	/**
@@ -67,10 +67,10 @@ public class ZoomTest {
 	 * coordinates.
 	 */
 	@Test public final void testScreenToPanel() {
-		Zoom zoom = new Zoom(4);
+		ZoomManager zoomManager = new ZoomManager(4);
 		double value;
 
-		value = zoom.screenToPanel(2162.0);
+		value = zoomManager.screenToPanel(2162.0);
 		assertTrue(value == 540.5);
 	}
 
@@ -79,10 +79,10 @@ public class ZoomTest {
 	 * coordinates.
 	 */
 	@Test public final void testPanelToScreen() {
-		Zoom zoom = new Zoom(1.5);
+		ZoomManager zoomManager = new ZoomManager(1.5);
 		double value;
 
-		value = zoom.panelToScreen(428.0);
+		value = zoomManager.panelToScreen(428.0);
 		assertTrue(value == 642.0);
 	}
 }

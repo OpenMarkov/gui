@@ -15,7 +15,7 @@ import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
-import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -130,7 +130,7 @@ public class NodeContextualMenu extends ContextualMenu {
             switch (panel.getNetworkPanel().getWorkingMode()) {
                 case EDITION -> setDecisionNodeContextualMenuInEditionMode();
                 case INFERENCE -> {
-                    if (panel.getEvidenceCasesCompilationState(panel.getCurrentCase())) {
+                    if (panel.getEvidenceManager().getEvidenceCasesCompilationState(panel.getEvidenceManager().getCurrentCase())) {
                         setDecisionNodeContextualMenuInCompiledInferenceMode();
                     } else {
                         setDecisionNodeContextualMenuInNotCompiledInferenceMode();

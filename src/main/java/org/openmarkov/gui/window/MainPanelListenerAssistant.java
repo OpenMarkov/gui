@@ -8,6 +8,8 @@
 package org.openmarkov.gui.window;
 
 import org.apache.commons.io.FilenameUtils;
+import org.openmarkov.core.action.base.linkEdits.InvertLinkAndUpdatePotentialsEdit;
+import org.openmarkov.core.action.core.AddNodeEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.io.ProbNetInfo;
@@ -17,11 +19,13 @@ import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.core.io.exception.NoWriterForExtensionException;
 import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
+import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
+import org.openmarkov.gui.action.RemoveLinkRestrictionEdit;
 import org.openmarkov.gui.configuration.LastOpenFiles;
 import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.dialog.*;
@@ -31,10 +35,15 @@ import org.openmarkov.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.gui.dialog.inference.common.InferenceOptionsDialog;
 import org.openmarkov.gui.dialog.io.*;
 import org.openmarkov.gui.dialog.io.DBReaderOMFileChooser;
+import org.openmarkov.gui.dialog.link.LinkRestrictionEditDialog;
+import org.openmarkov.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.*;
+import org.openmarkov.gui.graphic.SelectionListener;
+import org.openmarkov.gui.graphic.VisualLink;
+import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.util.PropertyNames;
@@ -81,7 +90,7 @@ import java.util.prefs.BackingStoreException;
 public class MainPanelListenerAssistant extends WindowAdapter
         implements ActionListener, PropertyNames, ComponentListener {
     /**
-     * Value for the Zoom increment/decrement
+     * Value for the ZoomManager increment/decrement
      */
     private static final double zoomChangeValue = 0.2;
     /**
@@ -216,7 +225,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.NETWORK_PROPERTIES -> getCurrentNetworkPanel().changeNetworkProperties();
             case ActionCommands.EXPAND_NETWORK -> {
                 try {
-                    expandNetwork(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel()
+                    expandNetwork(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel().getEvidenceManager()
                                                                                                  .getPreResolutionEvidence());
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
                          NonProjectablePotentialException | NotSupportedOperationException ex) {
@@ -363,7 +372,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     getCurrentNetworkPanel().changeNodeProperties();
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
-                         ConstraintViolatedException ex) {
+                         ConstraintViolatedException | NotSupportedOperationException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -372,7 +381,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     getCurrentNetworkPanel().changePotential();
                 } catch (ThereIsNoPotentialsInNodeException | IncompatibleEvidenceException |
                          NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
-                         CannotNormalizePotentialException | ConstraintViolatedException ex) {
+                         CannotNormalizePotentialException | ConstraintViolatedException |
+                         NotSupportedOperationException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -419,8 +429,32 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.NODE_EXPANSION -> getCurrentNetworkPanel().expandNode();
-            case ActionCommands.NODE_CONTRACTION -> getCurrentNetworkPanel().contractNode();
+            case ActionCommands.NODE_EXPANSION -> {
+                NetworkPanel networkPanel = getCurrentNetworkPanel();
+                List<VisualNode> selectedNodes = networkPanel.getEditorPanel().getVisualNetwork().getSelectedNodes();
+                if (!selectedNodes.isEmpty()) {
+                    for (VisualNode visualNode : selectedNodes) {
+                        if (!(visualNode.isExpanded())) {
+                            visualNode.setExpanded(true);
+                            networkPanel.getEditorPanel().getVisualNetwork().setSelectedNode(visualNode, false);
+                        }
+                    }
+                }
+                networkPanel.getEditorPanel().repaint();
+            }
+            case ActionCommands.NODE_CONTRACTION -> {
+                NetworkPanel networkPanel = getCurrentNetworkPanel();
+                List<VisualNode> selectedNodes = networkPanel.getEditorPanel().getVisualNetwork().getSelectedNodes();
+                if (!selectedNodes.isEmpty()) {
+                    for (VisualNode visualNode : selectedNodes) {
+                        if (visualNode.isExpanded()) {
+                            visualNode.setExpanded(false);
+                            networkPanel.getEditorPanel().getVisualNetwork().setSelectedNode(visualNode, false);
+                        }
+                    }
+                }
+                networkPanel.getEditorPanel().repaint();
+            }
             case ActionCommands.NODE_ADD_FINDING -> getCurrentNetworkPanel().addFinding();
             case ActionCommands.NODE_REMOVE_FINDING -> {
                 try {
@@ -456,21 +490,50 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.HELP_ABOUT -> showAbout();
             case ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS -> {
                 try {
-                    this.getCurrentNetworkPanel().invertLinkAndUpdatePotentials();
+                    NetworkPanel networkPanel = this.getCurrentNetworkPanel();
+                    List<VisualLink> links = networkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks();
+                    if (!links.isEmpty()) {
+                        Link<Node> link = links.getFirst().getLink();
+                        Node node1 = link.getFrom();
+                        Node node2 = link.getTo();
+                        new InvertLinkAndUpdatePotentialsEdit(networkPanel.getEditorPanel()
+                                                                          .getVisualNetwork()
+                                                                          .getProbNet(), node1.getVariable(), node2.getVariable())
+                                .executeEdit();
+                    }
                 } catch (DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES, ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES ->
-                    this.getCurrentNetworkPanel().enableLinkRestriction();
+            case ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES, ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES -> {
+                NetworkPanel networkPanel = this.getCurrentNetworkPanel();
+                List<VisualLink> links = networkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks();
+                if (!links.isEmpty()) {
+                    Link<Node> link = links.getFirst().getLink();
+                    if (!link.hasRestrictions()) {
+                        link.initializesRestrictionsPotential();
+                    }
+                    new LinkRestrictionEditDialog(GUIUtils.getOwner(networkPanel.getEditorPanel()), link).requestValues();
+                    link.tryResetRestrictionsPotential();
+                    networkPanel.getEditorPanel().repaint();
+                }
+            }
             case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES -> {
                 try {
-                    this.getCurrentNetworkPanel().disableLinkRestriction();
+                    new RemoveLinkRestrictionEdit(this.getCurrentNetworkPanel().getEditorPanel().getVisualNetwork()).executeEdit();
                 } catch (DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> this.getCurrentNetworkPanel().enableRevelationArc();
+            case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> {
+                NetworkPanel networkPanel = this.getCurrentNetworkPanel();
+                List<VisualLink> links = networkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks();
+                if (!links.isEmpty()) {
+                    Link<Node> link = links.getFirst().getLink();
+                    Window owner = GUIUtils.getOwner(networkPanel.getEditorPanel());
+                    new RevelationArcEditDialog(owner, link).requestValues();
+                }
+            }
             case ActionCommands.DECISION_TREE -> {
                 try {
                     showDecisionTree(this.getCurrentNetworkPanel());
@@ -494,7 +557,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             case ActionCommands.NEXT_SLICE_NODE -> {
                 try {
-                    this.getCurrentNetworkPanel().createNextSliceNode();
+                    NetworkPanel networkPanel = this.getCurrentNetworkPanel();
+                    Node selectedNode = networkPanel.getEditorPanel().getVisualNetwork().getSelectedNodes().getFirst().getNode();
+                    Variable selectedVariable = selectedNode.getVariable();
+                    Variable newVariable = new Variable(selectedVariable);
+                    newVariable.setTimeSlice(selectedVariable.getTimeSlice() + 1);
+                    Point2D.Double position = new Point2D.Double(selectedNode.getCoordinateX() + 200,
+                                                                 selectedNode.getCoordinateY());
+                    new AddNodeEdit(networkPanel.getEditorPanel()
+                                                .getVisualNetwork().getProbNet(), newVariable, selectedNode.getNodeType(), position).executeEdit();
                 } catch (DoEditException ex) {
                     throw new UnrecoverableException(ex);
                 }
@@ -722,7 +793,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat) throws WriterException {
         System.out.println(stringDatabase.getString("SavingNetwork.Text") + " " + fileName);
-        NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidence(), fileName);
+        NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidenceManager().getEvidence(), fileName);
         
         // networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
         networkPanel.setModified(false);
@@ -953,7 +1024,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         networkPanel.setContextualMenuFactory(mainPanel.getContextualMenuFactory());
         // networkPanel.addEditionListener( mainPanel
         // .getMainPanelMenuAssistant() );
-        networkPanel.addSelectionListener(mainPanel.getMainPanelMenuAssistant());
+        networkPanel.getEditorPanel().getVisualNetwork().addSelectionListener(mainPanel.getMainPanelMenuAssistant());
         mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(networkPanel);
         // mainPanel.getMainPanelMenuAssistant().updateNetworkAgents(networkPanel);
@@ -996,7 +1067,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         if (evidence != null && !evidence.isEmpty()) {
             EvidenceCase preResolutionEvidence = evidence.get(0);
             evidence.remove(0);
-            networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
+            networkPanel.getEditorPanel().getEvidenceManager().setEvidence(preResolutionEvidence, evidence);
         }
         networkPanels.add(networkPanel);
         LastOpenFiles.setLastFileName(fileName);
@@ -1052,7 +1123,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         if (evidence != null && !evidence.isEmpty()) {
             EvidenceCase preResolutionEvidence = evidence.get(0);
             evidence.remove(0);
-            networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
+            networkPanel.getEditorPanel().getEvidenceManager().setEvidence(preResolutionEvidence, evidence);
         }
         networkPanels.add(networkPanel);
         LastOpenFiles.setLastFileName(urlFile);
@@ -1141,7 +1212,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @return true if the network has been closed; otherwise, false.
      */
-    public boolean closePanel(ZoomableContentPanel panel) throws WriterException {
+    public boolean closePanel(ZoomableContentPanel panel) {
         return panel.close();
     }
     
@@ -1195,7 +1266,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         
         //Stores the full path
         networkPanel.setNetworkFile(path + File.separator + fileName);
-        networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, new ArrayList<EvidenceCase>());
+        networkPanel.getEditorPanel().getEvidenceManager().setEvidence(preResolutionEvidence, new ArrayList<EvidenceCase>());
         networkPanels.add(networkPanel);
     }
 
@@ -1291,8 +1362,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private void saveEvidence(NetworkPanel currentNetworkPanel) {
         // TODO Implement
-        List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel().getEvidence();
-        evidence.add(0, currentNetworkPanel.getEditorPanel().getPreResolutionEvidence());
+        List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel().getEvidenceManager().getEvidence();
+        evidence.add(0, currentNetworkPanel.getEditorPanel().getEvidenceManager().getPreResolutionEvidence());
         OMFileChooser omFileChooser = new OMFileChooser();
         
         
@@ -1347,7 +1418,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     }
                     
                 }
-                currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
+                currentNetworkPanel.getEditorPanel().getEvidenceManager().addNewEvidenceCase(newEvidenceCase);
             }
             // save format extension in preferences
             LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.set(((FileFilterBasic) evidenceOMFileChooser.getFileFilter()).getFilterExtension());
@@ -1389,12 +1460,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private void undoRedo(boolean undoOperation) throws CannotUndoException, CannotRedoException {
         NetworkPanel networkPanel = getCurrentNetworkPanel();
+        networkPanel.getEditorPanel().getVisualNetwork().setSelectedAllObjects(false);
         if (undoOperation) {
-            networkPanel.undo();
-            networkPanel.repaint();
+            networkPanel.getEditorPanel().getVisualNetwork().getProbNet().getPNESupport().undo();
         } else {
-            networkPanel.redo();
-            networkPanel.repaint();
+            networkPanel.getEditorPanel().getVisualNetwork().getProbNet().getPNESupport().redo();
         }
     }
     
@@ -1522,7 +1592,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * This method sets the inference options.
      */
     private void setPropagationOptions() {
-        getCurrentNetworkPanel().setInferenceOptions();
+        NetworkPanel networkPanel = getCurrentNetworkPanel();
+        new PropagationOptionsDialog(GUIUtils.getOwner(networkPanel.getEditorPanel()), networkPanel.getEditorPanel(),
+                                     networkPanel.getMainPanel().getInferenceToolBar())
+                .setVisible(true);
         mainPanel.getMainPanelMenuAssistant().updatePropagateEvidenceButton();
     }
     
@@ -1552,28 +1625,28 @@ public class MainPanelListenerAssistant extends WindowAdapter
     }
     
     /**
-     * This method increments the zoom of the current panel.
+     * This method increments the zoomManager of the current panel.
      *
-     * @param zoomableContentPanel network whose zoom will be changed.
+     * @param zoomableContentPanel network whose zoomManager will be changed.
      */
     private void incrementZoom(ZoomableContentPanel zoomableContentPanel) {
         setZoom(zoomableContentPanel, zoomableContentPanel.getZoom() + zoomChangeValue);
     }
     
     /**
-     * This method decrements the zoom of the current panel.
+     * This method decrements the zoomManager of the current panel.
      *
-     * @param zoomableContentPanel network whose zoom will be changed.
+     * @param zoomableContentPanel network whose zoomManager will be changed.
      */
     private void decrementZoom(ZoomableContentPanel zoomableContentPanel) {
         setZoom(zoomableContentPanel, zoomableContentPanel.getZoom() - zoomChangeValue);
     }
     
     /**
-     * Sets the zoom of the current panel and updates the menu and the toolbar.
+     * Sets the zoomManager of the current panel and updates the menu and the toolbar.
      *
-     * @param zoomableContentPanel network whose zoom will be changed.
-     * @param value                new zoom value.
+     * @param zoomableContentPanel network whose zoomManager will be changed.
+     * @param value                new zoomManager value.
      */
     private void setZoom(ZoomableContentPanel zoomableContentPanel, double value) {
         zoomableContentPanel.setZoom(value);
@@ -1620,7 +1693,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
         if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
             DANEvaluation eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet, networkPanel.getEditorPanel()
-                                                                                                      .getPreResolutionEvidence());
+                                                                                                      .getEvidenceManager().getPreResolutionEvidence());
             StrategyTree strategyTree = eval.getUtility().strategyTrees[0];
             
             //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(GUIUtils.getOwner(mainPanel), probNet, inferenceAlgorithm);
@@ -1635,7 +1708,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             VEOptimalIntervention veOptimalStrategy = null;
             try {
                 veOptimalStrategy = new VEOptimalIntervention(probNet,
-                                                              networkPanel.getEditorPanel().getPreResolutionEvidence());
+                                                              networkPanel.getEditorPanel().getEvidenceManager().getPreResolutionEvidence());
             } catch (NotEvaluableNetworkException.NotApplicableNetwork |
                      NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException |
                      ConstraintViolatedException e) {

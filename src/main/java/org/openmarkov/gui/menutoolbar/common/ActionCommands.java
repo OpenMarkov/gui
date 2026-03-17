@@ -69,8 +69,8 @@ public enum ActionCommands {
     BYNAME_NODES("ByNameNodes"),
     /** Represents all the actions related to the nodes viewing. */
     NODES("Nodes"),
-    /** Represents all the actions related to the variable zoom options. */
-    ZOOM("Zoom"),
+    /** Represents all the actions related to the variable zoomManager options. */
+    ZOOM("ZoomManager"),
     /** Action invoked when the user wants to select all the objects. */
     SELECT_ALL("SelectAll"),
     /** Prefix used for edition mode changes */
@@ -184,9 +184,9 @@ public enum ActionCommands {
     INVERT_LINK_AND_UPDATE_POTENTIALS("InvertLinkAndUpdatePotentials"),
     /** Action invoked when the user wants to view a toolbar */
     VIEW_TOOLBARS("View.Toolbars"),
-    /** Action invoked when the user wants to increment the zoom of the panel. */
+    /** Action invoked when the user wants to increment the zoomManager of the panel. */
     ZOOM_IN("ZoomIn"),
-    /** Action invoked when the user wants to decrement the zoom of the panel. */
+    /** Action invoked when the user wants to decrement the zoomManager of the panel. */
     ZOOM_OUT("ZoomOut"),
     /** Action invoked when the user wants to cut to clipboard. */
     CLIPBOARD_CUT("ClipboardCut"),
@@ -247,7 +247,7 @@ public enum ActionCommands {
     TEMPORAL_EVOLUTION_ACTION("Temporal.Evolution"),
     /** Action invoked when the user selects temporal evolution menu item */
     NEXT_SLICE_NODE("Edit.NextSliceNode"),
-    /** Used only to guarantee that all zoom actions commands begin the same. */
+    /** Used only to guarantee that all zoomManager actions commands begin the same. */
     ZOOM_PREFIX("Zoom_");
     
     public String getCommandName() {
@@ -296,11 +296,11 @@ public enum ActionCommands {
     }
     
     /**
-     * Checks if the action command corresponds to a zoom action command.
+     * Checks if the action command corresponds to a zoomManager action command.
      *
      * @param actionCommand action command.
      *
-     * @return true if the action command corresponds to a zoom action command;
+     * @return true if the action command corresponds to a zoomManager action command;
      * otherwise, false.
      */
     public static boolean isZoomActionCommand(String actionCommand) {
@@ -320,12 +320,12 @@ public enum ActionCommands {
     }
     
     /**
-     * Returns the zoom value of a zoom action command.
+     * Returns the zoomManager value of a zoomManager action command.
      *
      * @param actionCommand action command.
      *
-     * @return the value of zoom of the action command or 0 if the action
-     * command isn't a zoom menu item.
+     * @return the value of zoomManager of the action command or 0 if the action
+     * command isn't a zoomManager menu item.
      */
     public static double getValueZoomActionCommand(String actionCommand) {
         int lengthZoomPrefix = ZOOM_PREFIX.commandName.length();
@@ -335,12 +335,12 @@ public enum ActionCommands {
     }
     
     /**
-     * Returns the action command associated with the specified zoom value.
+     * Returns the action command associated with the specified zoomManager value.
      *
-     * @param zoom value of the zoom.
+     * @param zoom value of the zoomManager.
      *
      * @return a string that represents an action command associated with the
-     * zoom value.
+     * zoomManager value.
      */
     public static String getZoomActionCommandValue(double zoom) {
         return ZOOM_PREFIX.commandName + (int) Math.round(zoom * 100);

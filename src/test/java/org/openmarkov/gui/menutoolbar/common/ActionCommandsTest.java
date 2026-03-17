@@ -29,7 +29,7 @@ public class ActionCommandsTest {
 
 	/**
 	 * This method tests that the method isZoomActionCommand can recognize the
-	 * zoom action commands.
+	 * zoomManager action commands.
 	 */
 	@Test public final void testIsZoomActionCommand() {
 		assertTrue(ActionCommands.isZoomActionCommand("Zoom_115"));
@@ -38,19 +38,19 @@ public class ActionCommandsTest {
 		assertFalse(ActionCommands.isZoomActionCommand("ZOOM_115"));
 		assertFalse(ActionCommands.isZoomActionCommand("Zoo115"));
 		assertFalse(ActionCommands.isZoomActionCommand("Zoom115"));
-		assertFalse(ActionCommands.isZoomActionCommand("Zoom 115"));
-		assertFalse(ActionCommands.isZoomActionCommand("Zoom-115"));
-		assertFalse(ActionCommands.isZoomActionCommand("Zoom.115"));
+		assertFalse(ActionCommands.isZoomActionCommand("ZoomManager 115"));
+		assertFalse(ActionCommands.isZoomActionCommand("ZoomManager-115"));
+		assertFalse(ActionCommands.isZoomActionCommand("ZoomManager.115"));
 		assertFalse(ActionCommands.isZoomActionCommand("Zoom11.5"));
-		assertFalse(ActionCommands.isZoomActionCommand("Zoom.115"));
-		assertFalse(ActionCommands.isZoomActionCommand("Zoom.cien"));
-		assertFalse(ActionCommands.isZoomActionCommand("Zoom.100c"));
-		assertFalse(ActionCommands.isZoomActionCommand("Zoom.c100"));
+		assertFalse(ActionCommands.isZoomActionCommand("ZoomManager.115"));
+		assertFalse(ActionCommands.isZoomActionCommand("ZoomManager.cien"));
+		assertFalse(ActionCommands.isZoomActionCommand("ZoomManager.100c"));
+		assertFalse(ActionCommands.isZoomActionCommand("ZoomManager.c100"));
 	}
 
 	/**
 	 * This method tests how the method getValueZoomActionCommand can extract
-	 * the zoom value from the action command string.
+	 * the zoomManager value from the action command string.
 	 */
 	@Test public final void testGetValueZoomActionCommand() {
 		assertEquals(ActionCommands.getValueZoomActionCommand("Zoom_100"), 1.0, 0.1);
@@ -62,7 +62,7 @@ public class ActionCommandsTest {
 
 	/**
 	 * This method tests how the method getZoomActionCommandValue builds various
-	 * zoom action commands from their values.
+	 * zoomManager action commands from their values.
 	 */
 	@Test public final void testGetActionCommandZoomValue() {
 		assertEquals(ActionCommands.getZoomActionCommandValue(1.0), "Zoom_100");

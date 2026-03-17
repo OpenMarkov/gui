@@ -9,23 +9,23 @@ package org.openmarkov.gui.window.edition;
 
 /**
  * This class is used to translate the coordinates of the screen to the
- * coordinates of a panel, according to a zoom value.
+ * coordinates of a panel, according to a zoomManager value.
  *
  * @author jmendoza
  * @version 1.1 jlgozalo - fix constants values adding final modifiers
  */
-public class Zoom {
+public class ZoomManager {
     
     public static final double MAX_VALUE = 5.0;
 	public static final double MIN_VALUE = 0.1;
 	public static final double DEFAULT_VALUE = 1.0;
 	private double zoom;
     
-    public Zoom() {
+    public ZoomManager() {
 		zoom = DEFAULT_VALUE;
 	}
     
-    public Zoom(final double newZoom) {
+    public ZoomManager(final double newZoom) {
         setZoom(newZoom <= 0 ? DEFAULT_VALUE : newZoom);
     }
  
@@ -40,7 +40,7 @@ public class Zoom {
 	/**
 	 * Converts a component of a coordinate of the screen to a component of a
 	 * coordinate in the panel. The result must be rounded because if not, a
-	 * little variation is added if the zoom isn't 1.0.
+	 * little variation is added if the zoomManager isn't 1.0.
 	 *
 	 * @param value a component of a coordinate of the screen.
 	 * @return a component of a coordinate of the panel.
@@ -52,7 +52,7 @@ public class Zoom {
 	/**
 	 * Converts a component of a coordinate of the panel to a component of a
 	 * coordinate in the screen. The result must be rounded because if not, a
-	 * little variation is added if the zoom isn't 1.0.
+	 * little variation is added if the zoomManager isn't 1.0.
 	 *
 	 * @param value a component of a coordinate of the panel.
 	 * @return a component of a coordinate of the screen.

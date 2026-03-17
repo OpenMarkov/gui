@@ -48,6 +48,7 @@ open module org.openmarkov.gui {
     exports org.openmarkov.gui.graphic;
     exports org.openmarkov.gui.componentBuilder;
     exports org.openmarkov.gui.commonComponents;
+    exports org.openmarkov.gui.window.edition.editorPanel;
     
     uses org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
     provides org.openmarkov.core.localize.spi.LocalizeResourcesProvider with GUIResourceBundleProvider;

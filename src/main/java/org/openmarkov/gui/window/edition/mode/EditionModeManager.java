@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.loader.element.CursorLoader;
-import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 import org.openmarkov.plugin.PluginSearch;
 
 import java.awt.*;

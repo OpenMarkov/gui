@@ -9,14 +9,14 @@ package org.openmarkov.gui.menutoolbar.common;
 
 /**
  * This interface defines the method that menus and toolbars must implement to
- * manage zoom.
+ * manage zoomManager.
  *
  * @author jmendoza
  */
 public interface ZoomMenuToolBar {
 
 	/**
-	 * This method makes that the corresponding field show the zoom value.
+	 * This method makes that the corresponding field show the zoomManager value.
 	 *
 	 * @param value
 	 */

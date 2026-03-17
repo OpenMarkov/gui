@@ -12,14 +12,20 @@ import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.PNEditListener;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.action.PasteEdit;
+import org.openmarkov.gui.action.RemoveSelectedEdit;
 import org.openmarkov.gui.util.MovedNodeInfo;
 import org.openmarkov.gui.window.MainGUI;
-import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.EditorPanelClipboardAssistant;
+import org.openmarkov.gui.window.edition.SelectedContent;
+import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -40,7 +46,7 @@ public class VisualNetwork implements PNEditListener {
     /**
      * Network whose visual representation is managed by this object.
      */
-    protected ProbNet probNet;
+    private final ProbNet probNet;
     
     private final MainGUI mainGUI;
     
@@ -49,54 +55,59 @@ public class VisualNetwork implements PNEditListener {
      */
     // TODO este valor debe asignarse usando las preferencias de usuario de
     // visualización de redes
-    protected boolean byTitle = false;
+    private boolean byTitle = false;
     
     /**
      * List of visual nodes.
      */
-    protected List<VisualNode> visualNodes = new ArrayList<VisualNode>();
+    private List<VisualNode> visualNodes = new ArrayList<VisualNode>();
     
     /**
      * List of visual links.
      */
-    protected List<VisualLink> visualLinks = new ArrayList<VisualLink>();
+    private final List<VisualLink> visualLinks = new ArrayList<VisualLink>();
     
     /**
      * Set of selected nodes.
      */
-    protected Set<VisualNode> selectedNodes = new HashSet<VisualNode>();
+    private final Set<VisualNode> selectedNodes = new HashSet<VisualNode>();
     
     /**
      * Set of selected links.
      */
-    protected Set<VisualLink> selectedLinks = new HashSet<VisualLink>();
+    private final Set<VisualLink> selectedLinks = new HashSet<VisualLink>();
     
     /**
      * This object represents the arrow that is painted when a new link is being
      * created.
      */
-    protected VisualArrow newLink = null;
+    private VisualArrow newLink = null;
     
     /**
      * This object represents the source node of a new link.
      */
-    protected VisualNode newLinkSource = null;
+    private VisualNode newLinkSource = null;
     
     /**
      * Rectangle used to select various nodes.
      */
     protected SelectionRectangle selection = null;
     
-    protected boolean isPropagationActive = true;
+    private boolean isPropagationActive = true;
     
-    protected NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
+    private NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
     
     /**
      * Listener to the selection.
      */
-    protected Set<SelectionListener> selectionListeners = new HashSet<SelectionListener>();
+    private final Set<SelectionListener> selectionListeners = new HashSet<SelectionListener>();
     
     protected Graphics2D g2;
+    
+    /**
+     * Object that assists this panel in the operations with the clipboard.
+     */
+    private final EditorPanelClipboardAssistant clipboardAssistant;
     
     //private LinkWrapper linkWrapper;
     /**
@@ -113,10 +124,15 @@ public class VisualNetwork implements PNEditListener {
         this.probNet = probNet;
         this.mainGUI = mainGUI;
         this.probNet.getPNESupport().addListener(this);
+        this.clipboardAssistant = new EditorPanelClipboardAssistant();
         
         //network.addNetworkChangeListener(this);
         //changed by mpalacios
         constructVisualInfo();
+    }
+    
+    public ProbNet getProbNet() {
+        return this.probNet;
     }
     
     /**
@@ -158,7 +174,7 @@ public class VisualNetwork implements PNEditListener {
      * only creates visual information for the new nodes and links and delete
      * the visual representation of the nodes and links that don't exist.
      */
-    protected void constructVisualInfo() {
+    private void constructVisualInfo() {
         reconstructVisualInfo((visualNode, currentNodesToAdd) ->
                 currentNodesToAdd.contains(visualNode.getNode())
                         && visualNode.getTemporalPosition().getX()
@@ -228,7 +244,7 @@ public class VisualNetwork implements PNEditListener {
      *
      * @return True iff the link contains the node to delete
      */
-    protected static boolean containsNodeToDelete(Link<Node> linkToCheck, List<VisualNode> vNodesToDelete) {
+    private static boolean containsNodeToDelete(Link<Node> linkToCheck, List<VisualNode> vNodesToDelete) {
         
         for (VisualNode vNode : vNodesToDelete)
             if (linkToCheck.contains(vNode.getNode()))
@@ -244,9 +260,7 @@ public class VisualNetwork implements PNEditListener {
      * name.
      */
     public boolean getByTitle() {
-        
         return byTitle;
-        
     }
     
     /**
@@ -339,7 +353,7 @@ public class VisualNetwork implements PNEditListener {
      *
      * @param g the graphics context in which to paint.
      */
-    protected void paintNodes(Graphics2D g) {
+    private void paintNodes(Graphics2D g) {
         visualNodes = reorderVisualNodes();
         for (int i = (visualNodes.size() - 1); i >= 0; i--) {
             if (visualNodes.get(i).isVisible()) {
@@ -353,7 +367,7 @@ public class VisualNetwork implements PNEditListener {
      *
      * @param g the graphics context in which to paint.
      */
-    protected void paintLinks(Graphics2D g) {
+    private void paintLinks(Graphics2D g) {
         
         for (VisualLink visualLink : visualLinks) {
             visualLink.paint(g);
@@ -507,7 +521,7 @@ public class VisualNetwork implements PNEditListener {
      * @param element  element to be selected/deselected.
      * @param selected new selection state.
      */
-    protected void setSelectedElement(VisualElement element, boolean selected) {
+    private void setSelectedElement(VisualElement element, boolean selected) {
         if (selected == element.isSelected()) {
             return;
         }
@@ -573,7 +587,7 @@ public class VisualNetwork implements PNEditListener {
      * @param link     link to be selected/deselected.
      * @param selected new selection state.
      */
-    public void setSelectedLink(VisualLink link, boolean selected) {
+    private void setSelectedLink(VisualLink link, boolean selected) {
         
         setSelectedElement(link, selected);
         
@@ -621,7 +635,7 @@ public class VisualNetwork implements PNEditListener {
      *
      * @param selected new selection state.
      */
-    public void setSelectedAllLinks(boolean selected) {
+    private void setSelectedAllLinks(boolean selected) {
         
         for (VisualLink link : visualLinks) {
             setSelectedElement(link, selected);
@@ -687,7 +701,7 @@ public class VisualNetwork implements PNEditListener {
      * @param diffX X-axis movement.
      * @param diffY Y-axis movement.
      */
-    protected void moveSelectedNodes(double diffX, double diffY) {
+    private void moveSelectedNodes(double diffX, double diffY) {
         
         moveNodes(diffX, diffY, true);
         
@@ -711,7 +725,7 @@ public class VisualNetwork implements PNEditListener {
      *
      * @param selection object that manages the selection.
      */
-    public void selectElementsInsideSelection(SelectionRectangle selection) {
+    private void selectElementsInsideSelection(SelectionRectangle selection) {
         
         setSelectedAllNodes(false);
         setSelectedAllLinks(false);
@@ -803,7 +817,7 @@ public class VisualNetwork implements PNEditListener {
      *
      * @return a list of links related to the nodes.
      */
-    public List<VisualLink> getLinksOfNodes(List<VisualNode> nodes, boolean onlyBothEnds) {
+    private List<VisualLink> getLinksOfNodes(List<VisualNode> nodes, boolean onlyBothEnds) {
         ArrayList<VisualLink> links = new ArrayList<VisualLink>();
         int l = nodes.size();
         for (VisualLink visualLink : visualLinks) {
@@ -895,7 +909,7 @@ public class VisualNetwork implements PNEditListener {
      * are selected, and which are the especific selected nodes.
      * Also notifies this situation to the menu assistant.
      */
-    protected void notifyObjectsSelected() {
+    private void notifyObjectsSelected() {
         
         for (SelectionListener listener : selectionListeners) {
             listener.objectsSelected(getSelectedNodes(), getSelectedLinks());
@@ -926,7 +940,7 @@ public class VisualNetwork implements PNEditListener {
         mainGUI.mainPanel.getEditionToolBar().getRedoButton().setEnabled(this.probNet.getPNESupport().getCanRedo());
     }
     
-    public void visualDecisionNodeRefresh() {
+    private void visualDecisionNodeRefresh() {
         reconstructVisualInfo((visualNode, currentNodesToAdd)
                 -> visualNode.getNode().getNodeType() != NodeType.DECISION);
     }
@@ -938,7 +952,7 @@ public class VisualNetwork implements PNEditListener {
      *
      * @return the visual representation of the node.
      */
-    protected VisualNode createVisualNode(Node node) {
+    private VisualNode createVisualNode(Node node) {
         
         VisualNode visualNode = switch (node.getNodeType()) {
             case CHANCE -> new VisualChanceNode(node, this);
@@ -950,6 +964,14 @@ public class VisualNetwork implements PNEditListener {
     }
     
     @Override public void afterUndoingEdit(PNEdit edit) {
+        refreshUI();
+    }
+    
+    @Override public void afterRedoingEdit(PNEdit edit) {
+        refreshUI();
+    }
+    
+    private void refreshUI() {
         constructVisualInfo();
         if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();
@@ -958,24 +980,6 @@ public class VisualNetwork implements PNEditListener {
         mainGUI.mainPanel.getEditionToolBar().getUndoButton().setEnabled(canUndo);
         boolean canRedo = this.probNet.getPNESupport().getCanRedo();
         mainGUI.mainPanel.getEditionToolBar().getRedoButton().setEnabled(canRedo);
-    }
-    
-    public void setProbNet(ProbNet probNet) {
-        if (!this.probNet.equals(probNet)) {
-            this.probNet = probNet;
-            setSelectedAllObjects(false);
-            clean();
-            constructVisualInfo();
-        }
-    }
-    
-    protected void clean() {
-        visualNodes.clear();
-        visualLinks.clear();
-        selectedNodes.clear();
-        selectedLinks.clear();
-        newLink = null;
-        newLinkSource = null;
     }
     
     /**
@@ -1097,7 +1101,7 @@ public class VisualNetwork implements PNEditListener {
      *
      * @return the isPropagationActive.
      */
-    public boolean isPropagationActive() {
+    boolean isPropagationActive() {
         return isPropagationActive;
     }
     
@@ -1123,5 +1127,51 @@ public class VisualNetwork implements PNEditListener {
     public void selectElement(VisualElement selectedElement) {
         setSelectedAllObjects(false);
         setSelectedElement(selectedElement, true);
+    }
+    
+    /**
+     * This method copies the selected nodes to the clipboard.
+     *
+     * @param cut if true, the nodes copied to the clipboard are also removed.
+     */
+    public void exportToClipboard(boolean cut) {
+        List<Node> selectedNodes = this
+                .getSelectedNodes().stream().map(VisualNode::getNode).toList();
+        List<Link<Node>> selectedLinks = this
+                .getSelectedLinks().stream().map(VisualLink::getLink).toList();
+        SelectedContent copiedContent = new SelectedContent(selectedNodes, selectedLinks);
+        if (!copiedContent.isEmpty()) {
+            this.clipboardAssistant.copyToClipboard(copiedContent);
+            if (cut) {
+                this.removeSelectedObjects();
+            }
+        }
+    }
+    
+    /**
+     * Removes selected objects
+     */
+    public void removeSelectedObjects() {
+        this.setSelectedAllObjects(false);
+        try {
+            new RemoveSelectedEdit(this).executeEdit();
+        } catch (DoEditException e) {
+            throw new UnrecoverableException(e);
+        }
+    }
+    
+    /**
+     * This method imports the content from the clipboard and creates it in the
+     * network.
+     */
+    public void pasteFromClipboard() throws DoEditException {
+        if (!this.clipboardAssistant.isThereDataStored()) {
+            return;
+        }
+        new PasteEdit(this.getProbNet(), this.clipboardAssistant.paste()).executeEdit();
+    }
+    
+    public EditorPanelClipboardAssistant getClipboardAssistant() {
+        return this.clipboardAssistant;
     }
 }

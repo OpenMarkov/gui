@@ -51,7 +51,7 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
     /**
      * Constructor that fills and initialize the combobox.
      *
-     * @param newListener object that listens to the zoom values.
+     * @param newListener object that listens to the zoomManager values.
      */
     public ZoomComboBox(ActionListener newListener) {
         super(ZOOM_VALUES);
@@ -91,9 +91,9 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
      * Returns an integer that contains the value of the string. The string can
      * contain the symbol '%' at the end.
      *
-     * @param zoomString string that contains a zoom value.
+     * @param zoomString string that contains a zoomManager value.
      *
-     * @return the integer zoom value or null if the string has not a correct
+     * @return the integer zoomManager value or null if the string has not a correct
      * value.
      */
     private static Integer getZoomValue(String zoomString) {
@@ -146,7 +146,7 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
     /**
      * This method sets the value of the combobox.
      *
-     * @param value new value of zoom.
+     * @param value new value of zoomManager.
      */
     public void setZoom(double value) {
         setSelectedItem((int) Math.round(value * 100) + "%");

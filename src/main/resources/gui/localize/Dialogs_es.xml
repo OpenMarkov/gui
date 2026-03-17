@@ -327,7 +327,7 @@
         </Title>
     </HTMLTextEditor>
     <ZoomValues>
-        <Title value="Valores de zoom:"/>
+        <Title value="Valores de zoomManager:"/>
     </ZoomValues>
     <NetworkURLValues>
         <Title value="URL de la red."/>
@@ -884,7 +884,7 @@
         </Title>
     </NodeRelation>
     <SelectZoom>
-        <Title value="Seleccionar zoom"/>
+        <Title value="Seleccionar zoomManager"/>
     </SelectZoom>
     <SelectNetworkURL>
         <Title value="Abrir archivo desde URL"/>

@@ -12,7 +12,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.util.GUIDefaultStates;
 import org.openmarkov.gui.util.GUIUtils;
-import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 
 import javax.swing.*;
 import java.awt.*;

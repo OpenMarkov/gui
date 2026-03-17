@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog;
 
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
-import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 
 import javax.swing.*;
 import java.awt.*;

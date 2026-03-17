@@ -346,62 +346,62 @@ public class MenuItemNames {
 	public static final String VIEW_NODES_BYTITLE_MENUITEM = VIEW_NODES_MENU + ".ByTitle";
 
 	/**
-	 * String database token for the item 'View - Zoom'.
+	 * String database token for the item 'View - ZoomManager'.
 	 */
-	public static final String VIEW_ZOOM_MENU = VIEW_MENU + ".Zoom";
+	public static final String VIEW_ZOOM_MENU = VIEW_MENU + ".ZoomManager";
 
 	/**
-	 * String database token for the item 'View - Zoom - Zoom in'.
+	 * String database token for the item 'View - ZoomManager - ZoomManager in'.
 	 */
 	public static final String VIEW_ZOOM_IN_MENUITEM = VIEW_ZOOM_MENU + ".ZoomIn";
 
 	/**
-	 * String database token for the item 'View - Zoom - Zoom out'.
+	 * String database token for the item 'View - ZoomManager - ZoomManager out'.
 	 */
 	public static final String VIEW_ZOOM_OUT_MENUITEM = VIEW_ZOOM_MENU + ".ZoomOut";
 
 	/**
-	 * String database token for the item 'View - Zoom - 500%'.
+	 * String database token for the item 'View - ZoomManager - 500%'.
 	 */
 	public static final String VIEW_ZOOM_500_MENUITEM = VIEW_ZOOM_MENU + ".x500";
 
 	/**
-	 * String database token for the item 'View - Zoom - 200%'.
+	 * String database token for the item 'View - ZoomManager - 200%'.
 	 */
 	public static final String VIEW_ZOOM_200_MENUITEM = VIEW_ZOOM_MENU + ".x200";
 
 	/**
-	 * String database token for the item 'View - Zoom - 150%'.
+	 * String database token for the item 'View - ZoomManager - 150%'.
 	 */
 	public static final String VIEW_ZOOM_150_MENUITEM = VIEW_ZOOM_MENU + ".x150";
 
 	/**
-	 * String database token for the item 'View - Zoom - 100%'.
+	 * String database token for the item 'View - ZoomManager - 100%'.
 	 */
 	public static final String VIEW_ZOOM_100_MENUITEM = VIEW_ZOOM_MENU + ".x100";
 
 	/**
-	 * String database token for the item 'View - Zoom - 75%'.
+	 * String database token for the item 'View - ZoomManager - 75%'.
 	 */
 	public static final String VIEW_ZOOM_75_MENUITEM = VIEW_ZOOM_MENU + ".x75";
 
 	/**
-	 * String database token for the item 'View - Zoom - 50%'.
+	 * String database token for the item 'View - ZoomManager - 50%'.
 	 */
 	public static final String VIEW_ZOOM_50_MENUITEM = VIEW_ZOOM_MENU + ".x50";
 
 	/**
-	 * String database token for the item 'View - Zoom - 25%'.
+	 * String database token for the item 'View - ZoomManager - 25%'.
 	 */
 	public static final String VIEW_ZOOM_25_MENUITEM = VIEW_ZOOM_MENU + ".x25";
 
 	/**
-	 * String database token for the item 'View - Zoom - 10%'.
+	 * String database token for the item 'View - ZoomManager - 10%'.
 	 */
 	public static final String VIEW_ZOOM_10_MENUITEM = VIEW_ZOOM_MENU + ".x10";
 
 	/**
-	 * String database token for the item 'View - Zoom - Other'.
+	 * String database token for the item 'View - ZoomManager - Other'.
 	 */
 	public static final String VIEW_ZOOM_OTHER_MENUITEM = VIEW_ZOOM_MENU + ".Other";
 

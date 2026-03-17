@@ -12,7 +12,7 @@ import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
-import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 
 import java.awt.event.ActionListener;
 

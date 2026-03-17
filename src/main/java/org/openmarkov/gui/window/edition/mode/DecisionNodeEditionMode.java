@@ -8,7 +8,7 @@ package org.openmarkov.gui.window.edition.mode;
 
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 
 @EditionState(name = "Edit.Mode.Decision", icon = "decision.gif", cursor = "decision.gif") public class DecisionNodeEditionMode
 		extends NodeEditionMode {

@@ -28,7 +28,7 @@ import org.openmarkov.gui.localize.MenuLocalizer;
 import org.openmarkov.gui.menutoolbar.common.*;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
-import org.openmarkov.gui.window.edition.Zoom;
+import org.openmarkov.gui.window.edition.ZoomManager;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
             ActionCommands.GO_TO_NEXT_EVIDENCE_CASE, ActionCommands.GO_TO_LAST_EVIDENCE_CASE,
             ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES, ActionCommands.PROPAGATE_EVIDENCE};
     /**
-     * Menus and toolbar that manage zoom.
+     * Menus and toolbar that manage zoomManager.
      */
     private ZoomMenuToolBar[] zoomMenus;
     /**
@@ -84,7 +84,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
      * Constructor that registers the arrays of menus.
      *
      * @param newBasicMenus array of basic menus and toolbars.
-     * @param newZoomMenus  array of zoom menus and toolbars.
+     * @param newZoomMenus  array of zoomManager menus and toolbars.
      * @param mainPanel     MainPanel that creates this MainPanelMenuAssistant.
      */
     public MainPanelMenuAssistant(MenuToolBarBasic[] newBasicMenus, ZoomMenuToolBar[] newZoomMenus,
@@ -99,16 +99,16 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     }
     
     /**
-     * Sets the zoom value on the menus and toolbars.
+     * Sets the zoomManager value on the menus and toolbars.
      *
-     * @param value new zoom value.
+     * @param value new zoomManager value.
      */
     public void setZoom(double value) {
         for (ZoomMenuToolBar menu : zoomMenus) {
             menu.setZoom(value);
         }
-        setOptionEnabled(ActionCommands.ZOOM_OUT, value != Zoom.MIN_VALUE);
-        setOptionEnabled(ActionCommands.ZOOM_IN, value != Zoom.MAX_VALUE);
+        setOptionEnabled(ActionCommands.ZOOM_OUT, value != ZoomManager.MIN_VALUE);
+        setOptionEnabled(ActionCommands.ZOOM_IN, value != ZoomManager.MAX_VALUE);
     }
     
     /**
@@ -229,10 +229,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
             return;
         }
         ProbNet probNet = currentNetworkPanel.getProbNet();
-
+        
         setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC,
-                probNet.getDecisionCriteria() != null && probNet.getDecisionCriteria().size() > 1);
-
+                         probNet.getDecisionCriteria() != null && probNet.getDecisionCriteria().size() > 1);
+        
         boolean hasUncertainty = false;
         for (Node node : probNet.getNodes()) {
             for (Potential potential : node.getPotentials()) {
@@ -253,7 +253,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                 }
             }
         }
-
+        
         setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, hasUncertainty);
     }
     
@@ -406,7 +406,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
          * break; } } }
          */
         setOptionEnabled(ActionCommands.SAVE_NETWORK, currentNetworkPanel.getModified());
-        objectsSelected(currentNetworkPanel.getSelectedNodes(), currentNetworkPanel.getSelectedLinks());
+        objectsSelected(currentNetworkPanel.getEditorPanel().getVisualNetwork().getSelectedNodes(),
+                        currentNetworkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks());
         setZoom(currentNetworkPanel.getZoom());
         /*
          * updateUndoRedo(networkPanel.getUndoManager().canUndo(),
@@ -463,7 +464,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                 setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, !networkPanel.isPropagationActive());
             }
         }
-        objectsSelected(networkPanel.getSelectedNodes(), networkPanel.getSelectedLinks());
+        objectsSelected(networkPanel.getEditorPanel()
+                                    .getVisualNetwork()
+                                    .getSelectedNodes(), networkPanel.getEditorPanel()
+                                                                     .getVisualNetwork()
+                                                                     .getSelectedLinks());
     }
     
     /**

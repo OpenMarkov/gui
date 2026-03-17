@@ -45,15 +45,15 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
      */
     private JButton closeNetworkButton = null;
     /**
-     * Button to zoom in a network.
+     * Button to zoomManager in a network.
      */
     private JButton zoomInButton = null;
     /**
-     * Button to zoom out a network.
+     * Button to zoomManager out a network.
      */
     private JButton zoomOutButton = null;
     /**
-     * Combobox to select zoom values.
+     * Combobox to select zoomManager values.
      */
     private ZoomComboBox zoomComboBox = null;
     /**
@@ -203,7 +203,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     /**
      * This method initialises zoomComboBox.
      *
-     * @return a new zoom combobox.
+     * @return a new zoomManager combobox.
      */
     private ZoomComboBox getZoomComboBox() {
         if (zoomComboBox == null) {
@@ -216,7 +216,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     /**
      * This method sets the value of the combobox.
      *
-     * @param value new value of zoom.
+     * @param value new value of zoomManager.
      */
     @Override public void setZoom(double value) {
         zoomComboBox.setZoom(value);

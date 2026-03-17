@@ -43,7 +43,7 @@ import java.io.IOException;
 
 /**
  * A scrollable container that displays and manages a visual decision tree.
- * It handles tree generation, zoom levels, and dynamic expansion through
+ * It handles tree generation, zoomManager levels, and dynamic expansion through
  * inference.
  */
 @SuppressWarnings("serial")
@@ -137,18 +137,18 @@ public class DecisionTreePanel extends JScrollPane {
     }
 
     /**
-     * Returns the zoom.
+     * Returns the zoomManager.
      *
-     * @return the zoom.
+     * @return the zoomManager.
      */
     protected double getZoom() {
         return jTree.getZoom();
     }
 
     /**
-     * Sets the zoom.
+     * Sets the zoomManager.
      *
-     * @param zoom the zoom to set.
+     * @param zoom the zoomManager to set.
      */
     protected void setZoom(Double zoom) {
         jTree.setZoom(zoom);

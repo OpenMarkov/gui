@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.action.MoveNodeEdit;
 import org.openmarkov.gui.graphic.VisualElement;
 import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 
 import javax.swing.*;
 import java.awt.*;

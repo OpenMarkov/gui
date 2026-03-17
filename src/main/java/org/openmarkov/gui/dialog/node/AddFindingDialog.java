@@ -11,7 +11,7 @@ import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -183,9 +183,9 @@ public class AddFindingDialog extends OkCancelDialog {
             newFinding = new Finding(variable, (Double) getSelectedState());
         }
         if (!visualNode.isPreResolutionFinding()) {
-            editorPanel.setNewFinding(visualNode, null, newFinding, false);
+            editorPanel.getEvidenceManager().setNewFinding(visualNode, null, newFinding, false);
         } else {
-            editorPanel.setNewFinding(visualNode, previousFinding, newFinding, false);
+            editorPanel.getEvidenceManager().setNewFinding(visualNode, previousFinding, newFinding, false);
         }
         
         

@@ -19,7 +19,7 @@ import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
-import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;

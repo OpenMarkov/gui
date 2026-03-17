@@ -886,7 +886,7 @@
         </Title>
     </NodeRelation>
     <SelectZoom>
-        <Title value="Select zoom"/>
+        <Title value="Select zoomManager"/>
     </SelectZoom>
     <SelectNetworkURL>
         <Title value="Network URL"/>
