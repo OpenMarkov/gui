@@ -12,19 +12,18 @@ import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.component.FrameMirror;
-import org.openmarkov.gui.configuration.LocalPreference;
 import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.dialog.SplashScreenLoader;
 import org.openmarkov.gui.dialog.common.WindowDimensions;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
 import org.openmarkov.plugin.PluginSearch;
-import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.io.Serial;
 
 /**
  * This class constructs the main GUI in a frame with a splash screen during the
@@ -34,8 +33,11 @@ import java.io.IOException;
  * @author jlgozalo
  * @version 1.3 jlgozalo - replacing System.err with JOptionPane
  */
-@SuppressWarnings("serial") public class MainGUI extends JFrame {
-    
+public class MainGUI extends JFrame {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     public static final MainGUI INSTANCE = new MainGUI();
     
     public final MainPanel mainPanel;
@@ -179,7 +181,7 @@ import java.io.IOException;
      *
      * @param fileName
      */
-    public void openNetwork(String fileName) throws ParserException, IOException, SAXException, NoReaderForFileException, CorruptNetworkFile {
+    public void openNetwork(String fileName) throws ParserException, IOException, NoReaderForFileException, CorruptNetworkFile {
         mainPanel.openNetwork(fileName);
     }
     

@@ -25,7 +25,6 @@ import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
 import org.openmarkov.gui.menutoolbar.toolbar.StandardToolBar;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.NetworkPanel;
-import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -227,8 +226,8 @@ public class MainPanel extends JPanel {
                 frame.setJMenuBar(this.getMainMenu());
                 frame.addWindowListener(mainPanelListenerAssistant);
                 frame.addComponentListener(mainPanelListenerAssistant);
-            } else if (container instanceof JApplet) {
-                ((JApplet) container).setJMenuBar(this.getMainMenu());
+//            } else if (container instanceof JApplet) {
+//                ((JApplet) container).setJMenuBar(this.getMainMenu());
             }
         }
         
@@ -398,7 +397,7 @@ public class MainPanel extends JPanel {
      *
      * @param fileName
      */
-    public void openNetwork(String fileName) throws ParserException, IOException, SAXException, NoReaderForFileException, CorruptNetworkFile {
+    public void openNetwork(String fileName) throws ParserException, IOException, NoReaderForFileException, CorruptNetworkFile {
         this.getMainPanelListenerAssistant().openNetwork(fileName);
     }
     

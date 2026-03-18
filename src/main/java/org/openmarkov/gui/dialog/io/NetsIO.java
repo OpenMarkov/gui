@@ -21,8 +21,6 @@ import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
-import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -164,7 +162,7 @@ public class NetsIO {
                     " is likely we want it to receive an URL to the file instead of a String containing the filename. " +
                     "Duplicated methods should be avoided if doing this, as the current implementation duplicates some."
     )
-    public static ProbNetInfo openNetworkFile(String fileName) throws IOException, SAXException, ParserException, NoReaderForFileException, CorruptNetworkFile {
+    public static ProbNetInfo openNetworkFile(String fileName) throws IOException, ParserException, NoReaderForFileException, CorruptNetworkFile {
         return NetsIO.openNetworkURL(new File(fileName).toURI().toURL());
     }
     
@@ -178,7 +176,7 @@ public class NetsIO {
      *
      * @throws Exception if the file doesn't exist or the file format isn't correct.
      */
-    public static ProbNetInfo openNetworkURL(URL url) throws SAXException, IOException, org.openmarkov.core.exception.ParserException, NoReaderForFileException, CorruptNetworkFile {
+    public static ProbNetInfo openNetworkURL(URL url) throws IOException, org.openmarkov.core.exception.ParserException, NoReaderForFileException, CorruptNetworkFile {
         String networkName = url.getPath();
         networkName = networkName.substring(networkName.lastIndexOf('/') + 1);
         FormatManager formatManager = FormatManager.getInstance();
