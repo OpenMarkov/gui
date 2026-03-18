@@ -8,7 +8,7 @@
 package org.openmarkov.gui.menutoolbar.toolbar.plugin;
 
 import org.jetbrains.annotations.NotNull;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.gui.menutoolbar.toolbar.ToolBarBasic;
 import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.plugin.PluginSearch;
@@ -42,7 +42,7 @@ public class ToolbarManager {
                     instance = (ToolBarBasic) constructor.newInstance(mainPanel.getMainPanelListenerAssistant());
                 } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                          InvocationTargetException e) {
-                    throw new UnreacheableException(e);
+                    throw new UnreachableException(e);
                 }
             }
             mainPanel.getToolBarPanel().add(instance);

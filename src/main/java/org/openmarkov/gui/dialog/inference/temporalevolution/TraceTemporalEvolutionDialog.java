@@ -353,7 +353,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             } catch (IndexOutOfBoundsException ignore) {
                 //When pressing "Cancel" in progressMonitor
             } catch (NotEvaluableNetworkException.NotApplicableNetwork |
-                     NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException |
+                     NotEvaluableNetworkException.UnsatisfiedConstraints | IncompatibleEvidenceException |
                      NotEvaluableNetworkException.VariableIsNotTemporal | NonProjectablePotentialException |
                      ConstraintViolatedException e) {
                 throw new UnrecoverableException(e);
@@ -405,7 +405,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 try {
                     xySeriesWithUpfront = (XYSeries) (display.remove(seriesNumber)).clone();
                 } catch (CloneNotSupportedException e) {
-                    throw new UnreacheableException(e);
+                    throw new UnreachableException(e);
                 }
                 XYDataItem firstDataItem = xySeriesWithUpfront.remove(0);
                 //adding atemporal data
@@ -917,7 +917,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 try {
                     createByCriterionSeries();
                 } catch (UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable e) {
-                    throw new UnreacheableException(e);
+                    throw new UnreachableException(e);
                 }
                 chartPanelWithCheckBox.add(getChartsByCriterionPanel(displaySeries(true, true), markedCheckBoxes), BorderLayout.CENTER);
             } else
@@ -1204,7 +1204,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title"), null, getTablePane(),
                                   null);
             } catch (UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         } else
             // end
@@ -1319,7 +1319,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 try {
                     serie = (XYSeries) displaySeries.get(i).clone();
                 } catch (CloneNotSupportedException e) {
-                    throw new UnreacheableException(e);
+                    throw new UnreachableException(e);
                 }
                 serie.setKey(nameOfSerie);
                 result.addSeries(serie);

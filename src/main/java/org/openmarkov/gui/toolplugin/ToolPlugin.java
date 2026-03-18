@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.window.MainGUI;
 
@@ -64,7 +64,7 @@ public interface ToolPlugin {
         menuItem.addActionListener(e -> {
             try {
                 info.onClickAction().accept(MainGUI.INSTANCE.mainPanel.getMainFrame());
-            } catch (UnrecoverableException | UnreacheableException ex) {
+            } catch (UnrecoverableException | UnreachableException ex) {
                 throw ex;
             } catch (Exception ex) {
                 throw new UnrecoverableException(ex);

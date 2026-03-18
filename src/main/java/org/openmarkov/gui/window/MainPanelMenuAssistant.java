@@ -11,7 +11,7 @@ import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.exception.NotSupportedOperationException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
@@ -249,7 +249,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                         }
                     }
                 } catch (NotSupportedOperationException e) {
-                    throw new UnreacheableException(e);
+                    throw new UnreachableException(e);
                 }
             }
         }

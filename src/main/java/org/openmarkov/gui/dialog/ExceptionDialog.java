@@ -97,7 +97,7 @@ public class ExceptionDialog {
                 String message = (String) getExceptionMessage.invoke(openMarkovException);
                 return new TitleAndMessage(title, message);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
-                throw new UnreacheableException(ex);
+                throw new UnreachableException(ex);
             }
              */
             return new TitleAndMessage(openMarkovException.getExceptionTitle(), openMarkovException.getExceptionMessage());

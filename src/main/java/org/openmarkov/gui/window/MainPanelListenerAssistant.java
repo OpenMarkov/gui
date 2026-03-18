@@ -215,7 +215,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.LOAD_EVIDENCE -> {
                 try {
                     loadEvidence(getCurrentNetworkPanel());
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException | ParsingSourceException |
                          IOException | EmptyDatabaseException | ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
@@ -269,16 +269,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 NetworkPanel.WorkingMode initialWorkingMode = getCurrentNetworkPanel().getWorkingMode();
                 try {
                     toggleWorkingMode();
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ConstraintViolatedException | RuntimeException ex) {
                     //On fail, go back to the previous working mode.
                     try {
                         setWorkingMode(initialWorkingMode, initialWorkingMode);
                     } catch (NotEvaluableNetworkException | NonProjectablePotentialException |
-                             NotEnoughtMemoryException | IncompatibleEvidenceException |
+                             NotEnoughMemoryException | IncompatibleEvidenceException |
                              CannotNormalizePotentialException | ConstraintViolatedException exc) {
-                        throw new UnreacheableException(exc);
+                        throw new UnreachableException(exc);
                     }
                     throw new UnrecoverableException(ex);
                 }
@@ -287,7 +287,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.CREATE_NEW_EVIDENCE_CASE -> {
                 try {
                     evidenceCasesNavigationOption("CREATE_NEW_EVIDENCE_CASE");
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
                          ConstraintViolatedException ex) {
@@ -297,7 +297,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.GO_TO_FIRST_EVIDENCE_CASE -> {
                 try {
                     evidenceCasesNavigationOption("GO_TO_FIRST_EVIDENCE_CASE");
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
                          ConstraintViolatedException ex) {
@@ -307,7 +307,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE -> {
                 try {
                     evidenceCasesNavigationOption("GO_TO_PREVIOUS_EVIDENCE_CASE");
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
                          ConstraintViolatedException ex) {
@@ -317,7 +317,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.GO_TO_NEXT_EVIDENCE_CASE -> {
                 try {
                     evidenceCasesNavigationOption("GO_TO_NEXT_EVIDENCE_CASE");
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
                          ConstraintViolatedException ex) {
@@ -327,7 +327,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.GO_TO_LAST_EVIDENCE_CASE -> {
                 try {
                     evidenceCasesNavigationOption("GO_TO_LAST_EVIDENCE_CASE");
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
                          ConstraintViolatedException ex) {
@@ -337,7 +337,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES -> {
                 try {
                     evidenceCasesNavigationOption("CLEAR_OUT_ALL_EVIDENCE_CASES");
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ThereIsNoNextEvidenceCaseException | ThereIsNoPreviousEvidenceCaseException |
                          ConstraintViolatedException ex) {
@@ -347,7 +347,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.PROPAGATE_EVIDENCE -> {
                 try {
                     getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant());
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
@@ -370,7 +370,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.NODE_PROPERTIES -> {
                 try {
                     getCurrentNetworkPanel().changeNodeProperties();
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ConstraintViolatedException | NotSupportedOperationException ex) {
                     throw new UnrecoverableException(ex);
@@ -380,7 +380,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 try {
                     getCurrentNetworkPanel().changePotential();
                 } catch (ThereIsNoPotentialsInNodeException | IncompatibleEvidenceException |
-                         NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                         NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          CannotNormalizePotentialException | ConstraintViolatedException |
                          NotSupportedOperationException ex) {
                     throw new UnrecoverableException(ex);
@@ -390,7 +390,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 try {
                     getCurrentNetworkPanel().imposePolicyInNode();
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                         ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
+                         ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -398,7 +398,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 try {
                     getCurrentNetworkPanel().editNodePolicy();
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                         ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
+                         ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -414,8 +414,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     getCurrentNetworkPanel().showExpectedUtilityOfNode();
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
                          NonProjectablePotentialException | NotEvaluableNetworkException.NotApplicableNetwork |
-                         NotEvaluableNetworkException.UnsatisfiedContraints | ThereIsNoPotentialsInNodeException |
-                         NotEnoughtMemoryException | ConstraintViolatedException ex) {
+                         NotEvaluableNetworkException.UnsatisfiedConstraints | ThereIsNoPotentialsInNodeException |
+                         NotEnoughMemoryException | ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -424,8 +424,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     getCurrentNetworkPanel().showOptimalPolicyOfNode();
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
                          NonProjectablePotentialException | NotEvaluableNetworkException.NotApplicableNetwork |
-                         NotEvaluableNetworkException.UnsatisfiedContraints | ThereIsNoPotentialsInNodeException |
-                         NotEnoughtMemoryException | ConstraintViolatedException ex) {
+                         NotEvaluableNetworkException.UnsatisfiedConstraints | ThereIsNoPotentialsInNodeException |
+                         NotEnoughMemoryException | ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -466,7 +466,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.NODE_REMOVE_ALL_FINDINGS -> {
                 try {
                     getCurrentNetworkPanel().removeAllFindings();
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ConstraintViolatedException ex) {
                     throw new UnrecoverableException(ex);
@@ -540,7 +540,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 } catch (NotEvaluableNetworkException | IncompatibleEvidenceException |
                          NonProjectablePotentialException |
                          PotentialOperationException.DifferentSizesInPotentialsAndStates |
-                         NotSupportedOperationException | NotEnoughtMemoryException ex) {
+                         NotSupportedOperationException | NotEnoughMemoryException ex) {
                     throw new UnrecoverableException(ex);
                 }
             }
@@ -549,7 +549,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     showOptimalStrategy(this.getCurrentNetworkPanel());
                 } catch (IncompatibleEvidenceException | NonProjectablePotentialException |
                          NotEvaluableNetworkException.NotApplicableNetwork |
-                         NotEvaluableNetworkException.UnsatisfiedContraints |
+                         NotEvaluableNetworkException.UnsatisfiedConstraints |
                          PotentialOperationException.DifferentSizesInPotentialsAndStates |
                          NotSupportedOperationException ex) {
                     throw new UnrecoverableException(ex);
@@ -578,7 +578,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     ceMethod.invoke(null);
                 } catch (ClassNotFoundException | IllegalAccessException |
                          NoSuchMethodException | InvocationTargetException ex) {
-                    throw new UnreacheableException(ex);
+                    throw new UnreachableException(ex);
                 }
             }
             case ActionCommands.CHANCE_CREATION, ActionCommands.UNCERTAINTY_REMOVE, ActionCommands.UNCERTAINTY_EDIT,
@@ -1383,7 +1383,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param currentNetworkPanel
      */
-    private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException {
+    private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException {
         OMFileChooser evidenceOMFileChooser = new DBReaderOMFileChooser(false);
         evidenceOMFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title"));
         // Set last used evidence format as default
@@ -1483,7 +1483,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * This method establishes the network working mode (edition or inference),
      * by setting the opposite to the current one.
      */
-    private void toggleWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    private void toggleWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         NetworkPanel.WorkingMode currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
         NetworkPanel.WorkingMode newWorkingMode = switch (currentWorkingMode) {
             case EDITION -> NetworkPanel.WorkingMode.INFERENCE;
@@ -1492,7 +1492,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         setWorkingMode(currentWorkingMode, newWorkingMode);
     }
     
-    private void setWorkingMode(NetworkPanel.WorkingMode currentWorkingMode, NetworkPanel.WorkingMode newWorkingMode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    private void setWorkingMode(NetworkPanel.WorkingMode currentWorkingMode, NetworkPanel.WorkingMode newWorkingMode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         boolean performInference = true;
         boolean isTemporal;
         boolean isMulticriteria = false;
@@ -1575,7 +1575,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param command the Action Command corresponding to the selected option
      */
-    private void evidenceCasesNavigationOption(String command) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException, ThereIsNoPreviousEvidenceCaseException, ConstraintViolatedException {
+    private void evidenceCasesNavigationOption(String command) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException, ThereIsNoPreviousEvidenceCaseException, ConstraintViolatedException {
         switch (command) {
             case "CREATE_NEW_EVIDENCE_CASE" -> getCurrentNetworkPanel().createNewEvidenceCase();
             case "GO_TO_FIRST_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToFirstEvidenceCase();
@@ -1663,18 +1663,18 @@ public class MainPanelListenerAssistant extends WindowAdapter
         return networkPanels;
     }
     
-    private void showDecisionTree(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException, NotEnoughtMemoryException {
+    private void showDecisionTree(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException, NotEnoughMemoryException {
         try {
             DecisionTreeWindow decisionTree = new DecisionTreeWindow(networkPanel);
             mainPanel.addCloseableTab("Decision tree for " + networkPanel.probNet.getName(), decisionTree);
             mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
             mainPanel.getNetworksTabPanel().setSelectedComponent(decisionTree);
         } catch (OutOfMemoryError e) {
-            throw new NotEnoughtMemoryException(e);
+            throw new NotEnoughMemoryException(e);
         }
     }
     
-    private void showOptimalStrategy(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
+    private void showOptimalStrategy(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedConstraints, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
         /*
         22/10/2014
         Solving issue 195
@@ -1710,7 +1710,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 veOptimalStrategy = new VEOptimalIntervention(probNet,
                                                               networkPanel.getEditorPanel().getEvidenceManager().getPreResolutionEvidence());
             } catch (NotEvaluableNetworkException.NotApplicableNetwork |
-                     NotEvaluableNetworkException.UnsatisfiedContraints | IncompatibleEvidenceException |
+                     NotEvaluableNetworkException.UnsatisfiedConstraints | IncompatibleEvidenceException |
                      ConstraintViolatedException e) {
                 throw new UnrecoverableException(e);
             }

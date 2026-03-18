@@ -17,7 +17,7 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.DeltaPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
-import org.openmarkov.gui.exception.ValueOutOfDomaingRangeException;
+import org.openmarkov.gui.exception.ValueOutOfDomainRangeException;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -140,7 +140,7 @@ public class DeltaPotentialPanel
             double numericValue = Double.parseDouble(valueSpinner.getValue().toString());
             PartitionedInterval domain = node.getVariable().getPartitionedInterval();
             if (numericValue > domain.getMax() || numericValue < domain.getMin()) {
-                throw new UnrecoverableException(new ValueOutOfDomaingRangeException(numericValue, domain));
+                throw new UnrecoverableException(new ValueOutOfDomainRangeException(numericValue, domain));
             }
             newPotential = new DeltaPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(),
                                               numericValue);

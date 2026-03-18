@@ -20,7 +20,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
+import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.util.GUIUtils;
 
 import javax.swing.*;
@@ -58,7 +58,7 @@ public class ConditionalGaussianPotentialPanel
             try {
                 editMeanPotential();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
+                     ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
                 throw new UnrecoverableException(ex);
             }
         });
@@ -67,7 +67,7 @@ public class ConditionalGaussianPotentialPanel
             try {
                 editVariancePotential();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
+                     ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
                 throw new UnrecoverableException(ex);
             }
         });
@@ -76,7 +76,7 @@ public class ConditionalGaussianPotentialPanel
         add(buttonPanel, BorderLayout.PAGE_START);
     }
     
-    private void editMeanPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    private void editMeanPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), meanDummyNode,
                                                                           isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
@@ -96,7 +96,7 @@ public class ConditionalGaussianPotentialPanel
         }
     }
     
-    private void editVariancePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    private void editVariancePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), varianceDummyNode,
                                                                           isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {

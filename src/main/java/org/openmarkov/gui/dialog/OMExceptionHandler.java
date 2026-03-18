@@ -1,6 +1,6 @@
 package org.openmarkov.gui.dialog;
 
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.java.exceptionUtils.ThrowableUtils;
 
@@ -10,10 +10,10 @@ public class OMExceptionHandler implements Thread.UncaughtExceptionHandler {
     
     @Override public void uncaughtException(Thread thread, Throwable throwable) {
         ExceptionType exceptionType = null;
-        // We get the root cause of the exception, as UnrecoverableException and UnreacheableException aren't exceptions
+        // We get the root cause of the exception, as UnrecoverableException and UnreachableException aren't exceptions
         // themselves, but holders of other exceptions.
-        while (throwable instanceof UnrecoverableException || throwable instanceof UnreacheableException) {
-            if (throwable instanceof UnreacheableException) {
+        while (throwable instanceof UnrecoverableException || throwable instanceof UnreachableException) {
+            if (throwable instanceof UnreachableException) {
                 exceptionType = ExceptionType.UNREACHABLE;
             } else if (throwable instanceof UnrecoverableException && exceptionType == null) {
                 exceptionType = ExceptionType.EXPECTED;
@@ -42,7 +42,7 @@ public class OMExceptionHandler implements Thread.UncaughtExceptionHandler {
         throwable.printStackTrace();
         // Exceptions are shown differently depending on their type.
         switch (exceptionType) {
-            // If an exception is unexpected (When an exception is runtime or came from an UnreacheableException),
+            // If an exception is unexpected (When an exception is runtime or came from an UnreachableException),
             // they are shown in a special dialog telling the user something wrong happened and that an OpenMarkov's
             // developer didn't predict.
             case UNREACHABLE, RUNTIME -> new UnexpectedThrowableDialog(throwable, exceptionType).setVisible(true);

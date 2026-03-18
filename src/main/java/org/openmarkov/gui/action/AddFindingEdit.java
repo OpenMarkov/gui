@@ -14,9 +14,6 @@ public class AddFindingEdit extends PNEdit {
     Finding finding;
     Finding previousFinding;
     
-    /**
-     * @param node {@code Node}
-     */
     public AddFindingEdit(VisualNode visualNode, EvidenceCase evidenceCase, Finding previousFinding, Finding finding) {
         super(visualNode.getNode().getProbNet());
         this.visualNode = visualNode;
@@ -46,7 +43,7 @@ public class AddFindingEdit extends PNEdit {
                 evidenceCase.removeFinding(finding.getVariable());
                 evidenceCase.addFinding(previousFinding);
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         }
         

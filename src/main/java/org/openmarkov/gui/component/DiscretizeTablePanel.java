@@ -10,7 +10,7 @@ package org.openmarkov.gui.component;
 import org.openmarkov.core.action.core.NodeStateEdit;
 import org.openmarkov.core.action.base.StateAction;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.NodePartitionedIntervalEdit;
@@ -1133,7 +1133,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                          WrongIntervalException.LimitsValuesAreWrong ex) {
                     throw new UnrecoverableException(ex);
                 } catch (DoEditException ex) {
-                    throw new UnreacheableException(ex);
+                    throw new UnreachableException(ex);
                 }
             } else if (column == LOWER_BOUND_VALUE_COLUMN_INDEX || column == UPPER_BOUND_VALUE_COLUMN_INDEX) {
                 // infinity buttons management

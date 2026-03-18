@@ -8,7 +8,7 @@
 package org.openmarkov.gui.window;
 
 import org.openmarkov.core.exception.ParserException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.component.FrameMirror;
@@ -142,7 +142,7 @@ import java.io.IOException;
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  UnsupportedLookAndFeelException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
         /*
          * The next line is used to avoid that disabled menuitems are

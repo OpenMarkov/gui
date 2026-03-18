@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.common;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -84,7 +84,7 @@ public class PotentialPanelManager {
                 return constructor.newInstance(node);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                      InvocationTargetException e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         } catch (ThereIsNoPotentialsInNodeException e) {
             throw new UnrecoverableException(e);

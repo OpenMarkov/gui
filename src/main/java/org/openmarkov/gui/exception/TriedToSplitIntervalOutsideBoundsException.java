@@ -2,9 +2,9 @@ package org.openmarkov.gui.exception;
 
 import org.openmarkov.core.exception.IBundledOpenMarkovException;
 
-public class TriedToSplitInvervalOutsideBoundsException extends Exception implements IBundledOpenMarkovException {
+public class TriedToSplitIntervalOutsideBoundsException extends Exception implements IBundledOpenMarkovException {
     
-    public TriedToSplitInvervalOutsideBoundsException() {
+    public TriedToSplitIntervalOutsideBoundsException() {
     }
     
     @Override public String toString() {

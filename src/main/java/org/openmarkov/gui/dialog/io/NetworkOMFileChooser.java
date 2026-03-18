@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.dialog.io;
 
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.format.annotation.FormatType;
@@ -148,7 +148,7 @@ public class NetworkOMFileChooser extends OMFileChooser {
             version = version.substring(0, version.lastIndexOf('.'));
             return "OpenMarkov." + version;
         } catch (ParserConfigurationException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
 
     }

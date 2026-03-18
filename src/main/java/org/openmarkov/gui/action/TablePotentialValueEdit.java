@@ -9,7 +9,7 @@ package org.openmarkov.gui.action;
 
 import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
@@ -292,7 +292,7 @@ import java.util.List;
             int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(node);
             return lastRow - position % tablePotential.getDimensions()[0];
         } catch (ThereIsNoPotentialsInNodeException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
     }
     

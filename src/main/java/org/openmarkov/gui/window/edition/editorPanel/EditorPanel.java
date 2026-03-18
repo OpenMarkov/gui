@@ -261,7 +261,7 @@ public final class EditorPanel extends JPanel {
     public Node getSelectedNode() {
         List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
         if (selectedNodes.size() != 1) { // This never happens
-            throw new UnreacheableException(new NoSelectedNodeException(this.visualNetwork));
+            throw new UnreachableException(new NoSelectedNodeException(this.visualNetwork));
         }
         return selectedNodes.getFirst().getNode();
     }
@@ -276,7 +276,7 @@ public final class EditorPanel extends JPanel {
      *
      * @return
      */
-    boolean changeNodeProperties(VisualNode selectedNode, boolean newNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
+    boolean changeNodeProperties(VisualNode selectedNode, boolean newNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
         boolean userAcceptedChanges = EditorPanel.requestNodePropertiesToUser2(GUIUtils.getOwner(this), selectedNode.getNode(), newNode);
         if (userAcceptedChanges) {
             this.adjustPanelDimension();
@@ -287,14 +287,14 @@ public final class EditorPanel extends JPanel {
         return userAcceptedChanges;
     }
     
-    public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
+    public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
         List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
         if (selectedNodes.size() == 1) {
             this.changeNodeProperties(selectedNodes.getFirst(), false);
         }
     }
     
-    public void showPotentialDialog(boolean readOnly) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException, ConstraintViolatedException {
+    public void showPotentialDialog(boolean readOnly) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, CannotNormalizePotentialException, ConstraintViolatedException {
         List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
         Node node = selectedNodes.getFirst().getNode();
         if (this.requestPotentialValues(GUIUtils.getOwner(this), node, readOnly)) {
@@ -407,7 +407,7 @@ public final class EditorPanel extends JPanel {
                 try {
                     new RemovePolicyEdit(visualNode.getNode()).executeEdit();
                 } catch (ConstraintViolatedException e) {
-                    throw new UnreacheableException(e);
+                    throw new UnreachableException(e);
                 }
             }
         }
@@ -426,7 +426,7 @@ public final class EditorPanel extends JPanel {
     /**
      * This method shows the expected utility of a decision node.
      */
-    public void showExpectedUtilityOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, ConstraintViolatedException {
+    public void showExpectedUtilityOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedConstraints, ConstraintViolatedException {
         List<VisualNode> selectedNode = this.visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
             VisualNode visualNode = selectedNode.getFirst();
@@ -447,7 +447,7 @@ public final class EditorPanel extends JPanel {
     /**
      * This method shows the optimal policy for a decision node.
      */
-    public void showOptimalPolicyOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, ConstraintViolatedException {
+    public void showOptimalPolicyOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedConstraints, ConstraintViolatedException {
         List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
         if (selectedNodes.size() == 1) {
             VisualNode visualNode = selectedNodes.getFirst();

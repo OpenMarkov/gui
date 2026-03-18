@@ -491,7 +491,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                 try {
                     potentialIndex = tablePotentialsPanelOperations.getPotentialIndex(i, j, node);
                 } catch (ThereIsNoPotentialsInNodeException e) {
-                    throw new UnreacheableException(e);
+                    throw new UnreachableException(e);
                 }
                 double value = roundedValues[potentialIndex];
                 values[i][j] = value;
@@ -823,7 +823,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                 showUncertaintyDialog();
             }
         } catch (ThereIsNoPotentialsInNodeException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         } catch (NonProjectablePotentialException | DoEditException e) {
             throw new UnrecoverableException(e);
         }

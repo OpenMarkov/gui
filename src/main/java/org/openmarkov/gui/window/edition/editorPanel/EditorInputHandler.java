@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.core.AddNodeEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
+import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.exception.PreResolutionNodeInInferenceException;
 import org.openmarkov.gui.graphic.VisualElement;
 import org.openmarkov.gui.graphic.VisualLink;
@@ -120,7 +120,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
                         }
                         this.editorPanel.getNetworkPanel().getProbNet().getPNESupport().removeUndoneEdits();
                     }
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ConstraintViolatedException | NotSupportedOperationException ex) {
                     this.editorPanel.repaint();
@@ -144,7 +144,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
             )) {
                 try {
                     this.editorPanel.changeNodeProperties();
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
+                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ConstraintViolatedException | NotSupportedOperationException ex) {
                     throw new UnrecoverableException(ex);
@@ -171,8 +171,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         try {
             this.editorPanel.getEvidenceManager().toggleFinding(visualNode, visualState);
         } catch (IncompatibleEvidenceException | NotEvaluableNetworkException | NonProjectablePotentialException |
-                 NotEnoughtMemoryException | CannotNormalizePotentialException | DoEditException ex) {
-            throw new UnreacheableException(ex);
+                 NotEnoughMemoryException | CannotNormalizePotentialException | DoEditException ex) {
+            throw new UnreachableException(ex);
         }
         
         

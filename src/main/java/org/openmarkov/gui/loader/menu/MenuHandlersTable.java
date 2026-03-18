@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.loader.menu;
 
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
@@ -95,7 +95,7 @@ public class MenuHandlersTable {
             return newHandler;
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
     }
 }

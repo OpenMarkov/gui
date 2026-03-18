@@ -1,6 +1,6 @@
 package org.openmarkov.gui.loader.element;
 
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.gui.exception.ResourceNotFoundException;
 
 import javax.swing.*;
@@ -64,7 +64,7 @@ public enum IconBind {
     public ImageIcon icon() {
         URL icon = IconBind.class.getResource(this.fileName);
         if (icon == null) {
-            throw new UnreacheableException(new ResourceNotFoundException(this.fileName));
+            throw new UnreachableException(new ResourceNotFoundException(this.fileName));
         }
         return new ImageIcon(icon);
     }

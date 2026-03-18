@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog;
 
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
+import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
 import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
 import org.openmarkov.gui.window.edition.NetworkPanel;
@@ -66,7 +66,7 @@ public class PropagationOptionsDialogListener implements ActionListener {
                             try {
                                 editorPanel.getEvidenceManager().doPropagation(editorPanel.getEvidenceManager().getEvidenceCase(caseIndex), caseIndex);
                             } catch (NotEvaluableNetworkException | NonProjectablePotentialException |
-                                     CannotNormalizePotentialException | NotEnoughtMemoryException |
+                                     CannotNormalizePotentialException | NotEnoughMemoryException |
                                      IncompatibleEvidenceException | ConstraintViolatedException e) {
                                 throw new UnrecoverableException(e);
                             }

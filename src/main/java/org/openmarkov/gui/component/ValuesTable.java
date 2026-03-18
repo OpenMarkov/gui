@@ -414,7 +414,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         } catch (DoEditException e) {
             throw new UnrecoverableException(e);
         } catch (ThereIsNoPotentialsInNodeException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
         
         // UNCLEAR Should it be here?

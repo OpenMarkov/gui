@@ -2,7 +2,7 @@ package org.openmarkov.gui.componentBuilder;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.window.MainGUI;
@@ -97,7 +97,7 @@ public class JMenuItemBuilder {
             jMenuItem.addActionListener(e -> {
                 try {
                     onClick.run();
-                } catch (UnrecoverableException | UnreacheableException ex) {
+                } catch (UnrecoverableException | UnreachableException ex) {
                     throw ex;
                 } catch (Exception ex) {
                     throw new UnrecoverableException(ex);

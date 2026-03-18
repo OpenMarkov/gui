@@ -361,7 +361,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 try {
                     editPotential(ae, (TreeADDBranch) node, path);
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                         ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException e) {
+                         ThereIsNoPotentialsInNodeException | NotEnoughMemoryException e) {
                     throw new UnrecoverableException(e);
                 }
             }
@@ -420,7 +420,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 // node must be a branch
                 try {
                     splitInterval(ae, (TreeADDBranch) node, path);
-                } catch (InvalidLimitInTreeADDException | TriedToSplitInvervalOutsideBoundsException e) {
+                } catch (InvalidLimitInTreeADDException | TriedToSplitIntervalOutsideBoundsException e) {
                     throw new UnrecoverableException(e);
                 }
             }
@@ -440,7 +440,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             case ActionCommands.REMOVE_LABEL -> removeLabel(ae, (TreeADDBranch) node, path);
             case ActionCommands.SET_REFERENCE -> setReference(ae, (TreeADDBranch) node, path);
             case ActionCommands.REMOVE_REFERENCE -> removeReference(ae, (TreeADDBranch) node, path);
-            default -> throw new UnreacheableException(new UnexpectedMenuActionException(actionComand));
+            default -> throw new UnreachableException(new UnexpectedMenuActionException(actionComand));
         }
     }
     
@@ -643,7 +643,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * @param branch
      * @param path
      */
-    private void splitInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) throws InvalidLimitInTreeADDException, TriedToSplitInvervalOutsideBoundsException {
+    private void splitInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) throws InvalidLimitInTreeADDException, TriedToSplitIntervalOutsideBoundsException {
         TreePath parentPath = path.getParentPath();
         TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
         SplitIntervalDialog dialog = new SplitIntervalDialog(GUIUtils.getOwner(this));
@@ -686,7 +686,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         } else if (minFirstInterval.isBelow(introducedLimit) && maxSecondInterval.isAbove(introducedLimit)) {
             splitSide = SplitSide.IN_BETWEEN_FIRST_AND_SECOND;
         } else {
-            throw new TriedToSplitInvervalOutsideBoundsException();
+            throw new TriedToSplitIntervalOutsideBoundsException();
         }
         boolean isChangingVariableDomain = (minDomainLimit == minFirstInterval.getLimit() && introducedLimit == minFirstInterval
                 .getLimit() && minBelongsToLeftDomain && belongsToLeft) || (maxDomainLimit == maxSecondInterval.getLimit()
@@ -750,7 +750,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
         Potential subPotential = branch.getPotential();
         if (!(subPotential instanceof TreeADDPotential)) {
-            throw new UnreacheableException(new WrongClassException(TreeADDPotential.class, subPotential.getClass()));
+            throw new UnreachableException(new WrongClassException(TreeADDPotential.class, subPotential.getClass()));
         }
         List<Variable> potentialVariables = new ArrayList<Variable>();
         if (parentTreeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
@@ -851,7 +851,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      */
     private void dissociateStates(ActionEvent ae, TreeADDBranch branch, TreePath path) throws RemovingAllStatesIsNotAllowedException {
         if (!(branch instanceof TreeADDBranch)) {
-            throw new UnreacheableException(new WrongClassException(TreeADDBranch.class, branch == null ? null : branch.getClass()));
+            throw new UnreachableException(new WrongClassException(TreeADDBranch.class, branch == null ? null : branch.getClass()));
         }
         TreeADDPotential parentTreeADD = (TreeADDPotential) path.getParentPath().getLastPathComponent();
         RemoveStatesDialog dialog = new RemoveStatesDialog(GUIUtils.getOwner(this), branch, parentTreeADD);
@@ -1202,7 +1202,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * @param branch
      * @param path
      */
-    private void editPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    private void editPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
         TreePath parentPath = path.getParentPath();
         TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();
         Potential potential = branch.getPotential();
@@ -1236,7 +1236,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 PotentialRole expected = parentTreeADD.getPotentialRole();
                 PotentialRole found = retPotential
                         .getPotentialRole();
-                throw new UnreacheableException(new WrongRoleException(expected, found));
+                throw new UnreachableException(new WrongRoleException(expected, found));
             }
             branch.setPotential(retPotential);
             TreeADDModel model = (TreeADDModel) jTree.getModel();

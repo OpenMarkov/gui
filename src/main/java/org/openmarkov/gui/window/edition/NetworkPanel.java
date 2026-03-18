@@ -13,7 +13,7 @@ import org.openmarkov.core.action.core.AbsorbParentsEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
+import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.exception.PreResolutionNodeInInferenceException;
 import org.openmarkov.gui.exception.ThereIsNoNextEvidenceCaseException;
 import org.openmarkov.gui.exception.ThereIsNoPreviousEvidenceCaseException;
@@ -269,14 +269,14 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * If some property has changed, insert a new undo point into the network
      * undo manager.
      */
-    public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
+    public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
         editorPanel.changeNodeProperties();
     }
     
     /**
      * This method has been created for testing.
      */
-    public void changePotential() throws IncompatibleEvidenceException, ThereIsNoPotentialsInNodeException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
+    public void changePotential() throws IncompatibleEvidenceException, ThereIsNoPotentialsInNodeException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
         editorPanel.showPotentialDialog(workingMode != WorkingMode.EDITION);
     }
     
@@ -290,14 +290,14 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
     /**
      * This method imposes a policy in a decision node.
      */
-    public void imposePolicyInNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    public void imposePolicyInNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
         editorPanel.imposePolicyInNode();
     }
     
     /**
      * This method edits an imposed policy of a decision node.
      */
-    public void editNodePolicy() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    public void editNodePolicy() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
         editorPanel.editNodePolicy();
     }
     
@@ -315,7 +315,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
             throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther,
             NonProjectablePotentialException,
             NotEvaluableNetworkException.NotApplicableNetwork,
-            NotEvaluableNetworkException.UnsatisfiedContraints, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException, ConstraintViolatedException {
+            NotEvaluableNetworkException.UnsatisfiedConstraints, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException, ConstraintViolatedException {
         editorPanel.showExpectedUtilityOfNode();
     }
     
@@ -326,8 +326,8 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
             throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther,
             NonProjectablePotentialException,
             NotEvaluableNetworkException.NotApplicableNetwork,
-            NotEvaluableNetworkException.UnsatisfiedContraints,
-            ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException, ConstraintViolatedException {
+            NotEvaluableNetworkException.UnsatisfiedConstraints,
+            ThereIsNoPotentialsInNodeException, NotEnoughMemoryException, ConstraintViolatedException {
         editorPanel.showOptimalPolicyOfNode();
     }
     
@@ -359,7 +359,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * This method updates the value of each state for each node in the network
      * with the current individual probabilities.
      */
-    public void updateIndividualProbabilitiesAndUtilities() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    public void updateIndividualProbabilitiesAndUtilities() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.getEvidenceManager().updateIndividualProbabilitiesAndUtilities();
     }
     
@@ -367,7 +367,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * This method removes all the findings established in the current evidence
      * case.
      */
-    public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.getEvidenceManager().removeAllFindings();
     }
     
@@ -527,35 +527,35 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
     /**
      * This method creates a new evidence case
      */
-    public void createNewEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    public void createNewEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.getEvidenceManager().createNewEvidenceCase();
     }
     
     /**
      * This method makes the first evidence case to be the current
      */
-    public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.getEvidenceManager().goToFirstEvidenceCase();
     }
     
     /**
      * This method makes the previous evidence case to be the current
      */
-    public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoPreviousEvidenceCaseException, ConstraintViolatedException {
+    public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoPreviousEvidenceCaseException, ConstraintViolatedException {
         editorPanel.getEvidenceManager().goToPreviousEvidenceCase();
     }
     
     /**
      * This method makes the next evidence case to be the current
      */
-    public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException, ConstraintViolatedException {
+    public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException, ConstraintViolatedException {
         editorPanel.getEvidenceManager().goToNextEvidenceCase();
     }
     
     /**
      * This method makes the last evidence case to be the current
      */
-    public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.getEvidenceManager().goToLastEvidenceCase();
     }
     
@@ -564,7 +564,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * state' in which there is only an initial evidence case with no findings
      * (corresponding to prior probabilities)
      */
-    public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.getEvidenceManager().clearOutAllEvidenceCases();
     }
     
@@ -575,7 +575,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param mainPanelMenuAssistant the menu assistant associated to the main
      *                               panel.
      */
-    public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         editorPanel.getEvidenceManager().propagateEvidence(mainPanelMenuAssistant);
     }
     

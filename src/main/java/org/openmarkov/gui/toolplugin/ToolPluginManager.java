@@ -8,7 +8,7 @@
 package org.openmarkov.gui.toolplugin;
 
 import org.jetbrains.annotations.NotNull;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.plugin.PluginSearch;
@@ -64,7 +64,7 @@ public final class ToolPluginManager {
                         return noArgsConstructors.newInstance();
                     } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
                              InvocationTargetException e) {
-                        throw new UnreacheableException(e);
+                        throw new UnreachableException(e);
                     }
                 })
                 //.sorted(Comparator.comparing(ToolPlugin::menuOptionText))

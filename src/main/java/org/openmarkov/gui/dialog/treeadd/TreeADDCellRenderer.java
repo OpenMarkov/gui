@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.treeadd;
 
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.NotSupportedOperationException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
@@ -174,7 +174,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
             case DECISION -> IconFactory.createDecisionIcon(variable.getName(), textIconFont);
             case UTILITY -> IconFactory.createUtilityIcon(variable.getName(), textIconFont);
             case SV_SUM, SV_PRODUCT ->
-                    throw new UnreacheableException(new NotSupportedOperationException(nodeType.toString() + " is not supported yet"));
+                    throw new UnreachableException(new NotSupportedOperationException(nodeType.toString() + " is not supported yet"));
         };
     }
     

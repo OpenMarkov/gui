@@ -7,7 +7,7 @@ import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
-import org.openmarkov.gui.exception.NotEnoughtMemoryException;
+import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -48,7 +48,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
             try {
                 editMedianPotential();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
+                     ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
                 throw new UnrecoverableException(ex);
             }
         });
@@ -57,7 +57,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
             try {
                 editScalePotential();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | NotEnoughtMemoryException ex) {
+                     ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
                 throw new UnrecoverableException(ex);
             }
         });
@@ -66,7 +66,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         add(buttonPanel, BorderLayout.PAGE_START);
     }
     
-    private void editMedianPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    private void editMedianPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), medianDummyNode, isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
             // TODO: Do nothing?
@@ -75,7 +75,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         }
     }
     
-    private void editScalePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughtMemoryException {
+    private void editScalePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), scaleDummyNode, isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
             // TODO: Do nothing?

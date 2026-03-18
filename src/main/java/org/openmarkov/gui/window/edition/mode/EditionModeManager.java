@@ -7,7 +7,7 @@
 package org.openmarkov.gui.window.edition.mode;
 
 import org.jetbrains.annotations.NotNull;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.loader.element.CursorLoader;
 import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
@@ -49,7 +49,7 @@ public class EditionModeManager {
                 instance = (EditionMode) constructor.newInstance(editorPanel, probNet);
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException |
                      IllegalArgumentException | InvocationTargetException e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         }
         return instance;
