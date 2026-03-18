@@ -12,8 +12,6 @@ import org.openmarkov.gui.action.RemoveFindingEdit;
 import org.openmarkov.gui.dialog.node.AddFindingDialog;
 import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.exception.PreResolutionNodeInInferenceException;
-import org.openmarkov.gui.exception.ThereIsNoNextEvidenceCaseException;
-import org.openmarkov.gui.exception.ThereIsNoPreviousEvidenceCaseException;
 import org.openmarkov.gui.graphic.*;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
@@ -668,7 +666,7 @@ public class EvidenceManager {
      */
     public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
         if (!(this.currentCase > 0)) {
-            throw new ThereIsNoPreviousEvidenceCaseException();
+            throw new UnreachableException(new IllegalStateException("Go-to-previous button should have been disabled when at first evidence case"));
         }
         this.currentCase--;
         this.editorPanel.updateAllVisualStates("", this.currentCase);
@@ -696,7 +694,7 @@ public class EvidenceManager {
      */
     public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
         if (!(this.currentCase < (this.postResolutionEvidence.size() - 1))) {
-            throw new ThereIsNoNextEvidenceCaseException();
+            throw new UnreachableException(new IllegalStateException("Go-to-next button should have been disabled when at last evidence case"));
         }
         this.currentCase++;
         this.editorPanel.updateAllVisualStates("", this.currentCase);
