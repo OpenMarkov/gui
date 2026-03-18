@@ -103,10 +103,7 @@ public final class EditorPanel extends JPanel {
      * Network panel associated to this editor panel
      */
     private final NetworkPanel networkPanel;
-    /**
-     * Inference algorithm used to evaluate this network
-     */
-    private final Lazy<InferenceAlgorithm> inferenceAlgorithm;
+
     /**
      * This variable indicates if the propagation mode is automatic or manual.
      */
@@ -141,15 +138,6 @@ public final class EditorPanel extends JPanel {
         this.editionModeManager = new EditionModeManager(this, this.visualNetwork.getProbNet());
         this.editionMode = this.editionModeManager.getDefaultEditionMode();
         this.inferencePresenter = new InferencePresenter(this);
-        
-        var inferenceManager = new InferenceManager();
-        this.inferenceAlgorithm = Lazy.of(()->{
-            InferenceAlgorithm inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(this.visualNetwork.getProbNet());
-            if (inferenceAlgorithm == null) {
-                throw new NotSupportedOperationException("there is no associated inference algorithm for " + this.visualNetwork.getProbNet().localize());
-            }
-            return inferenceAlgorithm;
-        });
     }
     
     @Override
@@ -306,7 +294,7 @@ public final class EditorPanel extends JPanel {
         }
     }
     
-    public void showPotentialDialog(boolean readOnly) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
+    public void showPotentialDialog(boolean readOnly) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, CannotNormalizePotentialException, ConstraintViolatedException {
         List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
         Node node = selectedNodes.getFirst().getNode();
         if (this.requestPotentialValues(GUIUtils.getOwner(this), node, readOnly)) {
@@ -585,16 +573,6 @@ public final class EditorPanel extends JPanel {
             }
         }
     }
-    
-    /**
-     * Returns the inference algorithm assigned to the panel.
-     *
-     * @return the inference algorithm assigned to the panel.
-     */
-    public InferenceAlgorithm getInferenceAlgorithm() throws NotSupportedOperationException, NotEvaluableNetworkException {
-        return this.inferenceAlgorithm.get();
-    }
-    
     
     public void temporalEvolution() {
         List<VisualNode> selectedNode = this.visualNetwork.getSelectedNodes();

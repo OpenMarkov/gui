@@ -21,6 +21,7 @@ import java.awt.event.*;
 import java.util.Optional;
 
 class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListener {
+    
     private final EditorPanel editorPanel;
     
     EditorInputHandler(EditorPanel editorPanel) {
@@ -287,7 +288,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
     private ContextualMenuFactory contextualMenuFactory = null;
     
     
-    public void setContextualMenuFactory(ContextualMenuFactory contextualMenuFactory) {
+    void setContextualMenuFactory(ContextualMenuFactory contextualMenuFactory) {
         this.contextualMenuFactory = contextualMenuFactory;
     }
     

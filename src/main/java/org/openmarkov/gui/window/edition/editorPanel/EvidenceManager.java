@@ -1,6 +1,8 @@
 package org.openmarkov.gui.window.edition.editorPanel;
 
 import org.openmarkov.core.exception.*;
+import org.openmarkov.core.inference.InferenceAlgorithm;
+import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.inference.tasks.Propagation;
 import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.model.network.*;
@@ -17,6 +19,7 @@ import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEPropagation;
+import org.openmarkov.java.initialization.Lazy;
 
 import java.awt.*;
 import java.util.*;
@@ -53,6 +56,10 @@ public class EvidenceManager {
      * Maximum value of the range of each utility node.
      */
     private final HashMap<Variable, Double> maxUtilityRange;
+    /**
+     * Inference algorithm used to evaluate this network
+     */
+    private final Lazy<InferenceAlgorithm> inferenceAlgorithm;
     
     EvidenceManager(EditorPanel editorPanel) {
         this.editorPanel = editorPanel;
@@ -64,19 +71,35 @@ public class EvidenceManager {
         this.evidenceCasesCompilationState.add(this.currentCase, false);
         this.minUtilityRange = new HashMap<>();
         this.maxUtilityRange = new HashMap<>();
+        var inferenceManager = new InferenceManager();
+        this.inferenceAlgorithm = Lazy.of(()->{
+            InferenceAlgorithm inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(this.editorPanel.getVisualNetwork().getProbNet());
+            if (inferenceAlgorithm == null) {
+                throw new NotSupportedOperationException("there is no associated inference algorithm for " + this.editorPanel.getVisualNetwork().getProbNet().localize());
+            }
+            return inferenceAlgorithm;
+        });
     }
     
     
+    /**
+     * Returns the inference algorithm assigned to the panel.
+     *
+     * @return the inference algorithm assigned to the panel.
+     */
+    private InferenceAlgorithm getInferenceAlgorithm() {
+        return this.inferenceAlgorithm.get();
+    }
     
-    public List<EvidenceCase> getPostResolutionEvidence() {
+    List<EvidenceCase> getPostResolutionEvidence() {
         return this.postResolutionEvidence;
     }
     
-    public Double getMinUtilityRangeOf(Variable variable) {
+    Double getMinUtilityRangeOf(Variable variable) {
         return this.minUtilityRange.get(variable);
     }
     
-    public Double getMaxUtilityRangeOf(Variable variable) {
+    Double getMaxUtilityRangeOf(Variable variable) {
         return this.maxUtilityRange.get(variable);
     }
     
@@ -101,8 +124,7 @@ public class EvidenceManager {
     }
     
     private void requestAddFindingValues(Window owner, VisualNode node, Finding finding) {
-        AddFindingDialog addFindingDialog = new AddFindingDialog(owner, node, finding, this.editorPanel);
-        addFindingDialog.requestValues();
+        new AddFindingDialog(owner, node, finding, this.editorPanel).requestValues();
     }
     
     /**
@@ -376,14 +398,14 @@ public class EvidenceManager {
      *
      * @param node the node in which to remove the findings.
      */
-    void removeNodeEvidenceInAllCases(Node node) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
+    void removeNodeEvidenceInAllCases(Node node) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughtMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
         try {
             for (int i = 0; i < this.postResolutionEvidence.size(); i++) {
                 List<Finding> findings = this.postResolutionEvidence.get(i).getFindings();
                 for (Finding finding : findings) {
                     if (node.getVariable() == (finding.getVariable())) {
                         this.postResolutionEvidence.get(i).removeFinding(finding.getVariable());
-                        if (this.editorPanel.isAutomaticPropagation() && (this.editorPanel.getInferenceAlgorithm() != null)) {
+                        if (this.editorPanel.isAutomaticPropagation() && (this.getInferenceAlgorithm() != null)) {
                             this.doPropagation(this.postResolutionEvidence.get(i), i);
                         }
                         if (i == this.currentCase) {
@@ -398,7 +420,7 @@ public class EvidenceManager {
                 }
             }
         } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughtMemoryException |
-                 CannotNormalizePotentialException | IncompatibleEvidenceException | NotSupportedOperationException e) {
+                 CannotNormalizePotentialException | IncompatibleEvidenceException e) {
             this.editorPanel.setPropagationActive(false);
             throw e;
         } finally {
