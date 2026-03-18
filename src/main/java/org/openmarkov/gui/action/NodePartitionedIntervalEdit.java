@@ -82,30 +82,6 @@ public class NodePartitionedIntervalEdit extends PNEdit {
 
 	}
 
-	/**
-     * Creates a new {@code NodePartiTionedIntervalEdit} to edit the
-	 * limit value of the interval
-	 *
-	 * @param node        The node that contains the partionInterval object to be edited.
-	 * @param stateAction The action to do in this edit.
-	 * @param indexState  The state index that partitionedInterval object belongs to.
-	 * @param newValue    the new values of the limit
-	 * @param lower       A boolean that specify if the edition is in the lower value
-	 */
-	public NodePartitionedIntervalEdit(Node node, StateAction stateAction, int indexState, double newValue,
-			boolean lower) {
-
-		this(node, stateAction, indexState, lower);
-		this.newValue = newValue;
-		if (lower) {
-			this.lastValue = node.getVariable().getPartitionedInterval().
-					getLimit(indexState);
-		} else {
-			this.lastValue = node.getVariable().getPartitionedInterval().
-					getLimit(indexState + 1);
-		}
-
-	}
 	
 	@Override protected void doEdit() {
 
@@ -119,8 +95,6 @@ public class NodePartitionedIntervalEdit extends PNEdit {
 						.changeLimit(indexState + 1, currentPartitionedInterval.getLimit(indexState + 1),
 								!currentPartitionedInterval.getBelongsToLeftSide(indexState + 1));
 			}
-				/*node.getVariable().setPartitionedInterval(
-						newPartitionedInterval );*/
 			break;
 		case MODIFY_VALUE_INTERVAL:
 			if (lower)
@@ -148,8 +122,6 @@ public class NodePartitionedIntervalEdit extends PNEdit {
 						.changeLimit(indexState + 1, currentPartitionedInterval.getLimit(indexState + 1),
 								!currentPartitionedInterval.getBelongsToLeftSide(indexState + 1));
 			}
-				/*node.getVariable().setPartitionedInterval(
-						newPartitionedInterval );*/
 			break;
 		case MODIFY_VALUE_INTERVAL:
 			if (lower)
@@ -174,74 +146,6 @@ public class NodePartitionedIntervalEdit extends PNEdit {
 	}
 
 	/**
-	 * Gets the action realized.
-	 *
-	 * @return the action realized.
-	 * @see StateAction
-	 */
-	public StateAction getStateAction() {
-		return stateAction;
-	}
-
-	/**
-	 * This method add a new default subInterval, in the current
-	 * PartitionedInterval object, is used when a new state has been created.
-	 *
-	 * @return The PartitionedInterval object with a new default subInterval
-	 */
-
-	private PartitionedInterval getNewPartitionedInterval() {
-        double[] limits = currentPartitionedInterval.getLimits();
-        double[] newLimits = new double[limits.length + 1];
-        boolean[] belongsToLeftSide = currentPartitionedInterval.
-				getBelongsToLeftSide();
-        boolean[] newBelongsToLeftSide = new boolean[limits.length + 1];
-		for (int i = 0; i < limits.length; i++) {
-			newLimits[i] = limits[i];
-			newBelongsToLeftSide[i] = belongsToLeftSide[i];
-		}
-		newLimits[limits.length] = currentPartitionedInterval.getMax() + increment;
-		newBelongsToLeftSide[limits.length] = false;
-		return new PartitionedInterval(newLimits, newBelongsToLeftSide);
-	}
-
-	/**
-	 * This method gets the new row data when a new state is
-	 * inserted/deleted in a discretized variable.
-	 *
-	 * @param stateAction the action carried out in the edit.
-	 * @return The row data of the new state
-	 */
-	public Object[] getNewRowOfData(StateAction stateAction) {
-		String firstSymbol = null;
-		String secondSymbol = null;
-        double[] limits = null;
-        boolean[] belongsToLeftSide;
-		if (stateAction == StateAction.ADD) {
-			limits = node.getVariable().getPartitionedInterval().
-					getLimits();
-			belongsToLeftSide = node.getVariable().
-					getPartitionedInterval().getBelongsToLeftSide();
-
-			firstSymbol = (belongsToLeftSide[limits.length - 2] ? "(" : "[");
-			secondSymbol = (belongsToLeftSide[limits.length - 1] ? "]" : ")");
-		} else if (stateAction == StateAction.REMOVE) {
-			limits = node.getVariable().getPartitionedInterval().
-					getLimits();
-			belongsToLeftSide = node.getVariable().
-					getPartitionedInterval().getBelongsToLeftSide();
-
-			firstSymbol = (belongsToLeftSide[indexState] ? "(" : "[");
-			secondSymbol = (belongsToLeftSide[indexState + 1] ? "]" : ")");
-
-		}
-		return new Object[] { "", GUIDefaultStates.getString(node.getVariable().
-				getStates()[indexState].toString()), firstSymbol, limits[indexState], ",", limits[indexState + 1],
-				secondSymbol };
-
-	}
-
-	/**
 	 * Gets the boolean lower identifier
 	 *
 	 * @return a boolean lower identifier
@@ -259,12 +163,4 @@ public class NodePartitionedIntervalEdit extends PNEdit {
 		return newValue;
 	}
 
-	/**
-	 * Gets the index of the state modified
-	 *
-	 * @return the index of the state modified
-	 */
-	public Integer getIndexState() {
-		return indexState;
-	}
 }

@@ -46,8 +46,6 @@
                   value="Edit revelation interval from link {link} with action {stateAction}"/>
     <Localization class="org.openmarkov.gui.action.TablePotentialValueEdit"
                   value="Change potential for {node} from {oldPotential} to {newPotential}"/>
-    <Localization class="org.openmarkov.gui.action.UnivariateDistrPotentialValueEdit"
-                  value="Change potential for {node} from {oldPotential} to {newPotential}"/>
     <Localization class="org.openmarkov.gui.exception.BinomialPotentialWrongValueException$NValuesIsWrong"
                   value="N value must be positive, but it was {nValue}."/>
     <Localization class="org.openmarkov.gui.exception.BinomialPotentialWrongValueException$ThetaValueIsWrong"

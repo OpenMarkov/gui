@@ -7,9 +7,7 @@
 
 package org.openmarkov.gui.action;
 
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.PotentialChangeEdit;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
@@ -93,9 +91,7 @@ import java.util.List;
      * the table potential
      */
     private double[] newTable;
-    // private List<Variable> orderVariables = new ArrayList<Variable>();
-    // private List<Variable> newOrderVariables = new ArrayList<Variable>();
-    private Object[][] notEditablePostitions = new Object[0][0];
+    private Object[][] notEditablePostitions;
     private Node node;
     
     // Constructor
@@ -158,7 +154,6 @@ import java.util.List;
         
         
         
-        PotentialChangeEdit changePotentialEdit;
         if (!getExactDistrPotential()) {
             if (priorityList.isEmpty()) {
                 // User is editing a new column of potentials //node
@@ -214,7 +209,6 @@ import java.util.List;
             }
             this.oldPotential = oldTablePotential;
             this.newPotential = tablePotential;
-            changePotentialEdit = new PotentialChangeEdit(node, oldTablePotential, tablePotential);
         } else {
             newTable[potentialSelected] = newValue;
             tablePotential.getValues()[potentialSelected] = newValue;

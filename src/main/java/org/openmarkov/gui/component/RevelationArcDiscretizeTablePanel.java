@@ -146,7 +146,6 @@ import java.awt.event.MouseEvent;
         }
         RevelationIntervalEdit nodePartitionedIntervalEdit
                 = new RevelationIntervalEdit(link, StateAction.MODIFY_VALUE_INTERVAL, row, newValue, lower);
-        ProbNet probNet = node.getProbNet();
         try {
             nodePartitionedIntervalEdit.executeEdit();
         } catch (DoEditException e) {
