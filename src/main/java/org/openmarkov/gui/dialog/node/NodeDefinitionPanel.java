@@ -819,7 +819,6 @@ public final class NodeDefinitionPanel extends JPanel
                 StringWithProperties agent = new StringWithProperties(itemSelected);
                 NodeAgentEdit nodeAgentEdit = new NodeAgentEdit(node, agent);
                 try {
-                    ProbNet probNet = node.getProbNet();
                     nodeAgentEdit.executeEdit();
                     // comboBox.setSelectedIndex(optionSelected);
                 } catch (DoEditException e1) {

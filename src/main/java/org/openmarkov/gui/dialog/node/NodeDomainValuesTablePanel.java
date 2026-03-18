@@ -996,7 +996,6 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node,
                                                                                               newPartitionedInterval);
                 
-                ProbNet probNet1 = node.getProbNet();
                 try {
                     partitionedIntervalEdit.executeEdit();
                 } catch (DoEditException e) {
