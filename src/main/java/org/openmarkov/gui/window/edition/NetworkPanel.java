@@ -15,8 +15,6 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.exception.PreResolutionNodeInInferenceException;
-import org.openmarkov.gui.exception.ThereIsNoNextEvidenceCaseException;
-import org.openmarkov.gui.exception.ThereIsNoPreviousEvidenceCaseException;
 import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.window.MainGUI;
