@@ -276,7 +276,7 @@ public final class EditorPanel extends JPanel {
      *
      * @return
      */
-    boolean changeNodeProperties(VisualNode selectedNode, boolean newNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
+    boolean changeNodeProperties(VisualNode selectedNode, boolean newNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
         boolean userAcceptedChanges = EditorPanel.requestNodePropertiesToUser2(GUIUtils.getOwner(this), selectedNode.getNode(), newNode);
         if (userAcceptedChanges) {
             this.adjustPanelDimension();
@@ -287,14 +287,14 @@ public final class EditorPanel extends JPanel {
         return userAcceptedChanges;
     }
     
-    public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException, NotSupportedOperationException {
+    public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
         List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
         if (selectedNodes.size() == 1) {
             this.changeNodeProperties(selectedNodes.getFirst(), false);
         }
     }
     
-    public void showPotentialDialog(boolean readOnly) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, CannotNormalizePotentialException, ConstraintViolatedException {
+    public void showPotentialDialog(boolean readOnly) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, ConstraintViolatedException {
         List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
         Node node = selectedNodes.getFirst().getNode();
         if (this.requestPotentialValues(GUIUtils.getOwner(this), node, readOnly)) {

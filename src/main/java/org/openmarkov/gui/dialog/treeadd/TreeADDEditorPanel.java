@@ -444,7 +444,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         }
     }
     
-    private void changeInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) throws InvalidArgumentException, ChangeDomainOfTreeADDIsNotAllowedException {
+    private void changeInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) {
         
         TreePath parentPath = path.getParentPath();
         TreeADDPotential parentTreeADD = (TreeADDPotential) parentPath.getLastPathComponent();

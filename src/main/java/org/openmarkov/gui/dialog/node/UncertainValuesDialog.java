@@ -444,7 +444,7 @@ public class UncertainValuesDialog extends OkCancelDialog {
      * @return true if the dialog box can be closed.
      */
     @Override
-    protected boolean doOkClickBeforeHide() throws FamilyDistributionRuleBrokenException.Rule2Broken, FamilyDistributionRuleBrokenException.Rule3Broken, FamilyDistributionRuleBrokenException.Rule1Broken, InvalidArgumentException {
+    protected boolean doOkClickBeforeHide() throws FamilyDistributionRuleBrokenException.Rule2Broken, FamilyDistributionRuleBrokenException.Rule3Broken, FamilyDistributionRuleBrokenException.Rule1Broken {
         TableCellEditor currentEditor = distributionTable.getCellEditor();
         if (currentEditor != null) {
             currentEditor.stopCellEditing();
@@ -471,7 +471,7 @@ public class UncertainValuesDialog extends OkCancelDialog {
         return calculateReferenceValues(uncertainColumn);
     }
     
-    private void verifyLocalConstraintsUncertainty(List<UncertainValue> uncertainvalues) throws InvalidArgumentException {
+    private void verifyLocalConstraintsUncertainty(List<UncertainValue> uncertainvalues) {
         // Verify individual constraints for each Uncertain Value
         for (int i = 0; i < uncertainvalues.size(); i++) {
             @ToCheck(reasonKind = ToCheck.ReasonKind.USER_EXPERIENCE,

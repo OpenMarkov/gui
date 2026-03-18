@@ -1,10 +1,6 @@
 package org.openmarkov.gui.exception;
 
-import org.openmarkov.core.exception.IBundledOpenMarkovException;
 
-public class ThereIsNoNextEvidenceCaseException extends Exception implements IBundledOpenMarkovException {
+public class ThereIsNoNextEvidenceCaseException extends RuntimeException {
     
-    @Override public String toString() {
-        return IBundledOpenMarkovException.toString(this);
-    }
 }

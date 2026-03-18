@@ -431,7 +431,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @param isDiscounted     if true, discounted series are shown
      * @param showUpfront      if true, upfront values are added to time 0
      */
-    private void showByCriterionSeries(boolean[] markedCheckBoxes, boolean isDiscounted, boolean showUpfront) throws UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable {
+    private void showByCriterionSeries(boolean[] markedCheckBoxes, boolean isDiscounted, boolean showUpfront) {
         
         List<XYSeries> result = new ArrayList<>();
         //At least there is one element marked
@@ -486,7 +486,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * This method only will be launched at the first time. In later
      * modifications and filters the established series are used to get other combined data
      */
-    private void createByCriterionSeries() throws UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable {
+    private void createByCriterionSeries() {
         //Only one decision variable; conditioningVariables.size() =1
         arrayXYSeriesUpfront = new ArrayList<>();
         arrayXYSeries = new ArrayList<>();
@@ -660,7 +660,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     // end 02/11/2022
     
     
-    private void createExcel(ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) throws IOException, NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    private void createExcel(ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) throws IOException, NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException, ConstraintViolatedException {
         OMFileChooser omFileChooser = new OMFileChooser();
         String netName = probNet.getName();
         omFileChooser.setSelectedFile(new File(netName + "-temporal_evolution.xlsx"));

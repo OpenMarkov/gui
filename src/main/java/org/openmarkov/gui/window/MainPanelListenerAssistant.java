@@ -269,8 +269,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 NetworkPanel.WorkingMode initialWorkingMode = getCurrentNetworkPanel().getWorkingMode();
                 try {
                     toggleWorkingMode();
-                } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
-                         IncompatibleEvidenceException | CannotNormalizePotentialException |
+                } catch (NotEnoughMemoryException | IncompatibleEvidenceException |
                          ConstraintViolatedException | RuntimeException ex) {
                     //On fail, go back to the previous working mode.
                     try {
@@ -1236,7 +1235,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @param probNet               the network to be expanded
      * @param preResolutionEvidence evidence to be added and propagated in the expanded network
      */
-    private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException, NotSupportedOperationException {
+    private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         NetworkPanel networkPanelMID = getCurrentNetworkPanel();
         String path = (new File(networkPanelMID.getNetworkFile())).getParent();
         InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
@@ -1383,7 +1382,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param currentNetworkPanel
      */
-    private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException {
+    private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException {
         OMFileChooser evidenceOMFileChooser = new DBReaderOMFileChooser(false);
         evidenceOMFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title"));
         // Set last used evidence format as default
@@ -1483,7 +1482,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * This method establishes the network working mode (edition or inference),
      * by setting the opposite to the current one.
      */
-    private void toggleWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    private void toggleWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
         NetworkPanel.WorkingMode currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
         NetworkPanel.WorkingMode newWorkingMode = switch (currentWorkingMode) {
             case EDITION -> NetworkPanel.WorkingMode.INFERENCE;
@@ -1492,7 +1491,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         setWorkingMode(currentWorkingMode, newWorkingMode);
     }
     
-    private void setWorkingMode(NetworkPanel.WorkingMode currentWorkingMode, NetworkPanel.WorkingMode newWorkingMode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ConstraintViolatedException {
+    private void setWorkingMode(NetworkPanel.WorkingMode currentWorkingMode, NetworkPanel.WorkingMode newWorkingMode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
         boolean performInference = true;
         boolean isTemporal;
         boolean isMulticriteria = false;
@@ -1575,7 +1574,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param command the Action Command corresponding to the selected option
      */
-    private void evidenceCasesNavigationOption(String command) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, CannotNormalizePotentialException, ThereIsNoNextEvidenceCaseException, ThereIsNoPreviousEvidenceCaseException, ConstraintViolatedException {
+    private void evidenceCasesNavigationOption(String command) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
         switch (command) {
             case "CREATE_NEW_EVIDENCE_CASE" -> getCurrentNetworkPanel().createNewEvidenceCase();
             case "GO_TO_FIRST_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToFirstEvidenceCase();
@@ -1663,7 +1662,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         return networkPanels;
     }
     
-    private void showDecisionTree(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException, NotEnoughMemoryException {
+    private void showDecisionTree(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotEnoughMemoryException {
         try {
             DecisionTreeWindow decisionTree = new DecisionTreeWindow(networkPanel);
             mainPanel.addCloseableTab("Decision tree for " + networkPanel.probNet.getName(), decisionTree);
@@ -1674,7 +1673,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
     }
     
-    private void showOptimalStrategy(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedConstraints, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
+    private void showOptimalStrategy(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedConstraints, PotentialOperationException.DifferentSizesInPotentialsAndStates {
         /*
         22/10/2014
         Solving issue 195

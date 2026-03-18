@@ -73,11 +73,11 @@ public class DecisionTreePanel extends JScrollPane {
      * @throws IncompatibleEvidenceException
      * @throws NonProjectablePotentialException
      * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates
-     * @throws NotSupportedOperationException
+     * @
      */
     public DecisionTreePanel(ProbNet probNet)
             throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException,
-            PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
+            PotentialOperationException.DifferentSizesInPotentialsAndStates {
         listener = new TreePanelListener();
         contextualMenuFactory = new ContextualMenuFactory(listener);
         this.decisionTreeManager = new DecisionTreeManagerImpl();
@@ -113,7 +113,7 @@ public class DecisionTreePanel extends JScrollPane {
      */
     public DecisionTreeElement buildDecisionTree(ProbNet probNet)
             throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException,
-            PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
+            PotentialOperationException.DifferentSizesInPotentialsAndStates {
         return buildDecisionTree(probNet, DEFAULT_DEPTH);
     }
 
@@ -128,11 +128,11 @@ public class DecisionTreePanel extends JScrollPane {
      * @throws IncompatibleEvidenceException
      * @throws NonProjectablePotentialException
      * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates
-     * @throws NotSupportedOperationException
+     * @
      */
     public DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth)
             throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException,
-            PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
+            PotentialOperationException.DifferentSizesInPotentialsAndStates {
         return decisionTreeManager.buildDecisionTree(probNet, depth);
     }
 
@@ -160,13 +160,13 @@ public class DecisionTreePanel extends JScrollPane {
      */
     public void inferenceExpandNextLevel()
             throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException,
-            PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
+            PotentialOperationException.DifferentSizesInPotentialsAndStates {
         inferenceExpandLevels(1);
     }
 
     public void inferenceExpandLevels(int n)
             throws NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException,
-            PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
+            PotentialOperationException.DifferentSizesInPotentialsAndStates {
         DecisionTreeModel auxModel = (DecisionTreeModel) jTree.getModel();
         DecisionTreeBranchPanel root = (DecisionTreeBranchPanel) auxModel.getRoot();
         decisionTreeManager.expandLevels(root.getTreeBranch(), n);
@@ -175,7 +175,7 @@ public class DecisionTreePanel extends JScrollPane {
 
     public void inferenceExpandAllLevels()
             throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException,
-            PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException {
+            PotentialOperationException.DifferentSizesInPotentialsAndStates {
         inferenceExpandLevels(Integer.MAX_VALUE);
     }
 
