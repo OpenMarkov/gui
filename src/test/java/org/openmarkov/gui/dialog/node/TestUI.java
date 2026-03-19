@@ -2,10 +2,10 @@ package org.openmarkov.gui.dialog.node;
 
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.DialogFixture;
-import org.assertj.swing.junit.runner.GUITestRunner;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -14,8 +14,9 @@ import org.openmarkov.core.model.network.Variable;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@RunWith(GUITestRunner.class)
+
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@DisabledIf(value = "java.awt.GraphicsEnvironment#isHeadless", disabledReason = "Your machine does not have a Graphic Environment")
 public class TestUI extends CommonUI<DialogFixture> {
     
     private ProbNet net;
@@ -30,7 +31,7 @@ public class TestUI extends CommonUI<DialogFixture> {
     }
     
     @Test
-    public void testUI1() {
+    void testUI1() {
         assertNotNull(this.net.getNode("TestNode"));
         assertNull(this.net.getNode("ChangedNodeName"));
         this.window.textBox("jTextFieldNodeName").setText("ChangedNodeName");
@@ -40,7 +41,7 @@ public class TestUI extends CommonUI<DialogFixture> {
     }
     
     @Test
-    public void testUI2() {
+    void testUI2() {
         assertNotNull(this.net.getNode("TestNode"));
         assertNull(this.net.getNode("ChangedNodeName"));
         this.window.textBox("jTextFieldNodeName").setText("ChangedNodeName");
