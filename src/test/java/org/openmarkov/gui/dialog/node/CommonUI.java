@@ -16,7 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @RunWith(GUITestRunner.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
-@EnabledIf("thereIsGraphicEnviroment")
+@DisabledIf(value = "java.awt.GraphicsEnvironment#isHeadless",
+        disabledReason = "headless environment")
 public abstract class CommonUI<TWindowFixture extends AbstractWindowFixture<TWindowFixture, ?, ?>> {
     
     protected TWindowFixture window;
