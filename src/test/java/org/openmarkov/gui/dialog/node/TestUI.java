@@ -2,22 +2,20 @@ package org.openmarkov.gui.dialog.node;
 
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.DialogFixture;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
+import java.awt.*;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisabledIf(value = "java.awt.GraphicsEnvironment#isHeadless", disabledReason = "Your machine does not have a Graphic Environment")
-public class TestUI extends CommonUI<DialogFixture> {
+public class TestUI extends BaseWindowTest<DialogFixture, Dialog> {
     
     private ProbNet net;
     
