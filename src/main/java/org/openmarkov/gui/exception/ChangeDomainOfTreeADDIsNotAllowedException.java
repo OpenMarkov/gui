@@ -1,4 +1,6 @@
 package org.openmarkov.gui.exception;
 
-public class ChangeDomainOfTreeADDIsNotAllowedException extends RuntimeException {
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
+
+public class ChangeDomainOfTreeADDIsNotAllowedException extends RuntimeException implements IBundledOpenMarkovException {
 }
