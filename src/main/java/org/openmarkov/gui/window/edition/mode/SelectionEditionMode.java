@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.action.MoveNodeEdit;
 import org.openmarkov.gui.graphic.VisualElement;
 import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,8 +36,8 @@ import java.util.List;
      */
     private SelectionState selectionState = SelectionState.DEFAULT;
     
-    public SelectionEditionMode(EditorPanel editorPanel, ProbNet probNet) {
-        super(editorPanel, probNet);
+    public SelectionEditionMode(NetworkEditorPanel networkEditorPanel, ProbNet probNet) {
+        super(networkEditorPanel, probNet);
         movedNodes = new ArrayList<>();
     }
     
@@ -71,14 +71,14 @@ import java.util.List;
                     moveNodeEdit.executeEdit();
                 }
                 nodeMoved = false;
-                editorPanel.adjustPanelDimension();
+                networkEditorPanel.adjustPanelDimension();
             }
             case SelectionState.SELECTING -> {
                 visualNetwork.finishSelectionRectangle(position);
             }
         }
         setSelectionState(SelectionState.DEFAULT);
-        editorPanel.repaint();
+        networkEditorPanel.repaint();
     }
     
     @Override public void mouseDragged(MouseEvent e, Point2D.Double position, double diffX, double diffY,
@@ -92,7 +92,7 @@ import java.util.List;
         } else if (selectionState == SelectionState.SELECTING) {
             visualNetwork.updateSelectionRectangle(diffX, diffY);
         }
-        editorPanel.repaint();
+        networkEditorPanel.repaint();
     }
     
     /**
@@ -103,7 +103,7 @@ import java.util.List;
      */
     private void setSelectionState(SelectionState newState) {
         
-        editorPanel.setCursor(newState.getCursor());
+        networkEditorPanel.setCursor(newState.getCursor());
         selectionState = newState;
         
     }

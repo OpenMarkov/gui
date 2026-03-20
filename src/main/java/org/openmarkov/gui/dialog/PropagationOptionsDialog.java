@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog;
 
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,9 +40,9 @@ public class PropagationOptionsDialog extends JDialog {
 	 * This method initialises this instance.
 	 *
 	 * @param owner       window that owns this dialog.
-	 * @param editorPanel the editor panel that called this dialog.
+	 * @param networkEditorPanel the editor panel that called this dialog.
 	 */
-	public PropagationOptionsDialog(Window owner, EditorPanel editorPanel, InferenceToolBar inferenceToolBar) {
+	public PropagationOptionsDialog(Window owner, NetworkEditorPanel networkEditorPanel, InferenceToolBar inferenceToolBar) {
 		JPanel principalPanel = new JPanel();
 		JPanel textPanel = new JPanel();
 		JPanel radioButtonsPanel = new JPanel();
@@ -65,7 +65,7 @@ public class PropagationOptionsDialog extends JDialog {
         jRadioButton2.setActionCommand(stringDatabase.getString("OptionsInferenceDialog.optionManual"));
 		radioButtonsPanel.add(jRadioButton1);
 		radioButtonsPanel.add(jRadioButton2);
-		if (editorPanel.isAutomaticPropagation()) {
+		if (networkEditorPanel.isAutomaticPropagation()) {
 			jRadioButton1.setSelected(true);
 		} else {
 			jRadioButton2.setSelected(true);
@@ -78,7 +78,7 @@ public class PropagationOptionsDialog extends JDialog {
 		buttonsPanel.add(cancelButton);
 		principalPanel.add(buttonsPanel, BorderLayout.SOUTH);
 		PropagationOptionsDialogListener optionsInferenceDialogListener = new PropagationOptionsDialogListener(this,
-				editorPanel, inferenceToolBar);
+																											   networkEditorPanel, inferenceToolBar);
 		okButton.addActionListener(optionsInferenceDialogListener);
 		cancelButton.addActionListener(optionsInferenceDialogListener);
         this.setIconImage(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE));

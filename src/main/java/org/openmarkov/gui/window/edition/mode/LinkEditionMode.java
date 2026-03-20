@@ -11,7 +11,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.util.GUIUtils;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,8 +20,8 @@ import java.awt.event.MouseEvent;
 @EditionState(name = "Edit.Mode.Link", icon = "link.gif", cursor = "link.gif") public class LinkEditionMode
         extends EditionMode {
     
-    public LinkEditionMode(EditorPanel editorPanel, ProbNet probNet) {
-        super(editorPanel, probNet);
+    public LinkEditionMode(NetworkEditorPanel networkEditorPanel, ProbNet probNet) {
+        super(networkEditorPanel, probNet);
     }
     
     @Override public void mousePressed(MouseEvent e, Point2D.Double cursorPosition, Graphics2D g) {
@@ -39,7 +39,7 @@ import java.awt.event.MouseEvent;
         if (linkEdit != null) {
             linkEdit.executeEdit();
         }
-        editorPanel.repaint();
+        networkEditorPanel.repaint();
     }
     
     @Override public void mouseDragged(MouseEvent e, Point2D.Double cursorPosition, double diffX, double diffY,
@@ -48,6 +48,6 @@ import java.awt.event.MouseEvent;
             return;
         }
         visualNetwork.updateLinkCreation(cursorPosition);
-        editorPanel.repaint();
+        networkEditorPanel.repaint();
     }
 }

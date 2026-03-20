@@ -12,7 +12,7 @@ import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import java.awt.event.ActionListener;
 
@@ -119,7 +119,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * @param selectedNode
 	 * @return the node contextual menu.
 	 */
-	private ContextualMenu getNodeContextualMenu(VisualNode selectedNode, EditorPanel panel) {
+	private ContextualMenu getNodeContextualMenu(VisualNode selectedNode, NetworkEditorPanel panel) {
 
 		menuAssistant.removeMenu(nodeContextualMenu);
 		nodeContextualMenu = new NodeContextualMenu(listener, selectedNode, panel);
@@ -135,7 +135,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * @param selectedLink
 	 * @return the link contextual menu.
 	 */
-	private ContextualMenu getLinkContextualMenu(VisualLink selectedLink, EditorPanel panel) {
+	private ContextualMenu getLinkContextualMenu(VisualLink selectedLink, NetworkEditorPanel panel) {
 
 		menuAssistant.removeMenu(linkContextualMenu);
 		linkContextualMenu = new LinkContextualMenu(listener, selectedLink, panel);
@@ -213,7 +213,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * info
 	 * @return The contextual menu
 	 */
-	public ContextualMenu getContextualMenu(VisualElement selectedElement, EditorPanel panel) {
+	public ContextualMenu getContextualMenu(VisualElement selectedElement, NetworkEditorPanel panel) {
 		ContextualMenu contextualMenu = null;
 		if (VisualNode.class.isAssignableFrom(selectedElement.getClass())) {
 			contextualMenu = getNodeContextualMenu((VisualNode) selectedElement, panel);
@@ -225,7 +225,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 
 	/**
 	 * Returns the correspondent tree pop-up menu. As for now there is only one possible menu
-	 * so discrimination by inputs (as is @link #getContextualMenu(VisualElement, EditorPanel))
+	 * so discrimination by inputs (as is @link #getContextualMenu(VisualElement, NetworkEditorPanel))
 	 * is not necessary.
 	 * @param enableShowCEP 
 	 *

@@ -12,7 +12,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.graphic.VisualNetwork;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -23,16 +23,16 @@ import java.awt.event.MouseEvent;
  *
  * @author ibermejo
  */
-@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({EditorPanel.class, ProbNet.class}))
+@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({NetworkEditorPanel.class, ProbNet.class}))
 public abstract class EditionMode {
 
-	protected EditorPanel editorPanel;
+	protected NetworkEditorPanel networkEditorPanel;
 	protected VisualNetwork visualNetwork;
 	protected ProbNet probNet;
 
-	public EditionMode(EditorPanel editorPanel, ProbNet probNet) {
-		this.editorPanel = editorPanel;
-		this.visualNetwork = editorPanel.getVisualNetwork();
+	public EditionMode(NetworkEditorPanel networkEditorPanel, ProbNet probNet) {
+		this.networkEditorPanel = networkEditorPanel;
+		this.visualNetwork = networkEditorPanel.getVisualNetwork();
 		this.probNet = probNet;
 	}
     

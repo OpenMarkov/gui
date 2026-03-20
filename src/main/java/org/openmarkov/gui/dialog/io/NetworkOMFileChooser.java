@@ -44,6 +44,7 @@ public class NetworkOMFileChooser extends OMFileChooser {
      */
     public NetworkOMFileChooser(boolean acceptAllfile, boolean isOpening) {
         super();
+        setName("NetworkOMFileChooser");
         setAcceptAllFileFilterUsed(acceptAllfile);
         rescanCurrentDirectory();
         var parsers = isOpening ? FormatManager.readersClasses() : FormatManager.writersClasses();

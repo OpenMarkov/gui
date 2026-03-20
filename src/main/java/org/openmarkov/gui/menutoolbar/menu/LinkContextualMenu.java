@@ -19,7 +19,7 @@ import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -82,7 +82,7 @@ class LinkContextualMenu extends ContextualMenu {
      * @param panel
      * @param selectedLink
      */
-    public LinkContextualMenu(ActionListener newListener, VisualLink selectedLink, EditorPanel panel) {
+    public LinkContextualMenu(ActionListener newListener, VisualLink selectedLink, NetworkEditorPanel panel) {
         
         super(newListener);
         

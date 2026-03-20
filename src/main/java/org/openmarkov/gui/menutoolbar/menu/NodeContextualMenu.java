@@ -15,7 +15,7 @@ import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -115,7 +115,7 @@ public class NodeContextualMenu extends ContextualMenu {
 	 * @param panel
 	 * @param selectedNode
 	 */
-	public NodeContextualMenu(ActionListener newListener, VisualNode selectedNode, EditorPanel panel) {
+	public NodeContextualMenu(ActionListener newListener, VisualNode selectedNode, NetworkEditorPanel panel) {
 		super(newListener);
 		initialize();
 

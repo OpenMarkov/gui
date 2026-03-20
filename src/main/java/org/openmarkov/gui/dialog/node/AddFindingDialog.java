@@ -11,7 +11,7 @@ import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,7 +38,7 @@ public class AddFindingDialog extends OkCancelDialog {
     
     private JSpinner evidenceSpinner;
     
-    private EditorPanel editorPanel;
+    private NetworkEditorPanel networkEditorPanel;
     
     private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     
@@ -55,11 +55,11 @@ public class AddFindingDialog extends OkCancelDialog {
      * @param visualNode the node to which this dialog is associated.
      * @param finding    the assigned finding
      */
-    public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding, EditorPanel editorPanel) {
+    public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding, NetworkEditorPanel networkEditorPanel) {
         super(owner);
         this.visualNode = visualNode;
         this.finding = finding;
-        this.editorPanel = editorPanel;
+        this.networkEditorPanel = networkEditorPanel;
         initialize();
         setMinimumSize(new Dimension(260, getHeight()));
         int posX = owner.getX() + (owner.getWidth() - this.getWidth()) / 2;
@@ -183,9 +183,9 @@ public class AddFindingDialog extends OkCancelDialog {
             newFinding = new Finding(variable, (Double) getSelectedState());
         }
         if (!visualNode.isPreResolutionFinding()) {
-            editorPanel.getEvidenceManager().setNewFinding(visualNode, null, newFinding, false);
+            networkEditorPanel.getEvidenceManager().setNewFinding(visualNode, null, newFinding, false);
         } else {
-            editorPanel.getEvidenceManager().setNewFinding(visualNode, previousFinding, newFinding, false);
+            networkEditorPanel.getEvidenceManager().setNewFinding(visualNode, previousFinding, newFinding, false);
         }
         
         

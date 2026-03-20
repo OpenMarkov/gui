@@ -71,7 +71,6 @@ public class SplashScreen extends JFrame {
         this.getContentPane().add(imageLabel, BorderLayout.CENTER);
         
         this.pack();
-        this.setVisible(true);
     }
     
     /**

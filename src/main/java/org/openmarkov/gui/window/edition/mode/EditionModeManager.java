@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.loader.element.CursorLoader;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 import org.openmarkov.plugin.PluginSearch;
 
 import java.awt.*;
@@ -24,13 +24,13 @@ import java.util.stream.Stream;
 public class EditionModeManager {
     private Map<String, EditionState> editionStates;
     private Map<String, Class<? extends EditionMode>> editionModeClasses;
-    private EditorPanel editorPanel;
+    private NetworkEditorPanel networkEditorPanel;
     private ProbNet probNet;
     
-    public EditionModeManager(EditorPanel editorPanel, ProbNet probNet) {
+    public EditionModeManager(NetworkEditorPanel networkEditorPanel, ProbNet probNet) {
         editionStates = new HashMap<>();
         editionModeClasses = new HashMap<>();
-        this.editorPanel = editorPanel;
+        this.networkEditorPanel = networkEditorPanel;
         this.probNet = probNet;
         EditionModeManager.findAllEditionStates().forEach(editionModeClass -> {
             EditionState editionState = editionModeClass.getAnnotation(EditionState.class);
@@ -45,8 +45,8 @@ public class EditionModeManager {
             try {
                 Constructor<?> constructor = editionModeClasses
                         .get(editionMode)
-                        .getConstructor(EditorPanel.class, ProbNet.class);
-                instance = (EditionMode) constructor.newInstance(editorPanel, probNet);
+                        .getConstructor(NetworkEditorPanel.class, ProbNet.class);
+                instance = (EditionMode) constructor.newInstance(networkEditorPanel, probNet);
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException |
                      IllegalArgumentException | InvocationTargetException e) {
                 throw new UnreachableException(e);

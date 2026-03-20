@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.dialog;
 
+import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
+
 import javax.swing.*;
 import java.net.URL;
 
@@ -18,70 +20,40 @@ import java.net.URL;
  * @version 1.0 16/11/2008
  */
 public class SplashScreenLoader {
-
-	/**
-	 * the logo file
-	 */
+    
+    /**
+     * the logo file
+     */
     //private static final String logoFile = "/images/OpenMarkovSplash.jpg";
-	private static final String logoFile = "/images/OpenMarkov33.jpg";
-	private SplashScreen splash;
-
-	/**
-	 * start the splash screen, do work and destroy
-	 */
-	public SplashScreenLoader() {
-
-		/*
-		 * splashScreenInit(); simulateDoingWork(); splashScreenDestroy();
-		 */
-	}
-
-	/**
-	 * This method draws on the splash screen.
-	 */
-	public void originalSplashScreenInit() {
-
-		// TODO externalize to OpenMarkov Properties the string for the icon
-
-		URL url = this.getClass().getClassLoader().getResource(logoFile);
-		ImageIcon myImage = new ImageIcon(url);
-		splash = new SplashScreen(myImage);
-		splash.setLocationRelativeTo(null);
-		splash.setProgressMax(100);
-		splash.setScreenVisible(true);
-
-	}
-	
-	
-	public void splashScreenInit() {
-
-		// TODO externalize to OpenMarkov Properties the string for the icon
-
-		URL url = this.getClass().getResource(logoFile);
-		ImageIcon myImage = new ImageIcon(url);
-		splash = new SplashScreen(myImage);
-		splash.setLocationRelativeTo(null);
-		splash.setProgressMax(100);
-		splash.setScreenVisible(true);
-
-	}
+    private static final String logoFile = "/images/OpenMarkov33.jpg";
+    private SplashScreen splash;
+    
+    public void splashScreenInit() {
+        // TODO externalize to OpenMarkov Properties the string for the icon
+        URL url = this.getClass().getResource(logoFile);
+        ImageIcon myImage = new ImageIcon(url);
+        splash = new SplashScreen(myImage);
+        splash.setLocationRelativeTo(null);
+        splash.setProgressMax(100);
+        splash.setVisible(true);
+        splash.setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
+    }
     
     
     /**
-	 * destroy the splash Screen turning not visible
-	 */
-	public void splashScreenDestroy() {
-		splash.setScreenVisible(false);
-	}
-
-	/**
-	 * get splash
-	 *
-	 * @return aSplash The real splash screen
-	 */
-	public SplashScreen getSplash() {
-
-		return splash;
-	}
-
+     * destroy the splash Screen turning not visible
+     */
+    public void splashScreenDestroy() {
+        splash.setScreenVisible(false);
+    }
+    
+    /**
+     * get splash
+     *
+     * @return aSplash The real splash screen
+     */
+    public SplashScreen getSplash() {
+        return splash;
+    }
+    
 }

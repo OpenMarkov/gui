@@ -153,11 +153,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
     @Override public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
         ActionCommands actionCommandConstant = ActionCommands.of(actionCommand);
-        OptionalInt recentFileIndex = actionCommandConstant.openRecentFileIndex();
-        if (recentFileIndex.isPresent()) {
-            executeUIAction(() -> openNetwork(LastOpenFiles.getFilePathAt(recentFileIndex.getAsInt())));
-            return;
-        }
         switch (actionCommandConstant) {
             case ActionCommands.NEW_NETWORK -> createNewNetwork();
             case ActionCommands.OPEN_NETWORK -> executeUIAction(() -> openNetwork());
@@ -170,8 +165,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.SAVE_EVIDENCE -> saveEvidence(getCurrentNetworkPanel());
             case ActionCommands.NETWORK_PROPERTIES -> getCurrentNetworkPanel().changeNetworkProperties();
             case ActionCommands.EXPAND_NETWORK -> executeUIAction(() ->
-                    expandNetwork(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel().getEvidenceManager()
-                                                                                                .getPreResolutionEvidence()));
+                                                                          expandNetwork(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel()
+                                                                                                                                                       .getEvidenceManager()
+                                                                                                                                                       .getPreResolutionEvidence()));
             case ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION, ActionCommands.TEMPORAL_EVOLUTION_ACTION ->
                     this.getCurrentNetworkPanel().temporalEvolution();
             //case ActionCommands.EXPAND_NETWORK_CE -> expandNetworkCE(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
@@ -227,11 +223,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     executeUIAction(() -> getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant()));
             case ActionCommands.ABSORB_NODE -> executeUIAction(() -> this.getCurrentNetworkPanel().absorbNode());
             case ActionCommands.ABSORB_PARENTS -> executeUIAction(() -> this.getCurrentNetworkPanel().absorbParents());
-            case ActionCommands.NODE_PROPERTIES -> executeUIAction(() -> getCurrentNetworkPanel().changeNodeProperties());
+            case ActionCommands.NODE_PROPERTIES ->
+                    executeUIAction(() -> getCurrentNetworkPanel().changeNodeProperties());
             case ActionCommands.EDIT_POTENTIAL -> executeUIAction(() -> getCurrentNetworkPanel().changePotential());
             case ActionCommands.DECISION_IMPOSE_POLICY ->
                     executeUIAction(() -> getCurrentNetworkPanel().imposePolicyInNode());
-            case ActionCommands.DECISION_EDIT_POLICY -> executeUIAction(() -> getCurrentNetworkPanel().editNodePolicy());
+            case ActionCommands.DECISION_EDIT_POLICY ->
+                    executeUIAction(() -> getCurrentNetworkPanel().editNodePolicy());
             case ActionCommands.DECISION_REMOVE_POLICY ->
                     executeUIAction(() -> getCurrentNetworkPanel().removePolicyFromNode());
             case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY ->
@@ -305,7 +303,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 }
             }
             case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES -> executeUIAction(() ->
-                    new RemoveLinkRestrictionEdit(this.getCurrentNetworkPanel().getEditorPanel().getVisualNetwork()).executeEdit());
+                                                                                               new RemoveLinkRestrictionEdit(this.getCurrentNetworkPanel()
+                                                                                                                                 .getEditorPanel()
+                                                                                                                                 .getVisualNetwork()).executeEdit());
             case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> {
                 NetworkPanel networkPanel = this.getCurrentNetworkPanel();
                 List<VisualLink> links = networkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks();
@@ -315,20 +315,24 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     new RevelationArcEditDialog(owner, link).requestValues();
                 }
             }
-            case ActionCommands.DECISION_TREE ->
-                    executeUIAction(() -> showDecisionTree(this.getCurrentNetworkPanel()));
+            case ActionCommands.DECISION_TREE -> executeUIAction(() -> showDecisionTree(this.getCurrentNetworkPanel()));
             case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY ->
                     executeUIAction(() -> showOptimalStrategy(this.getCurrentNetworkPanel()));
             case ActionCommands.NEXT_SLICE_NODE -> executeUIAction(() -> {
                 NetworkPanel networkPanel = this.getCurrentNetworkPanel();
-                Node selectedNode = networkPanel.getEditorPanel().getVisualNetwork().getSelectedNodes().getFirst().getNode();
+                Node selectedNode = networkPanel.getEditorPanel()
+                                                .getVisualNetwork()
+                                                .getSelectedNodes()
+                                                .getFirst()
+                                                .getNode();
                 Variable selectedVariable = selectedNode.getVariable();
                 Variable newVariable = new Variable(selectedVariable);
                 newVariable.setTimeSlice(selectedVariable.getTimeSlice() + 1);
                 Point2D.Double position = new Point2D.Double(selectedNode.getCoordinateX() + 200,
                                                              selectedNode.getCoordinateY());
                 new AddNodeEdit(networkPanel.getEditorPanel()
-                                            .getVisualNetwork().getProbNet(), newVariable, selectedNode.getNodeType(), position).executeEdit();
+                                            .getVisualNetwork()
+                                            .getProbNet(), newVariable, selectedNode.getNodeType(), position).executeEdit();
             });
             case ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC -> {
                 try {
@@ -369,7 +373,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     private interface UIAction {
         void execute() throws Exception;
     }
-
+    
     private void executeUIAction(UIAction action) {
         try {
             action.execute();
@@ -379,7 +383,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             throw new UnrecoverableException(ex);
         }
     }
-
+    
     private void closeCurrentTab() throws WriterException {
         var selectedComponent = this.mainPanel.getNetworksTabPanel().getSelectedComponent();
         switch (selectedComponent) {
@@ -395,6 +399,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     }
     
     private void defaultActionOnCommand(ActionEvent e, String actionCommand, ActionCommands actionCommandConstant) {
+        
         if (actionCommand.startsWith(ActionCommands.EDITION_MODE_PREFIX.getCommandName())) {
             activateEditionMode(actionCommand);
         } else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS.getCommandName())) {
@@ -406,7 +411,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
             var listeners = source.getActionListeners();
             //
             //throw new UnrecoverableException(new InvalidArgumentException(actionCommand, "it has not tied action"));
+        } else if (actionCommandConstant != null
+                && actionCommandConstant.openRecentFileIndex().orElse(null) instanceof Integer recentFileIndex) {
+            executeUIAction(() -> openNetwork(LastOpenFiles.getFilePathAt(recentFileIndex)));
         }
+        
     }
     
     /**
@@ -568,7 +577,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat) throws WriterException {
         System.out.println(stringDatabase.getString("SavingNetwork.Text") + " " + fileName);
-        NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidenceManager().getEvidence(), fileName);
+        NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel()
+                                                                      .getEvidenceManager()
+                                                                      .getEvidence(), fileName);
         
         // networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
         networkPanel.setModified(false);
@@ -797,8 +808,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
         mainPanel.addCloseableTab(probNet.getName(), networkPanel);
         mainPanel.getNetworksTabPanel().setSelectedComponent(networkPanel);
         networkPanel.setContextualMenuFactory(mainPanel.getContextualMenuFactory());
-        // networkPanel.addEditionListener( mainPanel
-        // .getMainPanelMenuAssistant() );
         networkPanel.getEditorPanel().getVisualNetwork().addSelectionListener(mainPanel.getMainPanelMenuAssistant());
         mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(networkPanel);
@@ -1041,7 +1050,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
         
         //Stores the full path
         networkPanel.setNetworkFile(path + File.separator + fileName);
-        networkPanel.getEditorPanel().getEvidenceManager().setEvidence(preResolutionEvidence, new ArrayList<EvidenceCase>());
+        networkPanel.getEditorPanel()
+                    .getEvidenceManager()
+                    .setEvidence(preResolutionEvidence, new ArrayList<EvidenceCase>());
         networkPanels.add(networkPanel);
     }
 
@@ -1271,9 +1282,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
         boolean performInference = true;
         boolean isTemporal;
         boolean isMulticriteria = false;
-
+        
         ProbNet probNet = getCurrentNetworkPanel().getProbNet();
-
+        
         isTemporal = !probNet.hasConstraintOfClass(OnlyAtemporalVariables.class);
         if (probNet.getDecisionCriteria() != null && probNet.getDecisionCriteria().size() > 1) {
             isMulticriteria = true;
@@ -1282,11 +1293,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
         if (isTemporal) {
             requiredInfereceOptions = true;
         }
-
+        
         if (isMulticriteria) {
             requiredInfereceOptions = true;
         }
-
+        
         if (currentWorkingMode == NetworkPanel.WorkingMode.EDITION && requiredInfereceOptions) {
             // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
             InferenceOptionsDialog dialog = new InferenceOptionsDialog(probNet, GUIUtils.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
@@ -1298,7 +1309,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             // Set as launched
             //getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
         }
-
+        
         mainPanel.setToolBarPanel(newWorkingMode);
         mainPanel.changeWorkingModeButton(newWorkingMode);
         if (!getNetworkPanels().isEmpty()) {
@@ -1313,7 +1324,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     case EDITION -> {
                         // getCurrentNetworkPanel().removeAllFindings(); //Suppressed the elimination of findings on returning to Edition Mode
                         //TODO: has the following piece of code sense with the task scenario?
-                        //TODO: review inferenceAlgorithm variable in EditorPanel, specially in removeNodeEvidenceInAllCases
+                        //TODO: review inferenceAlgorithm variable in NetworkEditorPanel, specially in removeNodeEvidenceInAllCases
                         //if (getCurrentNetworkPanel().getInferenceAlgorithm() != null) {
                         //    getCurrentNetworkPanel().setInferenceAlgorithm(null);
                         //}
@@ -1465,10 +1476,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
         
         ProbNet probNet = networkPanel.getProbNet();
-
+        
         if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
             DANEvaluation eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet, networkPanel.getEditorPanel()
-                                                                                                      .getEvidenceManager().getPreResolutionEvidence());
+                                                                                                      .getEvidenceManager()
+                                                                                                      .getPreResolutionEvidence());
             StrategyTree strategyTree = eval.getUtility().strategyTrees[0];
             
             //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(GUIUtils.getOwner(mainPanel), probNet, inferenceAlgorithm);
@@ -1483,7 +1495,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
             VEOptimalIntervention veOptimalStrategy = null;
             try {
                 veOptimalStrategy = new VEOptimalIntervention(probNet,
-                                                              networkPanel.getEditorPanel().getEvidenceManager().getPreResolutionEvidence());
+                                                              networkPanel.getEditorPanel()
+                                                                          .getEvidenceManager()
+                                                                          .getPreResolutionEvidence());
             } catch (NotEvaluableNetworkException.NotApplicableNetwork |
                      NotEvaluableNetworkException.UnsatisfiedConstraints | IncompatibleEvidenceException |
                      ConstraintViolatedException e) {

@@ -1,4 +1,4 @@
-package org.openmarkov.gui.window.edition.editorPanel;
+package org.openmarkov.gui.window.edition.networkEditorPanel;
 
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.core.AddNodeEdit;
@@ -22,10 +22,10 @@ import java.util.Optional;
 
 class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListener {
     
-    private final EditorPanel editorPanel;
+    private final NetworkEditorPanel networkEditorPanel;
     
-    EditorInputHandler(EditorPanel editorPanel) {
-        this.editorPanel = editorPanel;
+    EditorInputHandler(NetworkEditorPanel networkEditorPanel) {
+        this.networkEditorPanel = networkEditorPanel;
     }
     
     /**
@@ -55,16 +55,16 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
             this.lastClickCount += 1;
         }
         // requestFocusInWindow(); Activate if nodes can't be moved by arrows.
-        Graphics2D g = (Graphics2D) this.editorPanel.getGraphics();
-        this.cursorPosition.setLocation(this.editorPanel.getZoomManager()
-                                                        .screenToPanel(e.getX()), this.editorPanel.getZoomManager()
-                                                                                                  .screenToPanel(e.getY()));
+        Graphics2D g = (Graphics2D) this.networkEditorPanel.getGraphics();
+        this.cursorPosition.setLocation(this.networkEditorPanel.getZoomManager()
+                                                               .screenToPanel(e.getX()), this.networkEditorPanel.getZoomManager()
+                                                                                                                .screenToPanel(e.getY()));
         // Specific functionality depending on the edition mode;
         try {
-            var oldNodesCount = this.editorPanel.getNetworkPanel().getProbNet().getNodes().size();
-            this.editorPanel.getEditionMode().mousePressed(e, this.cursorPosition, g);
+            var oldNodesCount = this.networkEditorPanel.getNetworkPanel().getProbNet().getNodes().size();
+            this.networkEditorPanel.getEditionMode().mousePressed(e, this.cursorPosition, g);
             if (e.getClickCount() == 1) {
-                int newNodesCount = this.editorPanel.getNetworkPanel().getProbNet().getNodes().size();
+                int newNodesCount = this.networkEditorPanel.getNetworkPanel().getProbNet().getNodes().size();
                 this.lastLeftClickProducedANode = oldNodesCount < newNodesCount;
             }
         } catch (DoEditException ex) {
@@ -73,86 +73,86 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         // Generic functionality regardless of the edition mode
         if (SwingUtilities.isRightMouseButton(e)) {
             this.showContextualMenu(e, g);
-            this.editorPanel.repaint();
+            this.networkEditorPanel.repaint();
             return;
         }
         if (!SwingUtilities.isLeftMouseButton(e)) {
-            this.editorPanel.repaint();
+            this.networkEditorPanel.repaint();
             return;
         }
         VisualNode node;
         if (e.isAltDown() && e.getClickCount() != 2) {
-            node = this.editorPanel.getVisualNetwork().whatNodeInPosition(this.cursorPosition, g);
+            node = this.networkEditorPanel.getVisualNetwork().whatNodeInPosition(this.cursorPosition, g);
             if (node != null) {
                 if (!node.isSelected()) {
-                    this.editorPanel.getVisualNetwork().setSelectedAllObjects(false);
-                    this.editorPanel.getVisualNetwork().setSelectedNode(node, true);
+                    this.networkEditorPanel.getVisualNetwork().setSelectedAllObjects(false);
+                    this.networkEditorPanel.getVisualNetwork().setSelectedNode(node, true);
                 }
                 try {
-                    this.editorPanel.showPotentialDialog(this.editorPanel.getNetworkPanel()
-                                                                         .getWorkingMode() != NetworkPanel.WorkingMode.EDITION);
+                    this.networkEditorPanel.showPotentialDialog(this.networkEditorPanel.getNetworkPanel()
+                                                                                       .getWorkingMode() != NetworkPanel.WorkingMode.EDITION);
                 } finally {
-                    this.editorPanel.repaint();
+                    this.networkEditorPanel.repaint();
                     return;
                 }
             }
         }
         if (!(e.getClickCount() == 2 && GUIUtils.noMouseModifiers(e))) {
-            this.editorPanel.repaint();
+            this.networkEditorPanel.repaint();
             return;
         }
-        if (this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.EDITION) {
+        if (this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.EDITION) {
             // If we are in Edition Mode a double click must open
             // the corresponding properties dialog (for node, link
             // or network)
-            node = this.editorPanel.getVisualNetwork().whatNodeInPosition(this.cursorPosition, g);
+            node = this.networkEditorPanel.getVisualNetwork().whatNodeInPosition(this.cursorPosition, g);
             if (node != null) {
                 try {
-                    boolean userAcceptedChanges = this.editorPanel.changeNodeProperties(node, this.lastLeftClickProducedANode);
+                    boolean userAcceptedChanges = this.networkEditorPanel.changeNodeProperties(node, this.lastLeftClickProducedANode);
                     if (!userAcceptedChanges && this.lastLeftClickProducedANode) {
                         while (true) {
-                            if (this.editorPanel.getNetworkPanel().getProbNet().getPNESupport()
-                                                .undo()
-                                                .stream()
-                                                .anyMatch(edit -> edit instanceof AddNodeEdit)) {
+                            if (this.networkEditorPanel.getNetworkPanel().getProbNet().getPNESupport()
+                                                       .undo()
+                                                       .stream()
+                                                       .anyMatch(edit -> edit instanceof AddNodeEdit)) {
                                 break;
                             }
                         }
-                        this.editorPanel.getNetworkPanel().getProbNet().getPNESupport().removeUndoneEdits();
+                        this.networkEditorPanel.getNetworkPanel().getProbNet().getPNESupport().removeUndoneEdits();
                     }
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ConstraintViolatedException | NotSupportedOperationException ex) {
-                    this.editorPanel.repaint();
+                    this.networkEditorPanel.repaint();
                     throw new UnrecoverableException(ex);
                 }
             } else {
-                VisualLink link = this.editorPanel.getVisualNetwork().whatLinkInPosition(this.cursorPosition, g);
+                VisualLink link = this.networkEditorPanel.getVisualNetwork().whatLinkInPosition(this.cursorPosition, g);
                 if (link != null) {
-                    this.editorPanel.changeLinkProperties(link);
+                    this.networkEditorPanel.changeLinkProperties(link);
                 } else {
-                    this.editorPanel.changeNetworkProperties();
+                    this.networkEditorPanel.changeNetworkProperties();
                 }
             }
-            this.editorPanel.repaint();
+            this.networkEditorPanel.repaint();
             return;
         }
         
-        if (this.editorPanel.getVisualNetwork().whatStateInPosition(this.cursorPosition, g) == null) {
-            if ((this.editorPanel.getVisualNetwork().whatNodeInPosition(this.cursorPosition, g) != null) && (
-                    this.editorPanel.getVisualNetwork().whatInnerBoxInPosition(this.cursorPosition, g) == null
+        if (this.networkEditorPanel.getVisualNetwork().whatStateInPosition(this.cursorPosition, g) == null) {
+            if ((this.networkEditorPanel.getVisualNetwork().whatNodeInPosition(this.cursorPosition, g) != null) && (
+                    this.networkEditorPanel.getVisualNetwork().whatInnerBoxInPosition(this.cursorPosition, g) == null
             )) {
                 try {
-                    this.editorPanel.changeNodeProperties();
+                    this.networkEditorPanel.changeNodeProperties();
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | CannotNormalizePotentialException |
                          ConstraintViolatedException | NotSupportedOperationException ex) {
                     throw new UnrecoverableException(ex);
                 } finally {
-                    this.editorPanel.repaint();
+                    this.networkEditorPanel.repaint();
                 }
             }
-            this.editorPanel.repaint();
+            this.networkEditorPanel.repaint();
             return;
         }
         
@@ -163,13 +163,13 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         // inner box (in its 'expanded external shape'), its
         // properties dialog should be open
         
-        VisualNode visualNode = this.editorPanel.getVisualNetwork().whatNodeInPosition(this.cursorPosition, g);
+        VisualNode visualNode = this.networkEditorPanel.getVisualNetwork().whatNodeInPosition(this.cursorPosition, g);
         if (visualNode.isPreResolutionFinding()) {
             throw new UnrecoverableException(new PreResolutionNodeInInferenceException(visualNode));
         }
-        VisualState visualState = this.editorPanel.getVisualNetwork().whatStateInPosition(this.cursorPosition, g);
+        VisualState visualState = this.networkEditorPanel.getVisualNetwork().whatStateInPosition(this.cursorPosition, g);
         try {
-            this.editorPanel.getEvidenceManager().toggleFinding(visualNode, visualState);
+            this.networkEditorPanel.getEvidenceManager().toggleFinding(visualNode, visualState);
         } catch (IncompatibleEvidenceException | NotEvaluableNetworkException | NonProjectablePotentialException |
                  NotEnoughMemoryException | CannotNormalizePotentialException | DoEditException ex) {
             throw new UnreachableException(ex);
@@ -184,14 +184,14 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
      * @param e mouse event information.
      */
     @Override public void mouseDragged(MouseEvent e) {
-        Graphics2D g = (Graphics2D) this.editorPanel.getGraphics();
-        Point2D.Double point = new Point2D.Double(this.editorPanel.getZoomManager()
-                                                                  .screenToPanel(e.getX()), this.editorPanel.getZoomManager()
-                                                                                                            .screenToPanel(e.getY()));
+        Graphics2D g = (Graphics2D) this.networkEditorPanel.getGraphics();
+        Point2D.Double point = new Point2D.Double(this.networkEditorPanel.getZoomManager()
+                                                                         .screenToPanel(e.getX()), this.networkEditorPanel.getZoomManager()
+                                                                                                                          .screenToPanel(e.getY()));
         double diffX = point.getX() - this.cursorPosition.getX();
         double diffY = point.getY() - this.cursorPosition.getY();
         this.cursorPosition.setLocation(point);
-        this.editorPanel.getEditionMode().mouseDragged(e, point, diffX, diffY, g);
+        this.networkEditorPanel.getEditionMode().mouseDragged(e, point, diffX, diffY, g);
     }
     
     /**
@@ -200,12 +200,12 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
      * @param e mouse event information.
      */
     @Override public void mouseReleased(MouseEvent e) {
-        Graphics2D g = (Graphics2D) this.editorPanel.getGraphics();
-        Point2D.Double position = new Point2D.Double(this.editorPanel.getZoomManager()
-                                                                     .screenToPanel(e.getX()), this.editorPanel.getZoomManager()
-                                                                                                               .screenToPanel(e.getY()));
+        Graphics2D g = (Graphics2D) this.networkEditorPanel.getGraphics();
+        Point2D.Double position = new Point2D.Double(this.networkEditorPanel.getZoomManager()
+                                                                            .screenToPanel(e.getX()), this.networkEditorPanel.getZoomManager()
+                                                                                                                             .screenToPanel(e.getY()));
         try {
-            this.editorPanel.getEditionMode().mouseReleased(e, position, g);
+            this.networkEditorPanel.getEditionMode().mouseReleased(e, position, g);
         } catch (DoEditException ex) {
             throw new UnrecoverableException(ex);
         }
@@ -239,12 +239,12 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getKeyCode()) {
-            case KeyEvent.VK_UP -> this.editorPanel.getVisualNetwork().moveSelectedElements(0, -2);
-            case KeyEvent.VK_RIGHT -> this.editorPanel.getVisualNetwork().moveSelectedElements(2, 0);
-            case KeyEvent.VK_DOWN -> this.editorPanel.getVisualNetwork().moveSelectedElements(0, 2);
-            case KeyEvent.VK_LEFT -> this.editorPanel.getVisualNetwork().moveSelectedElements(-2, 0);
+            case KeyEvent.VK_UP -> this.networkEditorPanel.getVisualNetwork().moveSelectedElements(0, -2);
+            case KeyEvent.VK_RIGHT -> this.networkEditorPanel.getVisualNetwork().moveSelectedElements(2, 0);
+            case KeyEvent.VK_DOWN -> this.networkEditorPanel.getVisualNetwork().moveSelectedElements(0, 2);
+            case KeyEvent.VK_LEFT -> this.networkEditorPanel.getVisualNetwork().moveSelectedElements(-2, 0);
         }
-        this.editorPanel.repaint();
+        this.networkEditorPanel.repaint();
     }
     
     @Override
@@ -269,17 +269,17 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
      * @param g Graphics2D
      */
     private void showContextualMenu(MouseEvent e, Graphics2D g) {
-        VisualElement selectedElement = this.editorPanel.getVisualNetwork()
-                                                        .getElementInPosition(this.cursorPosition, g);
+        VisualElement selectedElement = this.networkEditorPanel.getVisualNetwork()
+                                                               .getElementInPosition(this.cursorPosition, g);
         ContextualMenu contextualMenu;
         if (selectedElement != null) {
-            contextualMenu = this.getContextualMenu(selectedElement, this.editorPanel);
-            this.editorPanel.getVisualNetwork().selectElement(selectedElement);
+            contextualMenu = this.getContextualMenu(selectedElement, this.networkEditorPanel);
+            this.networkEditorPanel.getVisualNetwork().selectElement(selectedElement);
         } else {
-            boolean canBeExpanded = this.editorPanel.getNetworkPanel().getProbNet().thereAreTemporalNodes();
+            boolean canBeExpanded = this.networkEditorPanel.getNetworkPanel().getProbNet().thereAreTemporalNodes();
             contextualMenu = this.contextualMenuFactory.getNetworkContextualMenu(canBeExpanded);
         }
-        contextualMenu.show(this.editorPanel, e.getX(), e.getY());
+        contextualMenu.show(this.networkEditorPanel, e.getX(), e.getY());
     }
     
     /**
@@ -297,7 +297,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
      *
      * @return the contextual menu corresponding the the parameter.
      */
-    private @Nullable ContextualMenu getContextualMenu(VisualElement selectedElement, EditorPanel panel) {
+    private @Nullable ContextualMenu getContextualMenu(VisualElement selectedElement, NetworkEditorPanel panel) {
         return Optional.ofNullable(this.contextualMenuFactory)
                        .map(menuFactory -> menuFactory.getContextualMenu(selectedElement, panel))
                        .orElse(null);

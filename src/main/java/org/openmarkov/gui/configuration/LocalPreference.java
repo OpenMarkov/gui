@@ -60,6 +60,12 @@ import java.util.stream.Stream;
 public final class LocalPreference<T> {
     
     /**
+     * When set to true, the {@link LocalPreference#save()} operation takes no effect, and
+     * {@link LocalPreference#initialize()} no longer gets the value from the {@link LocalPreference#RESOLVE_STRATEGY}.
+     */
+    public static boolean IGNORE_STORAGE = false;
+    
+    /**
      * The default resolve strategy is that which can put and clear a value two times.
      */
     private static final LocalPreferenceResolveStrategy RESOLVE_STRATEGY = Arrays
@@ -124,6 +130,11 @@ public final class LocalPreference<T> {
     
     public void initialize() {
         if (this.isInitialized) return;
+        if (LocalPreference.IGNORE_STORAGE) {
+            this.isInitialized = true;
+            this.value = this.defaultValue.get();
+            return;
+        }
         String nodeValue = LocalPreference.RESOLVE_STRATEGY.get(this.preferencePath);
         if (nodeValue == null) {
             this.isInitialized = true;
@@ -178,7 +189,7 @@ public final class LocalPreference<T> {
                     "bombarded with exceptions happening if their OS doesn't allow to use Backing Stores. But, do we " +
                     "want them to be logged nevertheless")
     public void save() {
-        if (!this.isInitialized) {
+        if (LocalPreference.IGNORE_STORAGE || !this.isInitialized) {
             return;
         }
         try {

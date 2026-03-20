@@ -87,6 +87,7 @@ public abstract class NodePropertiesDialog extends OkCancelDialog implements Cha
 		this.node = node;
 		this.readOnly = readOnly;
 		this.newNode = newElement;
+		setName("NodePropertiesDialog");
 		// setResizable(true);
 		initialize();
 		pack();

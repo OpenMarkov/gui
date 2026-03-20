@@ -12,6 +12,10 @@ import java.util.List;
 
 public final class LocalPreferences {
     
+    public static final LocalPreference<Boolean> HOVER_LOGGER_ENABLED = LocalPreference
+            .of("dev_tools/hover_logger_enabled", () -> false, new TypeToken<>() {
+            });
+    
     public static final LocalPreference<File> LATEST_OPEN_DIRECTORY = LocalPreference
             .of("directories/latest_open_directory", () -> new File("."), new TypeToken<>() {
             });
@@ -43,10 +47,6 @@ public final class LocalPreferences {
             .of("user_interface/ui_scale", () -> 1.0, new TypeToken<>() {
             });
     
-    public static final LocalPreference<Boolean> PREFERS_DARK_THEME = LocalPreference
-            .of("user_interface/prefers_dark_theme", () -> false, new TypeToken<>() {
-            });
-    
     public static final LocalPreference<UILookAndFeelPlugin.Theme> PREFERRED_THEME = LocalPreference
             .of("user_interface/prefered_theme", () -> UILookAndFeelPlugin.Theme.SYSTEM, new TypeToken<>() {
             });
@@ -74,12 +74,6 @@ public final class LocalPreferences {
     public static final LocalPreference<String> LATEST_SAVED_DATASET_EXTENSION = LocalPreference
             .of("formats/latest_saved_dataset_format", () -> "xlsx", new TypeToken<>() {
             });
-    
-    
-    public static final LocalPreference<Boolean> PRINT_COMPONENTS_OF_MOUSE_LOCATION = LocalPreference
-            .of("developer_tool/print_components_of_mouse_location", () -> false, new TypeToken<>() {
-            });
-    
     
     public static final LocalPreference<Color> NODECHANCE_BACKGROUND_COLOR = LocalPreference
             .of("colors/node_chance_background", () -> new Color(251, 249, 153), new TypeToken<>() {
@@ -158,6 +152,6 @@ public final class LocalPreferences {
     }
     
     public static void initializeAllPreferences() {
-        //ALL_PREFERENCES.forEach(LocalPreference::initialize);
+        ALL_PREFERENCES.forEach(LocalPreference::initialize);
     }
 }

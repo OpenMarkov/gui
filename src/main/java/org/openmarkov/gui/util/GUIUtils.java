@@ -65,37 +65,5 @@ public final class GUIUtils {
         dialog.setVisible(true);
     }
     
-    public static void addHoverComponentLogger(Component target) {
-        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
-            if (!(event instanceof MouseEvent me)) {
-                return;
-            }
-            if (me.getID() != MouseEvent.MOUSE_MOVED) {
-                return;
-            }
-            Component source = (Component) me.getSource();
-            if (!isChildOf(target, source)) {
-                return;
-            }
-            Point eventPos = me.getPoint();
-            Point screenPos = source.getLocationOnScreen();
-            Point windowPos = target.getLocationOnScreen();
-            Point posInTarget = new Point(screenPos.x + eventPos.x - windowPos.x, screenPos.y + eventPos.y - windowPos.y);
-
-            Component hoveredComponent = SwingUtilities.getDeepestComponentAt(target, posInTarget.x, posInTarget.y);
-            if (hoveredComponent == null) {
-                return;
-            }
-            System.out.println("Hovering: " + hoveredComponent.getClass() + " with name " + hoveredComponent.getName() + " at " + posInTarget);
-        }, AWTEvent.MOUSE_MOTION_EVENT_MASK);
-    }
     
-    // Helper to check if a component belongs to our parent dialog
-    private static boolean isChildOf(Component parent, Component child) {
-        while (child != null) {
-            if (child == parent) return true;
-            child = child.getParent();
-        }
-        return false;
-    }
 }

@@ -17,6 +17,7 @@ import org.openmarkov.gui.dialog.SplashScreenLoader;
 import org.openmarkov.gui.dialog.common.WindowDimensions;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
+import org.openmarkov.gui.toolplugin.UILookAndFeelPlugin;
 import org.openmarkov.plugin.PluginSearch;
 
 import javax.swing.*;
@@ -34,10 +35,10 @@ import java.io.Serial;
  * @version 1.3 jlgozalo - replacing System.err with JOptionPane
  */
 public class MainGUI extends JFrame {
-
+    
     @Serial
     private static final long serialVersionUID = 1L;
-
+    
     public static final MainGUI INSTANCE = new MainGUI();
     
     public final MainPanel mainPanel;
@@ -48,20 +49,9 @@ public class MainGUI extends JFrame {
      * Launch the MainGUIInit runnable process
      */
     private MainGUI() {
-        SplashScreenLoader splash = new SplashScreenLoader();
-        configureUI();
-        splash.splashScreenInit();
-        splash.getSplash().setProgress("Loading preferences", 0);
-        doReadPreferences();
-        splash.getSplash().setProgress("Loading resources", 25);
-        // TODO here will be the plug-in loaders in future
+        UIManager.put("MenuItem.disabledAreNavigable", Boolean.FALSE);
+        loadWithSplash();
         setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
-        StringDatabase.getUniqueInstance().getAllBundles();
-        // This forces static loading of every OpenMarkov's class. We might want to change into 'full' instead of 'init'
-        // to preload every class available.
-        PluginSearch.init().stream().forEach(ignored -> {
-        });
-        splash.getSplash().setProgress("Loading interface", 75);
         Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
         setSize(screenPortionSize(screenInsets));
         setLocation(screenInsets.left, screenInsets.top);
@@ -70,6 +60,7 @@ public class MainGUI extends JFrame {
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("OpenMarkov");
         setName("MainGUI");
+        setMinimumSize(new Dimension(700,250));
         this.frameMirror = new FrameMirror(this);
         if (LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.isSet()) {
             var dimensions = LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get();
@@ -95,20 +86,19 @@ public class MainGUI extends JFrame {
             
             }
         });
-        
-        
-        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
-            if (!LocalPreferences.PRINT_COMPONENTS_OF_MOUSE_LOCATION.get()) return;
-            if (!(event instanceof MouseEvent mouseEvent)) return;
-            var element = SwingUtilities.getDeepestComponentAt(MainGUI.this, mouseEvent.getX(), mouseEvent.getY());
-            System.out.println("- Mouse locator -" + element);
-            String prefix = "-";
-            while (element != null) {
-                System.out.println(prefix + " " + element);
-                element = element.getParent();
-                prefix += "-";
-            }
-        }, AWTEvent.MOUSE_MOTION_EVENT_MASK);
+    }
+    
+    public static void loadWithSplash() {
+        SplashScreenLoader splash = new SplashScreenLoader();
+        splash.splashScreenInit();
+        splash.getSplash().setProgress("Loading preferences", 0);
+        MainGUI.doReadPreferences();
+        splash.getSplash().setProgress("Loading resources", 50);
+        StringDatabase.getUniqueInstance();
+        // This forces static loading of every OpenMarkov's class. We might want to change into 'full' instead of 'init'
+        // to preload every class available.
+        PluginSearch.init().stream().forEach(ignored -> {
+        });
         splash.getSplash().setProgress("Completed", 100);
         // loading the application
         splash.splashScreenDestroy();
@@ -134,25 +124,6 @@ public class MainGUI extends JFrame {
     public void unfreeze() {
         if (true) return;
         this.frameMirror.unfreeze();
-    }
-    
-    /**
-     * This method sets and configures the UI manager.
-     */
-    private static void configureUI() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-                 UnsupportedLookAndFeelException e) {
-            throw new UnreachableException(e);
-        }
-        /*
-         * The next line is used to avoid that disabled menuitems are
-         * highlighted.
-         */
-        
-        UIManager.put("MenuItem.disabledAreNavigable", Boolean.FALSE);
-        
     }
     
     /**

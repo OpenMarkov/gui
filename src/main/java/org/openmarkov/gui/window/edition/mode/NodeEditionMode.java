@@ -12,7 +12,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.util.GUIDefaultStates;
 import org.openmarkov.gui.util.GUIUtils;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +23,8 @@ import java.util.List;
 public abstract class NodeEditionMode extends EditionMode {
     private NodeType nodeType;
     
-    public NodeEditionMode(EditorPanel editorPanel, ProbNet probNet, NodeType nodeType) {
-        super(editorPanel, probNet);
+    public NodeEditionMode(NetworkEditorPanel networkEditorPanel, ProbNet probNet, NodeType nodeType) {
+        super(networkEditorPanel, probNet);
         this.nodeType = nodeType;
     }
     
@@ -64,8 +64,8 @@ public abstract class NodeEditionMode extends EditionMode {
         
         AddNodeEdit addNodeEdit = new AddNodeEdit(probNet, variable, nodeType, position);
         addNodeEdit.executeEdit();
-        editorPanel.adjustPanelDimension();
-        editorPanel.repaint();
+        networkEditorPanel.adjustPanelDimension();
+        networkEditorPanel.repaint();
     }
     
     @Override public void mouseReleased(MouseEvent e, Point2D.Double cursorPosition, Graphics2D g) {

@@ -63,6 +63,7 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
      * This method initialises this instance.
      */
     private void initialize() {
+        setName("ZoomComboBox");
         setEditable(true);
         setPrototypeDisplayValue("500%X");
         Dimension size = new Dimension(getPreferredSize().width, 25);

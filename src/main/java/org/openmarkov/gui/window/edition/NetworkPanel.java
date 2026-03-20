@@ -22,7 +22,7 @@ import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.ZoomableContentPanel;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,7 +51,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
     /**
      * Panel where the network is painted.
      */
-    private final EditorPanel editorPanel;
+    private final NetworkEditorPanel networkEditorPanel;
     /**
      * Application main
      */
@@ -93,7 +93,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
         this.mainPanel = mainPanel;
         this.onModificationListener = new ArrayList<>();
         probNet.getPNESupport().addListener(this);
-        this.editorPanel = new EditorPanel(this, new VisualNetwork(probNet, this.mainPanel.mainGUI));
+        this.networkEditorPanel = new NetworkEditorPanel(this, new VisualNetwork(probNet, this.mainPanel.mainGUI));
         initialize();
         decisionTreeWindows = new ArrayList<>();
     }
@@ -109,18 +109,18 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
         // splitPane.setBottomComponent(getPropertiesScrollPanel());
         
         this.editorScrollPanel = new JScrollPane();
-        editorScrollPanel.setViewportView(editorPanel);
+        editorScrollPanel.setViewportView(networkEditorPanel);
         editorScrollPanel.getVerticalScrollBar().setUnitIncrement(25);
         add(editorScrollPanel);
     }
     
     /**
-     * This method initializes editorPanel.
+     * This method initializes networkEditorPanel.
      *
      * @return a new editor panel.
      */
-    public EditorPanel getEditorPanel() {
-        return editorPanel;
+    public NetworkEditorPanel getEditorPanel() {
+        return networkEditorPanel;
     }
     
     /**
@@ -196,7 +196,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param newEditionMode new edition state.
      */
     public void setEditionMode(String newEditionMode) {
-        editorPanel.setEditionMode(newEditionMode);
+        networkEditorPanel.setEditionMode(newEditionMode);
     }
     
     /**
@@ -215,7 +215,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      */
     public void setWorkingMode(WorkingMode workingMode) {
         this.workingMode = workingMode;
-        editorPanel.setWorkingMode(workingMode);
+        networkEditorPanel.setWorkingMode(workingMode);
     }
     
     /**
@@ -224,7 +224,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @return the value of the current expansion threshold.
      */
     public double getExpansionThreshold() {
-        return editorPanel.getExpansionThreshold();
+        return networkEditorPanel.getExpansionThreshold();
     }
     
     /**
@@ -233,7 +233,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param expansionThreshold new value of the expansion threshold.
      */
     public void setExpansionThreshold(double expansionThreshold) {
-        editorPanel.setExpansionThreshold(expansionThreshold);
+        networkEditorPanel.setExpansionThreshold(expansionThreshold);
     }
     
     /**
@@ -242,7 +242,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * network undo manager.
      */
     public void changeNetworkProperties() {
-        editorPanel.changeNetworkProperties();
+        networkEditorPanel.changeNetworkProperties();
     }
     
     /**
@@ -250,16 +250,16 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * child it might have and removing it next.
      */
     public void absorbNode() throws DoEditException {
-        Node node = editorPanel.getSelectedNode();
-        new AbsorbNodeEdit(editorPanel.getVisualNetwork().getProbNet(), node.getVariable()).executeEdit();
+        Node node = networkEditorPanel.getSelectedNode();
+        new AbsorbNodeEdit(networkEditorPanel.getVisualNetwork().getProbNet(), node.getVariable()).executeEdit();
     }
     
     /**
      * This method absorbs intermediate utility nodes.
      */
     public void absorbParents() throws DoEditException {
-        Node node = editorPanel.getSelectedNode();
-        new AbsorbParentsEdit(editorPanel.getVisualNetwork().getProbNet(), node).executeEdit();
+        Node node = networkEditorPanel.getSelectedNode();
+        new AbsorbParentsEdit(networkEditorPanel.getVisualNetwork().getProbNet(), node).executeEdit();
     }
     
     /**
@@ -268,42 +268,42 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * undo manager.
      */
     public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        editorPanel.changeNodeProperties();
+        networkEditorPanel.changeNodeProperties();
     }
     
     /**
      * This method has been created for testing.
      */
     public void changePotential() throws IncompatibleEvidenceException, ThereIsNoPotentialsInNodeException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, ConstraintViolatedException {
-        editorPanel.showPotentialDialog(workingMode != WorkingMode.EDITION);
+        networkEditorPanel.showPotentialDialog(workingMode != WorkingMode.EDITION);
     }
     
     /**
      * This method manage the temporal evolution of a variable.
      */
     public void temporalEvolution() {
-        editorPanel.temporalEvolution();
+        networkEditorPanel.temporalEvolution();
     }
     
     /**
      * This method imposes a policy in a decision node.
      */
     public void imposePolicyInNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
-        editorPanel.imposePolicyInNode();
+        networkEditorPanel.imposePolicyInNode();
     }
     
     /**
      * This method edits an imposed policy of a decision node.
      */
     public void editNodePolicy() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
-        editorPanel.editNodePolicy();
+        networkEditorPanel.editNodePolicy();
     }
     
     /**
      * This method removes an imposed policy from a decision node.
      */
     public void removePolicyFromNode() throws DoEditException {
-        editorPanel.removePolicyFromNode();
+        networkEditorPanel.removePolicyFromNode();
     }
     
     /**
@@ -314,7 +314,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
             NonProjectablePotentialException,
             NotEvaluableNetworkException.NotApplicableNetwork,
             NotEvaluableNetworkException.UnsatisfiedConstraints, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException, ConstraintViolatedException {
-        editorPanel.showExpectedUtilityOfNode();
+        networkEditorPanel.showExpectedUtilityOfNode();
     }
     
     /**
@@ -326,21 +326,21 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
             NotEvaluableNetworkException.NotApplicableNetwork,
             NotEvaluableNetworkException.UnsatisfiedConstraints,
             ThereIsNoPotentialsInNodeException, NotEnoughMemoryException, ConstraintViolatedException {
-        editorPanel.showOptimalPolicyOfNode();
+        networkEditorPanel.showOptimalPolicyOfNode();
     }
     
     /**
      * This method adds a finding in a node.
      */
     public void addFinding() {
-        editorPanel.getEvidenceManager().addFinding();
+        networkEditorPanel.getEvidenceManager().addFinding();
     }
     
     /**
      * This method removes findings from selected nodes.
      */
     public void removeFinding() throws PreResolutionNodeInInferenceException, DoEditException {
-        editorPanel.getEvidenceManager().removeFinding();
+        networkEditorPanel.getEvidenceManager().removeFinding();
     }
     
     /**
@@ -350,7 +350,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * the Inference tool bar
      */
     public void updateNodesExpansionState(WorkingMode newWorkingMode) {
-        editorPanel.updateNodesExpansionState(newWorkingMode);
+        networkEditorPanel.updateNodesExpansionState(newWorkingMode);
     }
     
     /**
@@ -358,7 +358,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * with the current individual probabilities.
      */
     public void updateIndividualProbabilitiesAndUtilities() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        editorPanel.getEvidenceManager().updateIndividualProbabilitiesAndUtilities();
+        networkEditorPanel.getEvidenceManager().updateIndividualProbabilitiesAndUtilities();
     }
     
     /**
@@ -366,7 +366,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * case.
      */
     public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        editorPanel.getEvidenceManager().removeAllFindings();
+        networkEditorPanel.getEvidenceManager().removeAllFindings();
     }
     
     /**
@@ -376,7 +376,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @return true if the current evidence case has at least one finding.
      */
     public boolean areThereFindingsInCase() {
-        return editorPanel.getEvidenceManager().areThereFindingsInCase();
+        return networkEditorPanel.getEvidenceManager().areThereFindingsInCase();
     }
     
     /**
@@ -385,7 +385,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param cut if true, the nodes copied to the clipboard are also removed.
      */
     public void exportToClipboard(boolean cut) {
-        editorPanel.getVisualNetwork().exportToClipboard(cut);
+        networkEditorPanel.getVisualNetwork().exportToClipboard(cut);
     }
     
     /**
@@ -393,7 +393,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * the network.
      */
     public void pasteFromClipboard() throws DoEditException {
-        editorPanel.getVisualNetwork().pasteFromClipboard();
+        networkEditorPanel.getVisualNetwork().pasteFromClipboard();
     }
     
     /**
@@ -402,7 +402,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @return true if there is data stored in the clipboard; otherwise, false.
      */
     public boolean isThereDataStored() {
-        return editorPanel.getVisualNetwork().getClipboardAssistant().isThereDataStored();
+        return networkEditorPanel.getVisualNetwork().getClipboardAssistant().isThereDataStored();
     }
     
     /**
@@ -411,7 +411,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * aren't selected elements and creates a new undo point.
      */
     public void removeSelectedObjects() {
-        editorPanel.getVisualNetwork().removeSelectedObjects();
+        networkEditorPanel.getVisualNetwork().removeSelectedObjects();
     }
     
     /**
@@ -420,14 +420,14 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param newContextualMenuFactory contextual menu factory to be set.
      */
     public void setContextualMenuFactory(ContextualMenuFactory newContextualMenuFactory) {
-        editorPanel.setContextualMenuFactory(newContextualMenuFactory);
+        networkEditorPanel.setContextualMenuFactory(newContextualMenuFactory);
     }
     
     /**
      * Selects all nodes and links.
      */
     public void selectAllObjects() {
-        editorPanel.selectAllObjects();
+        networkEditorPanel.selectAllObjects();
     }
     
     /**
@@ -437,7 +437,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * name.
      */
     public boolean getByTitle() {
-        return editorPanel.getVisualNetwork().getByTitle();
+        return networkEditorPanel.getVisualNetwork().getByTitle();
     }
     
     /**
@@ -446,7 +446,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param value new value of the presentation mode of the text of the nodes.
      */
     public void setByTitle(boolean value) {
-        editorPanel.setByTitle(value);
+        networkEditorPanel.setByTitle(value);
     }
     
     /**
@@ -455,7 +455,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @return actual value of zoomManager.
      */
     @Override public double getZoom() {
-        return editorPanel.getZoom();
+        return networkEditorPanel.getZoom();
     }
     
     /**
@@ -464,7 +464,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param value new zoomManager.
      */
     @Override public void setZoom(double value) {
-        editorPanel.setZoom(value);
+        networkEditorPanel.setZoom(value);
     }
     
     /**
@@ -473,7 +473,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param selected new selection state.
      */
     public void setSelectedAllNodes(boolean selected) {
-        editorPanel.getVisualNetwork().setSelectedAllNodes(selected);
+        networkEditorPanel.getVisualNetwork().setSelectedAllNodes(selected);
     }
     
     /**
@@ -482,7 +482,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param selected new selection state.
      */
     public void setSelectedAllObjects(boolean selected) {
-        editorPanel.getVisualNetwork().setSelectedAllObjects(selected);
+        networkEditorPanel.getVisualNetwork().setSelectedAllObjects(selected);
     }
     
     @Override public void afterEditExecutes(PNEdit arg0) {
@@ -509,7 +509,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @return the number of the current Evidence Case.
      */
     public int getCurrentCase() {
-        return editorPanel.getEvidenceManager().getCurrentCase();
+        return networkEditorPanel.getEvidenceManager().getCurrentCase();
     }
     
     /**
@@ -519,42 +519,42 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @return the number of Evidence Cases in the ArrayList.
      */
     public int getNumberOfCases() {
-        return editorPanel.getEvidenceManager().getNumberOfCases();
+        return networkEditorPanel.getEvidenceManager().getNumberOfCases();
     }
     
     /**
      * This method creates a new evidence case
      */
     public void createNewEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        editorPanel.getEvidenceManager().createNewEvidenceCase();
+        networkEditorPanel.getEvidenceManager().createNewEvidenceCase();
     }
     
     /**
      * This method makes the first evidence case to be the current
      */
     public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        editorPanel.getEvidenceManager().goToFirstEvidenceCase();
+        networkEditorPanel.getEvidenceManager().goToFirstEvidenceCase();
     }
     
     /**
      * This method makes the previous evidence case to be the current
      */
     public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        editorPanel.getEvidenceManager().goToPreviousEvidenceCase();
+        networkEditorPanel.getEvidenceManager().goToPreviousEvidenceCase();
     }
     
     /**
      * This method makes the next evidence case to be the current
      */
     public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        editorPanel.getEvidenceManager().goToNextEvidenceCase();
+        networkEditorPanel.getEvidenceManager().goToNextEvidenceCase();
     }
     
     /**
      * This method makes the last evidence case to be the current
      */
     public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        editorPanel.getEvidenceManager().goToLastEvidenceCase();
+        networkEditorPanel.getEvidenceManager().goToLastEvidenceCase();
     }
     
     /**
@@ -563,7 +563,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * (corresponding to prior probabilities)
      */
     public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        editorPanel.getEvidenceManager().clearOutAllEvidenceCases();
+        networkEditorPanel.getEvidenceManager().clearOutAllEvidenceCases();
     }
     
     /**
@@ -574,7 +574,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      *                               panel.
      */
     public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        editorPanel.getEvidenceManager().propagateEvidence(mainPanelMenuAssistant);
+        networkEditorPanel.getEvidenceManager().propagateEvidence(mainPanelMenuAssistant);
     }
     
     /**
@@ -584,7 +584,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @return true if the current propagation type is automatic.
      */
     public boolean isAutomaticPropagation() {
-        return editorPanel.isAutomaticPropagation();
+        return networkEditorPanel.isAutomaticPropagation();
     }
     
     /**
@@ -593,7 +593,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param automaticPropagation new value of the propagation type.
      */
     public void setAutomaticPropagation(boolean automaticPropagation) {
-        editorPanel.setAutomaticPropagation(automaticPropagation);
+        networkEditorPanel.setAutomaticPropagation(automaticPropagation);
     }
     
     /**
@@ -603,7 +603,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @return true if propagation should be done right now.
      */
     public boolean isPropagationActive() {
-        return editorPanel.isPropagationActive();
+        return networkEditorPanel.isPropagationActive();
     }
     
     /**
@@ -612,7 +612,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
      * @param propagationActive new value of the propagation status.
      */
     public void setPropagationActive(boolean propagationActive) {
-        editorPanel.setPropagationActive(propagationActive);
+        networkEditorPanel.setPropagationActive(propagationActive);
     }
     
     @Override public boolean close() {

@@ -1,4 +1,4 @@
-package org.openmarkov.gui.window.edition.editorPanel;
+package org.openmarkov.gui.window.edition.networkEditorPanel;
 
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.UnrecoverableException;
@@ -15,10 +15,10 @@ import org.openmarkov.gui.graphic.VisualState;
 import java.util.Map;
 
 class InferencePresenter {
-    private final EditorPanel editorPanel;
+    private final NetworkEditorPanel networkEditorPanel;
     
-    InferencePresenter(EditorPanel editorPanel) {
-        this.editorPanel = editorPanel;
+    InferencePresenter(NetworkEditorPanel networkEditorPanel) {
+        this.networkEditorPanel = networkEditorPanel;
     }
     
     /**
@@ -31,7 +31,7 @@ class InferencePresenter {
      */
     void paintInferenceResults(int caseNumber, Map<Variable, ? extends TablePotential> individualProbabilities,
                                EvidenceCase evidence) {
-        for (VisualNode visualNode : this.editorPanel.getVisualNetwork().getAllNodes()) {
+        for (VisualNode visualNode : this.networkEditorPanel.getVisualNetwork().getAllNodes()) {
             Node node = visualNode.getNode();
             switch (node.getNodeType()) {
                 case CHANCE, DECISION ->
@@ -41,7 +41,7 @@ class InferencePresenter {
                 }
             }
         }
-        this.editorPanel.repaint();
+        this.networkEditorPanel.repaint();
     }
     
     /**
@@ -60,8 +60,8 @@ class InferencePresenter {
         NumericVariableBox innerBox = (NumericVariableBox) visualNode.getInnerBox();
         VisualState visualState = innerBox.getVisualState();
         visualState.setStateValue(caseNumber, individualProbabilities.get(variable).values[0]);
-        innerBox.setMinValue(this.editorPanel.getEvidenceManager().getMinUtilityRangeOf(variable));
-        innerBox.setMaxValue(this.editorPanel.getEvidenceManager().getMaxUtilityRangeOf(variable));
+        innerBox.setMinValue(this.networkEditorPanel.getEvidenceManager().getMinUtilityRangeOf(variable));
+        innerBox.setMaxValue(this.networkEditorPanel.getEvidenceManager().getMaxUtilityRangeOf(variable));
     }
     
     /**
@@ -114,8 +114,8 @@ class InferencePresenter {
         } else  // if numeric variable
         {
             double value = (evidence.contains(variable)) ? evidence.getNumericalValue(variable) : Double.NaN;
-            value = (this.editorPanel.getEvidenceManager().getPreResolutionEvidence().contains(variable)) ?
-                    this.editorPanel.getEvidenceManager().getPreResolutionEvidence().getNumericalValue(variable) :
+            value = (this.networkEditorPanel.getEvidenceManager().getPreResolutionEvidence().contains(variable)) ?
+                    this.networkEditorPanel.getEvidenceManager().getPreResolutionEvidence().getNumericalValue(variable) :
                     value;
             NumericVariableBox innerBox = (NumericVariableBox) visualNode.getInnerBox();
             innerBox.getVisualState().setStateValue(caseNumber, value);

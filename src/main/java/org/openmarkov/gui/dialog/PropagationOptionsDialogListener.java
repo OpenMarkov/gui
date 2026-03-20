@@ -11,7 +11,7 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.event.ActionEvent;
@@ -31,7 +31,7 @@ public class PropagationOptionsDialogListener implements ActionListener {
 	/**
 	 * The editor panel that called the associated dialog.
 	 */
-    EditorPanel editorPanel;
+    NetworkEditorPanel networkEditorPanel;
 	/**
 	 * The inference tool bar associated to the panel.
 	 */
@@ -40,10 +40,10 @@ public class PropagationOptionsDialogListener implements ActionListener {
 	/**
 	 * constructor
 	 */
-	public PropagationOptionsDialogListener(PropagationOptionsDialog optionsInferenceDialog, EditorPanel editorPanel,
+	public PropagationOptionsDialogListener(PropagationOptionsDialog optionsInferenceDialog, NetworkEditorPanel networkEditorPanel,
 			InferenceToolBar inferenceToolBar) {
 		this.automaticPropagationOptionsDialog = optionsInferenceDialog;
-		this.editorPanel = editorPanel;
+		this.networkEditorPanel = networkEditorPanel;
 		this.inferenceToolBar = inferenceToolBar;
 	}
 
@@ -58,29 +58,29 @@ public class PropagationOptionsDialogListener implements ActionListener {
 		StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
         if (command.equals(stringDatabase.getString("OptionsInferenceDialog.jButtonOK"))) {
             if (inferenceType.equals(stringDatabase.getString("OptionsInferenceDialog.optionAuto"))) {
-				editorPanel.setAutomaticPropagation(true);
-				editorPanel.setPropagationActive(true);
-                if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
-					for (int caseIndex = 0; caseIndex < editorPanel.getEvidenceManager().getNumberOfCases(); caseIndex++) {
-                        if (!editorPanel.getEvidenceManager().getEvidenceCasesCompilationState(caseIndex)) {
+				networkEditorPanel.setAutomaticPropagation(true);
+				networkEditorPanel.setPropagationActive(true);
+                if (networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
+					for (int caseIndex = 0; caseIndex < networkEditorPanel.getEvidenceManager().getNumberOfCases(); caseIndex++) {
+                        if (!networkEditorPanel.getEvidenceManager().getEvidenceCasesCompilationState(caseIndex)) {
                             try {
-                                editorPanel.getEvidenceManager().doPropagation(editorPanel.getEvidenceManager().getEvidenceCase(caseIndex), caseIndex);
+                                networkEditorPanel.getEvidenceManager().doPropagation(networkEditorPanel.getEvidenceManager().getEvidenceCase(caseIndex), caseIndex);
                             } catch (NotEvaluableNetworkException | NonProjectablePotentialException |
                                      CannotNormalizePotentialException | NotEnoughMemoryException |
                                      IncompatibleEvidenceException | ConstraintViolatedException e) {
                                 throw new UnrecoverableException(e);
                             }
-                            editorPanel.updateAllVisualStates("", caseIndex);
+                            networkEditorPanel.updateAllVisualStates("", caseIndex);
 						}
 					}
-					editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-					inferenceToolBar.setCurrentEvidenceCaseName(editorPanel.getEvidenceManager().getCurrentCase());
-					editorPanel.getEvidenceManager().updateNodesFindingState(editorPanel.getEvidenceManager().getCurrentEvidenceCase());
+					networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+					inferenceToolBar.setCurrentEvidenceCaseName(networkEditorPanel.getEvidenceManager().getCurrentCase());
+					networkEditorPanel.getEvidenceManager().updateNodesFindingState(networkEditorPanel.getEvidenceManager().getCurrentEvidenceCase());
 				}
             } else if (inferenceType.equals(stringDatabase.getString("OptionsInferenceDialog.optionManual"))) {
-				editorPanel.setAutomaticPropagation(false);
-                if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
-					inferenceToolBar.setCurrentEvidenceCaseName(editorPanel.getEvidenceManager().getCurrentCase());
+				networkEditorPanel.setAutomaticPropagation(false);
+                if (networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
+					inferenceToolBar.setCurrentEvidenceCaseName(networkEditorPanel.getEvidenceManager().getCurrentCase());
 				}
 			}
         } else if (command.equals(stringDatabase.getString("OptionsInferenceDialog.jButtonCancel"))) {

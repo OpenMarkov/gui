@@ -25,7 +25,7 @@ import org.openmarkov.gui.util.MovedNodeInfo;
 import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.edition.EditorPanelClipboardAssistant;
 import org.openmarkov.gui.window.edition.SelectedContent;
-import org.openmarkov.gui.window.edition.editorPanel.EditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -1076,10 +1076,10 @@ public class VisualNetwork implements PNEditListener {
         return linkEdit;
     }
     
-    public void cancelLinkCreation(EditorPanel editorPanel) {
+    public void cancelLinkCreation(NetworkEditorPanel networkEditorPanel) {
         newLink = null;
         newLinkSource = null;
-        editorPanel.repaint();
+        networkEditorPanel.repaint();
     }
     
     public void startSelectionRectangle(Point2D.Double position) {

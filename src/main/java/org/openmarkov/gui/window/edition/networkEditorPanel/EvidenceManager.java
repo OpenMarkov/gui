@@ -1,4 +1,4 @@
-package org.openmarkov.gui.window.edition.editorPanel;
+package org.openmarkov.gui.window.edition.networkEditorPanel;
 
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceAlgorithm;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class EvidenceManager {
     
-    private final EditorPanel editorPanel;
+    private final NetworkEditorPanel networkEditorPanel;
     /**
      * Pre resolution evidence
      */
@@ -59,8 +59,8 @@ public class EvidenceManager {
      */
     private final Lazy<InferenceAlgorithm> inferenceAlgorithm;
     
-    EvidenceManager(EditorPanel editorPanel) {
-        this.editorPanel = editorPanel;
+    EvidenceManager(NetworkEditorPanel networkEditorPanel) {
+        this.networkEditorPanel = networkEditorPanel;
         this.preResolutionEvidence = new EvidenceCase();
         this.postResolutionEvidence = new ArrayList<>(1);
         this.currentCase = 0;
@@ -71,9 +71,9 @@ public class EvidenceManager {
         this.maxUtilityRange = new HashMap<>();
         var inferenceManager = new InferenceManager();
         this.inferenceAlgorithm = Lazy.of(()->{
-            InferenceAlgorithm inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(this.editorPanel.getVisualNetwork().getProbNet());
+            InferenceAlgorithm inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(this.networkEditorPanel.getVisualNetwork().getProbNet());
             if (inferenceAlgorithm == null) {
-                throw new NotSupportedOperationException("there is no associated inference algorithm for " + this.editorPanel.getVisualNetwork().getProbNet().localize());
+                throw new NotSupportedOperationException("there is no associated inference algorithm for " + this.networkEditorPanel.getVisualNetwork().getProbNet().localize());
             }
             return inferenceAlgorithm;
         });
@@ -105,35 +105,35 @@ public class EvidenceManager {
      * This method adds a finding in a node.
      */
     public void addFinding() {
-        List<VisualNode> selectedNodes = this.editorPanel.getVisualNetwork().getSelectedNodes();
+        List<VisualNode> selectedNodes = this.networkEditorPanel.getVisualNetwork().getSelectedNodes();
         VisualNode node = selectedNodes.getFirst();
-        EvidenceCase currentEvidence = (this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) ?
+        EvidenceCase currentEvidence = (this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) ?
                 this.getCurrentEvidenceCase() : this.preResolutionEvidence;
         Finding finding = currentEvidence.getFinding(node.getNode().getVariable());
-        this.requestAddFindingValues(GUIUtils.getOwner(this.editorPanel), node, finding);
-        this.editorPanel.repaint();
-        this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-        this.editorPanel.getNetworkPanel().getMainPanel()
-                        .getInferenceToolBar()
-                        .setCurrentEvidenceCaseName(this.currentCase);
-        this.editorPanel.getNetworkPanel().getMainPanel()
-                        .getMainPanelMenuAssistant()
-                        .updateOptionsFindingsDependent(this.editorPanel.getNetworkPanel());
+        this.requestAddFindingValues(GUIUtils.getOwner(this.networkEditorPanel), node, finding);
+        this.networkEditorPanel.repaint();
+        this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+        this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                               .getInferenceToolBar()
+                               .setCurrentEvidenceCaseName(this.currentCase);
+        this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                               .getMainPanelMenuAssistant()
+                               .updateOptionsFindingsDependent(this.networkEditorPanel.getNetworkPanel());
     }
     
     private void requestAddFindingValues(Window owner, VisualNode node, Finding finding) {
-        new AddFindingDialog(owner, node, finding, this.editorPanel).requestValues();
+        new AddFindingDialog(owner, node, finding, this.networkEditorPanel).requestValues();
     }
     
     /**
      * This method removes findings from selected nodes.
      */
     public void removeFinding() throws PreResolutionNodeInInferenceException, DoEditException {
-        this.editorPanel.setPropagationActive(this.editorPanel.isAutomaticPropagation());
-        List<VisualNode> selectedNodes = this.editorPanel.getVisualNetwork().getSelectedNodes();
+        this.networkEditorPanel.setPropagationActive(this.networkEditorPanel.isAutomaticPropagation());
+        List<VisualNode> selectedNodes = this.networkEditorPanel.getVisualNetwork().getSelectedNodes();
         for (VisualNode visualNode : selectedNodes) {
             Variable variable = visualNode.getNode().getVariable();
-            switch (this.editorPanel.getNetworkPanel().getWorkingMode()) {
+            switch (this.networkEditorPanel.getNetworkPanel().getWorkingMode()) {
                 case EDITION -> {
                     if (visualNode.isPreResolutionFinding() && this.preResolutionEvidence.getFinding(variable) != null) {
                         try {
@@ -158,7 +158,7 @@ public class EvidenceManager {
             }
         }
         try {
-            if ((this.editorPanel.isPropagationActive()) && (this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE)) {
+            if ((this.networkEditorPanel.isPropagationActive()) && (this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE)) {
         /*
         23/10/2014
         Solving issue 226
@@ -170,17 +170,17 @@ public class EvidenceManager {
             }
         } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                  CannotNormalizePotentialException | IncompatibleEvidenceException e) {
-            this.editorPanel.setPropagationActive(false);
+            this.networkEditorPanel.setPropagationActive(false);
             throw new UnreachableException(e);
         } finally {
-            this.editorPanel.getNetworkPanel().getMainPanel()
-                            .getInferenceToolBar()
-                            .setCurrentEvidenceCaseName(this.currentCase);
-            this.editorPanel.getNetworkPanel().getMainPanel()
-                            .getMainPanelMenuAssistant()
-                            .updateOptionsFindingsDependent(this.editorPanel.getNetworkPanel());
-            this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-            this.editorPanel.repaint();
+            this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                                   .getInferenceToolBar()
+                                   .setCurrentEvidenceCaseName(this.currentCase);
+            this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                                   .getMainPanelMenuAssistant()
+                                   .updateOptionsFindingsDependent(this.networkEditorPanel.getNetworkPanel());
+            this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+            this.networkEditorPanel.repaint();
         }
     }
     
@@ -272,23 +272,23 @@ public class EvidenceManager {
         }
         this.currentCase = this.postResolutionEvidence.size() - 1;
         // Update visual info on evidence
-        for (VisualNode node : this.editorPanel.getVisualNetwork().getAllNodes()) {
+        for (VisualNode node : this.networkEditorPanel.getVisualNetwork().getAllNodes()) {
             node.setPostResolutionFinding(false);
         }
         for (EvidenceCase evidenceCase : this.postResolutionEvidence) {
             for (Finding finding : evidenceCase.getFindings()) {
-                for (VisualNode node : this.editorPanel.getVisualNetwork().getAllNodes()) {
+                for (VisualNode node : this.networkEditorPanel.getVisualNetwork().getAllNodes()) {
                     if (node.getNode().getVariable().equals(finding.getVariable())) {
                         node.setPostResolutionFinding(true);
                     }
                 }
             }
         }
-        for (VisualNode node : this.editorPanel.getVisualNetwork().getAllNodes()) {
+        for (VisualNode node : this.networkEditorPanel.getVisualNetwork().getAllNodes()) {
             node.setPreResolutionFinding(false);
         }
         for (Finding finding : preResolutionEvidence.getFindings()) {
-            for (VisualNode node : this.editorPanel.getVisualNetwork().getAllNodes()) {
+            for (VisualNode node : this.networkEditorPanel.getVisualNetwork().getAllNodes()) {
                 if (node.getNode().getVariable().equals(finding.getVariable())) {
                     node.setPreResolutionFinding(true);
                 }
@@ -309,7 +309,7 @@ public class EvidenceManager {
         // if some visualNode has a number of values different from the
         // number of evidence cases in memory, we need to recreate its
         // visual states and consider that the network has been changed.
-        for (VisualNode visualNode : this.editorPanel.getVisualNetwork().getAllNodes()) {
+        for (VisualNode visualNode : this.networkEditorPanel.getVisualNetwork().getAllNodes()) {
             InnerBox innerBox = visualNode.getInnerBox();
             if (innerBox instanceof FSVariableBox || innerBox instanceof NumericVariableBox) {
                 VisualState visualState;
@@ -323,7 +323,7 @@ public class EvidenceManager {
         }
         
         try {
-            if ((this.editorPanel.isPropagationActive()) && (this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE)) {
+            if ((this.networkEditorPanel.isPropagationActive()) && (this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE)) {
                 // if the network has been changed, propagation must be done in
                 // each evidence case in memory. Otherwise, only propagation in
                 // current case is needed.
@@ -337,8 +337,8 @@ public class EvidenceManager {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             }
         } finally {
-            this.editorPanel.updateAllVisualStates("", this.currentCase);
-            this.editorPanel.repaint();
+            this.networkEditorPanel.updateAllVisualStates("", this.currentCase);
+            this.networkEditorPanel.repaint();
         }
         
     }
@@ -361,8 +361,8 @@ public class EvidenceManager {
      * case.
      */
     public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        this.editorPanel.setPropagationActive(this.editorPanel.isAutomaticPropagation());
-        List<VisualNode> visualNodes = this.editorPanel.getVisualNetwork().getAllNodes();
+        this.networkEditorPanel.setPropagationActive(this.networkEditorPanel.isAutomaticPropagation());
+        List<VisualNode> visualNodes = this.networkEditorPanel.getVisualNetwork().getAllNodes();
         for (VisualNode visualNode : visualNodes) {
             visualNode.setPostResolutionFinding(false);
         }
@@ -376,16 +376,16 @@ public class EvidenceManager {
             this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
         } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                  CannotNormalizePotentialException | IncompatibleEvidenceException e) {
-            this.editorPanel.setPropagationActive(false);
+            this.networkEditorPanel.setPropagationActive(false);
             throw e;
         } finally {
-            this.editorPanel.getNetworkPanel().getMainPanel()
-                            .getInferenceToolBar()
-                            .setCurrentEvidenceCaseName(this.currentCase);
-            this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-            this.editorPanel.getNetworkPanel().getMainPanel()
-                            .getMainPanelMenuAssistant()
-                            .updateOptionsFindingsDependent(this.editorPanel.getNetworkPanel());
+            this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                                   .getInferenceToolBar()
+                                   .setCurrentEvidenceCaseName(this.currentCase);
+            this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+            this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                                   .getMainPanelMenuAssistant()
+                                   .updateOptionsFindingsDependent(this.networkEditorPanel.getNetworkPanel());
         }
     }
     
@@ -403,11 +403,11 @@ public class EvidenceManager {
                 for (Finding finding : findings) {
                     if (node.getVariable() == (finding.getVariable())) {
                         this.postResolutionEvidence.get(i).removeFinding(finding.getVariable());
-                        if (this.editorPanel.isAutomaticPropagation() && (this.getInferenceAlgorithm() != null)) {
+                        if (this.networkEditorPanel.isAutomaticPropagation() && (this.getInferenceAlgorithm() != null)) {
                             this.doPropagation(this.postResolutionEvidence.get(i), i);
                         }
                         if (i == this.currentCase) {
-                            List<VisualNode> visualNodes = this.editorPanel.getVisualNetwork().getAllNodes();
+                            List<VisualNode> visualNodes = this.networkEditorPanel.getVisualNetwork().getAllNodes();
                             for (VisualNode visualNode : visualNodes) {
                                 if (visualNode.getNode() == node) {
                                     visualNode.setPostResolutionFinding(false);// ...asaez....PENDIENTE........
@@ -419,14 +419,14 @@ public class EvidenceManager {
             }
         } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                  CannotNormalizePotentialException | IncompatibleEvidenceException e) {
-            this.editorPanel.setPropagationActive(false);
+            this.networkEditorPanel.setPropagationActive(false);
             throw e;
         } finally {
-            this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-            this.editorPanel.getNetworkPanel().getMainPanel()
-                            .getMainPanelMenuAssistant()
-                            .updateOptionsFindingsDependent(this.editorPanel.getNetworkPanel());
-            this.editorPanel.repaint();
+            this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+            this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                                   .getMainPanelMenuAssistant()
+                                   .updateOptionsFindingsDependent(this.networkEditorPanel.getNetworkPanel());
+            this.networkEditorPanel.repaint();
         }
     }
     
@@ -466,9 +466,9 @@ public class EvidenceManager {
     public void setNewFinding(VisualNode visualNode, Finding previousFinding, Finding finding, boolean toggle) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException {
         Variable variable = visualNode.getNode().getVariable();
         
-        boolean isInferenceMode = this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE;
+        boolean isInferenceMode = this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE;
         EvidenceCase evidenceCase = (isInferenceMode) ? this.postResolutionEvidence.get(this.currentCase) : this.preResolutionEvidence;
-        this.editorPanel.setPropagationActive(this.editorPanel.isAutomaticPropagation());
+        this.networkEditorPanel.setPropagationActive(this.networkEditorPanel.isAutomaticPropagation());
         boolean alreadyHasFinding = evidenceCase.contains(variable);
         Finding oldFinding = null;
         if (alreadyHasFinding) {
@@ -490,15 +490,15 @@ public class EvidenceManager {
         } else {
             Collections.fill(this.evidenceCasesCompilationState, false);
         }
-        this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-        this.editorPanel.getNetworkPanel().getMainPanel()
-                        .getInferenceToolBar()
-                        .setCurrentEvidenceCaseName(this.currentCase);
+        this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+        this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                               .getInferenceToolBar()
+                               .setCurrentEvidenceCaseName(this.currentCase);
         
         
         try {
             // If propagation is active, do propagation
-            if ((this.editorPanel.isPropagationActive()) && (this.evidenceCasesCompilationState.get(this.currentCase) == false) && (isInferenceMode)) {
+            if ((this.networkEditorPanel.isPropagationActive()) && (this.evidenceCasesCompilationState.get(this.currentCase) == false) && (isInferenceMode)) {
                 this.doPropagation(evidenceCase, this.currentCase);
             }
         } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
@@ -514,12 +514,12 @@ public class EvidenceManager {
             visualNode.setPostResolutionFinding(alreadyHasFinding);
             throw e;
         } finally {
-            this.editorPanel.getNetworkPanel().getMainPanel()
-                            .getMainPanelMenuAssistant()
-                            .updateOptionsFindingsDependent(this.editorPanel.getNetworkPanel());
-            this.editorPanel.getNetworkPanel().getMainPanel().getMainPanelMenuAssistant()
-                            .updateOptionsPropagationTypeDependent(this.editorPanel.getNetworkPanel());// ..
-            this.editorPanel.repaint();
+            this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                                   .getMainPanelMenuAssistant()
+                                   .updateOptionsFindingsDependent(this.networkEditorPanel.getNetworkPanel());
+            this.networkEditorPanel.getNetworkPanel().getMainPanel().getMainPanelMenuAssistant()
+                                   .updateOptionsPropagationTypeDependent(this.networkEditorPanel.getNetworkPanel());// ..
+            this.networkEditorPanel.repaint();
         }
         
     }
@@ -532,9 +532,9 @@ public class EvidenceManager {
      * @throws NonProjectablePotentialException
      */
     private void calculateMinAndMaxUtilityRanges() throws NonProjectablePotentialException {
-        List<Variable> utilityVariables = this.editorPanel.getVisualNetwork().getProbNet().getVariables(NodeType.UTILITY);
+        List<Variable> utilityVariables = this.networkEditorPanel.getVisualNetwork().getProbNet().getVariables(NodeType.UTILITY);
         for (Variable utility : utilityVariables) {
-            ProbNet newNet = this.editorPanel.getVisualNetwork().getProbNet().copy();
+            ProbNet newNet = this.networkEditorPanel.getVisualNetwork().getProbNet().copy();
             newNet = TaskUtilities.extendPreResolutionEvidence(newNet, this.preResolutionEvidence);
             Node node = newNet.getNode(utility);
             this.minUtilityRange.put(utility, node.getApproximateMinimumUtilityFunction());
@@ -553,8 +553,8 @@ public class EvidenceManager {
         Map<Variable, TablePotential> individualProbabilities = null;
         try {
             this.calculateMinAndMaxUtilityRanges();
-            Propagation vePosteriorValues = new VEPropagation(this.editorPanel.getVisualNetwork().getProbNet());
-            vePosteriorValues.setVariablesOfInterest(this.editorPanel.getVisualNetwork().getProbNet().getVariables());
+            Propagation vePosteriorValues = new VEPropagation(this.networkEditorPanel.getVisualNetwork().getProbNet());
+            vePosteriorValues.setVariablesOfInterest(this.networkEditorPanel.getVisualNetwork().getProbNet().getVariables());
             vePosteriorValues.setPreResolutionEvidence(this.preResolutionEvidence);
             vePosteriorValues.setPostResolutionEvidence(evidenceCase);
             individualProbabilities = vePosteriorValues.getPosteriorValues();
@@ -565,9 +565,9 @@ public class EvidenceManager {
             }
         }
         this.updateNodesFindingState(evidenceCase);
-        this.editorPanel.getInferencePresenter().paintInferenceResults(caseNumber, individualProbabilities, evidenceCase);
+        this.networkEditorPanel.getInferencePresenter().paintInferenceResults(caseNumber, individualProbabilities, evidenceCase);
         this.evidenceCasesCompilationState.set(caseNumber, true);
-        this.editorPanel.repaint();
+        this.networkEditorPanel.repaint();
     }
     
     /**
@@ -576,13 +576,13 @@ public class EvidenceManager {
      * @param evidenceCase the evidence case with which the update must be done.
      */
     public void updateNodesFindingState(EvidenceCase evidenceCase) {
-        for (VisualNode visualNode : this.editorPanel.getVisualNetwork().getAllNodes()) {
+        for (VisualNode visualNode : this.networkEditorPanel.getVisualNetwork().getAllNodes()) {
             visualNode.setPreResolutionFinding(false);
             visualNode.setPostResolutionFinding(false);
         }
         for (Finding finding : evidenceCase.getFindings()) {
             Variable variable = finding.getVariable();
-            for (VisualNode visualNode : this.editorPanel.getVisualNetwork().getAllNodes()) {
+            for (VisualNode visualNode : this.networkEditorPanel.getVisualNetwork().getAllNodes()) {
                 if (variable.getName().equals(visualNode.getNode().getName())) {
                     visualNode.setPostResolutionFinding(true);
                 }
@@ -590,13 +590,13 @@ public class EvidenceManager {
         }
         for (Finding finding : this.preResolutionEvidence.getFindings()) {
             Variable variable = finding.getVariable();
-            for (VisualNode visualNode : this.editorPanel.getVisualNetwork().getAllNodes()) {
+            for (VisualNode visualNode : this.networkEditorPanel.getVisualNetwork().getAllNodes()) {
                 if (variable.getName().equals(visualNode.getNode().getName())) {
                     visualNode.setPreResolutionFinding(true);
                 }
             }
         }
-        this.editorPanel.repaint();
+        this.networkEditorPanel.repaint();
     }
     
     /**
@@ -616,21 +616,21 @@ public class EvidenceManager {
      * This method adds a new evidence case
      */
     public void addNewEvidenceCase(EvidenceCase newEvidenceCase) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        this.editorPanel.setPropagationActive(this.editorPanel.isAutomaticPropagation());
+        this.networkEditorPanel.setPropagationActive(this.networkEditorPanel.isAutomaticPropagation());
         this.postResolutionEvidence.add(newEvidenceCase);
         this.currentCase = (this.postResolutionEvidence.size() - 1);
         this.evidenceCasesCompilationState.add(this.currentCase, false);
-        this.editorPanel.updateAllVisualStates("new", this.currentCase);
-        this.editorPanel.getNetworkPanel().getMainPanel()
-                        .getInferenceToolBar()
-                        .setCurrentEvidenceCaseName(this.currentCase);
-        this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-        if (this.editorPanel.isPropagationActive() && this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
+        this.networkEditorPanel.updateAllVisualStates("new", this.currentCase);
+        this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                               .getInferenceToolBar()
+                               .setCurrentEvidenceCaseName(this.currentCase);
+        this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+        if (this.networkEditorPanel.isPropagationActive() && this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
             try {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
                      CannotNormalizePotentialException | IncompatibleEvidenceException e) {
-                this.editorPanel.setPropagationActive(false);
+                this.networkEditorPanel.setPropagationActive(false);
                 throw e;
             }
         }
@@ -641,19 +641,19 @@ public class EvidenceManager {
      */
     public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
         this.currentCase = 0;
-        this.editorPanel.updateAllVisualStates("", this.currentCase);
-        this.editorPanel.getNetworkPanel().getMainPanel()
-                        .getInferenceToolBar()
-                        .setCurrentEvidenceCaseName(this.currentCase);
-        this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-        if ((this.editorPanel.isPropagationActive()) && (this.evidenceCasesCompilationState.get(this.currentCase) == false) && (
-                this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
+        this.networkEditorPanel.updateAllVisualStates("", this.currentCase);
+        this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                               .getInferenceToolBar()
+                               .setCurrentEvidenceCaseName(this.currentCase);
+        this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+        if ((this.networkEditorPanel.isPropagationActive()) && (this.evidenceCasesCompilationState.get(this.currentCase) == false) && (
+                this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
         )) {
             try {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             } catch (CannotNormalizePotentialException | IncompatibleEvidenceException |
                      NonProjectablePotentialException | NotEvaluableNetworkException | NotEnoughMemoryException e) {
-                this.editorPanel.setPropagationActive(false);
+                this.networkEditorPanel.setPropagationActive(false);
                 throw e;
             }
         } else {
@@ -669,19 +669,19 @@ public class EvidenceManager {
             throw new UnreachableException(new IllegalStateException("Go-to-previous button should have been disabled when at first evidence case"));
         }
         this.currentCase--;
-        this.editorPanel.updateAllVisualStates("", this.currentCase);
-        this.editorPanel.getNetworkPanel().getMainPanel()
-                        .getInferenceToolBar()
-                        .setCurrentEvidenceCaseName(this.currentCase);
-        this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-        if ((this.editorPanel.isPropagationActive()) && (this.evidenceCasesCompilationState.get(this.currentCase) == false) && (
-                this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
+        this.networkEditorPanel.updateAllVisualStates("", this.currentCase);
+        this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                               .getInferenceToolBar()
+                               .setCurrentEvidenceCaseName(this.currentCase);
+        this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+        if ((this.networkEditorPanel.isPropagationActive()) && (this.evidenceCasesCompilationState.get(this.currentCase) == false) && (
+                this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
         )) {
             try {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
                      CannotNormalizePotentialException | IncompatibleEvidenceException e) {
-                this.editorPanel.setPropagationActive(false);
+                this.networkEditorPanel.setPropagationActive(false);
                 throw e;
             }
         } else {
@@ -697,19 +697,19 @@ public class EvidenceManager {
             throw new UnreachableException(new IllegalStateException("Go-to-next button should have been disabled when at last evidence case"));
         }
         this.currentCase++;
-        this.editorPanel.updateAllVisualStates("", this.currentCase);
-        this.editorPanel.getNetworkPanel().getMainPanel()
-                        .getInferenceToolBar()
-                        .setCurrentEvidenceCaseName(this.currentCase);
-        this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-        if ((this.editorPanel.isPropagationActive()) && (this.evidenceCasesCompilationState.get(this.currentCase) == false) && (
-                this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
+        this.networkEditorPanel.updateAllVisualStates("", this.currentCase);
+        this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                               .getInferenceToolBar()
+                               .setCurrentEvidenceCaseName(this.currentCase);
+        this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+        if ((this.networkEditorPanel.isPropagationActive()) && (this.evidenceCasesCompilationState.get(this.currentCase) == false) && (
+                this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
         )) {
             try {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
                      CannotNormalizePotentialException | IncompatibleEvidenceException e) {
-                this.editorPanel.setPropagationActive(false);
+                this.networkEditorPanel.setPropagationActive(false);
                 throw e;
             }
         } else {
@@ -722,19 +722,19 @@ public class EvidenceManager {
      */
     public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
         this.currentCase = (this.postResolutionEvidence.size() - 1);
-        this.editorPanel.updateAllVisualStates("", this.currentCase);
-        this.editorPanel.getNetworkPanel().getMainPanel()
-                        .getInferenceToolBar()
-                        .setCurrentEvidenceCaseName(this.currentCase);
-        this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-        if ((this.editorPanel.isPropagationActive()) && (this.evidenceCasesCompilationState.get(this.currentCase) == false) && (
-                this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
+        this.networkEditorPanel.updateAllVisualStates("", this.currentCase);
+        this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                               .getInferenceToolBar()
+                               .setCurrentEvidenceCaseName(this.currentCase);
+        this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+        if ((this.networkEditorPanel.isPropagationActive()) && (this.evidenceCasesCompilationState.get(this.currentCase) == false) && (
+                this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
         )) {
             try {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
                      CannotNormalizePotentialException | IncompatibleEvidenceException e) {
-                this.editorPanel.setPropagationActive(false);
+                this.networkEditorPanel.setPropagationActive(false);
                 throw e;
             }
         } else {
@@ -748,23 +748,23 @@ public class EvidenceManager {
      * (corresponding to prior probabilities)
      */
     public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        this.editorPanel.setPropagationActive(this.editorPanel.isAutomaticPropagation());
+        this.networkEditorPanel.setPropagationActive(this.networkEditorPanel.isAutomaticPropagation());
         this.postResolutionEvidence.clear();
         this.evidenceCasesCompilationState.clear();
         EvidenceCase newEvidenceCase = new EvidenceCase();
         this.postResolutionEvidence.add(newEvidenceCase);
         this.currentCase = 0;
         this.evidenceCasesCompilationState.add(this.currentCase, false);
-        this.editorPanel.updateAllVisualStates("clear", this.currentCase);
-        this.editorPanel.getNetworkPanel().getMainPanel()
-                        .getInferenceToolBar()
-                        .setCurrentEvidenceCaseName(this.currentCase);
-        this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
+        this.networkEditorPanel.updateAllVisualStates("clear", this.currentCase);
+        this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                               .getInferenceToolBar()
+                               .setCurrentEvidenceCaseName(this.currentCase);
+        this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
         try {
             this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
         } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
                  CannotNormalizePotentialException | IncompatibleEvidenceException e) {
-            this.editorPanel.setPropagationActive(false);
+            this.networkEditorPanel.setPropagationActive(false);
             throw e;
         }
     }
@@ -777,8 +777,8 @@ public class EvidenceManager {
      *                               panel.
      */
     public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        this.editorPanel.setPropagationActive(true);
-        if (this.editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
+        this.networkEditorPanel.setPropagationActive(true);
+        if (this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
             for (int i = 0; i < this.getNumberOfCases(); i++) {
                 if (this.evidenceCasesCompilationState.get(i) == false) {
                     try {
@@ -786,21 +786,21 @@ public class EvidenceManager {
                     } catch (NonProjectablePotentialException | NotEnoughMemoryException |
                              NotEvaluableNetworkException |
                              CannotNormalizePotentialException | IncompatibleEvidenceException e) {
-                        this.editorPanel.setPropagationActive(false);
+                        this.networkEditorPanel.setPropagationActive(false);
                         throw e;
                     }
                 }
             }
-            this.editorPanel.getVisualNetwork().setSelectedAllNodes(false);
-            this.editorPanel.updateAllVisualStates("", this.currentCase);
-            this.editorPanel.getNetworkPanel().getMainPanel()
-                            .getInferenceToolBar()
-                            .setCurrentEvidenceCaseName(this.currentCase);
+            this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
+            this.networkEditorPanel.updateAllVisualStates("", this.currentCase);
+            this.networkEditorPanel.getNetworkPanel().getMainPanel()
+                                   .getInferenceToolBar()
+                                   .setCurrentEvidenceCaseName(this.currentCase);
             this.updateNodesFindingState(this.postResolutionEvidence.get(this.currentCase));
         }
-        mainPanelMenuAssistant.updateOptionsEvidenceCasesNavigation(this.editorPanel.getNetworkPanel());
-        mainPanelMenuAssistant.updateOptionsPropagationTypeDependent(this.editorPanel.getNetworkPanel());
-        mainPanelMenuAssistant.updateOptionsFindingsDependent(this.editorPanel.getNetworkPanel());
+        mainPanelMenuAssistant.updateOptionsEvidenceCasesNavigation(this.networkEditorPanel.getNetworkPanel());
+        mainPanelMenuAssistant.updateOptionsPropagationTypeDependent(this.networkEditorPanel.getNetworkPanel());
+        mainPanelMenuAssistant.updateOptionsFindingsDependent(this.networkEditorPanel.getNetworkPanel());
     }
     
 }

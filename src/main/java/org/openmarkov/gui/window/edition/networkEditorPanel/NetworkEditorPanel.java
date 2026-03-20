@@ -5,13 +5,11 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.window.edition.editorPanel;
+package org.openmarkov.gui.window.edition.networkEditorPanel;
 
 import org.openmarkov.core.action.core.*;
 import org.openmarkov.core.exception.*;
 
-import org.openmarkov.core.inference.InferenceAlgorithm;
-import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
@@ -31,7 +29,6 @@ import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEEvaluation;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEExpectedUtilityDecision;
-import org.openmarkov.java.initialization.Lazy;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,7 +46,7 @@ import java.util.List;
  * contraction of nodes, - Introduction and elimination of evidence -
  * Management of multiple evidence cases.
  */
-public final class EditorPanel extends JPanel {
+public final class NetworkEditorPanel extends JPanel {
     /**
      * Static field for serializable class.
      */
@@ -98,7 +95,7 @@ public final class EditorPanel extends JPanel {
     /**
      * This variable indicates which is the expansion threshold of the network
      */
-    private double currentExpansionThreshold = EditorPanel.DEFAULT_THRESHOLD_VALUE;
+    private double currentExpansionThreshold = NetworkEditorPanel.DEFAULT_THRESHOLD_VALUE;
     /**
      * Network panel associated to this editor panel
      */
@@ -122,7 +119,7 @@ public final class EditorPanel extends JPanel {
      *
      * @param networkPanel network that will be edited.
      */
-    public EditorPanel(NetworkPanel networkPanel, VisualNetwork visualNetwork) {
+    public NetworkEditorPanel(NetworkPanel networkPanel, VisualNetwork visualNetwork) {
         this.zoomManager = new ZoomManager();
         this.networkPanel = networkPanel;
         this.visualNetwork = visualNetwork;
@@ -277,7 +274,7 @@ public final class EditorPanel extends JPanel {
      * @return
      */
     boolean changeNodeProperties(VisualNode selectedNode, boolean newNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
-        boolean userAcceptedChanges = EditorPanel.requestNodePropertiesToUser2(GUIUtils.getOwner(this), selectedNode.getNode(), newNode);
+        boolean userAcceptedChanges = NetworkEditorPanel.requestNodePropertiesToUser2(GUIUtils.getOwner(this), selectedNode.getNode(), newNode);
         if (userAcceptedChanges) {
             this.adjustPanelDimension();
             selectedNode.update(this.evidenceManager.getPostResolutionEvidence().size());
@@ -374,7 +371,7 @@ public final class EditorPanel extends JPanel {
         List<VisualNode> selectedNode = this.visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
             VisualDecisionNode visualNode = (VisualDecisionNode) selectedNode.getFirst();
-            EditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
+            NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
         }
         this.visualNetwork.setSelectedAllNodes(false);
         this.repaint();
@@ -389,7 +386,7 @@ public final class EditorPanel extends JPanel {
             VisualDecisionNode visualNode = (VisualDecisionNode) selectedNode.getFirst();
             if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
                 // TODO manage other kind of policy types from the interface
-                EditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
+                NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
             }
         }
         this.visualNetwork.setSelectedAllNodes(false);
@@ -647,8 +644,8 @@ public final class EditorPanel extends JPanel {
      */
     public void adjustPanelDimension() {
         double[] bounds = this.visualNetwork.getNetworkBounds((Graphics2D) this.getGraphics());
-        this.currentWidth = Math.min(EditorPanel.MAX_WIDTH, bounds[1]);
-        this.currentHeight = Math.min(EditorPanel.MAX_HEIGHT, bounds[3]);
+        this.currentWidth = Math.min(NetworkEditorPanel.MAX_WIDTH, bounds[1]);
+        this.currentHeight = Math.min(NetworkEditorPanel.MAX_HEIGHT, bounds[3]);
         Dimension newDimension = new Dimension((int) Math.round(this.getNewWidth()), (int) Math.round(this.getNewHeight()));
         this.setPreferredSize(newDimension);
         this.setSize(newDimension);
@@ -695,5 +692,9 @@ public final class EditorPanel extends JPanel {
     
     public EditionMode getEditionMode() {
         return this.editionMode;
+    }
+    
+    public void updateName(String baseName) {
+        setName("NetworkEditorOf"+baseName);
     }
 }

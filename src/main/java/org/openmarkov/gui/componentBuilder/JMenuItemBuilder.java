@@ -4,11 +4,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.window.MainGUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,14 +23,22 @@ public class JMenuItemBuilder {
     private @NotNull String title;
     private @Nullable Character mnemonic;
     private @Nullable Boolean enabled;
-    private @Nullable ThrowingRunnable<? extends Exception> onClick;
+    private final @NotNull ArrayList<ThrowingConsumer<ActionEvent, ? extends Exception>> onClick;
+    private final @NotNull ArrayList<ThrowingConsumer<ItemEvent, ? extends Exception>> onItemEvent;
     private @NotNull ArrayList<Component> items;
-    private @Nullable Boolean isRadioButton;
+    private @NotNull SpecificKind specificKind;
     private @Nullable Boolean selected;
+    
+    enum SpecificKind {
+        Radio, Checkbox, Unspecified
+    }
     
     public JMenuItemBuilder(@NotNull String title) {
         this.title = title;
         this.items = new ArrayList<>();
+        this.onClick = new ArrayList<>();
+        this.onItemEvent = new ArrayList<>();
+        this.specificKind = SpecificKind.Unspecified;
     }
     
     public JMenuItemBuilder withTitle(@NotNull String title) {
@@ -45,7 +57,17 @@ public class JMenuItemBuilder {
     }
     
     public JMenuItemBuilder onClick(@NotNull ThrowingRunnable<? extends Exception> onClick) {
-        this.onClick = onClick;
+        this.onClick.add((ignored) -> onClick.run());
+        return this;
+    }
+    
+    public JMenuItemBuilder onClick(@NotNull ThrowingConsumer<ActionEvent, ? extends Exception> onClick) {
+        this.onClick.add(onClick);
+        return this;
+    }
+    
+    public JMenuItemBuilder onItemEvent(@NotNull ThrowingConsumer<ItemEvent, ? extends Exception> onItemEvent) {
+        this.onItemEvent.add(onItemEvent);
         return this;
     }
     
@@ -65,7 +87,12 @@ public class JMenuItemBuilder {
     }
     
     public JMenuItemBuilder asRadio() {
-        this.isRadioButton = true;
+        this.specificKind = SpecificKind.Radio;
+        return this;
+    }
+    
+    public JMenuItemBuilder asCheckbox() {
+        this.specificKind = SpecificKind.Checkbox;
         return this;
     }
     
@@ -76,14 +103,16 @@ public class JMenuItemBuilder {
     
     @SuppressWarnings("ExtractMethodRecommender")
     public JMenuItem build() {
-        JMenuItem jMenuItem;
-        if (Boolean.TRUE.equals(isRadioButton)) {
-            jMenuItem = new JRadioButtonMenuItem(this.title);
-        } else if (this.items.isEmpty()) {
-            jMenuItem = new JMenuItem(this.title);
-        } else {
-            jMenuItem = new JMenu(this.title);
-        }
+        JMenuItem jMenuItem = switch (this.specificKind) {
+            case Radio -> new JRadioButtonMenuItem(this.title);
+            case Checkbox -> new JCheckBoxMenuItem(this.title);
+            case Unspecified -> {
+                if (this.items.isEmpty()) {
+                    yield new JMenuItem(this.title);
+                }
+                yield new JMenu(this.title);
+            }
+        };
         if (this.selected != null) {
             jMenuItem.setSelected(this.selected);
         }
@@ -93,17 +122,34 @@ public class JMenuItemBuilder {
         if (this.mnemonic != null) {
             jMenuItem.setMnemonic(this.mnemonic);
         }
-        if (this.onClick != null) {
+        for (var onClick : this.onClick) {
             jMenuItem.addActionListener(e -> {
                 try {
-                    onClick.run();
+                    onClick.accept(e);
                 } catch (UnrecoverableException | UnreachableException ex) {
+                    throw ex;
+                } catch (RuntimeException ex) {
                     throw ex;
                 } catch (Exception ex) {
                     throw new UnrecoverableException(ex);
                 }
             });
         }
+        for (var onItemEvent : this.onItemEvent) {
+            jMenuItem.addItemListener(e -> {
+                try {
+                    onItemEvent.accept(e);
+                } catch (UnrecoverableException | UnreachableException ex) {
+                    throw ex;
+                } catch (RuntimeException ex) {
+                    throw ex;
+                } catch (Exception ex) {
+                    throw new UnrecoverableException(ex);
+                }
+            });
+        }
+        
+        
         for (Component component : this.items) {
             jMenuItem.add(component);
         }
@@ -113,6 +159,11 @@ public class JMenuItemBuilder {
     @FunctionalInterface
     public interface ThrowingRunnable<E extends Exception> {
         void run() throws E;
+    }
+    
+    @FunctionalInterface
+    public interface ThrowingConsumer<T, E extends Exception> {
+        void accept(T t) throws E;
     }
     
     

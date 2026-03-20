@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -477,7 +478,7 @@ public class MainPanel extends JPanel {
         Component tabComponent = this.networksTabPanel.getTabComponentAt(this.networksTabPanel.getTabCount() - 1);
         
         if (component instanceof NetworkPanel networkPanel) {
-            networkPanel.addOnModification(networkP -> {
+            Consumer<NetworkPanel> reloadNamesAndColor = networkP -> {
                 if (networkP.getModified()) {
                     header.titleLabel.setForeground(new Color(212, 56, 56));
                 } else {
@@ -485,7 +486,10 @@ public class MainPanel extends JPanel {
                 }
                 String uniqueTitleOnChange = this.getUniqueTitle(networkPanel.probNet.getName(), Set.of(this.networksTabPanel.indexOfTabComponent(tabComponent)));
                 header.titleLabel.setText(uniqueTitleOnChange);
-            });
+                networkP.getEditorPanel().updateName(uniqueTitleOnChange);
+            };
+            networkPanel.addOnModification(reloadNamesAndColor);
+            reloadNamesAndColor.accept(networkPanel);
         }
         
         tabComponent.addMouseListener(new MouseListener() {

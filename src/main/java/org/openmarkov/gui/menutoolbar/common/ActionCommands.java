@@ -10,6 +10,7 @@ package org.openmarkov.gui.menutoolbar.common;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.OptionalInt;
 
 /**
@@ -288,11 +289,13 @@ public enum ActionCommands {
 
     /** Returns the 0-based index into the recent-files list if this command is one of the
      *  OPEN_LAST_N_FILE commands, or an empty OptionalInt otherwise. */
-    public OptionalInt openRecentFileIndex() {
+    public Optional<Integer> openRecentFileIndex() {
         for (int i = 0; i < OPEN_LAST_FILE_COMMANDS.length; i++) {
-            if (this == OPEN_LAST_FILE_COMMANDS[i]) return OptionalInt.of(i);
+            if (this == OPEN_LAST_FILE_COMMANDS[i]) {
+                return Optional.of(i);
+            }
         }
-        return OptionalInt.empty();
+        return Optional.empty();
     }
     
     /**

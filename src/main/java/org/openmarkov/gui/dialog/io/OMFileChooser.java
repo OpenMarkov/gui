@@ -47,6 +47,7 @@ public class OMFileChooser extends JFileChooser {
      */
     public OMFileChooser() {
         super();
+        setName("OMFileChooser");
         setTextsInLocale();
         setCurrentDirectory(new File(directoryPath));
         rescanCurrentDirectory();
