@@ -1,8 +1,9 @@
 package org.openmarkov.gui.exception;
 
 import org.openmarkov.core.exception.IBundledOpenMarkovException;
+import org.openmarkov.core.exception.OpenMarkovException;
 
-public abstract sealed class BinomialPotentialWrongValueException extends Exception implements IBundledOpenMarkovException {
+public abstract sealed class BinomialPotentialWrongValueException extends OpenMarkovException {
     
     public final static class NValuesIsWrong extends BinomialPotentialWrongValueException {
         

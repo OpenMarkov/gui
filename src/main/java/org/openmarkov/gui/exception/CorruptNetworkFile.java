@@ -1,10 +1,11 @@
 package org.openmarkov.gui.exception;
 
 import org.openmarkov.core.exception.IBundledOpenMarkovException;
+import org.openmarkov.core.exception.OpenMarkovException;
 
 import java.net.URL;
 
-public class CorruptNetworkFile extends Exception implements IBundledOpenMarkovException {
+public class CorruptNetworkFile extends OpenMarkovException {
     
     public CorruptNetworkFile(URL fileToRead, Exception ex) {
         super(ex);

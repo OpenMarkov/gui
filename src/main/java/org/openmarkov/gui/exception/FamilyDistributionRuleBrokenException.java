@@ -1,9 +1,10 @@
 package org.openmarkov.gui.exception;
 
 import org.openmarkov.core.exception.IBundledOpenMarkovException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.model.network.modelUncertainty.FamilyDistribution;
 
-public sealed abstract class FamilyDistributionRuleBrokenException extends Exception implements IBundledOpenMarkovException {
+public sealed abstract class FamilyDistributionRuleBrokenException extends OpenMarkovException {
     
     public FamilyDistributionRuleBrokenException(FamilyDistribution family) {
         this.family = family;

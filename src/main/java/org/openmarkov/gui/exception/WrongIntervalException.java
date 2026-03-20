@@ -1,8 +1,9 @@
 package org.openmarkov.gui.exception;
 
 import org.openmarkov.core.exception.IBundledOpenMarkovException;
+import org.openmarkov.core.exception.OpenMarkovException;
 
-public sealed abstract class WrongIntervalException extends Exception implements IBundledOpenMarkovException {
+public sealed abstract class WrongIntervalException extends OpenMarkovException {
     
     static final public class InfinityInIntervalNotAllowed extends WrongIntervalException {
     }

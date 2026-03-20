@@ -1,8 +1,9 @@
 package org.openmarkov.gui.exception;
 
 import org.openmarkov.core.exception.IBundledOpenMarkovException;
+import org.openmarkov.core.exception.OpenMarkovException;
 
-public class ZoomOutOfRangeException extends Exception implements IBundledOpenMarkovException {
+public class ZoomOutOfRangeException extends OpenMarkovException {
     
     public ZoomOutOfRangeException(String requestedZoom, int minZoom, int maxZoom) {
         this.requestedZoom = requestedZoom;
