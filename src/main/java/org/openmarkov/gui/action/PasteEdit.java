@@ -105,7 +105,7 @@ import java.util.stream.IntStream;
                     newNode.setComment(originalNode.getComment());
                     newNode.setRelevance(originalNode.getRelevance());
                     newNode.setPurpose(originalNode.getPurpose());
-                    newNode.additionalProperties = new LinkedHashMap<>(originalNode.additionalProperties);
+                    newNode.setAdditionalProperties(originalNode.getAdditionalProperties());
                 }
             }
         };

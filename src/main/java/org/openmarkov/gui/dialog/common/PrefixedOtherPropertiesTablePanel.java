@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.common;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -197,37 +198,33 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     
     /**
      * Set the node additionalProperties in this panel with the provided ones
-     *
-     * @param nodeProperties the Node to get the properties from
      */
     public void setProperties(Node node) {
         this.node = node;
-        LinkedHashMap<String, String> otherProperties = node.getOtherProperties();
+        Map<String, String> otherProperties = node.getAdditionalProperties();
         setFieldsFromProperties(otherProperties);
     }
-    
+
     /**
      * Set the network additionalProperties in this panel with the provided ones
-     *
-     * @param probNetProperties the ProbNet to get the properties from
      */
     public void setProperties(ProbNet probNet) {
         this.probNet = probNet;
-        LinkedHashMap<String, String> otherProperties = probNet.getOtherProperties();
+        Map<String, String> otherProperties = probNet.getAdditionalProperties();
         setFieldsFromProperties(otherProperties);
     }
-    
+
     public void setProperties() {
         if (node != null) {
-            LinkedHashMap<String, String> otherProperties = node.getOtherProperties();
+            Map<String, String> otherProperties = node.getAdditionalProperties();
             setFieldsFromProperties(otherProperties);
         } else if (probNet != null) {
-            LinkedHashMap<String, String> otherProperties = probNet.getOtherProperties();
+            Map<String, String> otherProperties = probNet.getAdditionalProperties();
             setFieldsFromProperties(otherProperties);
         }
     }
-    
-    public void setFieldsFromProperties(LinkedHashMap<String, String> otherProperties) {
+
+    public void setFieldsFromProperties(Map<String, String> otherProperties) {
         Object[] keys = otherProperties.keySet().toArray();
         Object[] values = otherProperties.values().toArray();
         int s = otherProperties.size();
@@ -355,10 +352,10 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
                 otherPropertyEdit.executeEdit();
             }
         } catch (DoEditException e1) {
-            String oldName = new ArrayList<>(node.getOtherProperties().keySet()).get(row);
-            //List<String> keySet = new ArrayList<>(node.getOtherProperties().keySet());
+            String oldName = new ArrayList<>(node.getAdditionalProperties().keySet()).get(row);
+            //List<String> keySet = new ArrayList<>(node.getAdditionalProperties().keySet());
             //String oldKey = keySet.get(index);
-            String oldValue = node.getOtherProperties().get(oldName);
+            String oldValue = node.getAdditionalProperties().get(oldName);
             valuesTable.setValueAt(oldName, row, 1);
             valuesTable.setValueAt(oldValue, row, 2);
             throw new UnrecoverableException(e1);

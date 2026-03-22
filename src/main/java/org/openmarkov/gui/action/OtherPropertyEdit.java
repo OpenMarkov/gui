@@ -15,6 +15,7 @@ import org.openmarkov.java.collectionsUtils.arrayUtils.MapUtils;
 
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * {@code OtherPropertyEdit} is a simple edit that allow modify the additional properties of one node.
@@ -27,9 +28,9 @@ import java.util.LinkedHashMap;
 public class OtherPropertyEdit extends PNEdit {
     
     /** The last properties before the edition */
-    private final LinkedHashMap<String, String> oldProperties;
+    private final Map<String, String> oldProperties;
     /** The properties after the edition */
-    private LinkedHashMap<String, String> newProperties;
+    private Map<String, String> newProperties;
     /** The new property */
     private final String[] newProperty;
     /** The action to carry out */
@@ -52,7 +53,7 @@ public class OtherPropertyEdit extends PNEdit {
     public OtherPropertyEdit(Node node, String otherPropertyAction, int propertyIndex, String[] newData) {
         super(node.getProbNet());
         this.node = node;
-        this.oldProperties = node.getOtherProperties();
+        this.oldProperties = new LinkedHashMap<>(node.getAdditionalProperties());
         this.propertyIndex = propertyIndex;
         this.newProperty = newData;
         this.otherPropertyAction = otherPropertyAction;
@@ -70,7 +71,7 @@ public class OtherPropertyEdit extends PNEdit {
     public OtherPropertyEdit(ProbNet probNet, String otherPropertyAction, int propertyIndex, String[] newData) {
         super(probNet);
         this.node = null;
-        this.oldProperties = probNet.getOtherProperties();
+        this.oldProperties = new LinkedHashMap<>(probNet.getAdditionalProperties());
         this.propertyIndex = propertyIndex;
         this.newProperty = newData;
         this.otherPropertyAction = otherPropertyAction;
@@ -79,11 +80,11 @@ public class OtherPropertyEdit extends PNEdit {
     @Override protected void doEdit() {
         switch (this.otherPropertyAction) {
             case "ADD" -> {
-                this.newProperties = (LinkedHashMap<String, String>) this.oldProperties.clone();
+                this.newProperties = new LinkedHashMap<>(this.oldProperties);
                 this.newProperties.put(this.newProperty[0], this.newProperty[1]);
             }
             case "REMOVE" -> {
-                this.newProperties = (LinkedHashMap<String, String>) this.oldProperties.clone();
+                this.newProperties = new LinkedHashMap<>(this.oldProperties);
                 String key = this.oldProperties.keySet().toArray()[this.propertyIndex].toString();
                 this.newProperties.remove(key);
             }
@@ -114,11 +115,11 @@ public class OtherPropertyEdit extends PNEdit {
         this.setProperties(this.oldProperties);
     }
     
-    private void setProperties(LinkedHashMap<String, String> newProperties) {
+    private void setProperties(Map<String, String> newProperties) {
         if (this.node != null) {
-            this.node.setOtherProperties(newProperties);
+            this.node.setAdditionalProperties(newProperties);
         } else if (this.probNet != null) {
-            this.probNet.setOtherProperties(newProperties);
+            this.probNet.setAdditionalProperties(newProperties);
         }
     }
     
