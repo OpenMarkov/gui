@@ -8,7 +8,6 @@
 package org.openmarkov.gui.window;
 
 import org.openmarkov.core.exception.ParserException;
-import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.component.FrameMirror;
@@ -17,7 +16,6 @@ import org.openmarkov.gui.dialog.SplashScreenLoader;
 import org.openmarkov.gui.dialog.common.WindowDimensions;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
-import org.openmarkov.gui.toolplugin.UILookAndFeelPlugin;
 import org.openmarkov.plugin.PluginSearch;
 
 import javax.swing.*;
@@ -50,7 +48,6 @@ public class MainGUI extends JFrame {
      */
     private MainGUI() {
         UIManager.put("MenuItem.disabledAreNavigable", Boolean.FALSE);
-        loadWithSplash();
         setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
         Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
         setSize(screenPortionSize(screenInsets));
@@ -150,7 +147,7 @@ public class MainGUI extends JFrame {
     /**
      * Opens net from file
      *
-     * @param fileName
+     * @param fileName File name
      */
     public void openNetwork(String fileName) throws ParserException, IOException, NoReaderForFileException, CorruptNetworkFile {
         mainPanel.openNetwork(fileName);

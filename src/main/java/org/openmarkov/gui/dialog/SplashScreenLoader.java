@@ -44,7 +44,7 @@ public class SplashScreenLoader {
      * destroy the splash Screen turning not visible
      */
     public void splashScreenDestroy() {
-        splash.setScreenVisible(false);
+        SwingUtilities.invokeLater(splash::dispose);
     }
     
     /**
