@@ -1152,9 +1152,9 @@ public class VisualNetwork implements PNEditListener {
      * Removes selected objects
      */
     public void removeSelectedObjects() {
-        this.setSelectedAllObjects(false);
         try {
             new RemoveSelectedEdit(this).executeEdit();
+            this.setSelectedAllObjects(false);
         } catch (DoEditException e) {
             throw new UnrecoverableException(e);
         }
