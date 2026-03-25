@@ -340,9 +340,14 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                            .getDeclaredMethod("onClick");
                     ceMethod.setAccessible(true);
                     ceMethod.invoke(null);
-                } catch (ClassNotFoundException | IllegalAccessException |
-                         NoSuchMethodException | InvocationTargetException ex) {
+                } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException ex) {
                     throw new UnreachableException(ex);
+                } catch (InvocationTargetException ex) {
+                    switch (ex.getCause()){
+                        case RuntimeException exc -> throw exc;
+                        case Exception exc -> throw new UnrecoverableException(exc);
+                        case null, default -> throw new UnreachableException(ex);
+                    }
                 }
             }
             case ActionCommands.CHANCE_CREATION, ActionCommands.UNCERTAINTY_REMOVE, ActionCommands.UNCERTAINTY_EDIT,
