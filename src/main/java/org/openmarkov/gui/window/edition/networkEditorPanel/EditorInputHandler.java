@@ -35,6 +35,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
      * @param e mouse event information.
      */
     @Override public void mouseClicked(MouseEvent e) {
+        this.networkEditorPanel.requestFocus();
     }
     
     private int lastClickCount = 0;
