@@ -19,6 +19,7 @@ import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.io.Serial;
 
 /**
  * This class implements a contextual menu that is displayed when the user
@@ -33,7 +34,8 @@ public class NodeContextualMenu extends ContextualMenu {
 	/**
 	 * Static field for serializable class.
 	 */
-	private static final long serialVersionUID = 8556550568033250304L;
+	@Serial
+    private static final long serialVersionUID = 8556550568033250304L;
 	/**
 	 * Object that represents the item 'Cut'.
 	 */
@@ -95,6 +97,11 @@ public class NodeContextualMenu extends ContextualMenu {
 	 * Object that represents the item 'removeFinding'.
 	 */
 	private JMenuItem removeFindingMenuItem = null;
+
+	/**
+	 * Object that represents the item 'Test'.
+	 */
+	private JMenuItem testMenuItem = null;
 
 	private JMenuItem logMenuItem;
 

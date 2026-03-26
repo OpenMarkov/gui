@@ -70,7 +70,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     /**
      * MainPanel from which this object depends.
      */
-    private MainPanel mainPanel;
+    private final MainPanel mainPanel;
     /**
      * networkPanel that is currently selected.
      */
@@ -137,6 +137,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
         setOptionEnabled(ActionCommands.OBJECT_REMOVAL, false);
         setOptionEnabled(ActionCommands.NODE_PROPERTIES, false);
+        setOptionEnabled(ActionCommands.TEST, false);
         setOptionEnabled(ActionCommands.EDIT_POTENTIAL, false);
         setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
         setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
@@ -574,6 +575,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         boolean canShowOptimalPolicy = false;
         boolean canTemporalEvolution = false;
         boolean canCreateNextSliceNode = false;
+        boolean canTest = false;
         NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
         NetworkPanel currentNetworkPanel = getCurrentNetworkPanel();
         if (currentNetworkPanel != null) {
@@ -627,6 +629,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                 }
                 if (selectedNodes.size() == 1) {
                     canNodeProperties = true;
+                    canTest = true;
                     VisualNode visualNode = selectedNodes.get(0);
                     if (visualNode.getNode().getVariable().isTemporal()) {
                         canCreateNextSliceNode = !visualNode.getNode().getProbNet()
@@ -711,6 +714,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         setOptionEnabled(ActionCommands.CLIPBOARD_COPY, canCopy);
         setOptionEnabled(ActionCommands.OBJECT_REMOVAL, canRemove);
         setOptionEnabled(ActionCommands.NODE_PROPERTIES, canNodeProperties);
+        setOptionEnabled(ActionCommands.TEST, canTest);
         setOptionEnabled(ActionCommands.EDIT_POTENTIAL, canNodeTable);
         setOptionEnabled(ActionCommands.LINK_PROPERTIES, canLinkProperties);
         setOptionEnabled(ActionCommands.NODE_EXPANSION, canExpand);
