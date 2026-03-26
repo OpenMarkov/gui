@@ -159,8 +159,6 @@ public enum ActionCommands {
     /** Action invoked when the user wants to obtain a Graphviz/dot structure of a sub-tree. */
     TREE_SAVE_GRAPHVIZ("SaveGraphViz"),
     /* End tree contextual menu actions */
-    /** Action invoked for testing */
-    TEST("Test"),
     /** Action invoked when the user wants to expand a node. */
     NODE_EXPANSION("NodeExpansion"),
     /** Action invoked when the user wants to contract a node. */

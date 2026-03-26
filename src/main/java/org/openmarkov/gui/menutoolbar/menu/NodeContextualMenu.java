@@ -98,11 +98,6 @@ public class NodeContextualMenu extends ContextualMenu {
 	 */
 	private JMenuItem removeFindingMenuItem = null;
 
-	/**
-	 * Object that represents the item 'Test'.
-	 */
-	private JMenuItem testMenuItem = null;
-
 	private JMenuItem logMenuItem;
 
 	/**

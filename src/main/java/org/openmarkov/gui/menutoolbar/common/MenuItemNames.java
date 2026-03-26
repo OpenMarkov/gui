@@ -189,11 +189,6 @@ public class MenuItemNames {
 	public static final String EDIT_NODERELATION_MENUITEM = EDIT_MENU + ".NodePotential";
 
 	/**
-	 * String database token for the item 'Edit - Test'.
-	 */
-	public static final String EDIT_NODETEST_MENUITEM = EDIT_MENU + ".NodeTest";
-
-	/**
 	 * String database token for the item 'Edit - Link additionalProperties'.
 	 */
 	public static final String EDIT_LINKPROPERTIES_MENUITEM = EDIT_MENU + ".LinkProperties";

@@ -32,7 +32,6 @@
         </Undo>
         <InstanceCreation value="Creación de instancia"/>
         <ViewPolicy value="Ver política ..."/>
-        <NodeTest value="Testing ..."/>
         <LinkRestrictionEnable value="Añadir restricciones">
             <Mnemonic value="a"/>
         </LinkRestrictionEnable>

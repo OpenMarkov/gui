@@ -355,7 +355,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                  ActionCommands.SENSITIVITY_ANALYSIS, ActionCommands.SENSITIVITY_ANALYSIS_PROBABILISTIC,
                  ActionCommands.SENSITIVITY_ANALYSIS_DETERMINISTIC, ActionCommands.COST_EFFECTIVENESS_SENSITIVITY,
                  ActionCommands.LEARNING,
-                 ActionCommands.VIEW_TOOLBARS, ActionCommands.LINK_PROPERTIES, ActionCommands.TEST,
+                 ActionCommands.VIEW_TOOLBARS, ActionCommands.LINK_PROPERTIES,
                  ActionCommands.TREE_SAVE_GRAPHVIZ, ActionCommands.TREE_SHOW_CEP, ActionCommands.TREE_OPEN_NETWORK,
                  ActionCommands.TREE_EXPAND_ALL, ActionCommands.TREE_EXPAND_NEXT,
                  ActionCommands.LINK_CREATION, ActionCommands.UTILITY_CREATION,
@@ -686,8 +686,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
         fileName = requestNetworkFileToSave((fileName != null) ? fileName
                 : networkPanel.getProbNet().getName());
         */
-        ArrayList<Object> fileNameAndFormat = requestNetworkFileAndFormatToSave(
-                (fileName != null) ? fileName : networkPanel.getProbNet().getName());
+        String suggestedName = (fileName != null) ? fileName : new File(networkPanel.getProbNet().getName()).getName();
+        ArrayList<Object> fileNameAndFormat = requestNetworkFileAndFormatToSave(suggestedName);
         fileName = (String) fileNameAndFormat.get(0);
         if (fileName == null) {
             return false;
@@ -742,8 +742,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
         NetworkOMFileChooser fileChooser = new NetworkOMFileChooser(false, false);
         String title = stringDatabase.getString("SaveNetwork.Title");
         fileChooser.setDialogTitle(title);
-        fileChooser.setSelectedFile(new File(suggestedFileName));
         fileChooser.setCurrentDirectory(LocalPreferences.LATEST_SAVED_DIRECTORY.get());
+        fileChooser.setSelectedFile(new File(fileChooser.getCurrentDirectory(), new File(suggestedFileName).getName()));
         ArrayList<Object> fileNameAndFormat = new ArrayList<Object>();
         String filename = null;
         FileFilterAll<?> fileFormat = null;
@@ -810,6 +810,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     public NetworkPanel createNewFrame(ProbNet probNet) {
         NetworkPanel networkPanel = new NetworkPanel(probNet, mainPanel);
+        probNet.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
         mainPanel.addCloseableTab(probNet.getName(), networkPanel);
         mainPanel.getNetworksTabPanel().setSelectedComponent(networkPanel);
         networkPanel.setContextualMenuFactory(mainPanel.getContextualMenuFactory());

@@ -284,11 +284,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
      */
     private ActionListener listener;
     
-    /**
-     * Menu option for testing
-     */
-    private JMenuItem editTestMenuItem = null;
-    
     // private HashMap<JComponent, String> dynamicActions = new
     // HashMap<JComponent, String>();
     
@@ -694,9 +689,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
             editMenu.addSeparator();
             editMenu.add(getEditNodePropertiesMenuItem());
             editMenu.add(getEditRelationMenuItem());
-            // Menu option for test
-            editMenu.add(getTestMenuItem());
-            
             /*
              * This item must be added to the menu when is active the
              * possibility of editing the additionalProperties of a link in
@@ -952,22 +944,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         }
         
         return editRelationMenuItem;
-        
-    }
-    
-    /**
-     * This method initializes editTestMenuItem.
-     *
-     * @return a new item 'Edit - Node Relation Table'.
-     */
-    private JMenuItem getTestMenuItem() {
-        
-        if (editTestMenuItem == null) {
-            editTestMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_NODETEST_MENUITEM, ActionCommands.TEST.getCommandName());
-            editTestMenuItem.addActionListener(listener);
-        }
-        
-        return editTestMenuItem;
         
     }
     
