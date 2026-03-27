@@ -12,6 +12,7 @@ import org.openmarkov.gui.configuration.LocalPreferences;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.HierarchyEvent;
 import java.io.File;
 
 public abstract class CommonDBOMFileChooser extends OMFileChooser {
@@ -23,6 +24,30 @@ public abstract class CommonDBOMFileChooser extends OMFileChooser {
         setAcceptAllFileFilterUsed(acceptAllFiles);
         setCurrentDirectory(LocalPreferences.LATEST_OPEN_DATASET_DIRECTORY.get());
         rescanCurrentDirectory();
+        addHierarchyListener(e -> {
+            if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && isShowing()) {
+                SwingUtilities.invokeLater(this::focusDirectoryList);
+            }
+        });
+    }
+
+    private void focusDirectoryList() {
+        JList<?> directoryList = findFirstJList(this);
+        if (directoryList != null) {
+            directoryList.requestFocusInWindow();
+        }
+    }
+
+    private static JList<?> findFirstJList(Container container) {
+        for (Component comp : container.getComponents()) {
+            if (comp instanceof JList<?> list) {
+                return list;
+            } else if (comp instanceof Container subContainer) {
+                JList<?> found = findFirstJList(subContainer);
+                if (found != null) return found;
+            }
+        }
+        return null;
     }
     
     @Override

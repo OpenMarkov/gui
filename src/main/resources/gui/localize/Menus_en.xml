@@ -164,6 +164,7 @@
             <Mnemonic value="l"/>
         </GoToLastEvidenceCase>
         <ChangeFinding value="Change Finding"/>
+        <Mnemonic value="i"/>
     </Inference>
     <View value="View">
         <ChangeScale value="Change app scale"/>
@@ -260,6 +261,7 @@
             <NotAvailable value="The functionality you are trying to run is not available"/>
             <Error value="An error ocurred while trying to process command:"/>
         </Plugin>
+        <Mnemonic value="t"/>
     </Tools>
     <File value="File">
         <SaveAs value="Save as...">

@@ -164,6 +164,7 @@
             <Mnemonic value="l"/>
         </GoToLastEvidenceCase>
         <ChangeFinding value="Modificar hallazgo"/>
+        <Mnemonic value="i"/>
     </Inference>
     <View value="Ver">
         <Toolbars value="Barras de herramientas">
@@ -257,6 +258,7 @@
             <NotAvailable value="La funcionalidad que está intentando ejecutar no está disponible"/>
             <Error value="Error tratando de procesar el comando: "/>
         </Plugin>
+        <Mnemonic value="t"/>
     </Tools>
     <File value="Archivo">
         <SaveAs value="Guardar como...">
