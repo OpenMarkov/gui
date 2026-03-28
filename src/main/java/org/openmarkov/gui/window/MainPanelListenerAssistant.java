@@ -23,6 +23,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
+import org.openmarkov.core.model.network.potential.StrategicTablePotential;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.gui.action.RemoveLinkRestrictionEdit;
@@ -1487,7 +1488,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             DANEvaluation eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet, networkPanel.getEditorPanel()
                                                                                                       .getEvidenceManager()
                                                                                                       .getPreResolutionEvidence());
-            StrategyTree strategyTree = eval.getUtility().strategyTrees[0];
+            StrategyTree strategyTree = ((StrategicTablePotential) eval.getUtility()).strategyTrees[0];
             
             //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(GUIUtils.getOwner(mainPanel), probNet, inferenceAlgorithm);
             strategyTree.pruneAndGraftNode("OD");
