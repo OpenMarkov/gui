@@ -18,6 +18,7 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.*;
+import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialUtils;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
 import org.openmarkov.gui.commonComponents.JComboBoxFunctionRender;
@@ -659,7 +660,7 @@ public class PotentialEditDialog extends OkCancelDialog
      * {@link org.openmarkov.gui.graphic.VisualDecisionNode#setPolicy(Potential)}
      */
     protected void setPotentialInNode(@NotNull Potential newPotential) {
-        this.node.setPotentialConsistently(newPotential);
+        LinkRestrictionPotentialOperations.setPotentialWithRestrictions(this.node, newPotential);
     }
     
     /**
@@ -680,7 +681,7 @@ public class PotentialEditDialog extends OkCancelDialog
      */
     protected void removePotentialOnClose(@Nullable Potential originalPotential) {
         if (originalPotential != null) {
-            this.node.setPotentialConsistently(originalPotential);
+            LinkRestrictionPotentialOperations.setPotentialWithRestrictions(this.node, originalPotential);
         }
     }
     

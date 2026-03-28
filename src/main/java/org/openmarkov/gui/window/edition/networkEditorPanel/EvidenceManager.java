@@ -537,8 +537,8 @@ public class EvidenceManager {
             ProbNet newNet = this.networkEditorPanel.getVisualNetwork().getProbNet().copy();
             newNet = TaskUtilities.extendPreResolutionEvidence(newNet, this.preResolutionEvidence);
             Node node = newNet.getNode(utility);
-            this.minUtilityRange.put(utility, node.getApproximateMinimumUtilityFunction());
-            this.maxUtilityRange.put(utility, node.getApproximateMaximumUtilityFunction());
+            this.minUtilityRange.put(utility, UtilityFunctionComputer.approximateMinUtility(node));
+            this.maxUtilityRange.put(utility, UtilityFunctionComputer.approximateMaxUtility(node));
         }
     }
     
