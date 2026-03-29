@@ -655,9 +655,7 @@ public class PotentialEditDialog extends OkCancelDialog
     }
     
     /**
-     * Specifies how the potential is set on the {@link Node}. A chance node has potentials, so it is set with
-     * {@link Node#setPotentialConsistently(Potential)}. But a decision node has policies, so it is set through
-     * {@link org.openmarkov.gui.graphic.VisualDecisionNode#setPolicy(Potential)}
+     * Specifies how the potential is set on the {@link Node}.
      */
     protected void setPotentialInNode(@NotNull Potential newPotential) {
         LinkRestrictionPotentialOperations.setPotentialWithRestrictions(this.node, newPotential);
@@ -674,8 +672,8 @@ public class PotentialEditDialog extends OkCancelDialog
     
     /**
      * Specifies how to remove the potential currently used while the dialog is in use. A chance node has potentials, so
-     * it is removed by setting the original potential with {@link Node#setPotentialConsistently(Potential)}. But a
-     * decision node has policies, which might be none if no policy was set, so in the case it had one, it uses
+     * it is removed by setting the original potential. But a decision node has policies, which might be none if no
+     * policy was set, so in the case it had one, it uses
      * {@link org.openmarkov.gui.graphic.VisualDecisionNode#setPolicy(Potential)} to set it again, and if it had none,
      * it uses {@link org.openmarkov.gui.graphic.VisualDecisionNode#removePolicy()}.
      */
