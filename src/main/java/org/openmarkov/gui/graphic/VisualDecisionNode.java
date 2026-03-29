@@ -257,11 +257,19 @@ public class VisualDecisionNode extends VisualNode{
 
 	}
 
+    /**
+     * Imposes a policy on this decision node.
+     *
+     * @param policy the potential representing the imposed policy
+     */
     public void setPolicy(Potential policy){
         node.setPotential(policy);
         setHasPolicy(true);
     }
 
+    /**
+     * Removes the imposed policy from this decision node, clearing all potentials.
+     */
     public void removePolicy(){
         node.clearPotentials();
         setHasPolicy(false);

@@ -13,6 +13,10 @@ import org.openmarkov.gui.configuration.LocalPreferences;
 
 import java.util.HashMap;
 
+/**
+ * File chooser dialog pre-configured with filters for all registered
+ * {@link CaseDatabaseReader} formats, used when opening a case database.
+ */
 @SuppressWarnings("serial") public class DBReaderOMFileChooser extends CommonDBOMFileChooser {
     
     public DBReaderOMFileChooser(boolean acceptAllFiles) {

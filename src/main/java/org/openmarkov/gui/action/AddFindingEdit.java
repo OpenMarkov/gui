@@ -7,13 +7,25 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.gui.graphic.VisualNode;
 
 
+/**
+ * Edit that adds a finding (evidence) to a node, supporting undo and redo.
+ * If a previous finding exists, undo restores it instead of simply removing.
+ */
 public class AddFindingEdit extends PNEdit {
-    
+
     VisualNode visualNode;
     EvidenceCase evidenceCase;
     Finding finding;
     Finding previousFinding;
-    
+
+    /**
+     * Creates a new edit that adds a finding to the specified node.
+     *
+     * @param visualNode      the visual node receiving the finding
+     * @param evidenceCase    the evidence case to which the finding is added
+     * @param previousFinding the previous finding for this variable, or {@code null} if none
+     * @param finding         the new finding to add
+     */
     public AddFindingEdit(VisualNode visualNode, EvidenceCase evidenceCase, Finding previousFinding, Finding finding) {
         super(visualNode.getNode().getProbNet());
         this.visualNode = visualNode;

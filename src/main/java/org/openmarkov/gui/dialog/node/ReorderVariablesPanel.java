@@ -28,6 +28,10 @@ import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Table panel listing the parent variables of a node, allowing the user
+ * to reorder them using up/down buttons.
+ */
 @SuppressWarnings("serial") public class ReorderVariablesPanel extends KeyTablePanel
         implements TableModelListener, PNEditListener {
 	private Node node;

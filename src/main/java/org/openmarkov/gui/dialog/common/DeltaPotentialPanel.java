@@ -23,6 +23,10 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
+/**
+ * Panel for editing a {@link DeltaPotential}, allowing the user to select the
+ * fixed state (for discrete variables) or enter a numeric value (for continuous variables).
+ */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = DeltaPotential.class)
 public class DeltaPotentialPanel
         extends PotentialPanel {

@@ -19,9 +19,9 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 /**
- * Created by Jorge on 29/07/2015.
- * cmyago 20/10/2022 changed call to ScopeSelectorPanel to remove Type (global/one decision) panel; 09/11/2022 implemented "Temporal evolution by criterion"
- *
+ * Dialog that configures a temporal evolution analysis, letting the user choose
+ * the number of time slices, scope, and pre-resolution evidence before running
+ * the computation.
  */
 public class TemporalEvolutionDialog extends OkCancelDialog {
     

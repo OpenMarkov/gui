@@ -15,6 +15,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 
+/**
+ * Dialog for selecting a labeled branch to use as a reference in a TreeADD potential.
+ */
 @SuppressWarnings("serial") public class SetReferenceDialog extends OkCancelDialog {
 
 	private TreeADDBranch branch;

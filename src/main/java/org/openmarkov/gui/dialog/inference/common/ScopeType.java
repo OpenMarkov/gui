@@ -8,7 +8,8 @@
 package org.openmarkov.gui.dialog.inference.common;
 
 /**
- * Created by Jorge on 01/07/2015.
+ * Enumeration of analysis scope types for inference: global analysis or
+ * analysis conditioned on a specific decision.
  */
 public enum ScopeType {
 	// Analysis type options

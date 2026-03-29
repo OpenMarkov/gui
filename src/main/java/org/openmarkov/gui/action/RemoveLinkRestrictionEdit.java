@@ -10,6 +10,10 @@ import org.openmarkov.gui.graphic.VisualNetwork;
 import javax.swing.undo.CannotUndoException;
 import java.util.List;
 
+/**
+ * Edit that removes link restriction potentials from selected links,
+ * supporting undo and redo.
+ */
 public class RemoveLinkRestrictionEdit extends PNEdit {
 
     private VisualNetwork visualNetwork;
@@ -18,7 +22,9 @@ public class RemoveLinkRestrictionEdit extends PNEdit {
     Potential lastRestriction;
 
     /**
-     * @param probNet {@code ProbNet}
+     * Creates a new edit that will remove the restriction potential from the first selected link.
+     *
+     * @param visualNetwork the visual network containing the selected links
      */
     public RemoveLinkRestrictionEdit(VisualNetwork visualNetwork) {
         super(visualNetwork.getNetwork());

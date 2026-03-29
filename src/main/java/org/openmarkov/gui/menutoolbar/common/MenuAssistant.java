@@ -42,16 +42,31 @@ public class MenuAssistant {
 		}
 	}
 
+	/**
+	 * Varargs constructor that registers the given menus.
+	 *
+	 * @param newBasicMenus menus and toolbars to manage
+	 */
 	public MenuAssistant(MenuToolBarBasic... newBasicMenus) {
 
 		basicMenus = new ArrayList<>();
         Collections.addAll(basicMenus, newBasicMenus);
 	}
 
+	/**
+	 * Adds a menu or toolbar to the managed list.
+	 *
+	 * @param newBasicMenu the menu or toolbar to add
+	 */
 	public void addMenu(MenuToolBarBasic newBasicMenu) {
 		basicMenus.add(newBasicMenu);
 	}
 
+	/**
+	 * Removes a menu or toolbar from the managed list.
+	 *
+	 * @param newBasicMenu the menu or toolbar to remove
+	 */
 	public void removeMenu(MenuToolBarBasic newBasicMenu) {
 		basicMenus.remove(newBasicMenu);
 	}

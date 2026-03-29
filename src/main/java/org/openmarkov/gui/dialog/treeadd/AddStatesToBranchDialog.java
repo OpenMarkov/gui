@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * @author myebra
+ * Dialog for selecting states to add to a TreeADD branch.
  */
 @SuppressWarnings("serial") public class AddStatesToBranchDialog extends OkCancelDialog {
 

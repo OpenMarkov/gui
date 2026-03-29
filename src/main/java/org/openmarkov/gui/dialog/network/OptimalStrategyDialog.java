@@ -22,6 +22,10 @@ import org.openmarkov.gui.dialog.treeadd.TreeADDEditorPanel;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Dialog that displays the optimal strategy (decision policies) computed by
+ * inference, rendered as a tree using the TreeADD editor.
+ */
 @SuppressWarnings("serial") public class OptimalStrategyDialog extends OkCancelDialog {
 
 	public OptimalStrategyDialog(Window owner, ProbNet probNet, OptimalIntervention optimalIntervention)

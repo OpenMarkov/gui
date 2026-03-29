@@ -13,7 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * @author maryebra
+ * Dialog for selecting a standard domain (predefined set of states) to apply
+ * to a discrete variable.
  */
 @SuppressWarnings("serial") public class StandardDomainsDialog extends OkCancelDialog {
 

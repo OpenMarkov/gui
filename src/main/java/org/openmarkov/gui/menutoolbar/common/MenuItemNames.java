@@ -7,6 +7,11 @@
 
 package org.openmarkov.gui.menutoolbar.common;
 
+/**
+ * Constants for string database tokens used to identify menu items.
+ * Each constant maps to a key in the localization XML files, used to resolve
+ * menu labels, mnemonics, and tooltips.
+ */
 public class MenuItemNames {
 	/**
 	 * String database token for the menu 'File'.

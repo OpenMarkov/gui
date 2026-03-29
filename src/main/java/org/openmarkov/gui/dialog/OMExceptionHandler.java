@@ -6,6 +6,12 @@ import org.openmarkov.java.exceptionUtils.ThrowableUtils;
 
 import java.util.ArrayList;
 
+/**
+ * Global uncaught-exception handler for OpenMarkov. Classifies throwables into
+ * {@link ExceptionType#UNREACHABLE}, {@link ExceptionType#EXPECTED}, or
+ * {@link ExceptionType#RUNTIME} and routes them to the appropriate dialog
+ * ({@link UnexpectedThrowableDialog} or {@link ExceptionDialog}).
+ */
 public class OMExceptionHandler implements Thread.UncaughtExceptionHandler {
     
     @Override public void uncaughtException(Thread thread, Throwable throwable) {

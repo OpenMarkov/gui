@@ -18,6 +18,10 @@ import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dialog for editing the numerical parameters (e.g. shape, scale) of a probability
+ * density function used in model uncertainty specifications.
+ */
 @SuppressWarnings("serial") public class DistributionParameterDialog extends OkCancelDialog {
     
     private double[] parameters;

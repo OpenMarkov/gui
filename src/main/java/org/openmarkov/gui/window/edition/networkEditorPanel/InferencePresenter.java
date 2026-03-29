@@ -14,6 +14,10 @@ import org.openmarkov.gui.graphic.VisualState;
 
 import java.util.Map;
 
+/**
+ * Responsible for painting inference results (probability bars, expected utilities)
+ * on the visual nodes after evidence propagation.
+ */
 class InferencePresenter {
     private final NetworkEditorPanel networkEditorPanel;
     

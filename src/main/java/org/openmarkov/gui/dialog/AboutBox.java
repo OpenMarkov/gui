@@ -80,7 +80,7 @@ public class AboutBox extends JDialog implements ActionListener {
     /**
      * constructor on a parent JFrame
      *
-     * @param parent
+     * @param parent the parent frame for centering the dialog, or {@code null}
      */
     public AboutBox(JFrame parent) {
         super(parent, "", true);

@@ -11,6 +11,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation marking an {@link EditionMode} subclass as a discoverable edition
+ * state plugin, specifying its display name, toolbar icon, and optional cursor.
+ */
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface EditionState {
     String name();
     

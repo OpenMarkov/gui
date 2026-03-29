@@ -17,13 +17,13 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
 
-@ImplementationRequirements(hasToExtendOneOfTheseClasses = ToolBarBasic.class, requiresOneOfTheseConstructors = @RequiredConstructor(ActionListener.class))
 /**
- * This class is used to set the common features of all toolbars of the
- * application.
+ * Abstract base class for all application toolbars. Provides common initialization,
+ * button creation utilities, and implements {@link MenuToolBarBasic} for state management.
  *
  * @author jmendoza
  */
+@ImplementationRequirements(hasToExtendOneOfTheseClasses = ToolBarBasic.class, requiresOneOfTheseConstructors = @RequiredConstructor(ActionListener.class))
 public abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic {
     
     /**

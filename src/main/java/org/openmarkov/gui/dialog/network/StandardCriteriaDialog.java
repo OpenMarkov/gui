@@ -23,6 +23,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dialog for selecting a standard set of decision criteria (e.g. cost-effectiveness)
+ * to apply to the network.
+ */
 public class StandardCriteriaDialog extends OkCancelDialog {
     
     /**

@@ -57,6 +57,11 @@ public final class GUIUtils {
         return ((e.getModifiersEx() & 0xF) == 0);
     }
     
+    /**
+     * Centers a dialog relative to its parent and makes it visible.
+     *
+     * @param dialog the dialog to display
+     */
     public static void showDialog(@NotNull JDialog dialog) {
         var parent = dialog.getParent();
         if (parent != null) {

@@ -14,11 +14,30 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
+/**
+ * Utility class for creating {@link JTable} instances from data collections
+ * and for exporting JTable contents to Apache POI Excel sheets.
+ */
 public class JTableGeneration {
+
+    /**
+     * Creates a JTable from a header collection and row collections.
+     *
+     * @param header the column headers
+     * @param rows   the row data, one collection per row
+     * @return a new JTable populated with the given data
+     */
     public static JTable dataToJTable(Collection<?> header, Collection<?>... rows) {
         return JTableGeneration.dataToJTable(header.stream(), Arrays.stream(rows).map(Collection::stream));
     }
     
+    /**
+     * Creates a JTable from streams of header elements and row streams.
+     *
+     * @param header the column header elements
+     * @param rows   a stream of row streams, each inner stream providing the cells for one row
+     * @return a new JTable populated with the given data
+     */
     public static JTable dataToJTable(Stream<?> header, Stream<? extends Stream<?>> rows) {
         DefaultTableModel model = new AutoResizedTableModel(header.toArray());
         var table = new JTable(model);
@@ -34,6 +53,12 @@ public class JTableGeneration {
         return table;
     }
     
+    /**
+     * Exports the contents of a JTable (including headers) to an Apache POI {@link Sheet}.
+     *
+     * @param table the JTable to export
+     * @param sheet the target Excel sheet
+     */
     public static void saveTableToSheet(JTable table, Sheet sheet) {
         int nextRowToCreateIndex = 0;
         var header = table.getTableHeader().getColumnModel().getColumns().asIterator();

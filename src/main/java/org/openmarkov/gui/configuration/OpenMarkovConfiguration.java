@@ -21,8 +21,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Singleton that manages the serialized configuration for OpenMarkov.
+ * Reads configuration from disk on startup and provides per-component property access.
+ */
 @SuppressWarnings("serial")
-
 public class OpenMarkovConfiguration implements DefaultConfiguration, Serializable {
 
 	// Attributes
@@ -57,10 +60,11 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	}
 
 	/**
-     * @param pluginName   {@code String}
-     * @param propertyName {@code String}
-     * @return Property value or {@code null} if property does not exists.
-     * {@code Object}
+	 * Returns a property value for the given plugin and property name.
+	 *
+	 * @param pluginName   the name of the plugin/component
+	 * @param propertyName the name of the property
+	 * @return the property value, or {@code null} if the plugin or property does not exist
 	 */
 	public static Object getProperty(String pluginName, String propertyName) {
 		Configuration componentConfiguration = getUniqueInstance().getComponentConfiguration(pluginName);
@@ -91,9 +95,10 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	}
 
 	/**
-     * @param name {@code String}.
-     * @return {@code ComponentConfiguration} if it exists, otherwise
-     * {@code null}.
+	 * Returns the configuration for the component with the given name.
+	 *
+	 * @param name the component name
+	 * @return the configuration, or {@code null} if no component with that name exists
 	 */
 	public Configuration getComponentConfiguration(String name) {
 		return configurations.get(name);

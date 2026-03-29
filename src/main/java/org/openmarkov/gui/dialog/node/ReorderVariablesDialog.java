@@ -16,6 +16,10 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Dialog that allows the user to reorder the parent variables of a node,
+ * changing the variable ordering in its potential.
+ */
 @SuppressWarnings("serial") public class ReorderVariablesDialog extends OkCancelDialog {
 	private JPanel variablesCombinationPanel;
 	private Node node;

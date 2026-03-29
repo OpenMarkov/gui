@@ -14,6 +14,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation that marks a {@link PotentialPanel} subclass as a plugin for editing one or more
+ * {@link Potential} types. Discovered at runtime by {@link PotentialPanelManager}.
+ */
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface PotentialPanelPlugin {
     Class<? extends Potential>[] potentialClasses();
 }

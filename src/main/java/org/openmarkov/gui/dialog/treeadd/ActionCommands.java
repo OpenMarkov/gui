@@ -6,6 +6,9 @@
  */
 package org.openmarkov.gui.dialog.treeadd;
 
+/**
+ * String constants for the action commands used in the TreeADD editor context menus.
+ */
 public class ActionCommands {
 	/**
 	 * Action invoked when the user wants to edit a potential.

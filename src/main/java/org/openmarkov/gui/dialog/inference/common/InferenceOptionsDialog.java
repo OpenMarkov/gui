@@ -39,6 +39,10 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Locale;
 
+/**
+ * Dialog for configuring inference options, including multi-criteria weights,
+ * discount rates, temporal settings, and analysis scope.
+ */
 public class InferenceOptionsDialog extends OkCancelDialog {
     
     /**

@@ -18,21 +18,23 @@ import org.openmarkov.gui.graphic.VisualNode;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("serial")
 /**
- * Compound edit that removes selected nodes and links
- * @author Iñigo
+ * Compound edit that removes all currently selected nodes and links from the network.
+ * Links connected to removed nodes are also removed.
  *
- */ public class RemoveSelectedEdit extends CompoundPNEdit {
+ * @author Iñigo
+ */
+@SuppressWarnings("serial")
+public class RemoveSelectedEdit extends CompoundPNEdit {
 	private List<VisualNode> nodesToRemove;
 	private List<VisualLink> linksToRemove;
     
     // TODO OOPN end
 
 	/**
-	 * Constructor for RemoveSelectedEdit.
+	 * Creates a new edit that will remove all selected nodes and links.
 	 *
-	 * @param visualNetwork
+	 * @param visualNetwork the visual network from which selected elements will be removed
 	 */
 	public RemoveSelectedEdit(VisualNetwork visualNetwork) {
 		super(visualNetwork.getNetwork());
@@ -54,12 +56,11 @@ import java.util.List;
 	}
 
 	/**
-	 * This method makes an union operation on two lists of links.
+	 * Produces the union of two lists of visual links without duplicates.
 	 *
-	 * @param list1 first list.
-	 * @param list2 second list.
-	 * @return a list that is the result of an union operation of two lists of
-	 * links.
+	 * @param list1 first list
+	 * @param list2 second list
+	 * @return a new list containing all unique links from both lists
 	 */
     private static List<VisualLink> union(List<VisualLink> list1, List<VisualLink> list2) {
         List<VisualLink> result = new ArrayList<VisualLink>(list1);

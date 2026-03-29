@@ -13,6 +13,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Panel presenting radio buttons for selecting one of the predefined
+ * standard decision criteria configurations.
+ */
 public class StandardCriteriaPanel extends JPanel {
 	/**
 	 * Default serial version

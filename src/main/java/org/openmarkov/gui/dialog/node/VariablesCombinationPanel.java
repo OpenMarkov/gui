@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * Panel that displays radio buttons for selecting which combination of parent
+ * variables to condition on when viewing a potential.
+ */
 @SuppressWarnings("serial") public class VariablesCombinationPanel extends JPanel {
 
 	private ButtonGroup buttonGroup = new ButtonGroup();

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author myebra
+ * Panel with checkboxes for selecting which variables to remove from a TreeADD branch.
  */
 @SuppressWarnings("serial") public class RemoveVariablesCheckBoxPanel extends JPanel {
 

@@ -19,6 +19,10 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
+/**
+ * Panel for editing a {@link BinomialPotential}, allowing the user to specify
+ * the number of trials (N) and the success probability (theta).
+ */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = BinomialPotential.class)
 public class BinomialPotentialPanel
         extends PotentialPanel {

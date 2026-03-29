@@ -19,11 +19,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * Discovers and manages toolbar plugins annotated with {@link Toolbar}.
+ * Toolbars are instantiated reflectively and added to the main panel's toolbar area.
+ */
 public class ToolbarManager {
     private MainPanel mainPanel;
     private Map<String, Class<? extends ToolBarBasic>> toolbarClasses;
     private List<String> activeToolbars = new ArrayList<>();
-    
+
+    /**
+     * Creates a new toolbar manager and discovers all available toolbar plugins.
+     *
+     * @param mainPanel the main panel to which toolbars will be added
+     */
     public ToolbarManager(MainPanel mainPanel) {
         toolbarClasses = new HashMap<>();
         this.mainPanel = mainPanel;
@@ -33,6 +42,12 @@ public class ToolbarManager {
         });
     }
     
+    /**
+     * Activates a toolbar by name. If the toolbar is not already active,
+     * it is instantiated and added to the main panel.
+     *
+     * @param name the name of the toolbar plugin to activate
+     */
     public void addToolbar(String name) {
         ToolBarBasic instance = null;
         if (!activeToolbars.contains(name)) {

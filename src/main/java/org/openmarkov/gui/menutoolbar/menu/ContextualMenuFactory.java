@@ -113,11 +113,11 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	}
 
 	/**
-	 * This method initialises nodeContextualMenu.
+	 * Creates and registers a node contextual menu for the specified visual node.
 	 *
-	 * @param panel
-	 * @param selectedNode
-	 * @return the node contextual menu.
+	 * @param selectedNode the visual node that was right-clicked
+	 * @param panel        the editor panel containing the node
+	 * @return the node contextual menu
 	 */
 	private ContextualMenu getNodeContextualMenu(VisualNode selectedNode, NetworkEditorPanel panel) {
 
@@ -129,11 +129,11 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	}
 
 	/**
-	 * This method initialises linkContextualMenu.
+	 * Creates and registers a link contextual menu for the specified visual link.
 	 *
-	 * @param panel
-	 * @param selectedLink
-	 * @return the link contextual menu.
+	 * @param selectedLink the visual link that was right-clicked
+	 * @param panel        the editor panel containing the link
+	 * @return the link contextual menu
 	 */
 	private ContextualMenu getLinkContextualMenu(VisualLink selectedLink, NetworkEditorPanel panel) {
 
@@ -145,10 +145,10 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	}
     
     /**
-	 * This method initialises treeContextualMenu. A menu for the nodes of a decision tree.
-	 * @param enableShowCEP 
+	 * Creates and registers a contextual menu for decision tree nodes.
 	 *
-	 * @return the tree contextual menu.
+	 * @param enableShowCEP whether the "Show CEP" option should be enabled
+	 * @return the tree contextual menu
 	 */
 	private ContextualMenu getStandardTreeContextualMenu(boolean enableShowCEP) {
 
@@ -224,12 +224,10 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	}
 
 	/**
-	 * Returns the correspondent tree pop-up menu. As for now there is only one possible menu
-	 * so discrimination by inputs (as is @link #getContextualMenu(VisualElement, NetworkEditorPanel))
-	 * is not necessary.
-	 * @param enableShowCEP 
+	 * Returns the tree contextual menu. Currently only one tree menu type is supported.
 	 *
-	 * @return the correspondent tree pop-up menu
+	 * @param enableShowCEP whether the "Show CEP" option should be enabled
+	 * @return the tree contextual menu
 	 */
 	public ContextualMenu getTreeContextualMenu(boolean enableShowCEP) {
 		return getStandardTreeContextualMenu(enableShowCEP);

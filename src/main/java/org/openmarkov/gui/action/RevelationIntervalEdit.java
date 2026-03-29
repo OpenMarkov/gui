@@ -53,15 +53,15 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 	 */
 	private PartitionedInterval lastInterval;
 
-	/*****
+	/**
 	 * Creates a RevelationConditionEdit which carries out the modifications of
 	 * a revealing condition interval.
 	 *
-	 * @param link
-	 * @param stateAction
-	 * @param row
-	 * @param newValue
-	 * @param isLower
+	 * @param link        the link containing the revelation conditions
+	 * @param stateAction the action to perform (ADD, REMOVE, MODIFY_VALUE_INTERVAL, MODIFY_DELIMITER_INTERVAL)
+	 * @param row         the index of the selected interval row
+	 * @param newValue    the new limit value (used for value modifications)
+	 * @param isLower     whether the modification targets the lower limit ({@code true}) or upper limit ({@code false})
 	 */
 
 	public RevelationIntervalEdit(Link<Node> link, StateAction stateAction, int row, double newValue, boolean isLower) {

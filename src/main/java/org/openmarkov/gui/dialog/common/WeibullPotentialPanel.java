@@ -34,6 +34,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Panel for editing a {@link WeibullHazardPotential}, including shape/scale parameters,
+ * time variable selection, covariates, and an optional uncertainty matrix.
+ */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = WeibullHazardPotential.class)
 public class WeibullPotentialPanel extends PotentialPanel implements ItemListener, ActionListener {
     

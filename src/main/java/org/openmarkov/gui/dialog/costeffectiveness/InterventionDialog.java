@@ -19,6 +19,9 @@ import org.openmarkov.gui.dialog.treeadd.TreeADDEditorPanel;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Dialog that displays a cost-effectiveness intervention strategy as a TreeADD.
+ */
 @SuppressWarnings("serial") public class InterventionDialog extends OkCancelDialog {
 
 	public InterventionDialog(Window owner, ProbNet probNet, StrategyTree strategyTree) {

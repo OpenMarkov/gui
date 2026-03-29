@@ -132,6 +132,11 @@ public class OkCancelDialog extends BottomPanelButtonDialog {
         selectedOption = ChosenOption.Cancel;
     }
     
+    /**
+     * Returns the option chosen by the user when the dialog was closed.
+     *
+     * @return {@link ChosenOption#Ok} or {@link ChosenOption#Cancel}
+     */
     public ChosenOption getSelectedOption() {
         return this.selectedOption;
     }

@@ -15,6 +15,9 @@ import javax.swing.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Utility class for exporting temporal evolution results to an Excel (.xlsx) file.
+ */
 public class TemporalEvolutionReport {
 
 	// Methods

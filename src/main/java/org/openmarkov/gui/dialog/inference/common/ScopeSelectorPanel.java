@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Jorge on 01/07/2015.
- * cmyago disabled "type" options (global/one decision) for Temporal Evolution 20/10/2022.
+ * Panel for selecting the scope and pre-resolution evidence for inference,
+ * including global vs. per-decision analysis options.
  */
 public class ScopeSelectorPanel extends JPanel {
     

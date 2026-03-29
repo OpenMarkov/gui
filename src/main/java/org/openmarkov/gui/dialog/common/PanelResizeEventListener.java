@@ -7,7 +7,15 @@
 
 package org.openmarkov.gui.dialog.common;
 
+/**
+ * Listener notified when a {@link PotentialPanel} changes its preferred size.
+ */
 public interface PanelResizeEventListener {
 
+	/**
+	 * Called when the panel has been resized.
+	 *
+	 * @param event the resize event containing the new dimensions
+	 */
 	void panelSizeChanged(PanelResizeEvent event);
 }

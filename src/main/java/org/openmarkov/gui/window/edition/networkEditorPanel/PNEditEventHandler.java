@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Listens for {@link PNEdit} undo/redo events and updates the visual network
+ * accordingly (e.g. refreshing pre-resolution finding markers and repainting).
+ */
 class PNEditEventHandler implements PNEditListener {
     private final NetworkEditorPanel networkEditorPanel;
     

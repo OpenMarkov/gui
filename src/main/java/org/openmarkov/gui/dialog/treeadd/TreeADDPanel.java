@@ -17,6 +17,9 @@ import org.openmarkov.gui.dialog.common.PotentialPanelPlugin;
 
 import java.awt.*;
 
+/**
+ * Panel for editing a {@link TreeADDPotential} using a visual tree editor.
+ */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = TreeADDPotential.class)
 public class TreeADDPanel extends PotentialPanel {
     /**

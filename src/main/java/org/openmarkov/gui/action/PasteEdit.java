@@ -23,11 +23,22 @@ import org.openmarkov.gui.window.edition.SelectedContent;
 import java.util.*;
 import java.util.stream.IntStream;
 
+/**
+ * Compound edit that pastes previously copied nodes and links into a network.
+ * Duplicate variable names are resolved by appending apostrophes. Potentials
+ * are copied and variable references are updated to point to the new nodes.
+ */
 @SuppressWarnings("serial") public class PasteEdit extends PNEdit {
     private SelectedContent clipboardContent;
     private SelectedContent pastedContent;
     ArrayList<PNEdit> edits;
-    
+
+    /**
+     * Creates a new paste edit.
+     *
+     * @param probNet          the target network to paste into
+     * @param clipboardContent the nodes and links to paste
+     */
     public PasteEdit(ProbNet probNet, SelectedContent clipboardContent) {
         super(probNet);
         this.clipboardContent = clipboardContent;

@@ -17,7 +17,8 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 /**
- * @author maryebra
+ * Panel presenting radio buttons for selecting one of the predefined standard
+ * domains (e.g. absent/present, no/yes, negative/positive).
  */
 @SuppressWarnings("serial") public class StandardDomainPanel extends JPanel implements ItemListener {
 	/**

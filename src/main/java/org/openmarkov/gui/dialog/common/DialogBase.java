@@ -84,6 +84,12 @@ public class DialogBase extends JDialog {
         return this.jButtonCancel;
     }
     
+    /**
+     * Creates a standard Cancel button pre-configured with icon, localized text,
+     * mnemonic, and an action listener that disposes the enclosing window.
+     *
+     * @return a ready-to-use Cancel button
+     */
     public static @NotNull JButton generateGenericCancelButton() {
         var jButtonCancel = new JButton();
         jButtonCancel.setName("jButtonCancel");

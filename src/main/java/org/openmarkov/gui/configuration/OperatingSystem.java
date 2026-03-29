@@ -11,6 +11,10 @@ import org.openmarkov.java.enumUtils.EnumUtils;
 
 import java.util.Properties;
 
+/**
+ * Enum representing the current operating system, detected at class-load time.
+ * Provides a {@link #CURRENT_OS} constant for runtime OS checks.
+ */
 public enum OperatingSystem {
     WINDOWS,
     LINUX,

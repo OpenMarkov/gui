@@ -47,12 +47,9 @@ import java.util.prefs.Preferences;
     }
     
     /**
-     * Removes child at index @param childIndex Used to hide a child in
-     * displayed tree
+     * Removes child at the given index, used to hide a child in the displayed tree.
      *
-     * @param childIndex
-     *
-     * @author myebra
+     * @param childIndex the zero-based index of the child to remove
      */
     public void removeChildAt(int childIndex) {
         if (childIndex < childrenNames.length) {

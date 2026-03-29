@@ -14,12 +14,18 @@ import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+/**
+ * Factory for creating small node-type icons (chance, decision, utility) used
+ * in the TreeADD cell renderer to visually distinguish variable types.
+ */
 abstract public class IconFactory {
 
 	/**
-	 * @param text
-	 * @param f
-	 * @return The chance icon
+	 * Creates a chance-node icon (rounded rectangle) with the given text.
+	 *
+	 * @param text the label to render inside the icon
+	 * @param f    the font used for the label text
+	 * @return the chance icon
 	 */
 	public static Icon createChanceIcon(String text, Font f) {
 		FontRenderContext fr = new FontRenderContext(null, false, false);
@@ -53,9 +59,11 @@ abstract public class IconFactory {
 	}
 
 	/**
-	 * @param text
-	 * @param f
-	 * @return The decision icon
+	 * Creates a decision-node icon (rectangle) with the given text.
+	 *
+	 * @param text the label to render inside the icon
+	 * @param f    the font used for the label text
+	 * @return the decision icon
 	 */
 	public static Icon createDecisionIcon(String text, Font f) {
 		FontRenderContext fr = new FontRenderContext(null, false, false);
@@ -81,9 +89,11 @@ abstract public class IconFactory {
 	}
 
 	/**
-	 * @param text
-	 * @param f
-	 * @return The utility icon
+	 * Creates a utility-node icon (hexagon) with the given text.
+	 *
+	 * @param text the label to render inside the icon
+	 * @param f    the font used for the label text
+	 * @return the utility icon
 	 */
 	public static Icon createUtilityIcon(String text, Font f) {
 		FontRenderContext fr = new FontRenderContext(null, false, false);

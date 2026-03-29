@@ -357,16 +357,14 @@ public class VisualArrow extends VisualElement {
 		}
 	}
 
-	/****
-	 * Paints the double stripe of the link
+	/**
+	 * Paints a double stripe (two perpendicular marks) at the midpoint of the link,
+	 * indicating a total link restriction.
 	 *
-	 * @param g
-	 *            graphic object where to paint the link.
-	 * @param start
-	 *            starting point
-	 * @param end
-	 *            end point
-	 * @param stroke
+	 * @param g      graphics object where to paint the link
+	 * @param start  starting point of the link
+	 * @param end    ending point of the link
+	 * @param stroke the stroke to use for painting
 	 */
     public static void paintDoubleStripe(Graphics2D g, Point2D.Double start, Point2D.Double end, Stroke stroke) {
         
@@ -385,16 +383,14 @@ public class VisualArrow extends VisualElement {
 
 	}
 
-	/****
-	 * Paints a single stripe of the link
+	/**
+	 * Paints a single stripe (one perpendicular mark) at the midpoint of the link,
+	 * indicating a partial link restriction.
 	 *
-	 * @param g
-	 *            graphic object where to paint the link.
-	 * @param start
-	 *            starting point
-	 * @param end
-	 *            end point
-	 * @param stroke
+	 * @param g      graphics object where to paint the link
+	 * @param start  starting point of the link
+	 * @param end    ending point of the link
+	 * @param stroke the stroke to use for painting
 	 */
     public static void paintSingleStripe(Graphics2D g, Point2D.Double start, Point2D.Double end, Stroke stroke) {
         
@@ -410,16 +406,13 @@ public class VisualArrow extends VisualElement {
 
 	}
 
-	/*****
-	 * Returns the line to be painted for the stripe
+	/**
+	 * Returns the shape of a perpendicular stripe at the midpoint of a link segment.
 	 *
-	 * @param start
-	 *            starting point
-	 * @param end
-	 *            end point
-	 * @param distance
-	 *            separation from the middle point
-	 * @return Shape to paint
+	 * @param start    starting point of the link
+	 * @param end      ending point of the link
+	 * @param distance lateral offset from the midpoint (0 for centered, positive/negative for offset)
+	 * @return the stripe shape to paint
 	 */
     public static Shape getStripeShape(Point2D.Double start, Point2D.Double end, double distance) {
 		double mx = (end.getX() - start.getX()) / 2;

@@ -13,7 +13,8 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import javax.swing.*;
 
 /**
- * @author myebra
+ * Panel for editing the lower and upper bounds (thresholds) of a continuous
+ * interval in a TreeADD branch.
  */
 @SuppressWarnings("serial") public class ChangeIntervalPanel extends JPanel {
 	final String[] intervalLowerSymbols = new String[] { "[", "(" };

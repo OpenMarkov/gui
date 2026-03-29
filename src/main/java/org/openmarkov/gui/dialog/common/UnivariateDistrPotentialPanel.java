@@ -31,7 +31,8 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 /**
- *
+ * Panel for editing a {@link UnivariateDistrPotential}, displaying the distribution
+ * parameters in a table similar to the standard CPT editor.
  */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = UnivariateDistrPotential.class)
 public class UnivariateDistrPotentialPanel extends TablePotentialPanel {

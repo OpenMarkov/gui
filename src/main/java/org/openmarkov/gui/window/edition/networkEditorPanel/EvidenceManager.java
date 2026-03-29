@@ -24,6 +24,10 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Manages pre-resolution and post-resolution evidence cases for inference,
+ * including adding/removing findings and triggering evidence propagation.
+ */
 public class EvidenceManager {
     
     private final NetworkEditorPanel networkEditorPanel;

@@ -26,6 +26,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+/**
+ * Table panel for editing the decision criteria (e.g. cost, effectiveness) of a network,
+ * with support for standard criteria selection and per-criterion unit editing.
+ */
 @SuppressWarnings("serial") public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
     
     JButton standardCriteriaButton;

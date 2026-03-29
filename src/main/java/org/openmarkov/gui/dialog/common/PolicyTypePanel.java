@@ -23,6 +23,10 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+/**
+ * Panel containing radio buttons for selecting the policy type of a decision node:
+ * Optimal, Probabilistic, or Deterministic.
+ */
 @SuppressWarnings("serial") public class PolicyTypePanel extends JPanel implements ItemListener {
     /**
      * String database
@@ -57,8 +61,8 @@ import java.awt.event.ItemListener;
     /**
      * Constructor for PolicyTypePanel.
      *
-     * @param parent
-     * @param node
+     * @param parent the parent dialog containing this panel
+     * @param node   the decision node whose policy type is being edited
      */
     // TODO Reduce two only two types: optimal and imposed
     public PolicyTypePanel(PotentialEditDialog parent, Node node) {
@@ -194,9 +198,9 @@ import java.awt.event.ItemListener;
     }
     
     /**
-     * Shows and activated the options related to decision policy
+     * Shows and activates the options related to decision policy.
      *
-     * @param show
+     * @param show if {@code true}, enables the decision policy radio buttons; otherwise disables them
      */
     public void setEnabledDecisionOptions(boolean show) {
         getJRadioButtonOptimalType().removeItemListener(this);

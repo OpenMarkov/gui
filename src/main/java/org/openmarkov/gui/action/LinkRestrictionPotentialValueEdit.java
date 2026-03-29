@@ -13,6 +13,11 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+/**
+ * Edit that modifies a single cell value in a link restriction potential table,
+ * supporting undo and redo. When the restriction becomes trivial (all ones), the
+ * restriction potential is removed.
+ */
 @SuppressWarnings("serial") public class LinkRestrictionPotentialValueEdit extends PNEdit {
 
 	/**
@@ -56,6 +61,14 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 	 */
 	private TablePotential tablePotential;
 
+	/**
+	 * Creates a new edit for modifying a link restriction value.
+	 *
+	 * @param link     the link whose restriction potential is being edited
+	 * @param newValue the new compatibility value (0 or 1)
+	 * @param row      the row in the restriction table
+	 * @param col      the column in the restriction table
+	 */
 	public LinkRestrictionPotentialValueEdit(Link<Node> link, Integer newValue, int row, int col) {
         super(link.getFrom().getProbNet());
 		this.link = link;
@@ -100,6 +113,11 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 		checkRestrictionPotential(lastTable);
 	}
 
+	/**
+	 * Returns the link restriction table potential.
+	 *
+	 * @return the table potential of the link restriction
+	 */
 	public TablePotential getPotential() {
 		return tablePotential;
 	}
@@ -123,10 +141,21 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 		return col;
 	}
 
+	/**
+	 * Returns the new value that was set in this edit.
+	 *
+	 * @return the new compatibility value
+	 */
 	public Integer getNewValue() {
 		return newValue;
 	}
 
+	/**
+	 * Checks if the restriction potential still contains any restriction (a zero value).
+	 * If not, removes the restriction potential from the link entirely.
+	 *
+	 * @param table the values array of the restriction potential
+	 */
 	public void checkRestrictionPotential(double[] table) {
 		boolean hasRestriction = false;
 

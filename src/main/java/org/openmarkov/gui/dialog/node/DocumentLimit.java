@@ -38,8 +38,8 @@ public class DocumentLimit extends PlainDocument {
 	/**
 	 * Constructor
 	 *
-	 * @param editor
-	 * @param maxCharNumber
+	 * @param editor        the text field to constrain
+	 * @param maxCharNumber maximum allowed number of characters
 	 */
 	public DocumentLimit(JTextField editor, int maxCharNumber) {
 

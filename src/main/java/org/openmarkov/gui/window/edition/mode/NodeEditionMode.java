@@ -20,6 +20,10 @@ import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Abstract base edition mode for creating nodes. Subclasses specify the
+ * {@link org.openmarkov.core.model.network.NodeType} (chance, decision, utility).
+ */
 public abstract class NodeEditionMode extends EditionMode {
     private NodeType nodeType;
     

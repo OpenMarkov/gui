@@ -21,6 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+/**
+ * Manages the available edition modes (selection, node creation, link creation)
+ * discovered via the {@link EditionState} plugin annotation, and instantiates
+ * the appropriate {@link EditionMode} subclass on demand.
+ */
 public class EditionModeManager {
     private Map<String, EditionState> editionStates;
     private Map<String, Class<? extends EditionMode>> editionModeClasses;

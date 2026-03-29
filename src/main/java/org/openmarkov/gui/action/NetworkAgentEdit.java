@@ -31,6 +31,14 @@ import java.util.stream.Collectors;
 	private Object[][] dataTable;
 
 
+	/**
+	 * Creates a new edit that modifies the agents of a network.
+	 *
+	 * @param probnet     the network whose agents will be modified
+	 * @param stateAction the action to perform (ADD, REMOVE, etc.)
+	 * @param agentName   the name of the agent being modified
+	 * @param dataTable   the data table with agent properties
+	 */
 	public NetworkAgentEdit(ProbNet probnet, StateAction stateAction, String agentName,
 							Object[][] dataTable) {
 		super(probnet);

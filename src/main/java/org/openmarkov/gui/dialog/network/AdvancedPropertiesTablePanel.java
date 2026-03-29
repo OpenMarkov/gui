@@ -22,6 +22,10 @@ import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Table panel for editing the advanced (user-defined) properties of network
+ * elements such as agents and decision criteria.
+ */
 @SuppressWarnings("serial") public class AdvancedPropertiesTablePanel extends KeyTablePanel
         implements TableModelListener, PNEditListener {
     

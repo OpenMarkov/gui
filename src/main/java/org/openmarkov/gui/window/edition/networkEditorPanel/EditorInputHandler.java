@@ -20,6 +20,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Optional;
 
+/**
+ * Handles all mouse and keyboard input for the {@link NetworkEditorPanel},
+ * delegating to the current {@link EditionMode} and managing contextual menus.
+ */
 class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListener {
     
     private final NetworkEditorPanel networkEditorPanel;

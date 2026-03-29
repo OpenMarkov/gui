@@ -208,6 +208,11 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
         // TODO Auto-generated method stub
     }
     
+    /**
+     * Registers a listener to be notified when the comment text changes.
+     *
+     * @param newCommentListener the listener to add
+     */
     public void addCommentListener(CommentListener newCommentListener) {
         commentListeners.add(newCommentListener);
     }

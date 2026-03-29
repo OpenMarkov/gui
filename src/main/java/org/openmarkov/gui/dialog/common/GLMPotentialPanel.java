@@ -23,6 +23,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Panel for editing a Generalized Linear Model ({@link GLMPotential}), including
+ * the regression covariates/coefficients and an optional uncertainty (covariance) matrix.
+ */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = GLMPotential.class) public class GLMPotentialPanel
         extends PotentialPanel implements ActionListener {
     

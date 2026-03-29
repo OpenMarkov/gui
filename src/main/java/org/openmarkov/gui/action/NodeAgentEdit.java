@@ -11,6 +11,8 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.StringWithProperties;
 
 /**
+ * Edit that changes the agent assigned to a node's variable, supporting undo.
+ *
  * @author myebra
  */
 @SuppressWarnings("serial") public class NodeAgentEdit extends PNEdit {
@@ -19,6 +21,12 @@ import org.openmarkov.core.model.network.StringWithProperties;
 	private StringWithProperties newAgent;
 	private Node node;
 
+	/**
+	 * Creates a new edit that sets the agent of the given node.
+	 *
+	 * @param node  the node whose agent will be changed
+	 * @param agent the new agent to assign
+	 */
 	public NodeAgentEdit(Node node, StringWithProperties agent) {
 		super(node.getProbNet());
 		this.node = node;

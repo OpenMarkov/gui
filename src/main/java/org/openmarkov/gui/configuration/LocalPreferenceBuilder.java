@@ -7,6 +7,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * Builder for constructing {@link LocalPreference} instances with custom serialization,
+ * deserialization, and instance verification strategies.
+ *
+ * @param <T> the type of the preference value
+ */
 public final class LocalPreferenceBuilder<T> {
     
     private final @NotNull String preferencePath;
@@ -46,6 +52,11 @@ public final class LocalPreferenceBuilder<T> {
         return this;
     }
     
+    /**
+     * Builds the {@link LocalPreference} instance with the configured strategies.
+     *
+     * @return a new {@code LocalPreference} instance
+     */
     public LocalPreference<T> build() {
         Function<String, T> fromString = this.deserializeWith != null ? this.deserializeWith : JavaSerializationUtils::javaDeserialize;
         Function<T, String> intoString = this.serializeWith != null ? this.serializeWith : JavaSerializationUtils::javaSerialize;

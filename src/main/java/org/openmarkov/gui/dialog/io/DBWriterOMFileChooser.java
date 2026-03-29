@@ -13,6 +13,10 @@ import org.openmarkov.gui.configuration.LocalPreferences;
 import java.io.File;
 import java.util.HashMap;
 
+/**
+ * File chooser dialog pre-configured with filters for all registered
+ * {@link CaseDatabaseWriter} formats, used when saving a case database.
+ */
 @SuppressWarnings("serial") public class DBWriterOMFileChooser extends CommonDBOMFileChooser {
  
 	public DBWriterOMFileChooser(boolean acceptAllFiles) {

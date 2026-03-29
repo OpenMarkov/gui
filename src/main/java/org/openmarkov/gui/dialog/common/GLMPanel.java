@@ -22,6 +22,10 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Table panel for editing covariates and their coefficients in a
+ * {@link GLMPotential} regression model.
+ */
 @SuppressWarnings("serial") public class GLMPanel extends KeyTablePanel {
     
     private List<ActionListener> listeners;

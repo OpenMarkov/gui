@@ -22,6 +22,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
+/**
+ * Singleton manager that discovers {@link PotentialPanel} plugins at startup and creates
+ * the appropriate panel instance for editing a given node's potential.
+ */
 public class PotentialPanelManager {
     /**
      * Singleton instance
@@ -62,10 +66,21 @@ public class PotentialPanelManager {
         
     }
     
+    /**
+     * Returns the panel class registered for the given potential type.
+     *
+     * @param potentialClass the potential class to look up
+     * @return the corresponding panel class, or {@code null} if none is registered
+     */
     public Class<? extends PotentialPanel> getPotentialPanelClassOf(Class<? extends Potential> potentialClass) {
         return this.potentialPanelClassesByClass.get(potentialClass);
     }
     
+    /**
+     * Returns the singleton instance.
+     *
+     * @return the {@link PotentialPanelManager} singleton
+     */
     public static PotentialPanelManager getInstance() {
         return INSTANCE;
     }

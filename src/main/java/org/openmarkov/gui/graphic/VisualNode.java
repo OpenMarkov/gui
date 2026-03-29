@@ -358,9 +358,9 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
     }
     
     /**
-     * Updates the visual node according to the changes in the node
+     * Updates the visual node according to the changes in the node.
      *
-     * @param numCases
+     * @param numCases the number of evidence cases in memory
      */
     public void update(int numCases) {
         innerBox.update(numCases);

@@ -12,6 +12,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Converts a {@link DecisionTreeNode} hierarchy into a Graphviz DOT format file.
+ * Nodes are colored by type (chance, decision, utility) and edges carry
+ * branch state names and probabilities.
+ */
 public class TreeNodeToDot {
     
     private static final String C_decisionColor = "#cfe3fd";
@@ -130,6 +135,13 @@ public class TreeNodeToDot {
         setNumDecimals(4);
     }
     
+    /**
+     * Generates a DOT graph from the given decision tree root node and prompts the user
+     * to save it as a {@code .gv} file.
+     *
+     * @param treeNode the root node of the decision tree
+     * @throws IOException if writing the file fails
+     */
     public void paintDTNode(DecisionTreeNode treeNode) throws IOException {
         List<DecisionTreeNode> children = new ArrayList<>();
         children.add(treeNode);
@@ -187,10 +199,20 @@ public class TreeNodeToDot {
         
     }
     
+    /**
+     * Sets the number of decimal places used when formatting numeric values.
+     *
+     * @param numDecimals the maximum number of fraction digits
+     */
     public void setNumDecimals(int numDecimals) {
         df.setMaximumFractionDigits(numDecimals);
     }
     
+    /**
+     * Sets the DPI (dots per inch) for the generated graph.
+     *
+     * @param graphDPI the resolution in DPI
+     */
     public void setGraphDPI(int graphDPI) {
         this.graphDPI = graphDPI;
     }

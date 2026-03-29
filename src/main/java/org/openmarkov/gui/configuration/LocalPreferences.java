@@ -10,6 +10,12 @@ import java.io.File;
 import java.util.*;
 import java.util.List;
 
+/**
+ * Central registry of all persistent user preferences for OpenMarkov.
+ * Each preference is a typed {@link LocalPreference} backed by the Java Preferences API
+ * and serialized via GSON. Preferences cover directories, UI settings, colors, formats,
+ * and language.
+ */
 public final class LocalPreferences {
     
     public static final LocalPreference<Boolean> HOVER_LOGGER_ENABLED = LocalPreference
@@ -147,10 +153,18 @@ public final class LocalPreferences {
         ALL_PREFERENCES = Collections.unmodifiableList(allPreferences);
     }
     
+    /**
+     * Returns an unmodifiable list of all declared preferences.
+     *
+     * @return all local preferences
+     */
     public static List<LocalPreference<?>> getAllPreferences() {
         return ALL_PREFERENCES;
     }
-    
+
+    /**
+     * Eagerly initializes all preferences, loading their values from persistent storage.
+     */
     public static void initializeAllPreferences() {
         ALL_PREFERENCES.forEach(LocalPreference::initialize);
     }

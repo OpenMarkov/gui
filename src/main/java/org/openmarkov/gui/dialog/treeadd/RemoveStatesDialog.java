@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * @author myebra
+ * Dialog for selecting states to dissociate (remove) from a TreeADD branch.
  */
 @SuppressWarnings("serial") public class RemoveStatesDialog extends OkCancelDialog {
 

@@ -25,6 +25,11 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 
+/**
+ * Dialog that lets the user compose and validate an arithmetic expression involving
+ * network variables and standard math functions. The expression is validated live and
+ * the background colour changes to indicate validity.
+ */
 @SuppressWarnings("serial") public class ArithmeticExpressionDialog extends OkCancelDialog
         implements DocumentListener {
     
@@ -169,6 +174,11 @@ import java.util.List;
         expression = null;
     }
     
+    /**
+     * Returns the expression entered by the user, or {@code null} if cancelled.
+     *
+     * @return the arithmetic expression string
+     */
     public String getExpression() {
         return expression;
     }

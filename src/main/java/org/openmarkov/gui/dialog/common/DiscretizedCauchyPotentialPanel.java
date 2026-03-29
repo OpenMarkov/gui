@@ -19,6 +19,10 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Panel for editing a {@link DiscretizedCauchyPotential}, providing buttons to
+ * edit the median and scale sub-potentials in separate dialogs.
+ */
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialClasses = DiscretizedCauchyPotential.class)
 public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements PNEditListener {

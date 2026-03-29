@@ -12,9 +12,9 @@ import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import java.awt.*;
 
 /**
- * @author myebra
+ * Dialog for specifying the split point when dividing a continuous interval
+ * in a TreeADD branch.
  */
-
 @SuppressWarnings("serial") public class SplitIntervalDialog extends OkCancelDialog {
 
 	private SplitIntervalPanel splitIntervalPanel;

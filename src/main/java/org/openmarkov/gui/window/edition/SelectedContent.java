@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author ibermejo
- * @version 1.1 jrico: Turned into record.
+ * Immutable snapshot of the currently selected nodes and links in the editor,
+ * used for clipboard operations (copy/paste) and selection-based actions.
  */
 public record SelectedContent(List<Node> nodes, List<Link<Node>> links) implements ClassLocalizable {
  

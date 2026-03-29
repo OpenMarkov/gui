@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author myebra
+ * Panel with checkboxes for selecting which variables to add to a TreeADD subtree.
  */
 @SuppressWarnings("serial") public class AddVariablesCheckBoxPanel extends JPanel {
 

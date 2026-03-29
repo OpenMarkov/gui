@@ -18,6 +18,9 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 
 /**
+ * Contextual menu displayed when the user right-clicks on a node that has
+ * parameter uncertainty. Provides options for editing the uncertainty distribution.
+ *
  * @author mpalacios
  */
 public class UncertaintyContextualMenu extends ContextualMenu {

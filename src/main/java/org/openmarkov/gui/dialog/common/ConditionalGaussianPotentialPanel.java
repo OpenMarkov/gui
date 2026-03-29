@@ -27,6 +27,10 @@ import javax.swing.*;
 import java.awt.*;
 
 
+/**
+ * Panel for editing a {@link ConditionalGaussianPotential}, providing buttons to
+ * edit the mean and variance sub-potentials in separate dialogs.
+ */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = ConditionalGaussianPotential.class)
 public class ConditionalGaussianPotentialPanel
         extends PotentialPanel implements PNEditListener {

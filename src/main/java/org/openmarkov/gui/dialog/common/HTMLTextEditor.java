@@ -148,6 +148,11 @@ public class HTMLTextEditor extends JDialog {
 
 
 
+	/**
+	 * Returns whether the user confirmed the dialog by pressing OK.
+	 *
+	 * @return {@code true} if the OK button was pressed
+	 */
 	public final boolean getOkButtonStatus() {
 		return okButton;
 	}

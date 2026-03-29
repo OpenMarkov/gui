@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author myebra
+ * Panel with checkboxes for selecting which states to remove (dissociate) from a TreeADD branch.
  */
 @SuppressWarnings("serial") public class RemoveStatesCheckBoxPanel extends JPanel {
 	private List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();

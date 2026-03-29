@@ -7,6 +7,10 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 
 
+/**
+ * Dialog displayed when an unexpected or unreachable exception occurs, showing the full
+ * stack trace and offering a button to copy it to the clipboard for developer reporting.
+ */
 public final class UnexpectedThrowableDialog extends BottomPanelButtonDialog {
     
     private static final float TITLE_FONT_SIZE = 14.0f;

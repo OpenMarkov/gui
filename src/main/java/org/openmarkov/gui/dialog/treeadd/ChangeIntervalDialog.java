@@ -13,7 +13,8 @@ import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import java.awt.*;
 
 /**
- * @author myebra
+ * Dialog for modifying the threshold values of a continuous interval
+ * in a TreeADD branch.
  */
 @SuppressWarnings("serial") public class ChangeIntervalDialog extends OkCancelDialog {
 	private ChangeIntervalPanel changeIntervalPanel;

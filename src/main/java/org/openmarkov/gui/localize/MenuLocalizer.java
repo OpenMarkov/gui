@@ -22,14 +22,32 @@ public class MenuLocalizer {
 	 */
 	private final static String MNEMONIC_SUFFIX = ".Mnemonic";
     
+    /**
+     * Returns the localized string for the given resource identifier.
+     *
+     * @param stringId the resource identifier
+     * @return the localized string
+     */
     public static String getString(String stringId) {
         return StringDatabase.getUniqueInstance().getString(stringId);
 	}
 
+	/**
+	 * Returns the localized label for a menu item.
+	 *
+	 * @param stringId the resource identifier for the menu item
+	 * @return the localized label text
+	 */
 	public static String getLabel(String stringId) {
         return StringDatabase.getUniqueInstance().getString(stringId);
 	}
 
+	/**
+	 * Returns the mnemonic character string for a menu item.
+	 *
+	 * @param stringId the resource identifier for the menu item (without the mnemonic suffix)
+	 * @return the mnemonic string (typically a single character)
+	 */
 	public static String getMnemonic(String stringId) {
         return StringDatabase.getUniqueInstance().getString(stringId + MNEMONIC_SUFFIX);
 	}

@@ -22,6 +22,10 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Custom {@link TreeCellRenderer} that renders TreeADD nodes with appropriate
+ * variable icons (chance, decision, utility) and branch labels.
+ */
 public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
     private static final long serialVersionUID = 1L;
     /**

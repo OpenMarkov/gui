@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Abstract base class for panels that edit a node's {@link org.openmarkov.core.model.network.potential.Potential}.
+ * Concrete implementations are discovered at runtime via the {@link PotentialPanelPlugin} annotation
+ * and instantiated by {@link PotentialPanelManager}.
+ */
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor(Node.class))
 @SuppressWarnings("serial") public abstract class PotentialPanel extends JPanel {
 	private List<PanelResizeEventListener> listeners;
@@ -31,9 +36,9 @@ import java.util.List;
 	}
 
 	/**
-	 * Fill the panel with the data from the node
+	 * Fill the panel with the data from the node.
 	 *
-	 * @param node
+	 * @param node the node whose potential data should be displayed
 	 */
     public abstract void setData(Node node) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException;
 
@@ -45,6 +50,9 @@ import java.util.List;
 		return true;
 	}
 
+	/**
+	 * Releases resources or performs cleanup when the panel is closed.
+	 */
 	public abstract void close();
 
 	/**
@@ -61,14 +69,28 @@ import java.util.List;
 		this.readOnly = readOnly;
 	}
 
+	/**
+	 * Registers a listener to be notified when this panel is resized.
+	 *
+	 * @param listener the listener to register
+	 */
 	public void suscribePanelResizeEventListener(PanelResizeEventListener listener) {
 		listeners.add(listener);
 	}
 
+	/**
+	 * Removes a previously registered resize listener.
+	 *
+	 * @param listener the listener to remove
+	 * @return {@code true} if the listener was found and removed
+	 */
 	public boolean unsuscribePanelResizeEventListener(PanelResizeEventListener listener) {
 		return listeners.remove(listener);
 	}
 
+	/**
+	 * Notifies all registered listeners that this panel has been resized.
+	 */
 	public void notifyPanelResizeEventListeners() {
 		PanelResizeEvent event = new PanelResizeEvent(this, getSize());
 		for (PanelResizeEventListener listener : listeners) {

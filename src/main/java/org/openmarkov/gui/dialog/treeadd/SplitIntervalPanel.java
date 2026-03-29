@@ -10,6 +10,10 @@ package org.openmarkov.gui.dialog.treeadd;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Panel for entering the split point value and boundary direction when
+ * dividing a continuous interval in a TreeADD branch.
+ */
 @SuppressWarnings("serial") public class SplitIntervalPanel extends JPanel {
 
 	private JTextField limitField;

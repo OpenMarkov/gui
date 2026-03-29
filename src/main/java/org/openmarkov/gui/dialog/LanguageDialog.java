@@ -57,7 +57,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
     /**
 	 * constructor on a parent JFrame
 	 *
-	 * @param parent
+	 * @param parent the parent frame for centering the dialog, or {@code null}
 	 */
 	private LanguageDialog(JFrame parent) {
 		super(parent, "", true);

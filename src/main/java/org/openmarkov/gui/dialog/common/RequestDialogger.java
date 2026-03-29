@@ -26,6 +26,13 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Fluent builder for modal request dialogs that collect user input, validate it,
+ * transform it into a typed result, and dispatch callbacks on OK or Cancel.
+ *
+ * @param <Content> the Swing container type used as the dialog's content area
+ * @param <T>       the type of the result produced from user input
+ */
 public final class RequestDialogger<Content extends Container, T> {
     
     private final Window owner;
@@ -55,6 +62,14 @@ public final class RequestDialogger<Content extends Container, T> {
         this.onCancel = onCancel;
     }
     
+    /**
+     * Creates a new request dialog wrapping the given content panel.
+     *
+     * @param owner   the parent window for modality
+     * @param content the container holding the input components
+     * @param <Content> the content container type
+     * @return a configured {@link RequestDialogger} ready for further customisation
+     */
     public static <Content extends Container> RequestDialogger<Content, Boolean> of(Window owner, Content content) {
         RequestDialogger<Content, Boolean> requestDialogger = new RequestDialogger<>(owner, new JDialog(owner), content, new Tokenized<>(new TypeToken<Boolean>() {
         }, (ignored) -> true), new ArrayList<>(), new JButton(), new JButton(), new ArrayList<Tokenized<?, Consumer<Boolean>>>(), new ArrayList<Runnable>());
@@ -149,6 +164,11 @@ public final class RequestDialogger<Content extends Container, T> {
     }
     
     
+    /**
+     * Runs all registered validations and shows error messages if any fail.
+     *
+     * @return {@code true} if all validations passed
+     */
     public boolean validateOverUI() {
         var validator = new Validator();
         for (var validation : this.validations) {
@@ -167,11 +187,25 @@ public final class RequestDialogger<Content extends Container, T> {
         return true;
     }
     
+    /**
+     * Adds a validation step that is executed before the OK action.
+     *
+     * @param validator a consumer that inspects the content and records errors via {@link Validator}
+     * @return this builder for chaining
+     */
     public RequestDialogger<Content, T> validating(BiConsumer<Content, Validator> validator) {
         this.validations.add(validator);
         return this;
     }
     
+    /**
+     * Transforms the dialog's result type by applying a mapping function to the content.
+     *
+     * @param token    type token for the new result type
+     * @param function function that extracts the result from the content container
+     * @param <T>      the new result type
+     * @return a new builder with the mapped result type
+     */
     public <T> RequestDialogger<Content, T> mapInputAs(TypeToken<T> token, Function<Content, @NotNull T> function) {
         ArrayList<Tokenized<?, Consumer<T>>> newOnOK = this.onOk.stream()
                                                                 .filter(oldOnOk -> oldOnOk.t.isAssignableFrom(token))
@@ -182,26 +216,50 @@ public final class RequestDialogger<Content extends Container, T> {
         return mapped;
     }
     
+    /**
+     * Registers a callback to run when the user confirms the dialog.
+     *
+     * @param onOk callback that receives the processed input value
+     * @return this builder for chaining
+     */
     public RequestDialogger<Content, T> onOk(Consumer<T> onOk) {
         this.onOk.add(new Tokenized<>(this.processInput.t, onOk));
         return this;
     }
     
+    /**
+     * Registers a callback to run when the user cancels the dialog.
+     *
+     * @param onCancel action to execute on cancellation
+     * @return this builder for chaining
+     */
     public RequestDialogger<Content, T> onCancel(Runnable onCancel) {
         this.onCancel.add(onCancel);
         return this;
     }
     
+    /**
+     * Sets the title of the dialog window.
+     *
+     * @param title the dialog title
+     * @return this builder for chaining
+     */
     public RequestDialogger<Content, T> withTitle(String title) {
         this.dialog.setTitle(title);
         return this;
     }
     
+    /**
+     * Shows the dialog modally, blocking until the user confirms or cancels.
+     */
     public void request() {
         this.dialog.setVisible(true);
     }
     
     
+    /**
+     * Accumulates validation errors that are displayed to the user when the OK button is pressed.
+     */
     public static class Validator {
         private final ArrayList<String> errors = new ArrayList<>();
         

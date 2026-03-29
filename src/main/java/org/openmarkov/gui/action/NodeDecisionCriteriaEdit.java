@@ -10,12 +10,21 @@ import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.Node;
 
+/**
+ * Edit that changes the decision criterion assigned to a node's variable, supporting undo.
+ */
 @SuppressWarnings("serial") public class NodeDecisionCriteriaEdit extends PNEdit {
 
 	private Criterion currentDecisionCriteria;
 	private Criterion newDecisionCriteria;
 	private Node node;
 
+	/**
+	 * Creates a new edit that sets the decision criterion of the given node.
+	 *
+	 * @param node              the node whose decision criterion will be changed
+	 * @param decisionCriteria  the new decision criterion to assign
+	 */
 	public NodeDecisionCriteriaEdit(Node node, Criterion decisionCriteria) {
 		super(node.getProbNet());
 		this.node = node;

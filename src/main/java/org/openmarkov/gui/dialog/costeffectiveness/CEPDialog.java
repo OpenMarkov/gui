@@ -26,7 +26,8 @@ import java.awt.event.MouseEvent;
 import java.util.EventObject;
 
 /**
- * @author Manuel Arias
+ * Dialog that presents cost-effectiveness analysis results in a table, including
+ * cost, effectiveness, ICER, and the net monetary benefit for each intervention.
  */
 @SuppressWarnings("serial") public class CEPDialog extends JDialog {
     

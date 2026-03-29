@@ -11,14 +11,23 @@ import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
 
+/**
+ * Edit that replaces the partitioned interval of a node's variable, supporting undo.
+ */
 @SuppressWarnings("serial") public class PartitionedIntervalEdit extends PNEdit {
 
 	private PartitionedInterval currentPartitionedInterval;
 
 	private PartitionedInterval newPartitionedInterval;
-    
+
     private Node node;
 
+	/**
+	 * Creates a new edit that sets the partitioned interval of the given node.
+	 *
+	 * @param node                     the node whose partitioned interval will be changed
+	 * @param newPartitionedInterval   the new partitioned interval to assign
+	 */
 	public PartitionedIntervalEdit(Node node, PartitionedInterval newPartitionedInterval) {
 		super(node.getProbNet());
 		this.node = node;

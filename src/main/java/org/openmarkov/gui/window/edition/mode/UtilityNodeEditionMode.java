@@ -10,6 +10,9 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
+/**
+ * Edition mode that creates a new utility node on mouse click.
+ */
 @EditionState(name = "Edit.Mode.Utility", icon = "utility.gif", cursor = "utility.gif") public class UtilityNodeEditionMode
 		extends NodeEditionMode {
 

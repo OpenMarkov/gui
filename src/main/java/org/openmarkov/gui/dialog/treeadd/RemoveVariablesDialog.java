@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * @author myebra
+ * Dialog for removing variables from a TreeADD subtree.
  */
 @SuppressWarnings("serial") public class RemoveVariablesDialog extends OkCancelDialog {
 

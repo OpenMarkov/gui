@@ -29,6 +29,11 @@ public class BottomPanelButtonDialog extends DialogBase {
     private final JPanel buttonsPanel;
     
     
+    /**
+     * Creates a dialog with a content area and a horizontal button panel at the bottom.
+     *
+     * @param owner the parent window that owns this dialog
+     */
     public BottomPanelButtonDialog(Window owner) {
         super(owner);
         this.setName("BottomPanelButtonDialog");

@@ -15,6 +15,10 @@ import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 
+/**
+ * Custom {@link javax.swing.plaf.basic.BasicTreeUI} that suppresses expand/collapse
+ * controls for TreeADD leaf branches.
+ */
 public class TreeADDUserInterface extends BasicTreeUI {
 	/*
 	 * (non-Javadoc)

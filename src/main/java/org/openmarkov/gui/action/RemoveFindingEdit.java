@@ -5,14 +5,23 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.graphic.VisualNode;
 
+/**
+ * Edit that removes a finding (evidence) from a node, supporting undo and redo.
+ */
 public class RemoveFindingEdit extends PNEdit {
-    
+
     private EvidenceCase evidenceCase;
     private Variable variable;
     private Finding finding;
     private VisualNode visualNode;
-    
-    
+
+    /**
+     * Creates a new edit that removes the finding for the specified variable.
+     *
+     * @param visualNode   the visual node from which the finding is removed
+     * @param evidenceCase the evidence case containing the finding
+     * @param variable     the variable whose finding will be removed
+     */
     public RemoveFindingEdit(VisualNode visualNode, EvidenceCase evidenceCase, Variable variable) {
         super(visualNode.getNode().getProbNet());
         this.visualNode = visualNode;

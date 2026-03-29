@@ -9,12 +9,23 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+/**
+ * Strategy for resolving preference values from different backing stores.
+ * Supports the Java Preferences API, user home directory files, local installation files,
+ * and in-memory session storage.
+ */
 enum LocalPreferenceResolveStrategy {
     USER_FOLDER,
     INSTALLED_LOCATION,
     BACKING_STORE,
     SESSION;
     
+    /**
+     * Retrieves the stored value for the given preference path.
+     *
+     * @param path the preference path segments
+     * @return the stored value, or {@code null} if not found or on error
+     */
     public @Nullable String get(List<String> path) {
         try {
             return switch (this) {
@@ -28,6 +39,12 @@ enum LocalPreferenceResolveStrategy {
         }
     }
     
+    /**
+     * Checks whether a value is set for the given preference path.
+     *
+     * @param path the preference path segments
+     * @return {@code true} if a value is stored at the given path
+     */
     public boolean isSet(List<String> path) {
         try {
             return switch (this) {
@@ -44,6 +61,13 @@ enum LocalPreferenceResolveStrategy {
         }
     }
     
+    /**
+     * Stores a value at the given preference path.
+     *
+     * @param path  the preference path segments
+     * @param value the value to store
+     * @return {@code true} if the value was stored successfully
+     */
     public boolean put(List<String> path, String value) {
         try {
             switch (this) {
@@ -61,6 +85,12 @@ enum LocalPreferenceResolveStrategy {
         }
     }
     
+    /**
+     * Removes the value at the given preference path.
+     *
+     * @param path the preference path segments
+     * @return {@code true} if the value was successfully removed
+     */
     public boolean clear(List<String> path) {
         try {
             switch (this) {

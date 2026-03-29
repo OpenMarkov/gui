@@ -16,6 +16,10 @@ import org.openmarkov.gui.graphic.VisualDecisionNode;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Dialog for imposing a policy on a decision node. If the node does not already
+ * have a policy, a new {@link TablePotential} with role POLICY is created.
+ */
 public class ImposePolicyDialog extends PotentialEditDialog{
     
     private final @NotNull VisualDecisionNode visualNode;

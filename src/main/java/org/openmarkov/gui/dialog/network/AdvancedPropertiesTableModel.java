@@ -10,7 +10,8 @@ package org.openmarkov.gui.dialog.network;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * @author myebra
+ * Table model for the advanced (user-defined) properties of a network,
+ * storing property name-value pairs.
  */
 @SuppressWarnings("serial") public class AdvancedPropertiesTableModel extends DefaultTableModel {
 

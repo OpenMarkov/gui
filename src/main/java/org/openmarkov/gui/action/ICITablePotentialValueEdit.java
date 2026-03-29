@@ -20,6 +20,11 @@ import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Edit that modifies a single cell value in an ICI (noisy-OR/noisy-MAX) potential table,
+ * automatically redistributing probabilities across the column to ensure they sum to 1.
+ * Supports both noisy parameters and leaky parameters.
+ */
 @SuppressWarnings("serial") public class ICITablePotentialValueEdit extends PNEdit {
     
     /**
@@ -38,51 +43,30 @@ import java.util.List;
      * The node
      */
     private Node node;
-    /*
-     *
-     */
+    /** The ICI potential being edited. */
     private ICIPotential iciPotential;
-    /**
-     *
-     */
+    /** The variables of the ICI potential. */
     private List<Variable> variables;
-    /**
-     *
-     */
+    /** The noisy parameters before the edit. */
     private double[] lastNoisyParameters;
-    /**
-     *
-     */
+    /** The noisy parameters after the edit. */
     private double[] newNoisyParameters;
-    /**
-     *
-     */
+    /** The parent variable whose noisy parameters are being edited. */
     private Variable noisyVariable;
-    
-    /**
-     *
-     */
+    /** The leaky parameters before the edit. */
     private double[] lastLeakyParameters;
-    /**
-     *
-     */
+    /** The leaky parameters after the edit. */
     private double[] newLeakyParameters;
-    /**
-     *
-     */
+    /** Whether the edit targets leaky parameters (true) or noisy parameters (false). */
     private boolean leakyFlag;
     
     //
     private int position;
     
     private int columnGroup;
-    /**
-     *
-     */
+    /** Index of the selected value within the column group. */
     private int indexSelected;
-    /**
-     *
-     */
+    /** Number of conditioned (child) states. */
     private int conditionedStates;
     /**
      * A list that store the edition order
@@ -180,6 +164,14 @@ import java.util.List;
         
     }
     
+    /**
+     * Converts an internal parameter index into the corresponding JTable row position.
+     *
+     * @param index       the parameter index
+     * @param columnGroup the column group offset
+     * @param numOfStates the number of conditioned states
+     * @return the row position in the JTable
+     */
     public static int toPositionOnJtable(int index, int columnGroup, int numOfStates) {
         
         return (columnGroup * numOfStates) + numOfStates + 1 - index;
@@ -287,6 +279,12 @@ import java.util.List;
         super.undo();
     }
     
+    /**
+     * Initializes the priority list for probability redistribution.
+     * The edited cell is placed last so it has the lowest priority during redistribution.
+     *
+     * @return the initialized priority list
+     */
     public List<Integer> getPriorityListInitialization() {
         
         if (!leakyFlag) {
@@ -317,13 +315,11 @@ import java.util.List;
     }
     
     /**
-     * Retrieves probeNode ICIPotential
+     * Retrieves the ICI potential from a node's potential list.
      *
-     * @param listPotentials
-     *
-     * @return this ICI potential
+     * @param listPotentials the list of potentials belonging to the node
+     * @return the first potential cast as an {@code ICIPotential}
      */
-    
     private static ICIPotential getThisICIPotential(List<Potential> listPotentials) {
         return ((ICIPotential) listPotentials.get(0));
     }

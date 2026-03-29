@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author myebra
+ * Table panel for editing the list of agents defined in a network, supporting
+ * add, remove, rename, and reorder operations.
  */
 @SuppressWarnings("serial") public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel {
     

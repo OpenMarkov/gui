@@ -11,6 +11,10 @@ import org.openmarkov.core.model.network.potential.*;
 
 import java.awt.*;
 
+/**
+ * Placeholder panel used for potential types that require no user-editable parameters
+ * (e.g. Uniform, CycleLengthShift, Product, SameAsPrevious, Sum).
+ */
 @SuppressWarnings("serial") @PotentialPanelPlugin(
         potentialClasses = {UniformPotential.class, CycleLengthShift.class, ProductPotential.class, SameAsPrevious.class, SumPotential.class})
 public class EmptyPotentialPanel

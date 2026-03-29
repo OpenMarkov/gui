@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author myebra
+ * Panel with checkboxes for selecting which states to add to a TreeADD branch.
  */
 @SuppressWarnings("serial") public class AddStatesCheckBoxPanel extends JPanel {
 	private List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();

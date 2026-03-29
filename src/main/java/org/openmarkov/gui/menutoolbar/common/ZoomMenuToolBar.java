@@ -16,9 +16,9 @@ package org.openmarkov.gui.menutoolbar.common;
 public interface ZoomMenuToolBar {
 
 	/**
-	 * This method makes that the corresponding field show the zoomManager value.
+	 * Sets the zoom level displayed in the corresponding field.
 	 *
-	 * @param value
+	 * @param value the zoom factor (e.g. 1.0 = 100%)
 	 */
     void setZoom(double value);
 }

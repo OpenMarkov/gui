@@ -14,6 +14,11 @@ import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 
+/**
+ * Contextual menu displayed when the user right-clicks on a node in the
+ * decision tree view. Provides options for expanding, collapsing, and
+ * exporting the tree.
+ */
 public class TreeContextualMenu extends ContextualMenu {
     /**
      * Static field for serializable class.

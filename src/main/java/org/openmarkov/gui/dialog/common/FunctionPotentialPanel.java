@@ -21,6 +21,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+/**
+ * Panel for editing a {@link FunctionPotential}, displaying the arithmetic expression
+ * and allowing the user to modify it via a dialog.
+ */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = FunctionPotential.class)
 public class FunctionPotentialPanel extends PotentialPanel {
     

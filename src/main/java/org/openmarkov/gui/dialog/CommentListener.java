@@ -10,6 +10,15 @@ package org.openmarkov.gui.dialog;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 
+/**
+ * Listener interface notified when a comment text associated with a network element
+ * has been modified by the user.
+ */
 public interface CommentListener {
+    /**
+     * Called when the comment text has changed so the edit can be applied to the model.
+     *
+     * @throws DoEditException if the edit cannot be executed
+     */
     void commentHasChanged() throws DoEditException;
 }

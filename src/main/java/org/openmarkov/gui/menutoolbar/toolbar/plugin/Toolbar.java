@@ -12,6 +12,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation that marks a {@link org.openmarkov.gui.menutoolbar.toolbar.ToolBarBasic} subclass
+ * as a discoverable toolbar plugin. The {@link ToolbarManager} scans the classpath for classes
+ * annotated with this annotation.
+ */
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface Toolbar {
+    /** The unique name used to identify and activate this toolbar. */
     String name();
 }

@@ -14,7 +14,7 @@ import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import java.awt.*;
 
 /**
- * @author myebra
+ * Dialog for selecting variables to add as conditioning variables in a TreeADD subtree.
  */
 @SuppressWarnings("serial") public class AddVariablesDialog extends OkCancelDialog {
 
