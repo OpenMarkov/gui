@@ -149,8 +149,6 @@ public class NetsIO {
      * @param fileName file where the network is saved.
      *
      * @return an ProbNetInfo object with the information of the network.
-     *
-     * @throws Exception if the file doesn't exist or the file format isn't correct.
      */
     @ToCheck(reasonKind = {ToCheck.ReasonKind.CODE_QUALITY, ToCheck.ReasonKind.EXCEPTIONS_REWORK},
             reasonDescription = "Reading a network file should always throw the exceptions " +
@@ -173,8 +171,6 @@ public class NetsIO {
      *            is saved.
      *
      * @return an ProbNetInfo object with the information of the network.
-     *
-     * @throws Exception if the file doesn't exist or the file format isn't correct.
      */
     public static ProbNetInfo openNetworkURL(URL url) throws IOException, org.openmarkov.core.exception.ParserException, NoReaderForFileException, CorruptNetworkFile {
         String networkName = url.getPath();

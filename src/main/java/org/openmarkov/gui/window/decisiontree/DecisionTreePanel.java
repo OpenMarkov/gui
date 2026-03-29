@@ -73,7 +73,6 @@ public class DecisionTreePanel extends JScrollPane {
      * @throws IncompatibleEvidenceException
      * @throws NonProjectablePotentialException
      * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates
-     * @
      */
     public DecisionTreePanel(ProbNet probNet)
             throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException,
@@ -128,7 +127,6 @@ public class DecisionTreePanel extends JScrollPane {
      * @throws IncompatibleEvidenceException
      * @throws NonProjectablePotentialException
      * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates
-     * @
      */
     public DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth)
             throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException,

@@ -59,42 +59,42 @@ public class DecisionTreeModel implements TreeModel {
 		return treeElementPanel;
 	}
 
-	/** @inheritDoc */
+	/** {@inheritDoc} */
 	@Override public void addTreeModelListener(TreeModelListener listener) {
 		listeners.add(listener);
 	}
 
-	/** @inheritDoc */
+	/** {@inheritDoc} */
 	@Override public Object getChild(Object parent, int index) {
 		return ((DecisionTreeElementPanel) parent).getChildren().get(index);
 	}
 
-	/** @inheritDoc */
+	/** {@inheritDoc} */
 	@Override public int getChildCount(Object parent) {
 		return ((DecisionTreeElementPanel) parent).getChildren().size();
 	}
 
-	/** @inheritDoc */
+	/** {@inheritDoc} */
 	@Override public int getIndexOfChild(Object parent, Object child) {
 		return ((DecisionTreeElementPanel) parent).getChildren().indexOf(child);
 	}
 
-	/** @inheritDoc */
+	/** {@inheritDoc} */
 	@Override public Object getRoot() {
 		return root;
 	}
 
-	/** @inheritDoc */
+	/** {@inheritDoc} */
 	@Override public boolean isLeaf(Object node) {
 		return getChildCount(node) == 0;
 	}
 
-	/** @inheritDoc */
+	/** {@inheritDoc} */
 	@Override public void removeTreeModelListener(TreeModelListener listener) {
 		listeners.remove(listener);
 	}
 
-	/** @inheritDoc */
+	/** {@inheritDoc} */
 	@Override public void valueForPathChanged(TreePath path, Object newValue) {
 		// TODO Auto-generated method stub
 

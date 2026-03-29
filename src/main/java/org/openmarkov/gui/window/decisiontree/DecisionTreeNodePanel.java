@@ -87,7 +87,7 @@ public class DecisionTreeNodePanel extends DecisionTreeElementPanel {
     
     /**
      * Updates the right label with formatted utility data if the node is a utility type.
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override 
     public void update(boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {

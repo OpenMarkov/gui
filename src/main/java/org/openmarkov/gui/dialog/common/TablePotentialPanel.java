@@ -600,8 +600,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      *            states column
      *
      * @return An evidence case object
-     *
-     * @throws IncompatibleEvidenceException
      */
     protected EvidenceCase getConfiguration(int col) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         

@@ -910,8 +910,8 @@ public final class NodeDefinitionPanel extends JPanel
      * This method checks that the name field is filled and there isn't any node
      * with the same name.
      *
-     * @return true, if the name field isn't empty and there isn't any node with
-     * this name; otherwise, false.
+     * @throws ConstraintViolatedException if the name field is empty or there is
+     * another node with the same name.
      */
     public void checkNameConstraints() throws ConstraintViolatedException {
         new NodeBaseNameEdit(node, this.jTextFieldNodeName.getText()).tryConstraintsWillBeMet();

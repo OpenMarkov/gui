@@ -33,8 +33,7 @@ public class DecisionTreeWindow extends ZoomableContentPanel {
      * @throws IncompatibleEvidenceException
      * @throws NotEvaluableNetworkException If
      * @throws NonProjectablePotentialException 
-     * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates 
-     * @
+     * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates
      */
     public DecisionTreeWindow(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates {
         this.setLayout(new BorderLayout());

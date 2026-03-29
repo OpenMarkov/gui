@@ -274,7 +274,6 @@ public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
      *
      * @return An evidence case object
      *
-     * @throws IncompatibleEvidenceException
      * @author carmenyago
      */
     @Override protected EvidenceCase getConfiguration(int col)

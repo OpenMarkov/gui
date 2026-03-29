@@ -136,7 +136,6 @@ public class NetworkOMFileChooser extends OMFileChooser {
      *
      * @return the format OpenMarkov.version of a pgmx file
      *
-     * @throws ParserConfigurationException
      * @throws IOException
      * @throws SAXException
      */
