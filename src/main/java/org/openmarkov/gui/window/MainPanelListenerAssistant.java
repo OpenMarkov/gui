@@ -23,7 +23,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
-import org.openmarkov.core.model.network.potential.StrategicTablePotential;
+import org.openmarkov.core.model.network.potential.StrategyCarrier;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.gui.action.RemoveLinkRestrictionEdit;
@@ -74,7 +74,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.prefs.BackingStoreException;
 //TODO: remove just because reference to cost-effectiveness was removed
 //import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
@@ -95,17 +94,17 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * Counter incremented each time a network frame is created.
      */
-    private static int frameIndex = 1;
+    private final static int frameIndex = 1;
     /**
      * Main panel which this object helps.
      */
-    private MainPanel mainPanel;
+    private final MainPanel mainPanel;
     /**
      * Messages string resource.
      */
     // private StringResource stringResource;
-    private List<NetworkPanel> networkPanels;
-    private StringDatabase stringDatabase;
+    private final List<NetworkPanel> networkPanels;
+    private final StringDatabase stringDatabase;
     
     /**
      * Constructor that save the references to the objects that this class
@@ -118,7 +117,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         this.mainPanel.setName(mainPanel.getName());
         // stringResource = StringResourceLoader.getUniqueInstance()
         // .getBundleMessages();
-        this.networkPanels = new ArrayList<NetworkPanel>();
+        this.networkPanels = new ArrayList<>();
         this.stringDatabase = StringDatabase.getUniqueInstance();
     }
     
@@ -156,12 +155,12 @@ public class MainPanelListenerAssistant extends WindowAdapter
         ActionCommands actionCommandConstant = ActionCommands.of(actionCommand);
         switch (actionCommandConstant) {
             case ActionCommands.NEW_NETWORK -> createNewNetwork();
-            case ActionCommands.OPEN_NETWORK -> executeUIAction(() -> openNetwork());
-            case ActionCommands.OPEN_NETWORK_URL -> executeUIAction(() -> openNetworkURL());
+            case ActionCommands.OPEN_NETWORK -> executeUIAction(this::openNetwork);
+            case ActionCommands.OPEN_NETWORK_URL -> executeUIAction(this::openNetworkURL);
             case ActionCommands.SAVE_NETWORK -> executeUIAction(() -> saveNetwork(getCurrentNetworkPanel()));
             case ActionCommands.SAVE_OPEN_NETWORK -> executeUIAction(() -> saveOpenNetwork(getCurrentNetworkPanel()));
             case ActionCommands.SAVEAS_NETWORK -> executeUIAction(() -> saveNetworkAs(getCurrentNetworkPanel()));
-            case ActionCommands.CLOSE_TAB -> executeUIAction(() -> closeCurrentTab());
+            case ActionCommands.CLOSE_TAB -> executeUIAction(this::closeCurrentTab);
             case ActionCommands.LOAD_EVIDENCE -> executeUIAction(() -> loadEvidence(getCurrentNetworkPanel()));
             case ActionCommands.SAVE_EVIDENCE -> saveEvidence(getCurrentNetworkPanel());
             case ActionCommands.NETWORK_PROPERTIES -> getCurrentNetworkPanel().changeNetworkProperties();
@@ -172,7 +171,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION, ActionCommands.TEMPORAL_EVOLUTION_ACTION ->
                     this.getCurrentNetworkPanel().temporalEvolution();
             //case ActionCommands.EXPAND_NETWORK_CE -> expandNetworkCE(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
-            case ActionCommands.EXIT_APPLICATION -> executeUIAction(() -> closeApplication());
+            case ActionCommands.EXIT_APPLICATION -> executeUIAction(this::closeApplication);
             case ActionCommands.CLIPBOARD_COPY -> {
                 getCurrentNetworkPanel().exportToClipboard(false);
                 mainPanel.getMainPanelMenuAssistant()
@@ -271,7 +270,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.BYNAME_NODES -> activateByTitle(false);
             case ActionCommands.ZOOM_IN -> incrementZoom(getCurrentPanel());
             case ActionCommands.ZOOM_OUT -> decrementZoom(getCurrentPanel());
-            case ActionCommands.CONFIGURATION -> executeUIAction(() -> showUserConfigurationDialog());
+            case ActionCommands.CONFIGURATION -> executeUIAction(this::showUserConfigurationDialog);
             case ActionCommands.PROPAGATION_OPTIONS -> setPropagationOptions();
             case ActionCommands.INFERENCE_OPTIONS -> setInferenceOptions(getCurrentNetworkPanel());
             case ActionCommands.HELP_CHANGE_LANGUAGE -> showLanguageChangeDialog();
@@ -368,9 +367,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                  ActionCommands.OPEN_LAST_3_FILE, ActionCommands.OPEN_LAST_4_FILE,
                  ActionCommands.OPEN_LAST_5_FILE, ActionCommands.OPEN_LAST_6_FILE,
                  ActionCommands.OPEN_LAST_7_FILE, ActionCommands.OPEN_LAST_8_FILE,
-                 ActionCommands.OPEN_LAST_9_FILE -> {
-                this.defaultActionOnCommand(e, actionCommand, actionCommandConstant);
-            }
+                 ActionCommands.OPEN_LAST_9_FILE -> this.defaultActionOnCommand(e, actionCommand, actionCommandConstant);
             case null -> this.defaultActionOnCommand(e, actionCommand, actionCommandConstant);
         }
     }
@@ -393,14 +390,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
     private void closeCurrentTab() throws WriterException {
         var selectedComponent = this.mainPanel.getNetworksTabPanel().getSelectedComponent();
         switch (selectedComponent) {
-            case NetworkPanel networkPanel -> {
-                closeCurrentNetwork();
-            }
+            case NetworkPanel networkPanel -> closeCurrentNetwork();
             case null -> {
             }
-            default -> {
-                this.mainPanel.getNetworksTabPanel().remove(selectedComponent);
-            }
+            default -> this.mainPanel.getNetworksTabPanel().remove(selectedComponent);
         }
     }
     
@@ -434,7 +427,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * Create a Frame for the User Configuration dialog
      *
-     * @return a UserConfiguration dialog
      */
     private void showUserConfigurationDialog() throws BackingStoreException {
         new PreferencesDialog(mainPanel.getMainFrame()).setVisible(true);
@@ -745,7 +737,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         fileChooser.setDialogTitle(title);
         fileChooser.setCurrentDirectory(LocalPreferences.LATEST_SAVED_DIRECTORY.get());
         fileChooser.setSelectedFile(new File(fileChooser.getCurrentDirectory(), new File(suggestedFileName).getName()));
-        ArrayList<Object> fileNameAndFormat = new ArrayList<Object>();
+        ArrayList<Object> fileNameAndFormat = new ArrayList<>();
         String filename = null;
         FileFilterAll<?> fileFormat = null;
         if (fileChooser.showSaveDialog(GUIUtils.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
@@ -787,7 +779,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             if (!probNet.hasConstraintOfClass(OnlyChanceNodes.class) && (
                     probNet.getDecisionCriteria() == null || probNet.getDecisionCriteria().isEmpty()
             )) {
-                List<Criterion> criteria = new ArrayList<Criterion>();
+                List<Criterion> criteria = new ArrayList<>();
                 criteria.add(new Criterion());
                 probNet.setDecisionCriteria(criteria);
             }
@@ -856,8 +848,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
         networkPanel.setNetworkFile(fileName);
         List<EvidenceCase> evidence = probNetInfo.getEvidence();
         if (evidence != null && !evidence.isEmpty()) {
-            EvidenceCase preResolutionEvidence = evidence.get(0);
-            evidence.remove(0);
+            EvidenceCase preResolutionEvidence = evidence.getFirst();
+            evidence.removeFirst();
             networkPanel.getEditorPanel().getEvidenceManager().setEvidence(preResolutionEvidence, evidence);
         }
         networkPanels.add(networkPanel);
@@ -912,8 +904,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
         networkPanel.setNetworkFile(urlFile);
         List<EvidenceCase> evidence = probNetInfo.getEvidence();
         if (evidence != null && !evidence.isEmpty()) {
-            EvidenceCase preResolutionEvidence = evidence.get(0);
-            evidence.remove(0);
+            EvidenceCase preResolutionEvidence = evidence.getFirst();
+            evidence.removeFirst();
             networkPanel.getEditorPanel().getEvidenceManager().setEvidence(preResolutionEvidence, evidence);
         }
         networkPanels.add(networkPanel);
@@ -1059,7 +1051,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         networkPanel.setNetworkFile(path + File.separator + fileName);
         networkPanel.getEditorPanel()
                     .getEvidenceManager()
-                    .setEvidence(preResolutionEvidence, new ArrayList<EvidenceCase>());
+                    .setEvidence(preResolutionEvidence, new ArrayList<>());
         networkPanels.add(networkPanel);
     }
 
@@ -1488,7 +1480,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             DANEvaluation eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet, networkPanel.getEditorPanel()
                                                                                                       .getEvidenceManager()
                                                                                                       .getPreResolutionEvidence());
-            StrategyTree strategyTree = ((StrategicTablePotential) eval.getUtility()).strategyTrees[0];
+            StrategyTree strategyTree = ((StrategyCarrier) eval.getUtility()).getStrategyTrees()[0];
             
             //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(GUIUtils.getOwner(mainPanel), probNet, inferenceAlgorithm);
             strategyTree.pruneAndGraftNode("OD");
