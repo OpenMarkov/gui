@@ -108,13 +108,13 @@ public class ICIOptionsPanelTest {
 		//CMF
 		// create potentials
 		pA = new TablePotential(aVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-		pA.values[0] = 0.9;
-		pA.values[1] = 0.1;
+		pA.getValues()[0] = 0.9;
+		pA.getValues()[1] = 0.1;
 		pBA = new TablePotential(abVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-		pBA.values[0] = 0.2;
-		pBA.values[1] = 0.8;
-		pBA.values[2] = 0.9;
-		pBA.values[3] = 0.1;
+		pBA.getValues()[0] = 0.2;
+		pBA.getValues()[1] = 0.8;
+		pBA.getValues()[2] = 0.9;
+		pBA.getValues()[3] = 0.1;
 		//CMI Creating the ExactDistrPotential for Utility nodes
 		/*
 		pU = new TablePotential(adVariables, 
@@ -126,15 +126,15 @@ public class ICIOptionsPanelTest {
 		//CMF
 		//CMI adding values to pU.getTablePotential
 		/*
-		pU.values[0] = 1;
-		pU.values[1] = 2;
-		pU.values[2] = 3;
-		pU.values[3] = 4;
+		pU.getValues()[0] = 1;
+		pU.getValues()[1] = 2;
+		pU.getValues()[2] = 3;
+		pU.getValues()[3] = 4;
 		*/
-		pU.getTablePotential().values[0] = 1;
-		pU.getTablePotential().values[1] = 2;
-		pU.getTablePotential().values[2] = 3;
-		pU.getTablePotential().values[3] = 4;
+		pU.getTablePotential().getValues()[0] = 1;
+		pU.getTablePotential().getValues()[1] = 2;
+		pU.getTablePotential().getValues()[2] = 3;
+		pU.getTablePotential().getValues()[3] = 4;
 		//CMF
 		simpleProbNet = new ProbNet();
 		simpleProbNet.addConstraint(new NoCycle());

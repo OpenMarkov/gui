@@ -88,7 +88,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 		State state1 = node1.getVariable().getStates()[stateIndex1];
 		State state2 = node2.getVariable().getStates()[stateIndex2];
         link.setCompatibilityValue(state1, state2, this.newValue);
-		newTable = ((TablePotential) link.getRestrictionsPotential()).values.clone();
+		newTable = ((TablePotential) link.getRestrictionsPotential()).getValues().clone();
 
 	}
     

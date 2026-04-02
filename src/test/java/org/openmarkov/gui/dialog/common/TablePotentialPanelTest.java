@@ -74,8 +74,8 @@ public class TablePotentialPanelTest extends TablePotentialPanel {
 
 		TablePotential potE = new TablePotential(Arrays.asList(varE, varA, varB, varC),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potE.values = new double[] { 0.9, 0.1, 0.8, 0.2, 0.7, 0.3, 0.6, 0.4, 0.5, 0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8,
-				0.001, 0.999, 0, 1, 0.9, 0.1, 0.8, 0.2, 0.7, 0.3, 0.6, 0.4, 0.5, 0.5, 0.4, 0.6 };
+		potE.setValues(new double[] { 0.9, 0.1, 0.8, 0.2, 0.7, 0.3, 0.6, 0.4, 0.5, 0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8,
+				0.001, 0.999, 0, 1, 0.9, 0.1, 0.8, 0.2, 0.7, 0.3, 0.6, 0.4, 0.5, 0.5, 0.4, 0.6 });
 		nodeE.setPotential(potE);
 
 		// Link restrictions and revealing states

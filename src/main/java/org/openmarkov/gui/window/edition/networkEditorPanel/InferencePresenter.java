@@ -63,7 +63,7 @@ class InferencePresenter {
         Variable variable = visualNode.getNode().getVariable();
         NumericVariableBox innerBox = (NumericVariableBox) visualNode.getInnerBox();
         VisualState visualState = innerBox.getVisualState();
-        visualState.setStateValue(caseNumber, individualProbabilities.get(variable).values[0]);
+        visualState.setStateValue(caseNumber, individualProbabilities.get(variable).getValues()[0]);
         innerBox.setMinValue(this.networkEditorPanel.getEvidenceManager().getMinUtilityRangeOf(variable));
         innerBox.setMaxValue(this.networkEditorPanel.getEvidenceManager().getMaxUtilityRangeOf(variable));
     }

@@ -507,7 +507,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 int numVariables = upfrontTablePotential.getNumVariables();
                 switch (numVariables) {
                     case 0 -> {
-                        xySeriesUpfront.add(0, upfrontTablePotential.values[0]);
+                        xySeriesUpfront.add(0, upfrontTablePotential.getValues()[0]);
                     }
                     case 1 -> {
                         int decisionStateIndex = upfrontTablePotential.getVariables()
@@ -529,8 +529,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                     numVariables = tablePotential.getNumVariables();
                     switch (numVariables) {
                         case 0 -> {
-                            value = tablePotential.values[0];
-                            valueDiscount = tablePotentialDiscount.values[0];
+                            value = tablePotential.getValues()[0];
+                            valueDiscount = tablePotentialDiscount.getValues()[0];
                         }
                         case 1 -> {
                             int decisionStateIndex = tablePotential.getVariables().get(0).getStateIndex(decisionState);

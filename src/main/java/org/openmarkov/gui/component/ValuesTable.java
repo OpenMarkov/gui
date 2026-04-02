@@ -692,7 +692,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         int numParents = numVarsPotential - (isChance ? 1 : 0);
         int col = edit.getSelectedColumn();
         TableModel superModel = super.getModel();
-        double[] values = tablePotential.values;
+        double[] values = tablePotential.getValues();
         int basePosition = edit.getBasePosition();
         if (isChance) {
             int numStates = varsPotential.get(0).getNumStates();
@@ -731,7 +731,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         } else {
             position = edit.getColumnPosition() - 1;
             super.getModel()
-                 .setValueAt(editPotential.values[position], edit.getRowPosition(), edit.getColumnPosition());
+                 .setValueAt(editPotential.getValues()[position], edit.getRowPosition(), edit.getColumnPosition());
         }
     }
     
@@ -744,13 +744,13 @@ public class ValuesTable extends KeyTable implements PNEditListener {
             if (!tpEdit.getExactDistrPotential()) {
                 priorityList = tpEdit.getPriorityList();
                 for (Integer position : priorityList) {
-                    super.getModel().setValueAt(editPotential.values[position], tpEdit.getRowPosition(position),
+                    super.getModel().setValueAt(editPotential.getValues()[position], tpEdit.getRowPosition(position),
                                                 tpEdit.getColumnPosition());
                 }
             } else {
                 int position = tpEdit.getColumnPosition() - 1;
                 super.getModel()
-                     .setValueAt(editPotential.values[position], tpEdit.getRowPosition(), tpEdit.getColumnPosition());
+                     .setValueAt(editPotential.getValues()[position], tpEdit.getRowPosition(), tpEdit.getColumnPosition());
             }
         }
     }
