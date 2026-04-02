@@ -25,7 +25,7 @@ public class RevelationArcValidator {
 	 * Checks if the link satisfies the conditions to have the condition of
 	 * revelation arc
 	 *
-	 * @param link
+	 * @param link the link
      * @return {@code true} if a link restriction can be applied to the
 	 *         link.
 	 */

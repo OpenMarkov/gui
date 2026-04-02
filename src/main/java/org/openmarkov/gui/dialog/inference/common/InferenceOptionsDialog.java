@@ -188,8 +188,8 @@ public class InferenceOptionsDialog extends OkCancelDialog {
     /**
      * Constructor of the dialog
      *
-     * @param probNet
-     * @param owner
+     * @param probNet the prob net
+     * @param owner the owner
      * @param onlyShowThisType The task must filter by multicriteria type. Null if not necessary
      */
     public InferenceOptionsDialog(ProbNet probNet, Window owner, MulticriteriaOptions.Type onlyShowThisType) {

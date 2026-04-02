@@ -87,9 +87,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Shows the tree in read only mode
      *
-     * @param node
-     * @param cellRenderer
-     * @param readOnly
+     * @param node the node
+     * @param cellRenderer the cell renderer
+     * @param readOnly the read only
      */
     public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node, boolean readOnly) {
         // A copy of the potential
@@ -176,8 +176,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     }
     
     /**
-     * @param e
-     * @param branch
+     * @param e the e
+     * @param branch the branch
      */
     protected void setContextualMenuBranch(MouseEvent e, TreeADDBranch branch, TreePath branchPath) {
         contextualMenu.removeAll();
@@ -254,8 +254,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     }
     
     /**
-     * @param e
-     * @param branch
+     * @param e the e
+     * @param branch the branch
      */
     protected void setContextualMenuPotential(MouseEvent e, TreeADDBranch branch, TreePath branchPath) {
         contextualMenu.removeAll();
@@ -297,8 +297,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Finds the list of variables that can be added to the potential
      *
-     * @param branch
-     * @param branchPath
+     * @param branch the branch
+     * @param branchPath the branch path
      *
      * @return the list of variables that can be added to the potential
      */
@@ -639,9 +639,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Splits interval in a branch which top variable is continuous
      *
-     * @param ae
-     * @param branch
-     * @param path
+     * @param ae the ae
+     * @param branch the branch
+     * @param path the path
      */
     private void splitInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) throws InvalidLimitInTreeADDException, TriedToSplitIntervalOutsideBoundsException {
         TreePath parentPath = path.getParentPath();
@@ -741,9 +741,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Removes a subtree from a branch
      *
-     * @param ae
-     * @param branch
-     * @param path
+     * @param ae the ae
+     * @param branch the branch
+     * @param path the path
      */
     private void removeSubtree(ActionEvent ae, TreeADDBranch branch, TreePath path) {
         TreePath parentPath = path.getParentPath();
@@ -845,9 +845,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     }
     
     /**
-     * @param ae
-     * @param branch
-     * @param path
+     * @param ae the ae
+     * @param branch the branch
+     * @param path the path
      */
     private void dissociateStates(ActionEvent ae, TreeADDBranch branch, TreePath path) throws RemovingAllStatesIsNotAllowedException {
         if (!(branch instanceof TreeADDBranch)) {
@@ -974,9 +974,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     }
     
     /**
-     * @param ae
-     * @param treeADDPotential
-     * @param path
+     * @param ae the ae
+     * @param treeADDPotential the tree add potential
+     * @param path the path
      */
     private void changeRootVariable(ActionEvent ae, TreeADDPotential treeADDPotential, TreePath path) {
         List<Variable> variables = treeADDPotential.getVariables();
@@ -1176,8 +1176,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Returns if root variable has appeared before
      *
-     * @param path
-     * @param rootVariable
+     * @param path the path
+     * @param rootVariable the root variable
      *
      * @return true iff the root variable has been previously used
      */
@@ -1198,9 +1198,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Action to edit a potential
      *
-     * @param ae
-     * @param branch
-     * @param path
+     * @param ae the ae
+     * @param branch the branch
+     * @param path the path
      */
     private void editPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
         TreePath parentPath = path.getParentPath();
@@ -1250,9 +1250,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Sets label for branch
      *
-     * @param ae
-     * @param branch
-     * @param path
+     * @param ae the ae
+     * @param branch the branch
+     * @param path the path
      */
     private void setLabel(ActionEvent ae, TreeADDBranch branch, TreePath path) {
         String label = JOptionPane.showInputDialog(null, "Enter label name: ", "Set label", 1);
@@ -1266,9 +1266,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Removes the label from a branch
      *
-     * @param ae
-     * @param branch
-     * @param path
+     * @param ae the ae
+     * @param branch the branch
+     * @param path the path
      */
     private void removeLabel(ActionEvent ae, TreeADDBranch branch, TreePath path) {
         branch.setLabel(null);
@@ -1279,9 +1279,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Sets a reference to another branch
      *
-     * @param ae
-     * @param branch
-     * @param path
+     * @param ae the ae
+     * @param branch the branch
+     * @param path the path
      */
     private void setReference(ActionEvent ae, TreeADDBranch branch, TreePath path) {
         SetReferenceDialog dialog = new SetReferenceDialog(GUIUtils.getOwner(this), branch, rootTreeADDPotential);
@@ -1295,9 +1295,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Remove reference from a branch
      *
-     * @param ae
-     * @param branch
-     * @param path
+     * @param ae the ae
+     * @param branch the branch
+     * @param path the path
      */
     private void removeReference(ActionEvent ae, TreeADDBranch branch, TreePath path) {
         Potential referencedPotential = branch.getPotential();

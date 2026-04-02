@@ -5,17 +5,11 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-/**
- * Splash Screen Window. It is not using Java 6 SE SplashScreen functionality to
- * prevent backward compatibility on User desktop
- */
 package org.openmarkov.gui.dialog;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serial;
 
 /**
  * SplashScreen shows the OpenMarkov logo and the progress bar meantime OpenMarkov is
@@ -29,6 +23,7 @@ public class SplashScreen extends JFrame {
     /**
      *
      */
+    @Serial
     private static final long serialVersionUID = -6227174335233774982L;
     /**
      * Component to store the image to splash
@@ -76,7 +71,7 @@ public class SplashScreen extends JFrame {
     /**
      * States which will be the maximum progress to be displayed
      *
-     * @param maxProgress
+     * @param maxProgress the max progress
      */
     public void setProgressMax(int maxProgress) {
         
@@ -86,7 +81,7 @@ public class SplashScreen extends JFrame {
     /**
      * Update the progress of the loading of the main program
      *
-     * @param progress
+     * @param progress the progress
      */
     public void setProgress(int progress) {
         

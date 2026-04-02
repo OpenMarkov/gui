@@ -171,8 +171,8 @@ import java.awt.event.MouseEvent;
     /****
      * Invoked when the interval delimiters are edited
      *
-     * @param row
-     * @param column
+     * @param row the row
+     * @param column the column
      */
     private void changeIntervalDiscretize(int row, int column) throws DoEditException {
         switch (column) {

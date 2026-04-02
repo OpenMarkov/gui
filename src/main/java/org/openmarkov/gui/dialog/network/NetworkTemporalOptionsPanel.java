@@ -40,7 +40,6 @@ public class NetworkTemporalOptionsPanel extends JPanel {
 	 * Constructor. If the probNet is not constraint to non-temporary
 	 * variables only, the panel is activated
 	 *
-	 * @param newNetwork to indicate if the panel is for new networks
 	 * @param probNet    manage the network access
 	 */
 	public NetworkTemporalOptionsPanel(ProbNet probNet) {
@@ -99,7 +98,7 @@ public class NetworkTemporalOptionsPanel extends JPanel {
 	 * sets or changes in the definition panel to networks not restricted to
 	 * non-temporal variables only.
 	 *  
-	 * @param probNet
+	 * @param probNet the prob net
 	 */	
 	public void update(ProbNet probNet) {
 		this.probNet = probNet;

@@ -28,7 +28,7 @@ public class LinkRestrictionValidator {
 	 * Checks if the link satisfies the conditions to have a link restriction
 	 * associated.
 	 *
-	 * @param link
+	 * @param link the link
      * @return {@code true} if a link restriction can be applied to the
 	 *         link.
 	 */

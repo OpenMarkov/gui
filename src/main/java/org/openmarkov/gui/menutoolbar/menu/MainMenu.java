@@ -293,7 +293,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     /**
      * Creates a new instance.
      *
-     * @param mainPanel
+     * @param mainPanel the main panel
      * @param newListener listener of the user's actions.
      */
     public MainMenu(MainPanel mainPanel, ActionListener newListener) {
@@ -610,7 +610,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     /**
      * This method retrieves the LastOpenFiles and show them in the File Menu
      *
-     * @return
+     * @return the result
      */
     private List<LastRecentFilesMenuItem> getLastOpenFiles() {
         var lastOpenFilesItems = new ArrayList<LastRecentFilesMenuItem>(LocalPreferences.LAST_OPEN_NETWORKS_FILES.get()

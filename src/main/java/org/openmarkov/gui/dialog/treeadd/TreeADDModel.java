@@ -129,7 +129,7 @@ public class TreeADDModel implements TreeModel {
      * node´s attributes have changed and may affect presentation
      * The node(s) have not changed locations in the tree or altered their children
      *
-     * @param path
+     * @param path the path
      */
     public void notifyNodesChanged(TreePath path) {
         TreeModelEvent e = new TreeModelEvent(this, path);
@@ -142,7 +142,7 @@ public class TreeADDModel implements TreeModel {
     /**
      * Alerts tree model listeners that the tree has drastically changed structure from a given node down
      *
-     * @param path
+     * @param path the path
      */
     public void notifyTreeStructureChanged(TreePath path) {
         TreeModelEvent e = new TreeModelEvent(this, path);
@@ -156,8 +156,8 @@ public class TreeADDModel implements TreeModel {
      * Alerts tree model listeners that a node has been inserted in the tree
      * Tree nodes could be treeADDs or potentials
      *
-     * @param path
-     * @param child
+     * @param path the path
+     * @param child the child
      */
     public void notifyTreeInsert(TreePath path, Object child) {
         int index = this.getIndexOfChild(path.getLastPathComponent(), child);
@@ -171,8 +171,8 @@ public class TreeADDModel implements TreeModel {
     /**
      * Alerts tree model listeners that a node has been removed in the tree
      *
-     * @param path
-     * @param child
+     * @param path the path
+     * @param child the child
      */
     public void notifyTreeRemove(TreePath path, Object child) {
         int index = this.getIndexOfChild(path.getLastPathComponent(), child);
@@ -184,9 +184,9 @@ public class TreeADDModel implements TreeModel {
     }
     
     /**
-     * @param obj
-     * @param goal
-     * @param path
+     * @param obj the obj
+     * @param goal the goal
+     * @param path the path
      */
     @SuppressWarnings("unused") private void notifyRecursiveNodeChanged(Object obj, Object goal, TreePath path) {
         TreePath newPath = path.pathByAddingChild(obj);
@@ -206,7 +206,7 @@ public class TreeADDModel implements TreeModel {
     
     /*
      *
-     * @param goal
+     * @param goal the goal
      */
 	/*public void fireRecursiveNodeChanged (Node goal) {
 		Node root= (Node) getRoot();

@@ -53,7 +53,7 @@ public class TreeContextualMenu extends ContextualMenu {
 
     /**
      * Construct the menu from the items
-     * @param enableShowCEP 
+     * @param enableShowCEP the enable show cep
      */
     private void initialize(boolean enableShowCEP) {
         add(getExpandNextMenuItem());

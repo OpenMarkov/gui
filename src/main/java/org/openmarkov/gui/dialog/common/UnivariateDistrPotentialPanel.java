@@ -223,7 +223,7 @@ public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
     /**
      * Sets the data table from potential in oldValues
      *
-     * @param oldValues
+     * @param oldValues the old values
      *
      * @return an array filled with the date table from tablePotential or tableDeltaPotential filled with the data values
      * from tablePotential or tableDeltaPotential in the correct positions to be displayed by ValuesTable
@@ -352,7 +352,7 @@ public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
     /**
      * Handles the double click in a cell
      *
-     * @param e
+     * @param e the e
      */
     @Override protected void doubleClickEvent(MouseEvent e) {
         

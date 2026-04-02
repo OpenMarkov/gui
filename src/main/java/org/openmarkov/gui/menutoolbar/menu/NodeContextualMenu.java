@@ -114,8 +114,8 @@ public class NodeContextualMenu extends ContextualMenu {
 	 * This constructor creates a new instance.
 	 *
 	 * @param newListener  object that listens to the menu events.
-	 * @param panel
-	 * @param selectedNode
+	 * @param panel the panel
+	 * @param selectedNode the selected node
 	 */
 	public NodeContextualMenu(ActionListener newListener, VisualNode selectedNode, NetworkEditorPanel panel) {
 		super(newListener);

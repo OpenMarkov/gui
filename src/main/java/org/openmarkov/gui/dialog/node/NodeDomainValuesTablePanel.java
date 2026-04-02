@@ -660,7 +660,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * Initialize the data structure for finite states variables
      *
-     * @param states
+     * @param states the states
      *
      * @return The data from states
      */

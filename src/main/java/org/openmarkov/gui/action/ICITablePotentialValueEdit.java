@@ -417,9 +417,9 @@ import java.util.List;
     /*
      * First position is the noisy potential
      * Second position is the index within it
-     * @param row
-     * @param column
-     * @return
+     * @param row the row
+     * @param column the column
+     * @return the result
      */
 	/*private double roundingDouble(double number) {
 

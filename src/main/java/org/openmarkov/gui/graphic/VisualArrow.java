@@ -448,7 +448,7 @@ public class VisualArrow extends VisualElement {
 	 * Paints the line into the graphics object.
 	 *
 	 * @param g      graphics object where paint the link.
-	 * @param stroke
+	 * @param stroke the stroke
 	 */
     
     public static void paintLine(Graphics2D g, Point2D.Double start, Point2D.Double end, Stroke stroke) {

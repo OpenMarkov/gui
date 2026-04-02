@@ -593,7 +593,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * Saves a network in the file given by
      *
-     * @param networkPanel
+     * @param networkPanel the network panel
      * @param fileName     the file where the network is stored
      *
      * @return true iff the network could be saved
@@ -727,7 +727,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     }
     
     /**
-     * @param suggestedFileName
+     * @param suggestedFileName the suggested file name
      *
      * @return a list with the absolute path of of the chosen filename, the file format chosen, and the writer class.
      */
@@ -1143,7 +1143,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * This method saves the evidence of the current network to a file
      *
-     * @param currentNetworkPanel
+     * @param currentNetworkPanel the current network panel
      */
     private void saveEvidence(NetworkPanel currentNetworkPanel) {
         // TODO Implement
@@ -1166,7 +1166,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * This method tries to load evidence into the current network
      *
-     * @param currentNetworkPanel
+     * @param currentNetworkPanel the current network panel
      */
     private void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException {
         OMFileChooser evidenceOMFileChooser = new DBReaderOMFileChooser(false);
@@ -1387,7 +1387,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * This method sets the multicriteria options
      *
-     * @param networkPanel
+     * @param networkPanel the network panel
      */
     private void setInferenceOptions(NetworkPanel networkPanel) {
         InferenceOptionsDialog dialog = new InferenceOptionsDialog(networkPanel.getProbNet(),

@@ -265,7 +265,7 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
     /**
      * Sets the data table from potential in oldValues
      *
-     * @param oldValues
+     * @param oldValues the old values
      *
      * @return an array filled with the date table from tablePotential or tableDeltaPotential filled with the data values
      * from tablePotential or tableDeltaPotential in the correct positions to be displayed by ValuesTable

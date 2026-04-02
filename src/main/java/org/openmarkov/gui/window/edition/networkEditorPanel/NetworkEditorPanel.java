@@ -268,10 +268,10 @@ public final class NetworkEditorPanel extends JPanel {
      * If some property has changed, insert a new undo point into the network
      * undo manager.
      *
-     * @param selectedNode
-     * @param newNode
+     * @param selectedNode the selected node
+     * @param newNode the new node
      *
-     * @return
+     * @return the result
      */
     boolean changeNodeProperties(VisualNode selectedNode, boolean newNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
         boolean userAcceptedChanges = NetworkEditorPanel.requestNodePropertiesToUser2(GUIUtils.getOwner(this), selectedNode.getNode(), newNode);
@@ -343,7 +343,7 @@ public final class NetworkEditorPanel extends JPanel {
      * If some property has changed, insert a new undo point into the network
      * undo manager.
      *
-     * @param link
+     * @param link the link
      */
     void changeLinkProperties(VisualLink link) {
         /*
@@ -627,7 +627,7 @@ public final class NetworkEditorPanel extends JPanel {
     /**
      * Sets workingMode
      *
-     * @param newWorkingMode
+     * @param newWorkingMode the new working mode
      */
     public void setWorkingMode(NetworkPanel.WorkingMode newWorkingMode) {
         this.visualNetwork.setWorkingMode(newWorkingMode);

@@ -462,7 +462,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     /**
      * Sets the data table from potential in oldValues
      *
-     * @param oldValues
+     * @param oldValues the old values
      *
      * @return an array filled with the date table from tablePotential or tableDeltaPotential filled with the data values
      * from tablePotential or tableDeltaPotential in the correct positions to be displayed by ValuesTable
@@ -806,7 +806,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     /**
      * Handles the double click in a cell
      *
-     * @param evt
+     * @param evt the evt
      */
     protected void doubleClickEvent(MouseEvent evt) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         if (node.getPotentials().isEmpty()) return;
@@ -852,7 +852,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * <p>
      * NodeType.DECISION + policyType.OPTIMAL +!potential.isUtility()
      *
-     * @param uncertaintyInColumns
+     * @param uncertaintyInColumns the uncertainty in columns
      */
     protected void setCellRenderers(boolean[] uncertaintyInColumns) {
         

@@ -864,7 +864,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     }
     
     /**
-     * @param selectedRow
+     * @param selectedRow the selected row
      */
     protected void removeState(int selectedRow) throws DoEditException {
         int rowCount;

@@ -289,7 +289,7 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
     /**
      * Updates the features of a probNet when it´s set in the definition panel
      *
-     * @param probNet
+     * @param probNet the prob net
      */
     public void update(ProbNet probNet) {
         getNetworkDecisionCriteriaPanel().update(probNet);

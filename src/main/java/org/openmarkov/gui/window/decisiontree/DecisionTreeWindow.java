@@ -30,10 +30,10 @@ public class DecisionTreeWindow extends ZoomableContentPanel {
     /**
      * Creates a new window to display the decision tree derived from a network panel.
      * @param networkPanel The panel containing the probabilistic network.
-     * @throws IncompatibleEvidenceException
+     * @throws IncompatibleEvidenceException if the evidence is incompatible with the network
      * @throws NotEvaluableNetworkException If
-     * @throws NonProjectablePotentialException 
-     * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates
+     * @throws NonProjectablePotentialException if the potential cannot be projected
+     * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates if different sizes in potentials and states occurs
      */
     public DecisionTreeWindow(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates {
         this.setLayout(new BorderLayout());

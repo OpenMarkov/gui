@@ -63,10 +63,10 @@ public class AugmentedValuesTable extends ValuesTable implements PNEditListener 
     }
     
     /**
-     * @param node
-     * @param tableModel
-     * @param AugmentedProbTable
-     * @param modifiable
+     * @param node the node
+     * @param tableModel the table model
+     * @param AugmentedProbTable the augmented prob table
+     * @param modifiable the modifiable
      */
     public AugmentedValuesTable(Node node, ValuesTableModel tableModel, AugmentedProbTable AugmentedProbTable,
                                 final boolean modifiable) {
@@ -170,7 +170,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNEditListener 
     }
     
     /**
-     * @param edit
+     * @param edit the edit
      */
     public void augmentedPotentialValueEditHappened(AugmentedPotentialValueEdit edit) {
         int position = edit.getIndexSelected();

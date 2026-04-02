@@ -79,8 +79,8 @@ class LinkContextualMenu extends ContextualMenu {
      * This constructor creates a new instance.
      *
      * @param newListener  object that listens to the menu events.
-     * @param panel
-     * @param selectedLink
+     * @param panel the panel
+     * @param selectedLink the selected link
      */
     public LinkContextualMenu(ActionListener newListener, VisualLink selectedLink, NetworkEditorPanel panel) {
         

@@ -681,7 +681,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
     /**
      * Updates the table if the edited column has uncertainty
      *
-     * @param edit
+     * @param edit the edit
      */
     private void uncertainValuesEditHappened(UncertainValuesEdit edit) {
         int row;

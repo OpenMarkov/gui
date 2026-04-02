@@ -74,9 +74,9 @@ public class UncertainValuesDialog extends OkCancelDialog {
     private int posBase;
     
     /**
-     * @param owner
-     * @param configuration
-     * @param potential
+     * @param owner the owner
+     * @param configuration the configuration
+     * @param potential the potential
      */
     public UncertainValuesDialog(Window owner, EvidenceCase configuration, TablePotential potential) throws NonProjectablePotentialException {
         super(owner);
@@ -120,8 +120,8 @@ public class UncertainValuesDialog extends OkCancelDialog {
     /**
      * Creates and displays the UncertainValuesDialog for a ExactDistrPotential
      *
-     * @param owner
-     * @param configuration
+     * @param owner the owner
+     * @param configuration the configuration
      * @param potential     - exactDistrPotential for which we will set uncertainty
      */
     public UncertainValuesDialog(Window owner, EvidenceCase configuration, ExactDistrPotential potential) throws NonProjectablePotentialException {
@@ -252,8 +252,8 @@ public class UncertainValuesDialog extends OkCancelDialog {
     }
     
     /**
-     * @param uncertainValues
-     * @param types
+     * @param uncertainValues the uncertain values
+     * @param types the types
      *
      * @return The indexes of uncertain values
      */

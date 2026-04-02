@@ -14,7 +14,7 @@ import org.openmarkov.core.model.network.constraint.NoRevelationArc;
 public class AlwaysObservedPropertyValidator {
 	/*****
 	 * Checks if a node can have the alwaysObserved property.
-	 * @param node
+	 * @param node the node
      * @return {@code true} if the node can have the alwaysObserved property.
 	 */
 	public static boolean validate(Node node) {

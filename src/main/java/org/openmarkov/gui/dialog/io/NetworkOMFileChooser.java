@@ -136,8 +136,8 @@ public class NetworkOMFileChooser extends OMFileChooser {
      *
      * @return the format OpenMarkov.version of a pgmx file
      *
-     * @throws IOException
-     * @throws SAXException
+     * @throws IOException if an I/O error occurs
+     * @throws SAXException if an XML parsing error occurs
      */
 
     public String getPgmxFileFormat() throws SAXException, IOException {

@@ -244,7 +244,7 @@ public class ICIPotentialsTablePanel
     /**
      * Retrieves ICIPotential
      *
-     * @param listPotentials
+     * @param listPotentials the list potentials
      *
      * @return this ICI potential
      */
@@ -331,8 +331,8 @@ public class ICIPotentialsTablePanel
     }
     
     /**
-     * @param oldValues
-     * @param node
+     * @param oldValues the old values
+     * @param node the node
      *
      * @return the new values
      */

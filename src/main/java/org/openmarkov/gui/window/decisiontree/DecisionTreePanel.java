@@ -69,10 +69,10 @@ public class DecisionTreePanel extends JScrollPane {
      * 
      * @param probNet The probabilistic network to represent.
      * 
-     * @throws NotEvaluableNetworkException
-     * @throws IncompatibleEvidenceException
-     * @throws NonProjectablePotentialException
-     * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates
+     * @throws NotEvaluableNetworkException if the network cannot be evaluated
+     * @throws IncompatibleEvidenceException if the evidence is incompatible with the network
+     * @throws NonProjectablePotentialException if the potential cannot be projected
+     * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates if different sizes in potentials and states occurs
      */
     public DecisionTreePanel(ProbNet probNet)
             throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException,
@@ -123,10 +123,10 @@ public class DecisionTreePanel extends JScrollPane {
      * @param depth   The maximum depth of the decision tree.
      * @return The root element of the constructed decision tree.
      * 
-     * @throws NotEvaluableNetworkException
-     * @throws IncompatibleEvidenceException
-     * @throws NonProjectablePotentialException
-     * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates
+     * @throws NotEvaluableNetworkException if the network cannot be evaluated
+     * @throws IncompatibleEvidenceException if the evidence is incompatible with the network
+     * @throws NonProjectablePotentialException if the potential cannot be projected
+     * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates if different sizes in potentials and states occurs
      */
     public DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth)
             throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException,

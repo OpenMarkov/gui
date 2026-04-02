@@ -49,9 +49,9 @@ import java.util.EventObject;
     // Constructor
     
     /**
-     * @param owner
+     * @param owner the owner
      * @param cep     {@code CEP}
-     * @param probNet
+     * @param probNet the prob net
      */
     public CEPDialog(Window owner, CEP cep, ProbNet probNet) {
         super(owner);
@@ -245,8 +245,8 @@ import java.util.EventObject;
     }
     
     /**
-     * @param cep
-     * @param intervalIndex
+     * @param cep the cep
+     * @param intervalIndex the interval index
      *
      * @return Left end point. {@code String}
      */
@@ -261,8 +261,8 @@ import java.util.EventObject;
     }
     
     /**
-     * @param cep
-     * @param intervalIndex
+     * @param cep the cep
+     * @param intervalIndex the interval index
      *
      * @return Right end point. {@code String}
      */

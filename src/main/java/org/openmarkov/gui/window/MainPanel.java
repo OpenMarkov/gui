@@ -396,7 +396,7 @@ public class MainPanel extends JPanel {
     /**
      * Opens a prob net
      *
-     * @param fileName
+     * @param fileName the file name
      */
     public void openNetwork(String fileName) throws ParserException, IOException, NoReaderForFileException, CorruptNetworkFile {
         this.getMainPanelListenerAssistant().openNetwork(fileName);

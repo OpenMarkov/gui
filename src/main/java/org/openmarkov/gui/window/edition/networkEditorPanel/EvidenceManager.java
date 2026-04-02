@@ -348,8 +348,8 @@ public class EvidenceManager {
     }
     
     /**
-     * @param innerBox
-     * @param visualState
+     * @param innerBox the inner box
+     * @param visualState the visual state
      */
     private void updateVisualStateAndEvidence(InnerBox innerBox, VisualState visualState) {
         if (visualState.getNumberOfValues() != this.postResolutionEvidence.size()) {
@@ -533,7 +533,7 @@ public class EvidenceManager {
      * approximate implementation. The correct computation is given by a method
      * with the same name, but commented above.
      *
-     * @throws NonProjectablePotentialException
+     * @throws NonProjectablePotentialException if the potential cannot be projected
      */
     private void calculateMinAndMaxUtilityRanges() throws NonProjectablePotentialException {
         List<Variable> utilityVariables = this.networkEditorPanel.getVisualNetwork().getProbNet().getVariables(NodeType.UTILITY);

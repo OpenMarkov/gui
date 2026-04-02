@@ -118,7 +118,7 @@ public class VisualNetwork implements PNEditListener {
      * Creates a new visual network.
      *
      * @param probNet object that has the information of the network.
-     * @param mainGUI
+     * @param mainGUI the main gui
      */
     public VisualNetwork(ProbNet probNet, MainGUI mainGUI) {
         this.probNet = probNet;
@@ -239,8 +239,8 @@ public class VisualNetwork implements PNEditListener {
     /**
      * Returns whether the link contains nodes to delete
      *
-     * @param linkToCheck
-     * @param vNodesToDelete
+     * @param linkToCheck the link to check
+     * @param vNodesToDelete the v nodes to delete
      *
      * @return True iff the link contains the node to delete
      */
@@ -985,8 +985,8 @@ public class VisualNetwork implements PNEditListener {
     /**
      * Adds whatever is in that position to the selection
      *
-     * @param cursorPosition
-     * @param g
+     * @param cursorPosition the cursor position
+     * @param g the g
      */
     public void addToSelection(Point2D.Double cursorPosition, Graphics2D g) {
         VisualNode node;
@@ -1002,8 +1002,8 @@ public class VisualNetwork implements PNEditListener {
     /**
      * Cleans selection and sets it to whatever is in the cursorPosition
      *
-     * @param cursorPosition
-     * @param g
+     * @param cursorPosition the cursor position
+     * @param g the g
      *
      * @return true if there is an element in the position
      */
@@ -1032,8 +1032,8 @@ public class VisualNetwork implements PNEditListener {
     /**
      * Starts link creation
      *
-     * @param cursorPosition
-     * @param g
+     * @param cursorPosition the cursor position
+     * @param g the g
      */
     public void startLinkCreation(Point2D.Double cursorPosition, Graphics2D g) {
         VisualNode node;
@@ -1053,8 +1053,8 @@ public class VisualNetwork implements PNEditListener {
     /**
      * Finishes link creation and returns edit for the new link
      *
-     * @param point
-     * @param g
+     * @param point the point
+     * @param g the g
      *
      * @return The edit for the new link created
      */

@@ -1151,7 +1151,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     /**
      * Action that trigger a change in a radio button.
      *
-     * @param e
+     * @param e the e
      */
     private void radioButtonChanged(ActionEvent e) {
         if (e.getSource().equals(radioIndividual)) {
@@ -1225,7 +1225,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * Allows to update the info in the chart. With the filter, the painted
      * series will change
      *
-     * @param markedCheckBoxes
+     * @param markedCheckBoxes the marked check boxes
      */
     private void showChartSeriesWithFilter(boolean[] markedCheckBoxes) {
         XYSeriesCollection result = new XYSeriesCollection();
@@ -1336,7 +1336,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     /**
      * Sum a list of series to get a new series
      *
-     * @param arraySeries
+     * @param arraySeries the array series
      *
      * @return The XY series
      */
@@ -1709,9 +1709,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     /**
      * Allows to create an excel of a report
      *
-     * @param filename
+     * @param filename the filename
      *
-     * @throws IOException
+     * @throws IOException if an I/O error occurs
      */
     private void createExcel(String filename) throws IOException {
         TemporalEvolutionReport.write(filename, tablePane.getTable());
@@ -1720,8 +1720,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     /**
      * Auxiliary method to make a legend JLabel with a title and an image
      *
-     * @param title
-     * @param image
+     * @param title the title
+     * @param image the image
      *
      * @return The legend label made
      */
@@ -1735,8 +1735,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     /**
      * Auxiliary method to obtain an Image from an LegendItem of JFreeChart and a color
      *
-     * @param item
-     * @param color
+     * @param item the item
+     * @param color the color
      *
      * @return The image made
      */

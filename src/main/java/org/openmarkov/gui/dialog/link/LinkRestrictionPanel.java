@@ -121,9 +121,9 @@ import java.util.List;
 	 * of the link and transforms the tablePotential of the link restriction to
 	 * a format, which can be displayed in a table.
 	 *
-	 * @param node1
+	 * @param node1 the node1
 	 *            Parent node of the link.
-	 * @param node2
+	 * @param node2 the node2
 	 *            Child node of the link.
 	 */
 	public void setData(Node node1, Node node2) {
@@ -158,9 +158,9 @@ import java.util.List;
 	/*****
 	 * Prepare the table data from the two nodes of the link.
 	 *
-	 * @param node1
+	 * @param node1 the node1
 	 *            Parent node of the link
-	 * @param node2
+	 * @param node2 the node2
 	 *            Child node of the link
 	 * @return he table data to be set
 	 */

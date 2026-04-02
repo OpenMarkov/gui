@@ -260,8 +260,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     /**
      * Activates the corresponding options when a network has been modified.
      *
-     * @param canRedo
-     * @param canUndo
+     * @param canRedo the can redo
+     * @param canUndo the can undo
      */
     public void updateOptionsNetworkModified(boolean canUndo, boolean canRedo) {
         // updateUndoRedo(basicUndoManager);
@@ -300,7 +300,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
      * OnlyOneAgentConstraints that means it is multiagent, so network is
      * initialized with two arbitrary agents
      *
-     * @param networkPanel
+     * @param networkPanel the network panel
      */
     public void updateNetworkAgents(NetworkPanel networkPanel) {
         NetworkPanel currentNetworkPanel = networkPanel;
@@ -425,8 +425,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
      * Enables or disables the undo and redo operations in the menubar and in
      * the toolbar, according to the state of undo and redo of the network.
      *
-     * @param canRedo
-     * @param canUndo
+     * @param canRedo the can redo
+     * @param canUndo the can undo
      */
     private void updateUndoRedo(boolean canUndo, boolean canRedo) {
         setOptionEnabled(ActionCommands.UNDO, canUndo);

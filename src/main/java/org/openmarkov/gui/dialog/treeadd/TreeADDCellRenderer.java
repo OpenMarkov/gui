@@ -55,7 +55,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
     /**
      * TODO: Add a new constructor with font and default precision values
      *
-     * @param probNet
+     * @param probNet the prob net
      */
     public TreeADDCellRenderer(ProbNet probNet) {
         super(new BorderLayout());
@@ -92,13 +92,13 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
     /**
      * Draws a TreeADDBranch node
      *
-     * @param tree
+     * @param tree the tree
      * @param branch   TreeADDBranch being painted
      * @param selected Selection Flag: true when this treenode is selected
      * @param expanded true when this treenode is expanded
      * @param leaf     true when this treenode is a leaf
-     * @param row
-     * @param hasFocus
+     * @param row the row
+     * @param hasFocus the has focus
      * @return the tree cell renderer branch
      */
     public Component getTreeCellRendererBranch(JTree tree, TreeADDBranch branch, boolean selected, boolean expanded,
@@ -126,13 +126,13 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
     /**
      * Draws a TreeADDPotential or a TablePotential node
      *
-     * @param tree
+     * @param tree the tree
      * @param potential Potential Node of the ADD/Tree
      * @param selected  Selection Flag: true when this treenode is selected
      * @param expanded  true when this treenode is expanded
      * @param leaf      true when this treenode is a leaf
-     * @param row
-     * @param hasFocus
+     * @param row the row
+     * @param hasFocus the has focus
      * @return the tree cell renderer potential
      */
     public Component getTreeCellRendererPotential(JTree tree, Potential potential, boolean selected, boolean expanded,

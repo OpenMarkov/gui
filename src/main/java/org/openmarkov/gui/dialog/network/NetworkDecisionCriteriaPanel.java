@@ -33,9 +33,9 @@ public class NetworkDecisionCriteriaPanel extends JPanel {
 	
 	/**
 	 * Constructor.
-	 * If not a network of only chance nodes, the panel is initialised
+	 * If not a network of only chance nodes, the panel is initialized
 	 *
-	 * @param newNetwork to indicate if the panel is for new networks
+	 * @param owner parent window
 	 * @param probNet    manage the network access
 	 */
 	public NetworkDecisionCriteriaPanel(Window owner, ProbNet probNet) {
@@ -59,7 +59,7 @@ public class NetworkDecisionCriteriaPanel extends JPanel {
 	
 	/**
 	 * Gets the decision criteria table
-	 * @return 
+	 * @return the result
 	 */
 	private DecisionCriteriaTablePanel getDecisionCriteriaTablePanel() {
 		if (decisionCriteriaTablePanel == null) {
@@ -77,7 +77,7 @@ public class NetworkDecisionCriteriaPanel extends JPanel {
 	
 	/**
 	 * Sets the decision criteria table fields of the probNet 
-	 * @param probNet
+	 * @param probNet the prob net
 	 */
 	public void setFieldFromProperties(ProbNet probNet) {
 		// StringsWithProperties agents = probNet.getAgents();
@@ -100,7 +100,7 @@ public class NetworkDecisionCriteriaPanel extends JPanel {
 	 * for networks sets or changes in the definition panel to a 
 	 * not only chance nodes probNet
 	 * 
-	 * @param probNet
+	 * @param probNet the prob net
 	 */	
 	public void update(ProbNet probNet) {
 		this.probNet = probNet;

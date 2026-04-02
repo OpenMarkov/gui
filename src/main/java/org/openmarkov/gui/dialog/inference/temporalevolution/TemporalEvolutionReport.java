@@ -25,7 +25,7 @@ public class TemporalEvolutionReport {
 	/**
 	 * creates a new xlsx book with temporal evolution of a variable
 	 *
-	 * @throws IOException
+	 * @throws IOException if an I/O error occurs
 	 */
     public static void write(String filename, JTable jtable) throws IOException {
 		XSSFWorkbook hwb = new XSSFWorkbook();
@@ -66,7 +66,7 @@ public class TemporalEvolutionReport {
 	/**
 	 * creates a new xls book with temporal evolution of a variable
 	 *
-	 * @throws IOException
+	 * @throws IOException if an I/O error occurs
 	 */
 //	public void write(String filename, JTable jtable) throws IOException {
 //		HSSFWorkbook hwb = new HSSFWorkbook();

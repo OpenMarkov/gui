@@ -128,7 +128,7 @@ public final class NodeDefinitionPanel extends JPanel
     /**
      * Constructor
      *
-     * @param node
+     * @param node the node
      */
     public NodeDefinitionPanel(Node node) {
         this(true);// , notifier );

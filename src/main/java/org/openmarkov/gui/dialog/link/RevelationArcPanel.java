@@ -61,7 +61,7 @@ import java.util.List;
     /****
      * Constructor - constructs a JPanel for displaying the revelation
      * conditions of a link
-     * @param link
+     * @param link the link
      */
     public RevelationArcPanel(Link<Node> link) {
         this.link = link;

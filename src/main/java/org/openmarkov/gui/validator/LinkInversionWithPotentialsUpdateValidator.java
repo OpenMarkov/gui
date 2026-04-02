@@ -9,14 +9,9 @@ package org.openmarkov.gui.validator;
 
 import org.openmarkov.core.action.base.linkEdits.InvertLinkEdit;
 import org.openmarkov.core.exception.ConstraintViolatedException;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.constraint.NoCycle;
-import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.AugmentedProbTable;
 import org.openmarkov.core.model.network.potential.AugmentedProbTablePotential;
 import org.openmarkov.core.model.network.potential.BinomialPotential;
@@ -43,7 +38,6 @@ public class LinkInversionWithPotentialsUpdateValidator {
      * <li>The new links created do not create a cycle.</li>
      * </ol>
      *
-     * @return boolean
      */
     public static void validate(Link<Node> link) throws LinkInversionRequiresChanceVariablesWithPotential, ConstraintViolatedException, CannotInvertUndirectedLinks {
         if (!link.isDirected()) {
@@ -63,14 +57,13 @@ public class LinkInversionWithPotentialsUpdateValidator {
     /**
      * A node is valid when is a chance node and it contains a valid potential type.
      *
-     * @return boolean
      */
     private static void validNode(Node node) throws LinkInversionRequiresChanceVariablesWithPotential {
         if (node.getNodeType() != NodeType.CHANCE) {
             throw new LinkInversionRequiresChanceVariablesWithPotential(node);
         }
         List<Potential> potentials = node.getPotentials();
-        if (potentials.isEmpty() || !validPotentialType(potentials.get(0))) {
+        if (potentials.isEmpty() || !validPotentialType(potentials.getFirst())) {
             throw new LinkInversionRequiresChanceVariablesWithPotential(node);
         }
     }
@@ -92,8 +85,8 @@ public class LinkInversionWithPotentialsUpdateValidator {
     
     /**
      *
-     * @param node1
-     * @param node2
+     * @param node1 the node1
+     * @param node2 the node2
      *
      * @return boolean
      */
@@ -104,7 +97,7 @@ public class LinkInversionWithPotentialsUpdateValidator {
             List<Potential> potentials1 = node1.getPotentials();
             List<Potential> potentials2 = node2.getPotentials();
             if (!potentials1.isEmpty() && !potentials1.isEmpty()) {
-                validPotentials = validPotential(potentials1.get(0)) && validPotential(potentials2.get(0));
+                validPotentials = validPotential(potentials1.getFirst()) && validPotential(potentials2.getFirst());
             }
         }
         return validPotentials;
