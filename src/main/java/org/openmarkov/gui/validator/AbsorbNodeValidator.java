@@ -9,11 +9,13 @@ package org.openmarkov.gui.validator;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNetOperations;
+import org.openmarkov.core.model.network.Variable;
 
 import java.util.List;
 
 /******
- * This class validates if a chance or decision node can be absorbed into an utility node
+ * This class validates if a chance or decision node can be absorbed into an utility node.
  *
  * @author iagoparís - summer 2018
  *
@@ -30,18 +32,31 @@ public class AbsorbNodeValidator {
 
         // Test if only utility children and no grandchildren
         List<Node> children = node.getChildren();
-        return switch (children.size()) {
-            case 0 -> false;
-            default -> {
-                for (Node child : children) {
-                    if (child.getNodeType() != NodeType.UTILITY || !child.getChildren().isEmpty()) {
-                        yield false;
+        if (children.isEmpty()) {
+            return false;
+        } else {
+            for (Node child : children) {
+                if (child.getNodeType() != NodeType.UTILITY || !child.getChildren().isEmpty()) {
+                    return false;
+                }
+            }
+        }
+
+        // For decision nodes: all other parents of the utility children must be
+        // informational predecessors of this decision. Otherwise, maximizing over
+        // the decision assumes knowledge the decision maker does not have. (Issue #506)
+        if (node.getNodeType() == NodeType.DECISION) {
+            List<Variable> infoPredecessors = ProbNetOperations.getInformationalPredecessors(
+                    node.getProbNet(), node.getVariable());
+            for (Node child : children) {
+                for (Node parent : child.getParents()) {
+                    if (parent != node && !infoPredecessors.contains(parent.getVariable())) {
+                        return false;
                     }
                 }
-                // Only utility children, no grandchildren
-                yield true;
             }
-        };
+        }
 
+        return true;
     }
 }
