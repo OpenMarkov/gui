@@ -101,7 +101,7 @@ import java.util.List;
         Object[][] data = new Object[covariates.length][2];
         for (int i = 0; i < covariates.length; ++i) {
             data[i][0] = covariates[i];
-            data[i][1] = coefficients[i];
+            data[i][1] = (i < coefficients.length) ? coefficients[i] : 0.0;
         }
         setData(data);
     }

@@ -182,8 +182,11 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         WeibullHazardPotential oldPotential = (WeibullHazardPotential) this.node.getPotentials().get(0);
         VariableExpression[] covariates = regressionPanel.getCovariates();
         double[] coefficients = regressionPanel.getCoefficients();
-        String selectedTimeVariable = timeVariableComboBox.getSelectedItem().toString();
-        Variable timeVariable = node.getProbNet().getVariable(selectedTimeVariable);
+        Variable timeVariable = null;
+        if (timeVariableComboBox.getSelectedIndex() > 0) {
+            String selectedTimeVariable = timeVariableComboBox.getSelectedItem().toString();
+            timeVariable = node.getProbNet().getVariable(selectedTimeVariable);
+        }
         
         
         double[] uncertaintyMatrix = null;
