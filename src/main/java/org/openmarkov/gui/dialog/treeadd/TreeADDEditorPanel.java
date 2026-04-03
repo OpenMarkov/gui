@@ -39,7 +39,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Serial;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +52,7 @@ import java.util.Map;
  * @author myebra
  */
 public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
+    @Serial
     private static final long serialVersionUID = -6230911169585766424L;
     protected final JPopupMenu contextualMenu = new JPopupMenu();
     // menu to start painting the treeADD with the panel in blank
@@ -94,7 +97,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node, boolean readOnly) {
         // A copy of the potential
         this.node = node;
-        this.rootTreeADDPotential = new TreeADDPotential((TreeADDPotential) node.getPotentials().get(0));
+        this.rootTreeADDPotential = new TreeADDPotential((TreeADDPotential) node.getPotentials().getFirst());
         setupUserInterface(cellRenderer);
         
         setReadOnly(readOnly);
@@ -150,13 +153,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         // change root variable
         List<TreeADDBranch> branches = treeADD.getBranches();
         boolean hasSubTrees = false;
-        for (TreeADDBranch branch : branches) {
-            if (branch.getPotential() instanceof TreeADDPotential) {
-            }
-        }
         Variable currentRootVariable = treeADD.getRootVariable();
         Variable conditionedVariable = treeADD.getConditionedVariable();
-        List<Variable> newPosibleRootVariables = new ArrayList<Variable>();
+        List<Variable> newPosibleRootVariables = new ArrayList<>();
         for (Variable variable : treeADD.getVariables()) {
             if (variable != currentRootVariable && variable != conditionedVariable) {
                 newPosibleRootVariables.add(variable);
@@ -241,7 +240,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         boolean suitableLabeledPotentialFound = false;
         for (TreeADDBranch labeledBranch : labeledPotentials.values()) {
             Potential labeledPotential = labeledBranch.getPotential();
-            suitableLabeledPotentialFound |= branch.getParentVariables().containsAll(labeledPotential.getVariables());
+            suitableLabeledPotentialFound |= new HashSet<>(branch.getParentVariables()).containsAll(labeledPotential.getVariables());
         }
         if (suitableLabeledPotentialFound) {
             contextualMenu.add(new JSeparator());
@@ -343,21 +342,19 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             return;
         }
         Object node = path.getLastPathComponent();
-        switch (actionComand) {
-            case ActionCommands.ADD_SUBTREE -> {
-                if (node instanceof Potential) {
-                    path = path.getParentPath();
-                    node = path.getLastPathComponent();
-                }
-                // node must be a branch
-                addSubtree(ae, (TreeADDBranch) node, path);
+        // Most actions target a branch, not the leaf Potential — navigate to the parent branch.
+        // Skip this for CHANGE_ROOT_VARIABLE which operates on the root TreeADDPotential itself.
+        if (node instanceof Potential && !ActionCommands.CHANGE_ROOT_VARIABLE.equals(actionComand)) {
+            path = path.getParentPath();
+            if (path == null) {
+                return;
             }
+            node = path.getLastPathComponent();
+        }
+        switch (actionComand) {
+            case ActionCommands.ADD_SUBTREE ->
+                addSubtree(ae, (TreeADDBranch) node, path);
             case ActionCommands.EDIT_POTENTIAL -> {
-                if (node instanceof Potential) {
-                    path = path.getParentPath();
-                    node = path.getLastPathComponent();
-                }
-                // node must be a branch
                 try {
                     editPotential(ae, (TreeADDBranch) node, path);
                 } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
@@ -366,57 +363,23 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 }
             }
             case ActionCommands.CHANGE_ROOT_VARIABLE ->
-                // node must be a TreeADDPotential
                     changeRootVariable(ae, (TreeADDPotential) node, path);
-            case ActionCommands.JOIN_BRANCHES -> {
-                if (node instanceof Potential) {
-                    path = path.getParentPath();
-                    node = path.getLastPathComponent();
-                }
-                // node must be a branch
+            case ActionCommands.JOIN_BRANCHES ->
                 associateStates(ae, (TreeADDBranch) node, path);
-            }
-            case ActionCommands.REMOVE_SUBTREE -> {
-                if (node instanceof Potential) {
-                    path = path.getParentPath();
-                    node = path.getLastPathComponent();
-                }
-                // node must be a branch
+            case ActionCommands.REMOVE_SUBTREE ->
                 removeSubtree(ae, (TreeADDBranch) node, path);
-            }
-            case ActionCommands.ADD_VARIABLES -> {
-                if (node instanceof Potential) {
-                    path = path.getParentPath();
-                    node = path.getLastPathComponent();
-                }
-                // node must be a branch
+            case ActionCommands.ADD_VARIABLES ->
                 addVariablesToPotential(ae, (TreeADDBranch) node, path);
-            }
             case ActionCommands.REMOVE_STATES -> {
-                if (node instanceof Potential) {
-                    path = path.getParentPath();
-                    node = path.getLastPathComponent();
-                }
-                // node must be a branch
                 try {
                     dissociateStates(ae, (TreeADDBranch) node, path);
                 } catch (RemovingAllStatesIsNotAllowedException e) {
                     throw new UnrecoverableException(e);
                 }
             }
-            case ActionCommands.REMOVE_VARIABLES -> {
-                if (node instanceof Potential) {
-                    path = path.getParentPath();
-                    node = path.getLastPathComponent();
-                }
-                // node must be a branch
+            case ActionCommands.REMOVE_VARIABLES ->
                 removeVariablesFromPotential(ae, (TreeADDBranch) node, path);
-            }
             case ActionCommands.SPLIT_INTERVAL -> {
-                if (node instanceof Potential) {
-                    path = path.getParentPath();
-                    node = path.getLastPathComponent();
-                }
                 // node must be a branch
                 try {
                     splitInterval(ae, (TreeADDBranch) node, path);
@@ -425,11 +388,6 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 }
             }
             case ActionCommands.CHANGE_INTERVAL -> {
-                if (node instanceof Potential) {
-                    path = path.getParentPath();
-                    node = path.getLastPathComponent();
-                }
-                // node must be a branch
                 try {
                     changeInterval(ae, (TreeADDBranch) node, path);
                 } catch (InvalidArgumentException | ChangeDomainOfTreeADDIsNotAllowedException e) {
