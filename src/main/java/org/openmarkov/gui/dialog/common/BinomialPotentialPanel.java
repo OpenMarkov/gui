@@ -23,7 +23,7 @@ import java.awt.*;
  * Panel for editing a {@link BinomialPotential}, allowing the user to specify
  * the number of trials (N) and the success probability (theta).
  */
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = BinomialPotential.class)
+@PotentialPanelPlugin(potentialClasses = BinomialPotential.class)
 public class BinomialPotentialPanel
         extends PotentialPanel {
     
@@ -78,8 +78,8 @@ public class BinomialPotentialPanel
     @Override public void setData(Node node) {
         this.node = node;
         BinomialPotential oldPotential = null;
-        if (!node.getPotentials().isEmpty() && node.getPotentials().get(0) instanceof BinomialPotential) {
-            oldPotential = (BinomialPotential) node.getPotentials().get(0);
+        if (!node.getPotentials().isEmpty() && node.getPotentials().getFirst() instanceof BinomialPotential) {
+            oldPotential = (BinomialPotential) node.getPotentials().getFirst();
         }
         // The model inits the valid range and the mean value
         if (node.getVariable().getVariableType() == VariableType.NUMERIC) {
@@ -88,7 +88,7 @@ public class BinomialPotentialPanel
                 int NValue = oldPotential.getN();
                 // UNCLEAR--&gt;Where to check, when loading or when saving
                 // We put these value into the spinner if the value is into the bounds
-                if ((NValue > 0) && (NValue <= Integer.MAX_VALUE)) {
+                if (NValue > 0) {
                     NSpinner.setValue(NValue);
                 }
                 
@@ -99,15 +99,13 @@ public class BinomialPotentialPanel
                 
             }
             
-        } else {
-            //UNCLEAR--&gt;Where to check
         }
     }
     
     @Override public boolean saveChanges() throws BinomialPotentialWrongValueException.ThetaValueIsWrong,
             BinomialPotentialWrongValueException.NValuesIsWrong, DoEditException {
         boolean result = super.saveChanges();
-        Potential oldPotential = node.getPotentials().get(0);
+        Potential oldPotential = node.getPotentials().getFirst();
         Potential newPotential = null;
         if (node.getVariable().getVariableType() == VariableType.NUMERIC) {
             int NValue = Integer.parseInt(NSpinner.getValue().toString());
