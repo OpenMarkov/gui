@@ -23,7 +23,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * Auxiliary methods for PotentialsTablePanel class
  *
  * @author jlgozalo
- * @author marias
+ * @author Manuel Arias
  * @version 2.0 cmyago - 27/05/2016
  */
 public class PotentialsTablePanelOperations {
