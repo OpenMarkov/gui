@@ -56,7 +56,7 @@ import java.util.List;
  * @author carmenyago Apr/2017
  */
 
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = AugmentedProbTablePotential.class)
+@PotentialPanelPlugin(potentialClasses = AugmentedProbTablePotential.class)
 public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
     /**
      * Variables of the AugmentedProbTablePotential.
@@ -69,11 +69,11 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
     }
     
     @Override public void setPotential(Potential potential) {
-        super.setPotential((AugmentedProbTablePotential) potential);
+        super.setPotential(potential);
     }
     
     @Override public void setTablePotential(TablePotential tablePotential) {
-        super.setTablePotential((AugmentedProbTable) tablePotential);
+        super.setTablePotential(tablePotential);
     }
     
     @Override public AugmentedProbTablePotential getPotential() {
@@ -333,17 +333,7 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
         }
         return valuesTableScrollPane;
     }
-    
-    /**
-     * Show/Hide all the parameters
-     *
-     * @param showAllParameters the showAllParameters to set
-     */
-    @Override public void setShowAllParameters(boolean showAllParameters) {
-        this.showAllParameters = showAllParameters;
-        valuesTable.setShowingAllParameters(showAllParameters);
-    }
-    
+
     //	/**
     //	 * Handles an action performed
     //	 * revised--&gt;not changed
@@ -408,7 +398,6 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
                         new ArithmeticExpressionDialog(null, parameterVariables, expression);
                 expressionDialog.setVisible(true);
                 if (expressionDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
-                    String function = expressionDialog.getExpression();
                     valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column);
                     //TODO: Continue here changing String expressions to VariableExpression expressions.
                     //valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column);

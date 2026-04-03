@@ -25,7 +25,7 @@ import java.awt.event.MouseEvent;
  * @author caroline
  *
  */
-@SuppressWarnings("serial") public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
+public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
     /****
      * Link for which the revelation conditions are stores.
      */
@@ -51,16 +51,7 @@ import java.awt.event.MouseEvent;
         super.getPositiveInfinityButton().setVisible(false);
         super.getStandardDomainButton().setVisible(false);
     }
-    
-    /**
-     * Method to define the specific listeners in this table (not defined in the
-     * common KeyTable hierarchy
-     */
-    @Override protected void defineTableSpecificListeners() {
-        
-        valuesTable.addMouseListener(this);
-    }
-    
+
     @Override public void setPartitionedInterval() {
         
         int subIntervals = 0;
@@ -89,7 +80,6 @@ import java.awt.event.MouseEvent;
         int newIndex = valuesTable.getRowCount();
         RevelationIntervalEdit revelationArcStateEdit =
                 new RevelationIntervalEdit(link, StateAction.ADD, newIndex, 0, false);
-        ProbNet probNet = node.getProbNet();
         revelationArcStateEdit.executeEdit();
         setPartitionedInterval();
         valuesTable.getSelectionModel().setSelectionInterval(rowCount, rowCount);
@@ -102,7 +92,6 @@ import java.awt.event.MouseEvent;
         int selectedRow = valuesTable.getSelectedRow();
         RevelationIntervalEdit revelationArcStateEdit =
                 new RevelationIntervalEdit(link, StateAction.REMOVE, selectedRow, 0, false);
-        ProbNet probNet = node.getProbNet();
         revelationArcStateEdit.executeEdit();
         cancelCellEditing();
         setPartitionedInterval();
