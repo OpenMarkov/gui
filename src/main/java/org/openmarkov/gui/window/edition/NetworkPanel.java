@@ -47,7 +47,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
     /**
      * Network that is edited.
      */
-    public ProbNet probNet;
+    public final ProbNet probNet;
     /**
      * Panel where the network is painted.
      */

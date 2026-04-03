@@ -27,10 +27,10 @@ import java.util.stream.Stream;
  * the appropriate {@link EditionMode} subclass on demand.
  */
 public class EditionModeManager {
-    private Map<String, EditionState> editionStates;
-    private Map<String, Class<? extends EditionMode>> editionModeClasses;
-    private NetworkEditorPanel networkEditorPanel;
-    private ProbNet probNet;
+    private final Map<String, EditionState> editionStates;
+    private final Map<String, Class<? extends EditionMode>> editionModeClasses;
+    private final NetworkEditorPanel networkEditorPanel;
+    private final ProbNet probNet;
     
     public EditionModeManager(NetworkEditorPanel networkEditorPanel, ProbNet probNet) {
         editionStates = new HashMap<>();

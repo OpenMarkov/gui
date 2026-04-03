@@ -15,9 +15,9 @@ import org.openmarkov.core.model.network.Node;
  */
 @SuppressWarnings("serial") public class NodeDecisionCriteriaEdit extends PNEdit {
 
-	private Criterion currentDecisionCriteria;
-	private Criterion newDecisionCriteria;
-	private Node node;
+	private final Criterion currentDecisionCriteria;
+	private final Criterion newDecisionCriteria;
+	private final Node node;
 
 	/**
 	 * Creates a new edit that sets the decision criterion of the given node.

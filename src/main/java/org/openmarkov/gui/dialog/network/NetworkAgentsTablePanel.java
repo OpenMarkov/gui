@@ -26,11 +26,11 @@ import java.util.List;
  */
 @SuppressWarnings("serial") public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel {
     
-    private ProbNet probNet;
+    private final ProbNet probNet;
     /**
      * Each time an agent has been edited the corresponding edit would be stored
      */
-    private ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
+    private final ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
     
     public NetworkAgentsTablePanel(String[] newColumns, ProbNet probNet) {
         super(newColumns, new Object[0][0], "a");

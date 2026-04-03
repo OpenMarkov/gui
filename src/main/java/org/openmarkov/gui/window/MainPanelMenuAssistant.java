@@ -66,7 +66,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     /**
      * Menus and toolbar that manage zoomManager.
      */
-    private ZoomMenuToolBar[] zoomMenus;
+    private final ZoomMenuToolBar[] zoomMenus;
     /**
      * MainPanel from which this object depends.
      */

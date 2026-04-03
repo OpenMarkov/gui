@@ -19,7 +19,7 @@ import org.openmarkov.core.model.network.NodeType;
 public class DecisionTreeBranchPanel extends DecisionTreeElementPanel {
 	
 	/** The underlying logical tree branch. */
-	private DecisionTreeBranch treeBranch;
+	private final DecisionTreeBranch treeBranch;
 
 	/**
 	 * Constructs a panel for a specific decision tree branch.

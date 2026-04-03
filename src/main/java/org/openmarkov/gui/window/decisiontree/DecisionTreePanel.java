@@ -53,12 +53,12 @@ public class DecisionTreePanel extends JScrollPane {
     protected VisualDecisionTree jTree;
 
     /** Factory for creating contextual menus based on node types. */
-    private ContextualMenuFactory contextualMenuFactory;
+    private final ContextualMenuFactory contextualMenuFactory;
 
     /** Listener for mouse and action events. */
-    private TreePanelListener listener;
+    private final TreePanelListener listener;
 
-    private DecisionTreeManager decisionTreeManager;
+    private final DecisionTreeManager decisionTreeManager;
 
     public VisualDecisionTree getJTree() {
         return jTree;

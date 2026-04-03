@@ -28,7 +28,7 @@ public class NetworkDecisionCriteriaPanel extends JPanel {
 	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	
 	private ProbNet probNet;	
-	private Window parent;
+	private final Window parent;
 	private boolean initialized = false;
 	
 	/**

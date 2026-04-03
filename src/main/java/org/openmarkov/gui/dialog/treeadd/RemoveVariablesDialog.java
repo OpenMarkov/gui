@@ -20,8 +20,8 @@ import java.awt.*;
 @SuppressWarnings("serial") public class RemoveVariablesDialog extends OkCancelDialog {
 
 	private RemoveVariablesCheckBoxPanel removeVariablesCheckBoxPanel;
-	private TreeADDBranch treeADDBranch;
-	private TreeADDPotential parentTreeADD;
+	private final TreeADDBranch treeADDBranch;
+	private final TreeADDPotential parentTreeADD;
 
 	public RemoveVariablesDialog(Window owner, TreeADDBranch treeADDBranch, TreeADDPotential parentTreeADD) {
 		super(owner);

@@ -35,7 +35,7 @@ import java.util.List;
 	/**
 	 * Each time an agent has been edited the corresponding edit would be stored
 	 */
-	private List<PNEdit> edits = new ArrayList<PNEdit>();
+	private final List<PNEdit> edits = new ArrayList<PNEdit>();
 
 	public AdvancedPropertiesTablePanel(String[] newColumns, ProbNet probNet) {
 		this(newColumns, new Object[0][0], "a");

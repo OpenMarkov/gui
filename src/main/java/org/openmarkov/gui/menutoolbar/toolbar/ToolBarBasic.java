@@ -34,17 +34,17 @@ public abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic 
     /**
      * Suffix to retrieve tooltip strings from a string resource.
      */
-    protected String STRING_TOOLTIP_SUFFIX = ".ToolTip";
+    protected final String STRING_TOOLTIP_SUFFIX = ".ToolTip";
     
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     
     /**
      * Object that listen to the user's actions.
      */
-    protected ActionListener listener;
+    protected final ActionListener listener;
     
     /**
      * This method initialises this instance.

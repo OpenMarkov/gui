@@ -35,10 +35,10 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
     /**
      * Prefixed elements of the combobox.
      */
-    private static String[] ZOOM_VALUES = {"500%", "200%", "150%", "100%", "75%", "50%", "25%", "10%"};
+    private static final String[] ZOOM_VALUES = {"500%", "200%", "150%", "100%", "75%", "50%", "25%", "10%"};
     
-    private static int MIN_ZOOM = 10;
-    private static int MAX_ZOOM = 500;
+    private static final int MIN_ZOOM = 10;
+    private static final int MAX_ZOOM = 500;
     /**
      * Old value of the combobox
      */
@@ -46,7 +46,7 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
     /**
      * Object that listen to the user's actions.
      */
-    private ActionListener listener;
+    private final ActionListener listener;
     
     /**
      * Constructor that fills and initialize the combobox.

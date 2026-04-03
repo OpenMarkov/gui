@@ -20,12 +20,12 @@ import java.util.Properties;
 @SuppressWarnings("serial") public class ComponentConfiguration implements Configuration, Serializable {
 
 	// Attributes
-	private HashMap<String, Object> componentVariables;
+	private final HashMap<String, Object> componentVariables;
 
 	/**
 	 * frozen
 	 */
-	private String componentName;
+	private final String componentName;
 
 	// Constructor
 

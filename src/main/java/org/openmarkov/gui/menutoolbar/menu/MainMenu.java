@@ -48,7 +48,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     /**
      * Set of menu items and their default texts.
      */
-    HashMap<JComponent, String> defaultText = new HashMap<JComponent, String>();
+    final HashMap<JComponent, String> defaultText = new HashMap<JComponent, String>();
     /**
      * Object that represents the menu 'File'.
      */
@@ -156,7 +156,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     /**
      * Object used to make autoexclusive the different select options.
      */
-    private ButtonGroup groupEditOptions = new ButtonGroup();
+    private final ButtonGroup groupEditOptions = new ButtonGroup();
     /**
      * Object that represents the item 'Edit - Node additionalProperties'.
      */
@@ -247,7 +247,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     /**
      * Object used to make autoexclusive the options 'ByName' and 'ByTitle'.
      */
-    private ButtonGroup groupByNameByTitle = new ButtonGroup();
+    private final ButtonGroup groupByNameByTitle = new ButtonGroup();
     
     /**
      * Object that represents the menu 'Tools'.
@@ -282,7 +282,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     /**
      * Object that listen to the user's actions.
      */
-    private ActionListener listener;
+    private final ActionListener listener;
     
     // private HashMap<JComponent, String> dynamicActions = new
     // HashMap<JComponent, String>();

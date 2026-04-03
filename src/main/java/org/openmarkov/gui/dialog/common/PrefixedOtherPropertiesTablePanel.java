@@ -47,7 +47,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     /**
      * Key prefix.
      */
-    private String keyPrefix;
+    private final String keyPrefix;
     
     private Node node = null;
     

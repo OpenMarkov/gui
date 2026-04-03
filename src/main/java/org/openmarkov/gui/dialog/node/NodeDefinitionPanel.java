@@ -51,7 +51,7 @@ public final class NodeDefinitionPanel extends JPanel
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     private JComboBox<String> jComboBoxNetworkAgents;
     private JLabel jLabelTimeSlice;
     private JComboBox<String> jComboBoxTimeSlice;
@@ -84,7 +84,7 @@ public final class NodeDefinitionPanel extends JPanel
     /**
      * internal node type item for convenience purpose
      */
-    private VariableType variableType = null;
+    private final VariableType variableType = null;
     /**
      * the Node Relevance Label
      */

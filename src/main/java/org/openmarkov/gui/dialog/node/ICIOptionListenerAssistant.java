@@ -37,13 +37,13 @@ import java.util.ArrayList;
  * @author myebra
  */
 public class ICIOptionListenerAssistant implements ItemListener {
-    private static int CANONICAL = 0;
-    private static int TPC = 1;
+    private static final int CANONICAL = 0;
+    private static final int TPC = 1;
     /**
      * Identifies the radio button affected by the event.
      */
     private int previousModel = -1;
-    private ICIOptionsPanel iciOptionPanel;
+    private final ICIOptionsPanel iciOptionPanel;
     private Container parentPanel;
     /**
      * original node of the ICIOptionPanel

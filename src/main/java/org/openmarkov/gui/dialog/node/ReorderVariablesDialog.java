@@ -22,7 +22,7 @@ import java.awt.*;
  */
 @SuppressWarnings("serial") public class ReorderVariablesDialog extends OkCancelDialog {
 	private JPanel variablesCombinationPanel;
-	private Node node;
+	private final Node node;
 	private ReorderVariablesPanel reorderVariablesPanel;
 
 	public ReorderVariablesDialog(Window owner, Node node) {

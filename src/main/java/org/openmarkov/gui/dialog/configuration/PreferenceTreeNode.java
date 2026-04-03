@@ -25,7 +25,7 @@ import java.util.prefs.Preferences;
  * @version 1.0 28 Aug 2009
  */
 @SuppressWarnings("serial") public class PreferenceTreeNode extends DefaultMutableTreeNode {
-    Preferences pref;
+    final Preferences pref;
     String nodeName;
     String[] childrenNames;
     

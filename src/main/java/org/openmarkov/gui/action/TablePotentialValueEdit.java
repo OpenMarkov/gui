@@ -92,7 +92,7 @@ import java.util.List;
      */
     private double[] newTable;
     private Object[][] notEditablePostitions;
-    private Node node;
+    private final Node node;
     
     // Constructor
     

@@ -72,7 +72,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	/**
 	 * Button group to make autoexclusive the edition options.
 	 */
-	private ButtonGroup editionButtonGroup = new ButtonGroup();
+	private final ButtonGroup editionButtonGroup = new ButtonGroup();
 
 	/**
 	 * This method initialises this instance.

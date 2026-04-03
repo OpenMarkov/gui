@@ -85,7 +85,7 @@ public class VisualState extends VisualElement {
      * Array of values assigned to the state. There is one value for each
      * evidence case in memory.
      */
-    private List<Double> stateValues;
+    private final List<Double> stateValues;
     /**
      * This variable indicates which is the position of the arrayList currently
      * selected (corresponding with the current evidence case).
@@ -94,7 +94,7 @@ public class VisualState extends VisualElement {
     /**
      * Array of booleans that determine whether the state has evidence or not
      */
-    private List<Boolean> evidence;
+    private final List<Boolean> evidence;
     
     /**
      * Formatting string for values shown in the visual state

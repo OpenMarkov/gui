@@ -30,7 +30,7 @@ public class ICIOptionsPanel extends JPanel {
 	/**
 	 * String database
 	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	/**
 	 * to identify what is the panel container it could be CPTTablePanel or
 	 * ICIPotentialsTablePanel

@@ -28,15 +28,15 @@ public class SplashScreen extends JFrame {
     /**
      * Component to store the image to splash
      */
-    JLabel imageLabel = new JLabel();
+    final JLabel imageLabel = new JLabel();
     /**
      * Component to present the progress of the loading
      */
-    JProgressBar progressBar = new JProgressBar();
+    final JProgressBar progressBar = new JProgressBar();
     /**
      * Image to be displayed
      */
-    ImageIcon imageIcon;
+    final ImageIcon imageIcon;
     
     /**
      * Constructor

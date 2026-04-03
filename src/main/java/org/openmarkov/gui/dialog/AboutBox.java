@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serial;
 
 /**
  * Class to show an About Box window for the OpenMarkov Project
@@ -27,44 +28,29 @@ public class AboutBox extends JDialog implements ActionListener {
     /**
      * default id
      */
+    @Serial
     private static final long serialVersionUID = -2926600957370532009L;
-    private String product = "";
     private String version = "0.4.0-SNAPSHOT";
-    private String copyright = "";
-    private String copyright2 = "";
-    private String authors = "";
-    private String advertisement = "";
-    private String trademark = "";
-    private String openMarkovLogoImage = "";
-    private String lineSeparatorImage = "";
-    private BorderLayout borderLayoutAboutBox = new BorderLayout();
-    private JPanel jPanelAboutText = new JPanel();
-    private JPanel jPanelAboutButton = new JPanel();
-    private ImageIcon openMarkovLogo = new ImageIcon();
+    private final BorderLayout borderLayoutAboutBox = new BorderLayout();
+    private final JPanel jPanelAboutText = new JPanel();
+    private final JPanel jPanelAboutButton = new JPanel();
     private ImageIcon lineSeparator = new ImageIcon();
-    private JLabel jLabelLogo = new JLabel();
-    private JLabel jLabelProduct = new JLabel();
-    private JLabel jLabelVersion = new JLabel();
-    private JLabel jLabelCopyright = new JLabel();
-    private JLabel jLabelCopyright2 = new JLabel();
-    private JLabel jLabelAuthors = new JLabel();
-    private JLabel jLabelLineSeparators = new JLabel();
-    private JLabel jLabelAdvertisement = new JLabel();
-    private JLabel jLabelTrademark = new JLabel();
-    private JButton jButtonOK = new JButton();
-    private GridLayout gridLayoutText = new GridLayout();
-    private FlowLayout flowLayoutButtons = new FlowLayout();
-    /**
-     * size of the window and position
-     */
-    private int height = 0;
-    private int width = 0;
-    private int x = 0;
-    private int y = 0;
+    private final JLabel jLabelLogo = new JLabel();
+    private final JLabel jLabelProduct = new JLabel();
+    private final JLabel jLabelVersion = new JLabel();
+    private final JLabel jLabelCopyright = new JLabel();
+    private final JLabel jLabelCopyright2 = new JLabel();
+    private final JLabel jLabelAuthors = new JLabel();
+    private final JLabel jLabelLineSeparators = new JLabel();
+    private final JLabel jLabelAdvertisement = new JLabel();
+    private final JLabel jLabelTrademark = new JLabel();
+    private final JButton jButtonOK = new JButton();
+    private final GridLayout gridLayoutText = new GridLayout();
+    private final FlowLayout flowLayoutButtons = new FlowLayout();
     /**
      * String database
      */
-    private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /**
      * AboutBox visual components
      */
@@ -127,27 +113,30 @@ public class AboutBox extends JDialog implements ActionListener {
      * Component initialization.
      */
     private void jbInit() {
-        product = stringDatabase.getString("AboutBox.Product.Text");
+        String product = stringDatabase.getString("AboutBox.Product.Text");
         version = stringDatabase.getString("AboutBox.Version.Text") + " " + version;
-        copyright = stringDatabase.getString("AboutBox.Copyright.Text");
-        copyright2 = stringDatabase.getString("AboutBox.Copyright.AllRightsReserved.Text");
-        authors = stringDatabase.getString("AboutBox.Authors.Text");
-        advertisement = stringDatabase.getString("AboutBox.Advertisement.Text");
-        trademark = stringDatabase.getString("AboutBox.Trademark.Text");
-        openMarkovLogoImage = stringDatabase.getString("AboutBox.OpenMarkovLogoImage.URL");
-        lineSeparatorImage = stringDatabase.getString("AboutBox.LineSeparatorImage.URL");
+        String copyright = stringDatabase.getString("AboutBox.Copyright.Text");
+        String copyright2 = stringDatabase.getString("AboutBox.Copyright.AllRightsReserved.Text");
+        String authors = stringDatabase.getString("AboutBox.Authors.Text");
+        String advertisement = stringDatabase.getString("AboutBox.Advertisement.Text");
+        String trademark = stringDatabase.getString("AboutBox.Trademark.Text");
+        String openMarkovLogoImage = stringDatabase.getString("AboutBox.OpenMarkovLogoImage.URL");
+        String lineSeparatorImage = stringDatabase.getString("AboutBox.LineSeparatorImage.URL");
         
         // look for the images to show in the box
-        openMarkovLogo = ImageLoader.load(openMarkovLogoImage);
+        ImageIcon openMarkovLogo = ImageLoader.load(openMarkovLogoImage);
         lineSeparator = ImageLoader.load(lineSeparatorImage);
         // put the title of the box
         setTitle(product);
         // mark the layout and the size for the About box
         getContentPane().setLayout(borderLayoutAboutBox);
-        height = openMarkovLogo.getIconHeight() + 200;
-        width = openMarkovLogo.getIconWidth();
-        x = getParent().getX();
-        y = getParent().getY();
+        /**
+         * size of the window and position
+         */
+        int height = openMarkovLogo.getIconHeight() + 200;
+        int width = openMarkovLogo.getIconWidth();
+        int x = getParent().getX();
+        int y = getParent().getY();
         x = x + ((getParent().getWidth() - width) / 2);
         y = y + ((getParent().getHeight() - height) / 2);
         this.setBounds(x, y, width, height);

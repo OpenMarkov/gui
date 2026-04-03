@@ -20,7 +20,7 @@ import java.text.MessageFormat;
  * revelation arc properties.
  */
 @SuppressWarnings("serial") public class RevelationArcEditDialog extends OkCancelDialog {
-	private Link<Node> link;
+	private final Link<Node> link;
 	/***
 	 * Jpanel showing the values table of the first node
 	 */

@@ -46,7 +46,7 @@ class NetworkContextualMenu extends ContextualMenu {
 	private JMenuItem teCriterionMenuItem;
 
 	private JMenuItem expandNetworCEkMenuItem;
-	private boolean canBeExpanded;
+	private final boolean canBeExpanded;
 
 	/**
 	 * This constructor creates a new instance.

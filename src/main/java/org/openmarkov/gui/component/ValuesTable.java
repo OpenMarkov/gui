@@ -107,7 +107,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      * <li>if index = 4,5,6 then Using Canonical Potential (famili AND)</li>
      * </ul>
      */
-    protected int indexPotential = 0;                                  // General
+    protected final int indexPotential = 0;                                  // General
     /**
      * define if the table shows all parameters or only independent parameters
      */
@@ -119,11 +119,11 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      * define if the table shows probabilities values or state name
      */
     
-    protected boolean showingProbabilitiesValues = false;
+    protected final boolean showingProbabilitiesValues = false;
     /**
      * define if the table shows TPC values or canonical values
      */
-    protected boolean showingTPCvalues = false;
+    protected final boolean showingTPCvalues = false;
     /**
      * define if the table shows Optimal Decision
      */
@@ -156,9 +156,9 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      */
     
     protected List<Integer> priorityList = new LinkedList<Integer>();
-    protected boolean isSelectAllForMouseEvent = true;
-    protected boolean isSelectAllForActionEvent = true;
-    protected boolean isSelectAllForKeyEvent = true;
+    protected final boolean isSelectAllForMouseEvent = true;
+    protected final boolean isSelectAllForActionEvent = true;
+    protected final boolean isSelectAllForKeyEvent = true;
     /**
      * first editable row. By default, it is zero until runtime initialisation
      */

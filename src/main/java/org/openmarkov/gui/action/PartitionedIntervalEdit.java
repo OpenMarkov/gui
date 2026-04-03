@@ -16,11 +16,11 @@ import org.openmarkov.core.model.network.PartitionedInterval;
  */
 @SuppressWarnings("serial") public class PartitionedIntervalEdit extends PNEdit {
 
-	private PartitionedInterval currentPartitionedInterval;
+	private final PartitionedInterval currentPartitionedInterval;
 
-	private PartitionedInterval newPartitionedInterval;
+	private final PartitionedInterval newPartitionedInterval;
 
-    private Node node;
+    private final Node node;
 
 	/**
 	 * Creates a new edit that sets the partitioned interval of the given node.

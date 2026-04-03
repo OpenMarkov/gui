@@ -19,12 +19,12 @@ import javax.swing.*;
 @SuppressWarnings("serial") public class ChangeIntervalPanel extends JPanel {
 	final String[] intervalLowerSymbols = new String[] { "[", "(" };
 	final String[] intervalUpperSymbols = new String[] { "]", ")" };
-	private JTextField minText;
-	private JTextField maxText;
-	private Threshold min;
-	private Threshold max;
-	private JComboBox<String> jComboBoxUpperSymbol;
-	private JComboBox<String> jComboBoxLowerSymbol;
+	private final JTextField minText;
+	private final JTextField maxText;
+	private final Threshold min;
+	private final Threshold max;
+	private final JComboBox<String> jComboBoxUpperSymbol;
+	private final JComboBox<String> jComboBoxLowerSymbol;
 
 	public ChangeIntervalPanel(TreeADDBranch treeBranch) {
 		min = treeBranch.getLowerBound();

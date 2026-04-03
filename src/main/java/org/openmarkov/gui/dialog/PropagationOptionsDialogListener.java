@@ -27,15 +27,15 @@ public class PropagationOptionsDialogListener implements ActionListener {
 	/**
 	 * The Dialog to which this listener is associated
 	 */
-    PropagationOptionsDialog automaticPropagationOptionsDialog;
+    final PropagationOptionsDialog automaticPropagationOptionsDialog;
 	/**
 	 * The editor panel that called the associated dialog.
 	 */
-    NetworkEditorPanel networkEditorPanel;
+    final NetworkEditorPanel networkEditorPanel;
 	/**
 	 * The inference tool bar associated to the panel.
 	 */
-    InferenceToolBar inferenceToolBar;
+    final InferenceToolBar inferenceToolBar;
 
 	/**
 	 * constructor

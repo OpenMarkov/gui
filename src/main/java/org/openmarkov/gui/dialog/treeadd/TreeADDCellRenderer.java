@@ -31,21 +31,21 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
     /**
      * Container of SummaryBox' text or the variable icon
      */
-    private JLabel leftLabel = new JLabel();
+    private final JLabel leftLabel = new JLabel();
     /**
      * Container of leaf data: Potential description or value
      */
-    private JLabel rightLabel = new JLabel();
+    private final JLabel rightLabel = new JLabel();
     /**
      * IconBind repository for every variable node
      */
-    private HashMap<Variable, Icon> iconsPool = new HashMap<Variable, Icon>();
+    private final HashMap<Variable, Icon> iconsPool = new HashMap<Variable, Icon>();
     /**
      * Font used in icon text
      */
-    private Font textIconFont;
+    private final Font textIconFont;
     
-    private ProbNet probNet;
+    private final ProbNet probNet;
     /**
      * Precision Proxy: every node of the tree could have its own precision
      * (number of decimals)

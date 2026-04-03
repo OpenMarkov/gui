@@ -20,9 +20,9 @@ import java.util.Map;
  */
 @SuppressWarnings("serial") public class SetReferenceDialog extends OkCancelDialog {
 
-	private TreeADDBranch branch;
-	private JComboBox<String> labels;
-	private Map<String, TreeADDBranch> labeledBranches;
+	private final TreeADDBranch branch;
+	private final JComboBox<String> labels;
+	private final Map<String, TreeADDBranch> labeledBranches;
 
 	public SetReferenceDialog(Window owner, TreeADDBranch branch, TreeADDPotential rootTreeADDPotential) {
 		super(owner);

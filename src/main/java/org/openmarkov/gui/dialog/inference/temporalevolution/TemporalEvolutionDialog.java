@@ -28,7 +28,7 @@ public class TemporalEvolutionDialog extends OkCancelDialog {
     private JLabel numSlicesLabel;
     private JTextField numSlicesTextField;
     private Integer numSlices;
-    private ProbNet probNet;
+    private final ProbNet probNet;
     private ScopeSelectorPanel scopeSelectorPanel;
     private Node selectedNode;
     private EvidenceCase preResolutionEvidence;

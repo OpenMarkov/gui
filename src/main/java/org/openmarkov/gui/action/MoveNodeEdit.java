@@ -27,9 +27,9 @@ public class MoveNodeEdit extends PNEdit {
     
     private static final long serialVersionUID = 7578733825996342882L;
     
-    private List<Point2D.Double> lastPositions = new ArrayList<Point2D.Double>();
-    private List<Point2D.Double> newPositions = new ArrayList<Point2D.Double>();
-    private List<String> namesNode = new ArrayList<String>();
+    private final List<Point2D.Double> lastPositions = new ArrayList<Point2D.Double>();
+    private final List<Point2D.Double> newPositions = new ArrayList<Point2D.Double>();
+    private final List<String> namesNode = new ArrayList<String>();
     
     /**
      * Creates a new {@code MoveNodeEdit} with the nodes, and new X, Y

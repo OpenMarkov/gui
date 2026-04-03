@@ -34,12 +34,12 @@ import java.util.List;
 public class ScopeSelectorPanel extends JPanel {
     
     HashMap<JComboBox<String>, Variable> selectedScenario;
-    private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     private JPanel scopeTypePanel;
     private ButtonGroup scopeTypeSelector;
     private JPanel decisionSelectorPanel;
     private JPanel mainPanel;
-    private ProbNet probNet;
+    private final ProbNet probNet;
     private Variable decisionSelected;
     private JRadioButton globalRadioButton;
     private JRadioButton decisionRadioButton;
@@ -50,7 +50,7 @@ public class ScopeSelectorPanel extends JPanel {
     
     private List<Finding> selectedFindings;
     
-    private EvidenceCase preResolutionEvidence;
+    private final EvidenceCase preResolutionEvidence;
     
     public ScopeSelectorPanel(ProbNet probNet, EvidenceCase preResolutionEvidence) {
         super();

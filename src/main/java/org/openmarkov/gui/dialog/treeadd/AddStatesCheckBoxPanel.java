@@ -21,9 +21,9 @@ import java.util.List;
  * Panel with checkboxes for selecting which states to add to a TreeADD branch.
  */
 @SuppressWarnings("serial") public class AddStatesCheckBoxPanel extends JPanel {
-	private List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-	private TreeADDBranch branch;
-	private TreeADDPotential treeADD;
+	private final List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+	private final TreeADDBranch branch;
+	private final TreeADDPotential treeADD;
 
 	public AddStatesCheckBoxPanel(TreeADDBranch branch, TreeADDPotential treeADD) {
 		this.branch = branch;

@@ -27,7 +27,7 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     private ProbNet probNet = null;
     /**
      * Panel to tab the different options.

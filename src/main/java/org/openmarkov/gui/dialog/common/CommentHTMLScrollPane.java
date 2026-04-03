@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.Serial;
 import java.util.HashSet;
 
 /**
@@ -32,15 +33,16 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
     /**
      *
      */
+    @Serial
     private static final long serialVersionUID = -8678529566501560594L;
-    private static int HTML_COMMENT_HEIGHT = 10;
-    private static int HTML_COMMENT_WIDTH = 30;
+    private static final int HTML_COMMENT_HEIGHT = 10;
+    private static final int HTML_COMMENT_WIDTH = 30;
     private JTextPane jTextPaneCommentHTML = null;
     private HTMLTextEditor hTMLTextEditor = null;
     /**
      * Listener to the comment changes.
      */
-    private HashSet<CommentListener> commentListeners = new HashSet<CommentListener>();
+    private final HashSet<CommentListener> commentListeners = new HashSet<CommentListener>();
     private String title = "";
     private boolean isChanged = false;
     private boolean isEmpty = true;
@@ -49,7 +51,7 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
     /**
      * Double Click Selector for the HTML Comment area
      */
-    private MouseListener doubleClickSelector = new MouseAdapter() {
+    private final MouseListener doubleClickSelector = new MouseAdapter() {
         @Override public void mouseClicked(MouseEvent e) {
         }
     };

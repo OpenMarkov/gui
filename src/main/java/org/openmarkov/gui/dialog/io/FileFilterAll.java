@@ -24,14 +24,14 @@ public class FileFilterAll<T> extends FileFilterBasic {
 	/**
 	 * Extension of the files that match this filter.
 	 */
-    private String formatExtension;
+    private final String formatExtension;
 
 	/**
 	 * Description of the files that match this filter.
 	 */
 	private String fileDescription = "OpenMarkov";
 
-	private T formatInfo;
+	private final T formatInfo;
 	
 	public T getFormatInfo() {
 		return this.formatInfo;

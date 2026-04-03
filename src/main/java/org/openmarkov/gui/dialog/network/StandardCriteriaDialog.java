@@ -36,12 +36,12 @@ public class StandardCriteriaDialog extends OkCancelDialog {
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /**
      * Standard criteria panel
      */
     private StandardCriteriaPanel standardCriteriaPanel;
-    private ProbNet probNet;
+    private final ProbNet probNet;
     
     public StandardCriteriaDialog(Window owner, ProbNet probNet) {
         super(owner);

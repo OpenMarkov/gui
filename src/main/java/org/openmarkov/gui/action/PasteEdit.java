@@ -29,7 +29,7 @@ import java.util.stream.IntStream;
  * are copied and variable references are updated to point to the new nodes.
  */
 @SuppressWarnings("serial") public class PasteEdit extends PNEdit {
-    private SelectedContent clipboardContent;
+    private final SelectedContent clipboardContent;
     private SelectedContent pastedContent;
     ArrayList<PNEdit> edits;
 

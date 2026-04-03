@@ -30,12 +30,12 @@ public class TreeADDModel implements TreeModel {
     /**
      * This is the root of the tree, within it could exists another subtrees or other type of potentials
      */
-    protected TreeADDPotential treeADDPotentialRoot;
+    protected final TreeADDPotential treeADDPotentialRoot;
     
     /**
      * Tree model listeners
      */
-    protected List<TreeModelListener> treeModelListeners = new ArrayList<TreeModelListener>();
+    protected final List<TreeModelListener> treeModelListeners = new ArrayList<TreeModelListener>();
     
     /**
      * Constructor

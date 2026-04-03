@@ -107,7 +107,7 @@ public class PotentialEditDialog extends OkCancelDialog
     
     private CommentHTMLScrollPane commentPane;
     
-    private @Nullable Potential originalPotential;
+    private final @Nullable Potential originalPotential;
     
     /**
      * Creates the dialog.

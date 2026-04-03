@@ -105,8 +105,8 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-    protected Node node;
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final Node node;
     private JComboBox<String> lowerSymbolComboBox = null;
     private JComboBox<String> upperSymbolComboBox = null;
     /**
@@ -117,7 +117,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      * Key prefix (required to maintain the index of the table even if it is not
      * shown to the user)
      */
-    private String keyPrefix;
+    private final String keyPrefix;
     /**
      * Infinite Positive Button
      */

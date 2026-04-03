@@ -22,11 +22,11 @@ import java.util.Vector;
  */
 @SuppressWarnings("serial") public class VariablesCombinationPanel extends JPanel {
 
-	private ButtonGroup buttonGroup = new ButtonGroup();
+	private final ButtonGroup buttonGroup = new ButtonGroup();
 
-	private ArrayList<JRadioButton> radioButtons = new ArrayList<JRadioButton>();
+	private final ArrayList<JRadioButton> radioButtons = new ArrayList<JRadioButton>();
 
-	private Node node;
+	private final Node node;
 
 	public VariablesCombinationPanel(Node node) {
 		this.node = node;

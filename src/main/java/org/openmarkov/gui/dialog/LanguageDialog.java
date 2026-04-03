@@ -48,7 +48,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 	/**
 	 * String database
 	 */
-	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	/**
 	 * to store temporally the old language to set
 	 */

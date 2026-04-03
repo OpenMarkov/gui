@@ -26,9 +26,9 @@ import java.awt.event.MouseEvent;
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({NetworkEditorPanel.class, ProbNet.class}))
 public abstract class EditionMode {
 
-	protected NetworkEditorPanel networkEditorPanel;
-	protected VisualNetwork visualNetwork;
-	protected ProbNet probNet;
+	protected final NetworkEditorPanel networkEditorPanel;
+	protected final VisualNetwork visualNetwork;
+	protected final ProbNet probNet;
 
 	public EditionMode(NetworkEditorPanel networkEditorPanel, ProbNet probNet) {
 		this.networkEditorPanel = networkEditorPanel;

@@ -23,16 +23,16 @@ import java.util.Locale;
 public abstract class DecisionTreeElementPanel extends JPanel {
 
 	/** Container of SummaryBox' text or the variable's icon. */
-	protected JLabel leftLabel = new JLabel();
+	protected final JLabel leftLabel = new JLabel();
 	
 	/**Container for leaf specific data, such as potential descriptions or values. */
-	protected JLabel rightLabel = new JLabel();
+	protected final JLabel rightLabel = new JLabel();
 
     /** List of child panels in the tree hierarchy. */
-	protected List<DecisionTreeElementPanel> children;
+	protected final List<DecisionTreeElementPanel> children;
 	
     /** Formatter for displaying numerical values with four decimal places. */
-	DecimalFormat df = new DecimalFormat("0.0000", new DecimalFormatSymbols(Locale.US));
+    final DecimalFormat df = new DecimalFormat("0.0000", new DecimalFormatSymbols(Locale.US));
 
     /**
      * Initializes the panel with a BorderLayout and default white background.

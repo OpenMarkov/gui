@@ -76,7 +76,7 @@ import java.util.List;
     /**
      * Node
      */
-    private Node node;
+    private final Node node;
     
     // Constructor
     

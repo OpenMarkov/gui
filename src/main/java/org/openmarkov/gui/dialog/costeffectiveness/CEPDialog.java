@@ -38,11 +38,11 @@ import java.util.EventObject;
     
     private static final String CLICKABLE_COLUMN_COLOR = "#DDF5D8";
     
-    private CEP cep;
+    private final CEP cep;
     
-    private ProbNet probNet;
+    private final ProbNet probNet;
     
-    private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     
     private JTable jtableCEP;
     

@@ -10,9 +10,9 @@ import org.openmarkov.gui.graphic.VisualDecisionNode;
  */
 public class ImposePolicyEdit extends PNEdit {
 
-    private VisualDecisionNode visualDecisionNode;
-    private Potential newPolicy;
-    private Potential lastPolicy;
+    private final VisualDecisionNode visualDecisionNode;
+    private final Potential newPolicy;
+    private final Potential lastPolicy;
 
     /**
      * Creates a new edit that imposes a policy on a decision node.

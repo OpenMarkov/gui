@@ -36,7 +36,7 @@ class PreferencesTableModel extends AbstractTableModel {
     /**
      * Previous preferences to be used in case of CANCEL actions
      */
-    Preferences prefSaved;
+    final Preferences prefSaved;
     /**
      * Keys for the preferences
      */

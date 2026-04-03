@@ -60,17 +60,17 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
     /**
      * Object used to measure text in a specific font.
      */
-    private static FontMetrics fontMeter = new JPanel().getFontMetrics(FONT_HELVETICA);
+    private static final FontMetrics fontMeter = new JPanel().getFontMetrics(FONT_HELVETICA);
     
     /**
      * Visual Network to which this visual node is associated.
      */
-    protected VisualNetwork visualNetwork;
+    protected final VisualNetwork visualNetwork;
     
     /**
      * Object that has the node information.
      */
-    protected Node node;
+    protected final Node node;
     
     /**
      * Object that manages the internal representation of the node when

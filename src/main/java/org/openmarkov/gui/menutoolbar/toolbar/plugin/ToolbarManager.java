@@ -24,9 +24,9 @@ import java.util.stream.Stream;
  * Toolbars are instantiated reflectively and added to the main panel's toolbar area.
  */
 public class ToolbarManager {
-    private MainPanel mainPanel;
-    private Map<String, Class<? extends ToolBarBasic>> toolbarClasses;
-    private List<String> activeToolbars = new ArrayList<>();
+    private final MainPanel mainPanel;
+    private final Map<String, Class<? extends ToolBarBasic>> toolbarClasses;
+    private final List<String> activeToolbars = new ArrayList<>();
 
     /**
      * Creates a new toolbar manager and discovers all available toolbar plugins.

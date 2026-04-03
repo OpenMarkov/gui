@@ -38,7 +38,7 @@ public class OkCancelDialog extends BottomPanelButtonDialog {
      */
     private ChosenOption selectedOption = ChosenOption.Ok;
     
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     
     /**
      * Ok button.

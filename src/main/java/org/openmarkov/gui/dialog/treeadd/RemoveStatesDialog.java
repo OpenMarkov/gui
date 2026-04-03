@@ -20,8 +20,8 @@ import java.awt.*;
 @SuppressWarnings("serial") public class RemoveStatesDialog extends OkCancelDialog {
 
 	private RemoveStatesCheckBoxPanel dissociateStatesCheckBoxPanel;
-	private TreeADDBranch treeADDBranch;
-	private TreeADDPotential parentTreeADD;
+	private final TreeADDBranch treeADDBranch;
+	private final TreeADDPotential parentTreeADD;
 
 	public RemoveStatesDialog(Window owner, TreeADDBranch treeADDBranch, TreeADDPotential parentTreeADD) {
 		super(owner);

@@ -35,7 +35,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	/**
 	 * Object that listen to the user's actions.
 	 */
-	protected ActionListener listener;
+	protected final ActionListener listener;
 
 	/**
 	 * This method initialises this instance.

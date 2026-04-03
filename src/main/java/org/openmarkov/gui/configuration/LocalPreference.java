@@ -63,7 +63,7 @@ public final class LocalPreference<T> {
      * When set to true, the {@link LocalPreference#save()} operation takes no effect, and
      * {@link LocalPreference#initialize()} no longer gets the value from the {@link LocalPreference#RESOLVE_STRATEGY}.
      */
-    public static boolean IGNORE_STORAGE = false;
+    public static final boolean IGNORE_STORAGE = false;
     
     /**
      * The default resolve strategy is that which can put and clear a value two times.

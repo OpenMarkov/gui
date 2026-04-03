@@ -20,9 +20,9 @@ import java.util.List;
  */
 @SuppressWarnings("serial") public class AddVariablesCheckBoxPanel extends JPanel {
 
-	private ArrayList<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-	private TreeADDBranch branch;
-	private TreeADDPotential treeADD;
+	private final ArrayList<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+	private final TreeADDBranch branch;
+	private final TreeADDPotential treeADD;
 
 	public AddVariablesCheckBoxPanel(TreeADDBranch branch, TreeADDPotential treeADD) {
 		// super();

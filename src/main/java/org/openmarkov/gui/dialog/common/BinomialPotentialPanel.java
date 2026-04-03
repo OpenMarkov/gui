@@ -31,11 +31,7 @@ public class BinomialPotentialPanel
     private JTextField thetaTextField;
     
     private Node node;
-    private int defaultSpinnerValue = 1;
-    // Allowed range for the delta potential
-    private int minValue = 1;
-    private int maxValue = Integer.MAX_VALUE;
-    
+
     public BinomialPotentialPanel(Node node) {
         super();
         this.node = node;
@@ -52,6 +48,10 @@ public class BinomialPotentialPanel
             
             //Create the model with the defaultValue, the min and max values and the precision
             // Only positive integers
+            int defaultSpinnerValue = 1;
+            // Allowed range for the delta potential
+            int minValue = 1;
+            int maxValue = Integer.MAX_VALUE;
             SpinnerNumberModel model = new SpinnerNumberModel(defaultSpinnerValue, minValue, maxValue, 1);
             
             NSpinner = new JSpinner(model);

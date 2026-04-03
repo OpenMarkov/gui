@@ -53,7 +53,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
      * to define the first editable row of the table
      */
     protected int firstEditableRow;
-    private boolean[] uncertaintyInColumns;
+    private final boolean[] uncertaintyInColumns;
     private JLabel jUncertaintyIcon;
     
     /**

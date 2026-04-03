@@ -44,11 +44,11 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
      * Static field for serializable class.
      */
     private static final long serialVersionUID = 2127072068749928448L;
-    ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
+    final ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
     /**
      * Prefixed data.
      */
-    private Object[][] prefixedData;
+    private final Object[][] prefixedData;
     /**
      * Array that contains the prefixed data that is not in the table.
      */
@@ -57,8 +57,8 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
      * String that appears in the titlebar of the dialog box showed to add new
      * rows.
      */
-    private String titleToSelectRows;
-    private Node node;
+    private final String titleToSelectRows;
+    private final Node node;
     
     /**
      * This is the default constructor

@@ -34,8 +34,8 @@ import java.util.List;
  */
 @SuppressWarnings("serial") public class ReorderVariablesPanel extends KeyTablePanel
         implements TableModelListener, PNEditListener {
-	private Node node;
-	private List<PNEdit> edits = new ArrayList<PNEdit>();
+	private final Node node;
+	private final List<PNEdit> edits = new ArrayList<PNEdit>();
 
 	public ReorderVariablesPanel(Node node) {
 		super(new String[] { "Variable name" }, getData(node), true, false);

@@ -27,7 +27,7 @@ import java.text.MessageFormat;
     /****
      * The link containing the link restrictions
      */
-    private Link<Node> link;
+    private final Link<Node> link;
     
     private final ProbNet probNet;
     

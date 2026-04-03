@@ -57,21 +57,21 @@ public class UncertainValuesDialog extends OkCancelDialog {
     private static final int PARAMETERS_COLUMN_INDEX = 2;
     private static final int NAME_COLUMN_INDEX = 3;
     private static final long serialVersionUID = 1L;
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     // Components related to the distributions box
     private DistributionTableModel distributionTableModel;
     private JTable distributionTable;
-    private JPanel distributionsPanel;
-    private Variable variable;
-    private List<String> distributionTypes;
-    private boolean isChanceVariable;
+    private final JPanel distributionsPanel;
+    private final Variable variable;
+    private final List<String> distributionTypes;
+    private final boolean isChanceVariable;
     // List of uncertain values
     private List<UncertainValue> uncertainColumn;
     // List of doubles calculated from uncertainColum by taking the mean value
     private List<Double> valuesColumn;
     // Base position for storing the array of uncertain values in the table
     // potential
-    private int posBase;
+    private final int posBase;
     
     /**
      * @param owner the owner

@@ -90,7 +90,7 @@ public abstract class InnerBox extends VisualElement {
 	/**
 	 * Object used to measure text in a specific font.
 	 */
-	private static FontMetrics fontMeter = new JPanel().getFontMetrics(INNERBOX_FONT);
+	private static final FontMetrics fontMeter = new JPanel().getFontMetrics(INNERBOX_FONT);
 
 	/**
 	 * The height of this InnerBox.

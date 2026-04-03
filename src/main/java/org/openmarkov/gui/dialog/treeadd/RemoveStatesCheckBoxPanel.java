@@ -20,9 +20,9 @@ import java.util.List;
  * Panel with checkboxes for selecting which states to remove (dissociate) from a TreeADD branch.
  */
 @SuppressWarnings("serial") public class RemoveStatesCheckBoxPanel extends JPanel {
-	private List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-	private TreeADDBranch branch;
-	private TreeADDPotential treeADD;
+	private final List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+	private final TreeADDBranch branch;
+	private final TreeADDPotential treeADD;
 
 	public RemoveStatesCheckBoxPanel(TreeADDBranch branch, TreeADDPotential treeADD) {
 		this.branch = branch;

@@ -68,11 +68,11 @@ public abstract class NodePropertiesDialog extends OkCancelDialog implements Cha
 	/**
 	 * Specifies if the network whose additionalProperties are edited is new.
 	 */
-    private boolean newNode;
+    private final boolean newNode;
 	/**
 	 * v
 	 */
-	private boolean readOnly;
+	private final boolean readOnly;
 
 	/**
 	 * This method initialises this instance.

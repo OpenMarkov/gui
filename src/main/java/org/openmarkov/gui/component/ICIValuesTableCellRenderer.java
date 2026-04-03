@@ -20,9 +20,9 @@ import java.util.List;
  * @version 1.0 15/08/2009
  */
 @SuppressWarnings("serial") public class ICIValuesTableCellRenderer extends ValuesTableCellRenderer {
-	private List<Variable> variables;
-	private int[] numColumnsParents;
-    private int[] acummulativeColumns;
+	private final List<Variable> variables;
+	private final int[] numColumnsParents;
+    private final int[] acummulativeColumns;
 
 	public ICIValuesTableCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns, ICIPotential iciPotential) {
 		super(firstEditableRow, uncertaintyInColumns);

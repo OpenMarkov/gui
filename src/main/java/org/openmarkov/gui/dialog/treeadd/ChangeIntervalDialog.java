@@ -23,7 +23,7 @@ import java.awt.*;
 	 */
 	// private StringResource dialogStringResource;
 	// private TreeADDPotential treeADDParent;
-	private TreeADDBranch treeBranch;
+	private final TreeADDBranch treeBranch;
 
 	public ChangeIntervalDialog(Window owner, TreeADDBranch treeBranch) {
 		super(owner);

@@ -25,7 +25,7 @@ import java.util.List;
  * {@link org.openmarkov.core.model.network.NodeType} (chance, decision, utility).
  */
 public abstract class NodeEditionMode extends EditionMode {
-    private NodeType nodeType;
+    private final NodeType nodeType;
     
     public NodeEditionMode(NetworkEditorPanel networkEditorPanel, ProbNet probNet, NodeType nodeType) {
         super(networkEditorPanel, probNet);

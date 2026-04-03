@@ -33,32 +33,32 @@ public class Segment {
 	 * Type of the segment. Vertical segments are treated of different way than
 	 * normal ones.
 	 */
-	private int segmentType;
+	private final int segmentType;
 
 	/**
 	 * First limit of the segment.
 	 */
-	private Point2D.Double startPoint;
+	private final Point2D.Double startPoint;
 
 	/**
 	 * Second limit of the segment.
 	 */
-	private Point2D.Double endPoint;
+	private final Point2D.Double endPoint;
 
 	/**
 	 * Distance between both points;
 	 */
-	private double length;
+	private final double length;
 
 	/**
 	 * Constant 'm' in the ecuation 'y = mx + b'. Ignored in vertical lines.
 	 */
-	private double m;
+	private final double m;
 
 	/**
 	 * Constant 'b' in the ecuation 'y = mx + b'.
 	 */
-	private double b;
+	private final double b;
 
 	/**
 	 * Allowed constructor. It calculates the ecuation of the line that contains

@@ -47,7 +47,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     /**
      * Key prefix.
      */
-    private String keyPrefix;
+    private final String keyPrefix;
     
     private Node node;
     

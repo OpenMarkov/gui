@@ -12,7 +12,7 @@ import java.awt.*;
 
 @SuppressWarnings("serial") public class ValuesTableOptimalPolicyCellRenderer extends ValuesTableCellRenderer {
 
-	private Color cellColor;
+	private final Color cellColor;
 
 	public ValuesTableOptimalPolicyCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns,
 			boolean colorGreen) {

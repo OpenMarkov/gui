@@ -38,12 +38,12 @@ public class VisualLink extends VisualArrow implements ClassLocalizable {
      * Object that has the information (included visual information) of the
      * source node.
      */
-    private VisualNode source;
+    private final VisualNode source;
     
     /**
      * Object that has the link information.
      */
-    private Link<Node> link;
+    private final Link<Node> link;
     
     /**
      * Creates a new visual link from a link.

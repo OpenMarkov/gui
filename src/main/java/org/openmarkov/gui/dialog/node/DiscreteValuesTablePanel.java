@@ -33,7 +33,7 @@ public class DiscreteValuesTablePanel extends JPanel implements ItemListener {
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /**
      * Object where all information will be saved.
      */

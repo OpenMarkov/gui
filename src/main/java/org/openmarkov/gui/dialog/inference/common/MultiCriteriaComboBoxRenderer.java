@@ -28,7 +28,7 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
 	 * Serial version UID
 	 */
 	private static final long serialVersionUID = 7294499626818840525L;
-	private int rendererType;
+	private final int rendererType;
 
 	public MultiCriteriaComboBoxRenderer(int rendererType) {
 		super(1);

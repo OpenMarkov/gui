@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class NetsIOSoftTest {
 
-    ArrayList<String> urlsToTest = new ArrayList<>();
+    final ArrayList<String> urlsToTest = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {

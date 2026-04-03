@@ -28,7 +28,7 @@ public class FSVariableBox extends InnerBox {
 	 * This variable contains a list of all the visual states that are part
 	 * of this inner box.
 	 */
-    public HashMap<Integer, VisualState> visualStates;
+    public final HashMap<Integer, VisualState> visualStates;
 
 	/**
 	 * Creates a new Finite States Variable innerBox.

@@ -26,7 +26,7 @@ public class MenuAssistant {
 	 * Basic menus and toolbars. Only have the options to enabled, select a set
 	 * text.
 	 */
-    protected List<MenuToolBarBasic> basicMenus;
+    protected final List<MenuToolBarBasic> basicMenus;
 
 	/**
 	 * Constructor that registers the array of menus.

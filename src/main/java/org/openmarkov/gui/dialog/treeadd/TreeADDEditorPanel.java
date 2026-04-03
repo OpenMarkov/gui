@@ -51,38 +51,38 @@ import java.util.Map;
  */
 public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     private static final long serialVersionUID = -6230911169585766424L;
-    protected JPopupMenu contextualMenu = new JPopupMenu();
+    protected final JPopupMenu contextualMenu = new JPopupMenu();
     // menu to start painting the treeADD with the panel in blank
-    protected JMenu submenuAddStartTree = new JMenu();
-    protected JMenuItem editPotential = new LocalizedMenuItem("TreeADD.EditPotential", ActionCommands.EDIT_POTENTIAL);
-    protected JMenuItem associateStates = new LocalizedMenuItem("TreeADD.JoinBranches", ActionCommands.JOIN_BRANCHES);
-    protected JMenuItem dissociateStates = new LocalizedMenuItem("TreeADD.DissociateStates",
+    protected final JMenu submenuAddStartTree = new JMenu();
+    protected final JMenuItem editPotential = new LocalizedMenuItem("TreeADD.EditPotential", ActionCommands.EDIT_POTENTIAL);
+    protected final JMenuItem associateStates = new LocalizedMenuItem("TreeADD.JoinBranches", ActionCommands.JOIN_BRANCHES);
+    protected final JMenuItem dissociateStates = new LocalizedMenuItem("TreeADD.DissociateStates",
                                                                  ActionCommands.REMOVE_STATES);
-    protected JMenuItem removeVariables = new LocalizedMenuItem("TreeADD.RemoveVariables",
+    protected final JMenuItem removeVariables = new LocalizedMenuItem("TreeADD.RemoveVariables",
                                                                 ActionCommands.REMOVE_VARIABLES);
-    protected JMenuItem removeSubtree = new LocalizedMenuItem("TreeADD.RemoveSubtree", ActionCommands.REMOVE_SUBTREE);
-    protected JMenuItem addVariables = new LocalizedMenuItem("TreeADD.AddVariables", ActionCommands.ADD_VARIABLES);
-    protected JMenuItem splitInterval = new LocalizedMenuItem("TreeADD.SplitInterval", ActionCommands.SPLIT_INTERVAL);
-    protected JMenuItem changeInterval = new LocalizedMenuItem("TreeADD.ChangeInterval",
+    protected final JMenuItem removeSubtree = new LocalizedMenuItem("TreeADD.RemoveSubtree", ActionCommands.REMOVE_SUBTREE);
+    protected final JMenuItem addVariables = new LocalizedMenuItem("TreeADD.AddVariables", ActionCommands.ADD_VARIABLES);
+    protected final JMenuItem splitInterval = new LocalizedMenuItem("TreeADD.SplitInterval", ActionCommands.SPLIT_INTERVAL);
+    protected final JMenuItem changeInterval = new LocalizedMenuItem("TreeADD.ChangeInterval",
                                                                ActionCommands.CHANGE_INTERVAL);
-    protected JMenuItem setLabel = new LocalizedMenuItem("TreeADD.SetLabel", ActionCommands.SET_LABEL);
-    protected JMenuItem removeLabel = new LocalizedMenuItem("TreeADD.RemoveLabel", ActionCommands.REMOVE_LABEL);
-    protected JMenuItem setReference = new LocalizedMenuItem("TreeADD.SetReference", ActionCommands.SET_REFERENCE);
-    protected JMenuItem removeReference = new LocalizedMenuItem("TreeADD.RemoveReference",
+    protected final JMenuItem setLabel = new LocalizedMenuItem("TreeADD.SetLabel", ActionCommands.SET_LABEL);
+    protected final JMenuItem removeLabel = new LocalizedMenuItem("TreeADD.RemoveLabel", ActionCommands.REMOVE_LABEL);
+    protected final JMenuItem setReference = new LocalizedMenuItem("TreeADD.SetReference", ActionCommands.SET_REFERENCE);
+    protected final JMenuItem removeReference = new LocalizedMenuItem("TreeADD.RemoveReference",
                                                                 ActionCommands.REMOVE_REFERENCE);
-    protected TreeADDPotential rootTreeADDPotential;
+    protected final TreeADDPotential rootTreeADDPotential;
     protected JTree jTree;
     protected boolean readOnlyMode = true;
     // Variables of the treeADDPotential root of the tree
     protected List<Variable> treeVariables;
-    private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     // when clicking a branch you can set a potential or add a subtree to that
     // branch
-    protected JMenu addSubtree = new JMenu(stringDatabase.getString("TreeADD.AddSubtree"));
-    protected JMenu changeRootVariable = new JMenu(stringDatabase.getString("TreeADD.ChangeVariable"));
+    protected final JMenu addSubtree = new JMenu(stringDatabase.getString("TreeADD.AddSubtree"));
+    protected final JMenu changeRootVariable = new JMenu(stringDatabase.getString("TreeADD.ChangeVariable"));
     // Mouse event detection
     private int xx, yy;
-    private Node node;
+    private final Node node;
     
     /**
      * Shows the tree in read only mode
@@ -1345,7 +1345,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * TODO: Convert to Inner Class of the Viewer?
      */
     private static class TreeADDExpansionAdapter implements TreeExpansionListener {
-        private TreeADDEditorPanel treeADDEditorPanel;
+        private final TreeADDEditorPanel treeADDEditorPanel;
         
         TreeADDExpansionAdapter(TreeADDEditorPanel treeADDEditorPanel) {
             this.treeADDEditorPanel = treeADDEditorPanel;
@@ -1364,7 +1364,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * TODO: Convert to Inner Class of the Viewer?
      */
     private static class TreeADDWillExpandAdapter implements TreeWillExpandListener {
-        private TreeADDEditorPanel treeADDEditorPanel;
+        private final TreeADDEditorPanel treeADDEditorPanel;
         
         TreeADDWillExpandAdapter(TreeADDEditorPanel treeADDEditorPanel) {
             this.treeADDEditorPanel = treeADDEditorPanel;
@@ -1388,7 +1388,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * @author myebra
      */
     private class TreeADDMouseAdapter extends MouseAdapter {
-        private TreeADDEditorPanel treeADDEditorPanel;
+        private final TreeADDEditorPanel treeADDEditorPanel;
         
         TreeADDMouseAdapter(TreeADDEditorPanel adaptee) {
             this.treeADDEditorPanel = adaptee;

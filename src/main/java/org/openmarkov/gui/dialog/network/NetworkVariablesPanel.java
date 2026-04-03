@@ -40,7 +40,7 @@ public class NetworkVariablesPanel extends JPanel {
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /**
      * Label of the variables Type checkboxes
      */
@@ -56,7 +56,7 @@ public class NetworkVariablesPanel extends JPanel {
     /**
      * Specifies if the network whose additionalProperties are edited is new.
      */
-    private boolean newNetwork;
+    private final boolean newNetwork;
     private ProbNet probNet;
     private JComboBox<String> jComboBoxVariableType;
     

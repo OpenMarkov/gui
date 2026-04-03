@@ -33,7 +33,7 @@ import java.util.*;
 public class TemporalEvolutionTablePane extends JScrollPane {
 
     //09/11/2022 - Took out of the constructor for avoiding code repetition
-    TableCellRenderer cellRenderer = new DefaultTableCellRenderer() {
+    final TableCellRenderer cellRenderer = new DefaultTableCellRenderer() {
         private final DecimalFormat formatter = new DecimalFormat("0.###", new DecimalFormatSymbols(Locale.US));
 
         @Override

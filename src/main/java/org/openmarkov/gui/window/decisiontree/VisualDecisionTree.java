@@ -21,7 +21,7 @@ public class VisualDecisionTree extends JTree{
 	/**
 	 * Object to convert coordinates of the screen to the panel and vice versa.
 	 */
-	protected ZoomManager zoomManager;
+	protected final ZoomManager zoomManager;
 	
 	/**
 	 * Constructs a VisualDecisionTree with the specified DecisionTreeModel.

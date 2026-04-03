@@ -45,19 +45,19 @@ import java.util.List;
 	/***
 	 * Node of the parent node of the link
 	 */
-	protected Node node1;
+	protected final Node node1;
 	/****
 	 * Node of the child node of the link
 	 */
-	protected Node node2;
+	protected final Node node2;
 	/***
 	 * The link which has the link restriction
 	 */
-	protected Link<Node> link;
+	protected final Link<Node> link;
 	/**
 	 * Indicates if the data of the table is modifiable.
 	 */
-	private boolean modifiable;
+	private final boolean modifiable;
 
 	public LinkRestrictionPanel(Link<Node> link) {
 		this.link = link;

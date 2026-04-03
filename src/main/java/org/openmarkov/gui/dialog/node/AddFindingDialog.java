@@ -15,6 +15,7 @@ import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serial;
 
 /**
  * Dialog box to add a finding in a node. The result of using this class is
@@ -25,6 +26,7 @@ import java.awt.*;
  * @version 1.0
  */
 public class AddFindingDialog extends OkCancelDialog {
+    @Serial
     private static final long serialVersionUID = 5618641549380924577L;
     /**
      * Object where the finding will be set.
@@ -38,22 +40,23 @@ public class AddFindingDialog extends OkCancelDialog {
     
     private JSpinner evidenceSpinner;
     
-    private NetworkEditorPanel networkEditorPanel;
+    private final NetworkEditorPanel networkEditorPanel;
     
-    private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     
-    private Finding finding;
+    private final Finding finding;
     
 
     private Finding newFinding;
     private Finding previousFinding;
     
     /**
-     * Constructor. initialises the instance.
+     * Constructor. initializes the instance.
      *
      * @param owner      window that owns the dialog.
      * @param visualNode the node to which this dialog is associated.
      * @param finding    the assigned finding
+     * @param networkEditorPanel
      */
     public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding, NetworkEditorPanel networkEditorPanel) {
         super(owner);

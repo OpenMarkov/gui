@@ -23,33 +23,33 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 	/**
 	 * The column of the table where is the potential
 	 */
-	private int col;
+	private final int col;
 	/**
 	 * The row of the table where is the potential
 	 */
-	private int row;
+	private final int row;
 	/**
 	 * The new value of the potential
 	 */
-	private Integer newValue;
+	private final Integer newValue;
 
 	/***
 	 * The link with the link restriction potential.
 	 */
-	private Link<Node> link;
+	private final Link<Node> link;
 	/****
 	 * The parent node of the link.
 	 */
-	private Node node1;
+	private final Node node1;
 	/****
 	 * The child node of the link.
 	 */
-	private Node node2;
+	private final Node node2;
 
 	/**
 	 * the table potential before the edit
 	 */
-	private double[] lastTable;
+	private final double[] lastTable;
 
 	/***
 	 * the table potential after the edit

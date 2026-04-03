@@ -86,7 +86,7 @@ public class MainPanel extends JPanel {
     /**
      * The frame where this panel belongs to.
      */
-    private JFrame mainFrame;
+    private final JFrame mainFrame;
     
     
     public final MainGUI mainGUI;
@@ -99,9 +99,9 @@ public class MainPanel extends JPanel {
     /**
      * Networks tabs come from here.
      */
-    private JTabbedPane networksTabPanel;
+    private final JTabbedPane networksTabPanel;
     
-    private ToolbarManager toolbarManager;
+    private final ToolbarManager toolbarManager;
     
     /**
      * Creates a new instance with a clear declared parent.

@@ -33,25 +33,25 @@ public class NodePartitionedIntervalEdit extends PNEdit {
 	/**
 	 * The state index that partitioned interval belongs to.
 	 */
-	private int indexState;
+	private final int indexState;
 	/**
 	 * The node edited
 	 */
-    private Node node;
+    private final Node node;
 	/**
 	 * Action to do with the partitioned interval
 	 */
-	private StateAction stateAction;
+	private final StateAction stateAction;
 	/**
 	 * The current partitioned interval
 	 */
-	private PartitionedInterval currentPartitionedInterval;
+	private final PartitionedInterval currentPartitionedInterval;
 
 	/**
 	 * A boolean that specify if the edition is in the lower limit
 	 * (value or symbol)
 	 */
-	private boolean lower;
+	private final boolean lower;
 	/**
 	 * The new limit value
 	 */

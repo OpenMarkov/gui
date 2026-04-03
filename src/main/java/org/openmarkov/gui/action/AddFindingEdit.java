@@ -13,10 +13,10 @@ import org.openmarkov.gui.graphic.VisualNode;
  */
 public class AddFindingEdit extends PNEdit {
 
-    VisualNode visualNode;
-    EvidenceCase evidenceCase;
-    Finding finding;
-    Finding previousFinding;
+    final VisualNode visualNode;
+    final EvidenceCase evidenceCase;
+    final Finding finding;
+    final Finding previousFinding;
 
     /**
      * Creates a new edit that adds a finding to the specified node.

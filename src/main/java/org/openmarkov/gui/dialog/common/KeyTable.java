@@ -60,7 +60,7 @@ public class KeyTable extends JTable {
     /**
      * Indicates if the object is already created.
      */
-    protected boolean created;
+    protected final boolean created;
     /**
      * This variable says if the table can be modified. False by default
      */

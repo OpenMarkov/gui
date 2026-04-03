@@ -36,15 +36,15 @@ import java.util.List;
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /***
      * Object where all the information will be saved
      */
-    private Link<Node> link;
+    private final Link<Node> link;
     /****
      * Variable Type of the revelation conditions
      */
-    private VariableType variableType;
+    private final VariableType variableType;
     /**
      * label for the table to show the values of the node
      */

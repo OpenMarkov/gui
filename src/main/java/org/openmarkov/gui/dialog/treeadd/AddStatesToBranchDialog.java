@@ -19,8 +19,8 @@ import java.awt.*;
 @SuppressWarnings("serial") public class AddStatesToBranchDialog extends OkCancelDialog {
 
 	private AddStatesCheckBoxPanel statesCheckBoxPanel;
-	private TreeADDBranch treeADDBranch;
-	private TreeADDPotential parentTreeADD;
+	private final TreeADDBranch treeADDBranch;
+	private final TreeADDPotential parentTreeADD;
 
 	public AddStatesToBranchDialog(Window owner, TreeADDBranch treeADDBranch, TreeADDPotential parentTreeADD) {
 		super(owner);

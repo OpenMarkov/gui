@@ -28,7 +28,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial") public class GLMPanel extends KeyTablePanel {
     
-    private List<ActionListener> listeners;
+    private final List<ActionListener> listeners;
     private GLMPotential potential = null;
     
     public GLMPanel() {

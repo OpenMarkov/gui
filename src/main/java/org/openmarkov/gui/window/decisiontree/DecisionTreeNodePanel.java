@@ -26,14 +26,14 @@ import java.util.Map;
 public class DecisionTreeNodePanel extends DecisionTreeElementPanel {
 	
     /** Cache for chance node icons to improve performance. */
-    private static Map<String, Icon> chanceNodeIconPool = new HashMap<>();
+    private static final Map<String, Icon> chanceNodeIconPool = new HashMap<>();
     /** Cache for decision node icons. */
-    private static Map<String, Icon> decisionNodeIconPool = new HashMap<>();
+    private static final Map<String, Icon> decisionNodeIconPool = new HashMap<>();
     /** Cache for utility node icons. */
-    private static Map<String, Icon> utilityNodeIconPool = new HashMap<>();
+    private static final Map<String, Icon> utilityNodeIconPool = new HashMap<>();
     
     /** The underlying logical tree node. */
-    private DecisionTreeNode treeNode;
+    private final DecisionTreeNode treeNode;
     
     /**
      * Constructs a panel for a specific decision tree node and initializes its icon.

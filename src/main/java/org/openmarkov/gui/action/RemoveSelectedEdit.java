@@ -26,8 +26,8 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class RemoveSelectedEdit extends CompoundPNEdit {
-	private List<VisualNode> nodesToRemove;
-	private List<VisualLink> linksToRemove;
+	private final List<VisualNode> nodesToRemove;
+	private final List<VisualLink> linksToRemove;
     
     // TODO OOPN end
 

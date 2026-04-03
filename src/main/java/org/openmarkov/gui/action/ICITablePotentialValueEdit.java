@@ -30,23 +30,23 @@ import java.util.List;
     /**
      * The column of the table where is the potential
      */
-    private int col;
+    private final int col;
     /**
      * The row of the table where is the potential
      */
-    private int row;
+    private final int row;
     /**
      * The new value of the potential
      */
-    private Double newValue;
+    private final Double newValue;
     /**
      * The node
      */
-    private Node node;
+    private final Node node;
     /** The ICI potential being edited. */
-    private ICIPotential iciPotential;
+    private final ICIPotential iciPotential;
     /** The variables of the ICI potential. */
-    private List<Variable> variables;
+    private final List<Variable> variables;
     /** The noisy parameters before the edit. */
     private double[] lastNoisyParameters;
     /** The noisy parameters after the edit. */
@@ -58,16 +58,16 @@ import java.util.List;
     /** The leaky parameters after the edit. */
     private double[] newLeakyParameters;
     /** Whether the edit targets leaky parameters (true) or noisy parameters (false). */
-    private boolean leakyFlag;
+    private final boolean leakyFlag;
     
     //
-    private int position;
+    private final int position;
     
     private int columnGroup;
     /** Index of the selected value within the column group. */
-    private int indexSelected;
+    private final int indexSelected;
     /** Number of conditioned (child) states. */
-    private int conditionedStates;
+    private final int conditionedStates;
     /**
      * A list that store the edition order
      */

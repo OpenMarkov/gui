@@ -21,7 +21,7 @@ public class MovedNodeInfo {
 	/**
 	 * Node whose position must be undone and redone.
 	 */
-    private Node nodeWrapper;
+    private final Node nodeWrapper;
 
 	/**
 	 * Original position of the node before it has been moved.

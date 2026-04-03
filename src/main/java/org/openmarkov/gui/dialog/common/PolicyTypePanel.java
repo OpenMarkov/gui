@@ -31,7 +31,7 @@ import java.awt.event.ItemListener;
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     private ButtonGroup buttonGroupRelationType;
     /**
      * Option to set as probabilistic the potential
@@ -48,7 +48,7 @@ import java.awt.event.ItemListener;
     /**
      * The node edited
      */
-    private Node node;
+    private final Node node;
     /**
      * The previous policy
      */
@@ -56,7 +56,7 @@ import java.awt.event.ItemListener;
     /**
      * Parent dialog
      */
-    private PotentialEditDialog parent;
+    private final PotentialEditDialog parent;
     
     /**
      * Constructor for PolicyTypePanel.

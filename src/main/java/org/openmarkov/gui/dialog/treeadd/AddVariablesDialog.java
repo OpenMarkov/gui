@@ -19,8 +19,8 @@ import java.awt.*;
 @SuppressWarnings("serial") public class AddVariablesDialog extends OkCancelDialog {
 
 	private AddVariablesCheckBoxPanel variableCheckBoxPanel;
-	private TreeADDBranch treeADDBranch;
-	private TreeADDPotential parentTreeADD;
+	private final TreeADDBranch treeADDBranch;
+	private final TreeADDPotential parentTreeADD;
 
 	public AddVariablesDialog(Window owner, TreeADDBranch treeADDBranch, TreeADDPotential parentTreeADD) {
 		super(owner);

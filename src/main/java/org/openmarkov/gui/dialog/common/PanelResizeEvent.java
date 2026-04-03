@@ -14,8 +14,8 @@ import java.awt.*;
  * Event object carrying the source panel and its new dimensions after a resize.
  */
 public class PanelResizeEvent {
-	private JPanel source;
-	private Dimension newDimension;
+	private final JPanel source;
+	private final Dimension newDimension;
 
 	public PanelResizeEvent(JPanel source, Dimension newDimension) {
 		super();

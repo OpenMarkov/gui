@@ -25,7 +25,7 @@ public class JMenuItemBuilder {
     private @Nullable Boolean enabled;
     private final @NotNull ArrayList<ThrowingConsumer<ActionEvent, ? extends Exception>> onClick;
     private final @NotNull ArrayList<ThrowingConsumer<ItemEvent, ? extends Exception>> onItemEvent;
-    private @NotNull ArrayList<Component> items;
+    private final @NotNull ArrayList<Component> items;
     private @NotNull SpecificKind specificKind;
     private @Nullable Boolean selected;
     

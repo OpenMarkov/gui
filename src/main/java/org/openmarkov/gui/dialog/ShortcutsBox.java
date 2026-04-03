@@ -26,7 +26,7 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 	private static final long serialVersionUID = -2926600957370532010L;
 
 	/** String database **/
-	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/* List of known shortcuts */
 	//-------------------------//
@@ -35,7 +35,7 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 		in the localization xml files and add said token to the
 		corresponding list below. */
 
-	private String[] specificShortcuts = new String[]{
+	private final String[] specificShortcuts = new String[]{
 			"OpenTable",
 			"OpenTableNote",
 			"OpenProperties",
@@ -45,7 +45,7 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 			"SaveReopen"};
 
 
-	private String[] commonShortcuts = new String[]{
+	private final String[] commonShortcuts = new String[]{
 			"New",
 			"Open",
 			"Save",

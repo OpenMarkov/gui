@@ -84,7 +84,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
     /**
      * Reference to the localize object
      */
-    StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /**
      * Scroll Pane for the table
      */
@@ -108,7 +108,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
     /**
      * Main panel of the layout
      */
-    private JPanel mainPanel;
+    private final JPanel mainPanel;
     /**
      * Panel in which the user can select the main unit of the unicriterion conversion
      */
@@ -116,7 +116,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
     /**
      * ProbNet in which we are working
      */
-    private ProbNet probNet;
+    private final ProbNet probNet;
     /**
      * Combobox with all the possible units of the decision criteria
      */
@@ -124,7 +124,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
     /**
      * Boolean attribute that indicates if the probnet is temporal or not
      */
-    private boolean isTemporal;
+    private final boolean isTemporal;
     /**
      * Boolean attribute that indicates if the probnet have multicriteria
      */
@@ -136,7 +136,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
     /**
      * Temporal copy of Tempora options
      */
-    private TemporalOptions temporalOptions;
+    private final TemporalOptions temporalOptions;
     /**
      * Number of slices label
      */

@@ -25,10 +25,10 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("serial") public class NetworkAgentEdit extends PNEdit {
 
-	private String agentName;
-	private StateAction stateAction;
+	private final String agentName;
+	private final StateAction stateAction;
 	private List<StringWithProperties> lastAgents;
-	private Object[][] dataTable;
+	private final Object[][] dataTable;
 
 
 	/**

@@ -33,14 +33,14 @@ import java.util.List;
 @SuppressWarnings("serial") public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
     
     JButton standardCriteriaButton;
-    private ProbNet probNet;
-    private Window owner;
+    private final ProbNet probNet;
+    private final Window owner;
     /**
      * Each time an agent has been edited the corresponding edit would be stored
      */
     //private List<PNEdit> edits = new ArrayList<PNEdit>();
     
-    private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     
     public DecisionCriteriaTablePanel(String[] newColumns, ProbNet probNet, Window owner) {
         super(newColumns, new Object[0][0], StringDatabase.getUniqueInstance().

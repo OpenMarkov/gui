@@ -56,7 +56,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /**
      * Object where all information will be saved.
      */
@@ -79,7 +79,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     private JPanel jPanelNodeType;
     private JLabel jLabelNodeVariableType;
     // private PrefixedKeyTablePanel nodeDiscreteStatesTablePanel;
-    private ButtonGroup buttonGroup = new ButtonGroup();
+    private final ButtonGroup buttonGroup = new ButtonGroup();
     private JRadioButton jRadioButtonDecreasing;
     private JRadioButton jRadioButtonIncreasing;
     private JPanel jPanelMonotonyUpDown;
@@ -126,7 +126,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * TODO listener for actions -
      */
-    private NodeDomainValuesTablePanelListener listener;
+    private final NodeDomainValuesTablePanelListener listener;
     private JComboBox<String> jComboBoxNodeVariableType;
     private boolean uploadingData = false;
     

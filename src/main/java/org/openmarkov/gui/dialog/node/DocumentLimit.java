@@ -28,12 +28,12 @@ public class DocumentLimit extends PlainDocument {
 	/**
 	 * "Editor" which will control the string
 	 */
-	private JTextField editor;
+	private final JTextField editor;
 
 	/**
 	 * Max number of characters to control
 	 */
-	private int maxCharNumber;
+	private final int maxCharNumber;
 
 	/**
 	 * Constructor

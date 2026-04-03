@@ -16,9 +16,9 @@ import java.util.List;
  */
 public class RemoveLinkRestrictionEdit extends PNEdit {
 
-    private VisualNetwork visualNetwork;
-    List<VisualLink> links;
-    Potential restriction;
+    private final VisualNetwork visualNetwork;
+    final List<VisualLink> links;
+    final Potential restriction;
     Potential lastRestriction;
 
     /**

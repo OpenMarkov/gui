@@ -27,7 +27,7 @@ public class TreeNodeToDot {
         private String nodeName;
         private int number;
         private NodeType type;
-        private double computedUtility;
+        private final double computedUtility;
         
         public DotNode(int number, String nodeName, double computedUtility, NodeType type) {
             this.nodeName = nodeName;
@@ -83,8 +83,8 @@ public class TreeNodeToDot {
     private class DotLink {
         private DotNode sourceNode;
         private DotNode destinationNode;
-        private String branchState;
-        private double probability;
+        private final String branchState;
+        private final double probability;
         
         public DotLink(DotNode sourceNode, DotNode destinationNode, String branchState, double probability) {
             this.sourceNode = sourceNode;
@@ -123,11 +123,11 @@ public class TreeNodeToDot {
         }
     }
     
-    List<DotNode> dotNodes = new ArrayList<>();
-    List<DotLink> dotLinks = new ArrayList<>();
+    final List<DotNode> dotNodes = new ArrayList<>();
+    final List<DotLink> dotLinks = new ArrayList<>();
     
     private int numNode = 0;
-    private DecimalFormat df = new DecimalFormat();
+    private final DecimalFormat df = new DecimalFormat();
     private int graphDPI;
     
     public TreeNodeToDot() {

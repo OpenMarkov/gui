@@ -23,7 +23,7 @@ public class DecisionTreeUI extends BasicTreeUI {
 
 	public class ZoomMouseListener extends MouseAdapter {
 
-		MouseListener parentMouseListener;
+		final MouseListener parentMouseListener;
 
 		public ZoomMouseListener(MouseListener ml) {
 			parentMouseListener = ml;

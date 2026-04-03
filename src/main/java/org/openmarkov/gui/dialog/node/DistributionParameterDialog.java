@@ -25,7 +25,7 @@ import java.util.List;
 @SuppressWarnings("serial") public class DistributionParameterDialog extends OkCancelDialog {
     
     private double[] parameters;
-    private List<TextField> parameterTextFields;
+    private final List<TextField> parameterTextFields;
 	public DistributionParameterDialog(Window owner, String distributionType, double[] parameters) {
 		super(owner);
 		this.parameters = parameters;

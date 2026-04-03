@@ -28,11 +28,11 @@ public class KeyListSelectionDialog extends OkCancelDialog {
 	/**
 	 * Elements of the table.
 	 */
-    private Object[][] data;
+    private final Object[][] data;
 	/**
 	 * Columns of the table.
 	 */
-    private String[] columns;
+    private final String[] columns;
 	/**
 	 * Selected rows of the table.
 	 */

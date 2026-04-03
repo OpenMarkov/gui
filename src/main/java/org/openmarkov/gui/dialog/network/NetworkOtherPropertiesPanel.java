@@ -37,7 +37,7 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	 */
 	private PrefixedOtherPropertiesTablePanel otherPropertiesTablePanel = null;
 
-	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	
 	private ProbNet probNet = null;
 

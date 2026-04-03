@@ -42,19 +42,19 @@ import java.util.ArrayList;
     /****
      * The link with the link restriction.
      **/
-    private Link<Node> link;
+    private final Link<Node> link;
     /****
      * The parent node of the link
      */
-    private Node node1;
+    private final Node node1;
     /****
      * The child node of the link
      */
-    private Node node2;
+    private final Node node2;
     /***
      * The ProbNet containing the link.
      */
-    private ProbNet net;
+    private final ProbNet net;
     
     public LinkRestrictionValuesTable(Link<Node> link, ValuesTableModel tableModel, final boolean modifiable) {
         super(tableModel, modifiable);

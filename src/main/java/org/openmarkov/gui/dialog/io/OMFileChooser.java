@@ -39,7 +39,7 @@ public class OMFileChooser extends JFileChooser {
     /**
      * Directory where the dialog box searchs the files.
      */
-    private static String directoryPath = System.getProperty("user.home");
+    private static final String directoryPath = System.getProperty("user.home");
     
     /**
      * Creates a new file chooser that starts in the current directory,

@@ -26,7 +26,7 @@ public class NetworkTemporalOptionsPanel extends JPanel {
 	
 	private static final long serialVersionUID = -7384917480313414961L;
 	
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	
 	private ProbNet probNet;
 	private JComboBox<String> temporalUnits; 

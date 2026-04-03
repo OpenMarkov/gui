@@ -34,15 +34,13 @@ import java.awt.*;
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = ConditionalGaussianPotential.class)
 public class ConditionalGaussianPotentialPanel
         extends PotentialPanel implements PNEditListener {
-    
-    private JButton editMeanButton;
-    private JButton editVarianceButton;
-    private ProbNet probNet;
+
+    private final ProbNet probNet;
     private Node meanDummyNode = null;
     private Node varianceDummyNode = null;
-    private Node node;
-    private Potential oldPotential;
-    private ConditionalGaussianPotential newPotential;
+    private final Node node;
+    private final Potential oldPotential;
+    private final ConditionalGaussianPotential newPotential;
     
     public ConditionalGaussianPotentialPanel(Node node) {
         super();
@@ -57,7 +55,7 @@ public class ConditionalGaussianPotentialPanel
     private void initComponents() {
         setLayout(new BorderLayout());
         JPanel buttonPanel = new JPanel();
-        editMeanButton = new JButton("Edit mean potential");
+        JButton editMeanButton = new JButton("Edit mean potential");
         editMeanButton.addActionListener(e -> {
             try {
                 editMeanPotential();
@@ -66,7 +64,7 @@ public class ConditionalGaussianPotentialPanel
                 throw new UnrecoverableException(ex);
             }
         });
-        editVarianceButton = new JButton("Edit variance potential");
+        JButton editVarianceButton = new JButton("Edit variance potential");
         editVarianceButton.addActionListener(e -> {
             try {
                 editVariancePotential();

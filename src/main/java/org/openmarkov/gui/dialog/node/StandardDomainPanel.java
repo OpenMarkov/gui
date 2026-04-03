@@ -24,9 +24,9 @@ import java.util.ArrayList;
 	/**
 	 * String database
 	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-	private ButtonGroup buttonGroup = new ButtonGroup();
-	private ArrayList<JRadioButton> radioButtons = new ArrayList<JRadioButton>();
+	protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final ArrayList<JRadioButton> radioButtons = new ArrayList<JRadioButton>();
 
 	public StandardDomainPanel() {
 		initialize();

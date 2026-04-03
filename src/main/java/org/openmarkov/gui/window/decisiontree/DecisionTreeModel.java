@@ -24,10 +24,10 @@ import java.util.Set;
 public class DecisionTreeModel implements TreeModel {
 
 	/** Listeners for changes in the tree structure. */
-	private Set<TreeModelListener> listeners;
+	private final Set<TreeModelListener> listeners;
 
 	/** Root node of the tree panel hierarchy. */
-	private DecisionTreeElementPanel root;
+	private final DecisionTreeElementPanel root;
 
 	/**
 	 * Constructor for DecisionTreeModel.

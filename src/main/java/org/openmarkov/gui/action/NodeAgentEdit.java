@@ -17,9 +17,9 @@ import org.openmarkov.core.model.network.StringWithProperties;
  */
 @SuppressWarnings("serial") public class NodeAgentEdit extends PNEdit {
 
-	private StringWithProperties currentAgent;
-	private StringWithProperties newAgent;
-	private Node node;
+	private final StringWithProperties currentAgent;
+	private final StringWithProperties newAgent;
+	private final Node node;
 
 	/**
 	 * Creates a new edit that sets the agent of the given node.

@@ -12,7 +12,7 @@ import java.awt.*;
 
 @SuppressWarnings("serial") public class ValuesTableWithLinkRestrictionCellRenderer extends ValuesTableCellRenderer {
 
-	private static Color INCOMPATIBILITY_COLOR = new Color(255, 122, 122);
+	private static final Color INCOMPATIBILITY_COLOR = new Color(255, 122, 122);
 
 	public ValuesTableWithLinkRestrictionCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns) {
 		super(firstEditableRow, uncertaintyInColumns);

@@ -25,7 +25,7 @@ import java.util.List;
  */
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor(Node.class))
 @SuppressWarnings("serial") public abstract class PotentialPanel extends JPanel {
-	private List<PanelResizeEventListener> listeners;
+	private final List<PanelResizeEventListener> listeners;
 	/**
 	 * If true, values inside the panel will not be editable
 	 */

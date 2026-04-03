@@ -24,17 +24,17 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 	/***
 	 * Object which stores the revelation conditions
 	 */
-	private Link<Node> link;
+	private final Link<Node> link;
 
 	/**
 	 * The action to carry out
 	 */
-	private StateAction stateAction;
+	private final StateAction stateAction;
 
 	/****
 	 * The new value of the limit
 	 */
-	private double newValue;
+	private final double newValue;
 
 	/***
 	 * The old value of the limit
@@ -43,11 +43,11 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 	/**
 	 * index of the row selected
 	 */
-	private int rowSelected;
+	private final int rowSelected;
 	/***
 	 * Indicates whether the lower limit or upper limit is modified
 	 */
-	private boolean isLower;
+	private final boolean isLower;
 	/*****
 	 * The interval prior to the modification
 	 */

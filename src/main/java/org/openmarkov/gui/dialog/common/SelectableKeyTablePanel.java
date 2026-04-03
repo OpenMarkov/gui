@@ -37,11 +37,11 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
     /***
      * Link containing the revelation conditions
      */
-    private Link<Node> link;
+    private final Link<Node> link;
     /****
      * Node whose values are revealing
      */
-    private Node node;
+    private final Node node;
     
     public SelectableKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
                                    boolean firstColumnHidden, Link<Node> link) {

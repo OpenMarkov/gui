@@ -29,11 +29,11 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     
     private JButton editMedianButton;
     private JButton editScaleButton;
-    private ProbNet probNet;
+    private final ProbNet probNet;
     private Node medianDummyNode = null;
     private Node scaleDummyNode = null;
-    private Potential oldPotential;
-    private DiscretizedCauchyPotential newPotential;
+    private final Potential oldPotential;
+    private final DiscretizedCauchyPotential newPotential;
     
     public DiscretizedCauchyPotentialPanel(Node node) {
         super();

@@ -10,10 +10,10 @@ import org.openmarkov.gui.graphic.VisualNode;
  */
 public class RemoveFindingEdit extends PNEdit {
 
-    private EvidenceCase evidenceCase;
-    private Variable variable;
+    private final EvidenceCase evidenceCase;
+    private final Variable variable;
     private Finding finding;
-    private VisualNode visualNode;
+    private final VisualNode visualNode;
 
     /**
      * Creates a new edit that removes the finding for the specified variable.

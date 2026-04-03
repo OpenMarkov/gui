@@ -44,7 +44,7 @@ public class ICIPotentialsTablePanel
     /**
      * Indicates if the data of the table is modifiable.
      */
-    private boolean modifiable;
+    private final boolean modifiable;
     
     /**
      * Panel to scroll the table.
@@ -59,9 +59,9 @@ public class ICIPotentialsTablePanel
      * "Leak" name.
      */
     
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     
-    private PotentialsTablePanelOperations tablePotentialsPanelOperations;
+    private final PotentialsTablePanelOperations tablePotentialsPanelOperations;
     
     public ICIPotentialsTablePanel(Node node) {
         super();

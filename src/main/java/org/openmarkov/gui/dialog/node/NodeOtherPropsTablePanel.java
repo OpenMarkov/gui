@@ -34,7 +34,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	/**
 	 * String database
 	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	/**
 	 * label for the table to show the other additionalProperties
 	 */

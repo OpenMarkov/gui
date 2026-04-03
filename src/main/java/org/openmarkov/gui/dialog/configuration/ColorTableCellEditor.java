@@ -28,15 +28,15 @@ import java.util.EventObject;
 	/**
 	 * colorChooser for the panel
 	 */
-	private JColorChooser colorChooser;
+	private final JColorChooser colorChooser;
 	/**
 	 * dialog to implement the Color Chooser
 	 */
-	private JDialog colorDialog;
+	private final JDialog colorDialog;
 	/**
 	 * panel to include the dialog
 	 */
-	private JPanel panel;
+	private final JPanel panel;
 
 	public ColorTableCellEditor() {
 		panel = new JPanel();

@@ -38,7 +38,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /**
      * The Network Type Label
      */
@@ -62,9 +62,9 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
     /**
      * Specifies if the network whose additionalProperties are edited is new.
      */
-    private boolean newNetwork;
-    private ProbNet probNet;
-    private NetworkPropertiesDialog parent;
+    private final boolean newNetwork;
+    private final ProbNet probNet;
+    private final NetworkPropertiesDialog parent;
     
     /**
      * Constructor.
