@@ -2,7 +2,6 @@ package org.openmarkov.gui.commonComponents;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.Collection;
-import java.util.Vector;
 
 public class AutoResizedTableModel extends DefaultTableModel {
     

@@ -4,18 +4,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.gui.configuration.LocalPreferences;
-import org.openmarkov.gui.toolplugin.ToolPlugin;
-import org.openmarkov.gui.window.MainGUI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.stream.Stream;
 
 public class JMenuItemBuilder {

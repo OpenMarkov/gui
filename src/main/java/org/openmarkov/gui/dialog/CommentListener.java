@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.dialog;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 
 /**

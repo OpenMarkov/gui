@@ -7,10 +7,7 @@
 
 package org.openmarkov.gui.dialog.link;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;

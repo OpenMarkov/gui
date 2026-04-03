@@ -10,7 +10,6 @@ package org.openmarkov.gui.dialog.treeadd;
 import org.openmarkov.core.action.core.SetPotentialEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.gui.dialog.common.PotentialPanel;
 import org.openmarkov.gui.dialog.common.PotentialPanelPlugin;

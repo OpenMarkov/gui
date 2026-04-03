@@ -9,16 +9,10 @@ package org.openmarkov.gui.toolplugin;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.UnreachableException;
-import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.plugin.PluginSearch;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 

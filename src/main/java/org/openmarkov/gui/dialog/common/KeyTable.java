@@ -18,9 +18,7 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 /**
  * This class implements a table that has at least one column. The first column

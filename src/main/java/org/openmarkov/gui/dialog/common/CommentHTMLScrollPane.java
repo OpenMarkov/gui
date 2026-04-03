@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.dialog.CommentListener;

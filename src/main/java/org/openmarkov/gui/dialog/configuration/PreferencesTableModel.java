@@ -11,9 +11,7 @@
 package org.openmarkov.gui.dialog.configuration;
 
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.core.localize.StringDatabase;
 
-import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;

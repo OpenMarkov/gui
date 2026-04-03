@@ -9,9 +9,6 @@ package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.core.io.ProbNetReader;
-import org.openmarkov.core.io.format.annotation.FormatType;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.w3c.dom.Document;
@@ -24,9 +21,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 /**
  * This class implements a file chooser dialog file to select OpenMarkov files.

@@ -3,7 +3,6 @@ package org.openmarkov.gui.dialog;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.IOpenMarkovException;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.core.logging.OpenMarkovLogger;
 
 import javax.swing.*;
 import java.awt.*;

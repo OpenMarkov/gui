@@ -8,7 +8,6 @@
 package org.openmarkov.gui.dialog.common;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.swing.JOptionPane;

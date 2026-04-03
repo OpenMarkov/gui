@@ -1,6 +1,5 @@
 package org.openmarkov.gui.util;
 
-import org.apache.poi.hpsf.Decimal;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Sheet;

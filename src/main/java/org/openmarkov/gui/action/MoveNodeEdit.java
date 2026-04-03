@@ -7,9 +7,7 @@
 
 package org.openmarkov.gui.action;
 
-import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.gui.graphic.VisualNode;
 

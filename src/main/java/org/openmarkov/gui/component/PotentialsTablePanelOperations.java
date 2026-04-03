@@ -18,8 +18,6 @@ import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-import javax.swing.*;
-
 
 /**
  * Auxiliary methods for PotentialsTablePanel class

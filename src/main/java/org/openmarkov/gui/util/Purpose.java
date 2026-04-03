@@ -10,7 +10,6 @@ package org.openmarkov.gui.util;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.StringDatabase;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.MissingResourceException;

@@ -7,11 +7,7 @@
 package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.core.io.database.CaseDatabaseReader;
-import org.openmarkov.core.io.database.CaseDatabaseWriter;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
-import org.openmarkov.gui.configuration.LocalPreferences;
-
-import java.util.HashMap;
 
 /**
  * File chooser dialog pre-configured with filters for all registered

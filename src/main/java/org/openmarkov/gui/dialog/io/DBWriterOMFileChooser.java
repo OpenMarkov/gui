@@ -11,7 +11,6 @@ import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.gui.configuration.LocalPreferences;
 
 import java.io.File;
-import java.util.HashMap;
 
 /**
  * File chooser dialog pre-configured with filters for all registered

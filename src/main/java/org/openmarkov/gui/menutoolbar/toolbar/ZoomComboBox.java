@@ -8,7 +8,6 @@
 package org.openmarkov.gui.menutoolbar.toolbar;
 
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.ZoomOutOfRangeException;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 

@@ -13,15 +13,9 @@ import org.openmarkov.core.model.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.MulticriteriaOptions.Type;
 import org.openmarkov.core.model.network.CEP;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
-import org.openmarkov.core.model.network.type.NetworkType;
 
-import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.dialog.costeffectiveness.CEPDialog;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;

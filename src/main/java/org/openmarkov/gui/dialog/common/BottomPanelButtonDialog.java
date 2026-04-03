@@ -10,7 +10,6 @@ package org.openmarkov.gui.dialog.common;
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serial;
-import java.util.Arrays;
 import java.util.stream.IntStream;
 
 /**

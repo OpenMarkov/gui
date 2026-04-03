@@ -12,7 +12,6 @@ import org.junit.jupiter.api.*;
 import org.openmarkov.core.testTags.TestSpeed;
 import org.openmarkov.gui.loader.element.IconBind;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;

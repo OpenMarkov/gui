@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.graphic;
 
-import org.openmarkov.core.exception.InvalidArgumentException;
-import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Point2D;
 
 /**

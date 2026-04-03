@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.dialog;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
 import org.openmarkov.core.localize.Languages;

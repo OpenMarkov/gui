@@ -8,7 +8,6 @@
 package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
-import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;

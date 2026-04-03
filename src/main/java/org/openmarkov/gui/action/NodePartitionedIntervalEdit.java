@@ -11,7 +11,6 @@ import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.StateAction;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.gui.util.GUIDefaultStates;
 
 /**
  * {@code NodePartitionedIntervalEdit} is a simple edit that allows to modify

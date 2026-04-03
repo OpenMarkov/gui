@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.action;
 
-import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.core.ICIPotentialEdit;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;

@@ -35,7 +35,6 @@ import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.gui.dialog.inference.common.InferenceOptionsDialog;
 import org.openmarkov.gui.dialog.io.*;
-import org.openmarkov.gui.dialog.io.DBReaderOMFileChooser;
 import org.openmarkov.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
