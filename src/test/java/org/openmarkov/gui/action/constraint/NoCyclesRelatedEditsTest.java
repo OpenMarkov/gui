@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -39,8 +40,12 @@ public class NoCyclesRelatedEditsTest {
     @Test public void testCheckProbNet() {
         NoCycle testedConstraint = new NoCycle();
         probNetDirected.addConstraint(testedConstraint);
-        Variable va = probNetDirected.getNode("A", NodeType.CHANCE).getVariable();
-        Variable vc = probNetDirected.getNode("C", NodeType.CHANCE).getVariable();
+        Node nodeA = probNetDirected.getNode("A", NodeType.CHANCE);
+        assertNotNull(nodeA, "node A should exist in the test network");
+        Variable va = nodeA.getVariable();
+        Node nodeC = probNetDirected.getNode("C", NodeType.CHANCE);
+        assertNotNull(nodeC, "node C should exist in the test network");
+        Variable vc = nodeC.getVariable();
         
         assertTrue(testedConstraint.isMetBy(probNetDirected));
         try {
