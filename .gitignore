@@ -179,3 +179,4 @@ target/
 # Claude
 CLAUDE.md
 
+.jqwik-database
