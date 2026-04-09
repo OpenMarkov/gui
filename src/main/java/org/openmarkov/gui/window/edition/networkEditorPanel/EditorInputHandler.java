@@ -1,6 +1,7 @@
 package org.openmarkov.gui.window.edition.networkEditorPanel;
 
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.AddNodeEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Point2D;
@@ -115,14 +116,10 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
                 try {
                     boolean userAcceptedChanges = this.networkEditorPanel.changeNodeProperties(node, this.lastLeftClickProducedANode);
                     if (!userAcceptedChanges && this.lastLeftClickProducedANode) {
-                        while (true) {
-                            if (this.networkEditorPanel.getNetworkPanel().getProbNet().getPNESupport()
-                                                       .undo()
-                                                       .stream()
-                                                       .anyMatch(edit -> edit instanceof AddNodeEdit)) {
-                                break;
-                            }
-                        }
+                        PNEdit undone;
+                        do {
+                            undone = this.networkEditorPanel.getNetworkPanel().getProbNet().getPNESupport().undo();
+                        } while (undone != null && !(undone instanceof AddNodeEdit));
                         this.networkEditorPanel.getNetworkPanel().getProbNet().getPNESupport().removeUndoneEdits();
                     }
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
