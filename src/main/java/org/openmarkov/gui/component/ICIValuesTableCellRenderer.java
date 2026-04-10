@@ -8,9 +8,9 @@ package org.openmarkov.gui.component;
 
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 
 /**
@@ -44,71 +44,41 @@ import java.util.List;
 		if ((column < ValuesTable.FIRST_EDITABLE_COLUMN) & (row < firstEditableRow)) { // PARENTS CELLS
 			// set alternate colors
 			// column = 0 row = 0 o 1
-			switch (row % 3) {
-			case 0:
-				setBackground(new Color(220, 220, 220));
-				setForeground(TABLE_HEADER_TEXT_COLOR_1);
-				break;
-			case 1:
-				setBackground(new Color(220, 220, 220));
-				setForeground(TABLE_HEADER_TEXT_COLOR_2);
-				break;
-			case 2:
-				setBackground(new Color(220, 220, 220));
-				setForeground(TABLE_HEADER_TEXT_COLOR_3);
-				break;
-			default:
-				break;
-			}
+            setBackground(GUIColors.Tables.HEADER_BACKGROUND.getColor());
+            setForeground(GUIColors.Tables.FROZEN_CELL_FOREGROUND.getColor());
 		}
 		// NEW
 		if ((column < ValuesTable.FIRST_EDITABLE_COLUMN) & (row >= firstEditableRow)) { // NODE STATES CELLS
-			// column 0 child states
-			// setBackground( Color.LIGHT_GRAY );
-			setBackground(new Color(220, 220, 220));
-			setForeground(Color.BLACK);
+            setBackground(GUIColors.Tables.FROZEN_CELL_BACKGROUND.getColor());
+            setForeground(GUIColors.Tables.FROZEN_CELL_FOREGROUND.getColor());
 		}
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) & (row < firstEditableRow)) { // headers cells
 			if (row == 0) {// FIRST ROW
 				for (int i = 0; i < acummulativeColumns.length; i++) {
 					if (i == 0) {
 						if (column <= acummulativeColumns[i]) {
-							setBackground(new Color(220, 220, 220));
-							setForeground(new Color(128, 0, 64));
+                            setBackground(GUIColors.Tables.HEADER_BACKGROUND.getColor());
+                            setForeground(GUIColors.Tables.HEADER_FOREGROUND_COLORS.getFirst().getColor());
 							break;
 						}
 					} else if (acummulativeColumns[i - 1] < column && column <= acummulativeColumns[i]) {
-						if (i % 2 == 0) {
-							setBackground(new Color(220, 220, 220));
-							setForeground(new Color(128, 0, 64));
-						} else {
-							setBackground(new Color(220, 220, 220));
-							setForeground(Color.BLUE.darker());
-						}
+                        setBackground(GUIColors.Tables.HEADER_BACKGROUND.getColor());
+                        setForeground(GUIColors.Tables.HEADER_FOREGROUND_COLORS.get(i % GUIColors.Tables.HEADER_FOREGROUND_COLORS.size())
+                                                                               .getColor());
 						break;
 					}
 				}
 			}
 			if (row == 1) {// SECOND ROW
 				// setBackground( new Color(220,220,220));
-				if (column % 2 == 0) {
-					setBackground(new Color(220, 220, 220));
-					setForeground(new Color(128, 0, 64));
-				} else {
-					setBackground(new Color(220, 220, 220));
-					setForeground(Color.BLUE.darker());
-				}
+                setBackground(GUIColors.Tables.HEADER_BACKGROUND.getColor());
+                setForeground(GUIColors.Tables.HEADER_FOREGROUND_COLORS.get(column % GUIColors.Tables.HEADER_FOREGROUND_COLORS.size())
+                                                                       .getColor());
 			}
 		}
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
-			setBackground(Color.WHITE);
-			setForeground(Color.BLACK);
-			if (hasFocus) {
-				if (table.isCellEditable(row, column)) {
-					setForeground(Color.BLUE);
-					setBackground(Color.YELLOW);
-				}
-			}
+            setBackground(GUIColors.Tables.EDITABLE_CELL_BACKGROUND.getColor());
+            setForeground(GUIColors.Tables.EDITABLE_CELL_FOREGROUND.getColor());
 		}
 	}
 }

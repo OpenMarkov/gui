@@ -12,6 +12,7 @@ import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -33,8 +34,6 @@ import java.util.List;
 @SuppressWarnings("serial") public class ArithmeticExpressionDialog extends OkCancelDialog
         implements DocumentListener {
     
-    private static final Color VALID_EXPRESSION_COLOR = new Color(180, 215, 170);
-    private static final Color INVALID_EXPRESSION_COLOR = new Color(250, 170, 170);
     private final JTextField expressionTextField;
     private final JList<String> variableList;
     private final JList<String> functionList;
@@ -223,7 +222,7 @@ import java.util.List;
     private void validateExpression() {
         boolean expressionIsValid = isValidExpression();
         this.getOKButton().setEnabled(expressionIsValid);
-        expressionTextField.setBackground(expressionIsValid ? VALID_EXPRESSION_COLOR : INVALID_EXPRESSION_COLOR);
+        expressionTextField.setBackground(expressionIsValid ? GUIColors.General.CORRECT.getColor() : GUIColors.General.WRONG.getColor());
     }
     
 }

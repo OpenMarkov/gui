@@ -15,6 +15,8 @@ import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 
 /**
@@ -24,7 +26,7 @@ import java.awt.event.MouseEvent;
  * @author ibermejo
  */
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({NetworkEditorPanel.class, ProbNet.class}))
-public abstract class EditionMode {
+public abstract class EditionMode implements KeyListener {
 
 	protected final NetworkEditorPanel networkEditorPanel;
 	protected final VisualNetwork visualNetwork;
@@ -39,6 +41,8 @@ public abstract class EditionMode {
     public abstract void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException;
 
     public abstract void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException;
-
-	public abstract void mouseDragged(MouseEvent e, Point2D.Double position, double diffX, double diffY, Graphics2D g);
+    
+    public abstract void mouseDragged(MouseEvent e, Point2D.Double position, double diffX, double diffY, Graphics2D g);
+    
+    
 }

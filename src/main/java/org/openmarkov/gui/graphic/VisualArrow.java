@@ -13,6 +13,8 @@ import java.awt.*;
 import java.awt.geom.*;
 
 import org.openmarkov.core.model.network.Point2D;
+import org.openmarkov.gui.configuration.GUIColor;
+import org.openmarkov.gui.configuration.GUIColors;
 
 /**
  * This class is the visual representation of a link.
@@ -47,13 +49,8 @@ public class VisualArrow extends VisualElement {
 	 * Distance between stripes
 	 */
 	private static final double STRIPE_DISTANCE = 3;
-
-	/**
-	 * Color of lines.
-	 */
-	private static final Color FOREGROUND_COLOR = Color.DARK_GRAY;
-
-	/**
+    
+    /**
 	 * Start point.
 	 */
     private Point2D.Double startPoint;
@@ -77,8 +74,8 @@ public class VisualArrow extends VisualElement {
 	 * Is the link single striped
 	 */
 	private boolean isSingleStriped;
-
-	private Color linkColor = FOREGROUND_COLOR;
+    
+    private GUIColor linkColor = GUIColors.Network.LINK;
 
 	/**
 	 * Creates a new visual link from the two points that define the start and
@@ -468,8 +465,7 @@ public class VisualArrow extends VisualElement {
 	 * @param g graphics object where paint the link.
 	 */
 	@Override public void paint(Graphics2D g) {
-
-		g.setPaint(linkColor);
+        g.setPaint(linkColor.getColor());
 		Stroke stroke = getStroke();
 		if (isDoubleStriped) {
 			paintDoubleStripe(g, startPoint, endPoint, stroke);
@@ -521,7 +517,7 @@ public class VisualArrow extends VisualElement {
 	/**
 	 * @param linkColor the linkColor to set
 	 */
-	public void setLinkColor(Color linkColor) {
+    public void setLinkColor(GUIColor linkColor) {
 		this.linkColor = linkColor;
 	}
 

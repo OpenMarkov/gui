@@ -7,23 +7,21 @@
 
 package org.openmarkov.gui.component;
 
+import org.openmarkov.gui.configuration.GUIColors;
+
 import javax.swing.*;
 import java.awt.*;
 
 @SuppressWarnings("serial") public class ValuesTableOptimalPolicyCellRenderer extends ValuesTableCellRenderer {
-
-	private final Color cellColor;
-
-	public ValuesTableOptimalPolicyCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns,
-			boolean colorGreen) {
+    
+    public ValuesTableOptimalPolicyCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns) {
 		super(firstEditableRow, uncertaintyInColumns);
-        cellColor = new Color(80, 220, 95);
     }
 
 	@Override protected void setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
 			int column) {
 		super.setCellColors(table, value, isSelected, hasFocus, row, column);
-		Color color = cellColor; //new java.awt.Color (255, 72, 72);
+        Color color = GUIColors.Tables.ValuesTable.OPTIMAL_POLICY.getColor(); //new java.awt.Color (255, 72, 72);
 		if (column >= ValuesTable.FIRST_EDITABLE_COLUMN && ValuesTable.FIRST_EDITABLE_COLUMN >= 0
 				&& row >= firstEditableRow && value instanceof Double) {
 			boolean isMax = true;

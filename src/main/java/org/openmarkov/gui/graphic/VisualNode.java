@@ -48,17 +48,17 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
     protected static final double NODE_EXPANDED_HEIGHT_MARGIN = 5;
     
     /**
-     * Space from the left border of the node to the text.
+     * Space from the left border of the node to the foreground.
      */
     protected static final double HORIZONTAL_SPACE_TO_TEXT = 15;
     
     /**
-     * Space from the top border of the node to the text.
+     * Space from the top border of the node to the foreground.
      */
     protected static final double VERTICAL_SPACE_TO_TEXT = 4;
     
     /**
-     * Object used to measure text in a specific font.
+     * Object used to measure foreground in a specific font.
      */
     private static final FontMetrics fontMeter = new JPanel().getFontMetrics(FONT_HELVETICA);
     
@@ -120,9 +120,9 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
     
     /**
      * Returns the height of the visual node. It's calculated depending on the
-     * font of the node and the text that appears in it.
+     * font of the node and the foreground that appears in it.
      *
-     * @param text text that appears in the visual node.
+     * @param text foreground that appears in the visual node.
      * @param g    graphics object where to paint the element.
      *
      * @return the height of the visual node.
@@ -134,9 +134,9 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
     
     /**
      * Returns the width of the visual node. It's calculated depending on the
-     * font of the node and the text that appears in it.
+     * font of the node and the foreground that appears in it.
      *
-     * @param text text that appears in the visual node.
+     * @param text foreground that appears in the visual node.
      * @param g    graphics object where to paint the element.
      *
      * @return the height of the visual node.
@@ -237,7 +237,7 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
     }
     
     /**
-     * Changes the type of the text (name or title) that appears inside the
+     * Changes the type of the foreground (name or title) that appears inside the
      * node.
      *
      * @param newByTitle true if the title of the node will be shown; false if the name
@@ -340,9 +340,9 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
     public abstract double getUpperLeftCornerY(Graphics2D g);
     
     /**
-     * Returns the text's height of node's name.
+     * Returns the foreground's height of node's name.
      *
-     * @return the text's height of node's name.
+     * @return the foreground's height of node's name.
      */
     public double getTextHeight(Graphics2D g) {
         return getHeight(getNodeString(), g);

@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Utility that recursively updates the text of all Swing components in a container
+ * Utility that recursively updates the foreground of all Swing components in a container
  * when the application language changes at runtime. Uses the component's {@code name}
  * property as the resource key for lookup in {@link StringDatabase}.
  */

@@ -18,7 +18,7 @@ import javax.swing.*;
 @SuppressWarnings("serial") public class LocalizedMenuItem extends JMenuItem {
 
     /**
-     * Creates a localized menu item with text and mnemonic resolved from the string database.
+     * Creates a localized menu item with foreground and mnemonic resolved from the string database.
      *
      * @param name          the resource key used for label and mnemonic lookup
      * @param actionCommand the action command string for this menu item

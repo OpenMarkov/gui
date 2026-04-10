@@ -18,7 +18,7 @@ import java.awt.*;
  *
  * @author jmendoza 1.0
  * @author jlgozalo 1.1
- * @version 1.2 asaez - add method for adjusting the text that should be
+ * @version 1.2 asaez - add method for adjusting the foreground that should be
  * shown in a limited space
  */
 public abstract class VisualElement {
@@ -106,14 +106,14 @@ public abstract class VisualElement {
     }
 
 	/**
-	 * Adjusts the text that should be shown in a limited space.
-	 * Used when text's length is greater than the assigned space
+     * Adjusts the foreground that should be shown in a limited space.
+     * Used when foreground's length is greater than the assigned space
 	 *
-	 * @param text         original text that should be adjusted.
-	 * @param maxWidth     maximum space that should be occupied by the text.
-	 * @param endingLength number of characters of the end of the text that should be shown.
-	 * @param font         the Font in which the text must be written.
-	 * @param g            graphics object where to paint the text.
+     * @param text         original foreground that should be adjusted.
+     * @param maxWidth     maximum space that should be occupied by the foreground.
+     * @param endingLength number of characters of the end of the foreground that should be shown.
+     * @param font         the Font in which the foreground must be written.
+     * @param g            graphics object where to paint the foreground.
 	 */
     protected static String adjustText(String text, double maxWidth, int endingLength, Font font, Graphics2D g) {
 		g.setFont(font);

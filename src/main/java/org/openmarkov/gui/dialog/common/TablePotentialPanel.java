@@ -875,16 +875,16 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                 // UNCLEAR--&gt; When ReadOnly is se?
                 // A node has policy if is a decision node with a non uniform potential
                 boolean imposingPolicyByUser = node.hasPolicy() && !isReadOnly();
-                cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow, uncertaintyInColumns,
-                                                                        imposingPolicyByUser);
+                cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow, uncertaintyInColumns
+                );
             } else {
                 boolean showingOptimalPolicy = node.getPotentials().get(0).isAdditive() && isReadOnly();
                 if (!showingOptimalPolicy) {
                     cellRenderer = new ValuesTableCellRenderer(firstEditableRow, uncertaintyInColumns);
                 } else {
                     // When showing the expected utility we want the color of the cells to be green
-                    cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow, uncertaintyInColumns,
-                                                                            true);
+                    cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow, uncertaintyInColumns
+                    );
                 }
             }
         }

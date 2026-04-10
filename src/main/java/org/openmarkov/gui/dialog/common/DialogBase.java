@@ -85,7 +85,7 @@ public class DialogBase extends JDialog {
     }
     
     /**
-     * Creates a standard Cancel button pre-configured with icon, localized text,
+     * Creates a standard Cancel button pre-configured with icon, localized foreground,
      * mnemonic, and an action listener that disposes the enclosing window.
      *
      * @return a ready-to-use Cancel button

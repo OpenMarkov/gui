@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
+import org.openmarkov.gui.configuration.GUIColors;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -21,10 +23,10 @@ import java.awt.image.BufferedImage;
 abstract public class IconFactory {
 
 	/**
-	 * Creates a chance-node icon (rounded rectangle) with the given text.
+     * Creates a chance-node icon (rounded rectangle) with the given foreground.
 	 *
 	 * @param text the label to render inside the icon
-	 * @param f    the font used for the label text
+     * @param f    the font used for the label foreground
 	 * @return the chance icon
 	 */
 	public static Icon createChanceIcon(String text, Font f) {
@@ -41,13 +43,13 @@ abstract public class IconFactory {
         Graphics2D g = image.createGraphics();
 
 		int ovalWidth = Math.min(height, width);
-
-		g.setColor(new Color(251, 249, 153));
+        
+        g.setColor(GUIColors.Network.ChanceNode.BACKGROUND.getColor());
 		g.fillArc(0, 0, ovalWidth, height - 1, 90, 180);
 		g.fillArc(width - ovalWidth - 1, 0, ovalWidth, height - 1, 270, 180);
 		g.fillRect(ovalWidth / 2, 0, width - ovalWidth, height - 1);
-
-		g.setColor(Color.black);
+        
+        g.setColor(GUIColors.Network.ChanceNode.FOREGROUND.getColor());
 		g.drawArc(0, 0, ovalWidth, height - 1, 90, 180);
 		g.drawArc(width - ovalWidth - 1, 0, ovalWidth, height - 1, 270, 180);
 		g.drawLine(ovalWidth / 2, 0, width - ovalWidth / 2, 0);
@@ -59,10 +61,10 @@ abstract public class IconFactory {
 	}
 
 	/**
-	 * Creates a decision-node icon (rectangle) with the given text.
+     * Creates a decision-node icon (rectangle) with the given foreground.
 	 *
 	 * @param text the label to render inside the icon
-	 * @param f    the font used for the label text
+     * @param f    the font used for the label foreground
 	 * @return the decision icon
 	 */
 	public static Icon createDecisionIcon(String text, Font f) {
@@ -77,10 +79,10 @@ abstract public class IconFactory {
 		int height = (int) r.getHeight() + 2 * vMargin;
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
-
-		g.setColor(new Color(207, 227, 253));
+        
+        g.setColor(GUIColors.Network.DecisionNode.BACKGROUND.getColor());
 		g.fillRect(0, 1, width - 2, height - 2);
-		g.setColor(Color.black);
+        g.setColor(GUIColors.Network.DecisionNode.FOREGROUND.getColor());
 		g.drawRect(0, 1, width - 2, height - 2);
 
 		t.draw(g, hMargin, height - vMargin);
@@ -89,10 +91,10 @@ abstract public class IconFactory {
 	}
 
 	/**
-	 * Creates a utility-node icon (hexagon) with the given text.
+     * Creates a utility-node icon (hexagon) with the given foreground.
 	 *
 	 * @param text the label to render inside the icon
-	 * @param f    the font used for the label text
+     * @param f    the font used for the label foreground
 	 * @return the utility icon
 	 */
 	public static Icon createUtilityIcon(String text, Font f) {
@@ -121,10 +123,10 @@ abstract public class IconFactory {
 		polygon.addPoint(width - 1, height / 2);
 		polygon.addPoint(width - height / 2, 1);
 		polygon.addPoint(height / 2, 1);
-
-		g.setColor(new Color(208, 230, 178));
+        
+        g.setColor(GUIColors.Network.UtilityNode.BACKGROUND.getColor());
 		g.fillPolygon(polygon);
-		g.setColor(Color.black);
+        g.setColor(GUIColors.Network.UtilityNode.FOREGROUND.getColor());
 		g.drawPolygon(polygon);
 		t.draw(g, hMargin, height - vMargin);
 

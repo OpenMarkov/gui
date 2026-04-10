@@ -7,14 +7,13 @@
 
 package org.openmarkov.gui.component;
 
+import org.openmarkov.gui.configuration.GUIColors;
+
 import javax.swing.*;
-import java.awt.*;
 
 @SuppressWarnings("serial") public class ValuesTableWithLinkRestrictionCellRenderer extends ValuesTableCellRenderer {
-
-	private static final Color INCOMPATIBILITY_COLOR = new Color(255, 122, 122);
-
-	public ValuesTableWithLinkRestrictionCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns) {
+    
+    public ValuesTableWithLinkRestrictionCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns) {
 		super(firstEditableRow, uncertaintyInColumns);
 	}
 
@@ -24,7 +23,7 @@ import java.awt.*;
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
 			try {
 				if (!table.isCellEditable(row, column)) {
-					setBackground(INCOMPATIBILITY_COLOR);
+                    setBackground(GUIColors.Network.LinkRestriction.INCOMPATIBILITY_COLOR.getColor());
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
 			}

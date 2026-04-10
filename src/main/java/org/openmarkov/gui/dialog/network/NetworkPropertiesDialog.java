@@ -243,10 +243,8 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
             NetworkType networkType = getNetworkDefinitionPanel().getNetworkType();
             probNet = new ProbNet(networkType);
             probNet.setComment(getNetworkDefinitionPanel().getNetworkComment());
-            probNet.setShowCommentWhenOpening(getNetworkDefinitionPanel().getShowComment());
             probNet.setDefaultStates(getNetworkVariablesPanel().getDefaultStates());
         } else {
-            probNet.setShowCommentWhenOpening(getNetworkDefinitionPanel().getShowComment());
             probNet.getPNESupport().closeSubEditHistory();
         }
         return NetworkDefinitionPanel.checkName();

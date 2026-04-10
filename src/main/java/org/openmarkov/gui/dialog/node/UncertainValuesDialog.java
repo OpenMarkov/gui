@@ -37,7 +37,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
@@ -46,8 +45,10 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class UncertainValuesDialog extends OkCancelDialog {
     
@@ -381,12 +382,7 @@ public class UncertainValuesDialog extends OkCancelDialog {
     }
     
     private static String getString(double[] parameters) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < parameters.length; ++i) {
-            sb.append(parameters[i]);
-            sb.append(" ");
-        }
-        return sb.toString();
+        return Arrays.stream(parameters).mapToObj(String::valueOf).collect(Collectors.joining(" "));
     }
     
     /**
@@ -406,23 +402,13 @@ public class UncertainValuesDialog extends OkCancelDialog {
     
     private static String getConfigurationDescription(Variable variable, boolean isChanceVariable,
                                                       EvidenceCase configuration) {
-        StringBuilder sb = new StringBuilder();
-        sb.append((isChanceVariable) ? "P" : "U");
-        sb.append("(");
-        sb.append(variable.getName());
-        sb.append(" | ");
-        List<Finding> findings = configuration.getFindings();
-        for (Finding finding : findings) {
-            sb.append(finding.getVariable().getName());
-            sb.append(" = '");
-            sb.append(finding.getState());
-            sb.append("', ");
-        }
-        if (sb.charAt(sb.length() - 2) == ',') {
-            sb.delete(sb.length() - 2, sb.length());
-        }
-        sb.append(")");
-        return sb.toString();
+        return ((isChanceVariable) ? "P" : "U")
+                + "(" + variable.getName() + " | "
+                + configuration.getFindings().stream().map(finding ->
+                                                                   finding.getVariable()
+                                                                          .getName() + " = '" + finding.getState() + "', ")
+                               .collect(Collectors.joining(", "))
+                + ")";
     }
     
     /**
@@ -650,11 +636,10 @@ public class UncertainValuesDialog extends OkCancelDialog {
                 if (!distributionTypes.get(selectedRow).equals(distributionType)) {
                     parameterDialog.setVisible(true);
                     if (parameterDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
-                        StringBuilder parameterString = new StringBuilder();
-                        for (double parameter : parameterDialog.getParameters()) {
-                            parameterString.append(parameter);
-                            parameterString.append(" ");
-                        }
+                        String parameterString = Arrays.stream(parameterDialog.getParameters())
+                                                       .mapToObj(String::valueOf)
+                                                       .map(v -> v + " ")
+                                                       .collect(Collectors.joining());
                         distributionTableModel
                                 .setValueAt(parameterString.toString(), selectedRow, PARAMETERS_COLUMN_INDEX);
                         distributionTypes.set(selectedRow, distributionType);
@@ -688,11 +673,10 @@ public class UncertainValuesDialog extends OkCancelDialog {
                                                                                               distributionType, parameters);
                 parameterDialog.setVisible(true);
                 if (parameterDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
-                    StringBuilder parameterString = new StringBuilder();
-                    for (double parameter : parameterDialog.getParameters()) {
-                        parameterString.append(parameter);
-                        parameterString.append(" ");
-                    }
+                    String parameterString = Arrays.stream(parameterDialog.getParameters())
+                                                   .mapToObj(String::valueOf)
+                                                   .map(v -> v + " ")
+                                                   .collect(Collectors.joining());
                     distributionTableModel.setValueAt(parameterString.toString(), selectedRow, PARAMETERS_COLUMN_INDEX);
                 }
             }
@@ -712,18 +696,4 @@ public class UncertainValuesDialog extends OkCancelDialog {
         }
     }
     
-    /**
-     * This class is used for painting and coloring the table and the headers
-     */
-    @SuppressWarnings("unused") private static class RendererConfigurationTable extends DefaultTableCellRenderer {
-        
-        private static final long serialVersionUID = 1L;
-        
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-                                                       int row, int column) {
-            setBackground((row == 1) ? Color.gray : Color.white);
-            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        }
-    }
 }

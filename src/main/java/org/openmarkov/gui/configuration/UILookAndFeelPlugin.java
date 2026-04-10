@@ -1,11 +1,9 @@
-package org.openmarkov.gui.toolplugin;
+package org.openmarkov.gui.configuration;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.gui.componentBuilder.JMenuItemBuilder;
-import org.openmarkov.gui.configuration.LocalPreferences;
+import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.window.MainGUI;
 
 import javax.swing.*;
@@ -63,25 +61,4 @@ public class UILookAndFeelPlugin implements ToolPlugin {
         }
     }
     
-    public enum Theme {
-        SYSTEM,
-        DARK,
-        LIGHT;
-        
-        public String toUIString() {
-            return switch (this) {
-                case SYSTEM -> "System";
-                case DARK -> "Dark (Beta)";
-                case LIGHT -> "Light (Beta)";
-            };
-        }
-        
-        public void setlookAndFeel() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-            switch (this) {
-                case SYSTEM -> UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                case DARK -> UIManager.setLookAndFeel(new FlatDarculaLaf());
-                case LIGHT -> UIManager.setLookAndFeel(new FlatLightLaf());
-            }
-        }
-    }
 }

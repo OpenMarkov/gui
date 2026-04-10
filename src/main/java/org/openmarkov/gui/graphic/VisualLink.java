@@ -11,7 +11,8 @@ import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.gui.configuration.LocalPreferences;
+import org.openmarkov.gui.configuration.GUIColor;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import java.awt.*;
 
@@ -22,11 +23,6 @@ import java.awt.*;
  * @version 1.0
  */
 public class VisualLink extends VisualArrow implements ClassLocalizable {
-    
-    /**
-     * Color of the border when the node is alwaysObserved.
-     */
-    private static final Color REVELATION_ARC_COLOR = LocalPreferences.REVELATION_ARC_VARIABLE.get();
     
     /**
      * Object that has the information (included visual information) of the
@@ -135,9 +131,9 @@ public class VisualLink extends VisualArrow implements ClassLocalizable {
             return;
         }
         if (link.hasRevealingConditions()) {
-            setLinkColor(REVELATION_ARC_COLOR);
+            setLinkColor(GUIColors.Network.REVELATION_ARC_VARIABLE);
         } else {
-            setLinkColor(Color.black);
+            setLinkColor(GUIColors.Network.LINK);
         }
         
         boolean hasAbsoluteLinkRestriction = link.hasTotalRestriction();

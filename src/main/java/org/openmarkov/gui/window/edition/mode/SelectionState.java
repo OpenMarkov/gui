@@ -24,7 +24,7 @@ import java.awt.*;
 public enum SelectionState {
     
     /** State actived when nothing is happening. */
-    DEFAULT,
+    NOTHING,
     /** Various nodes are moved. */
     MOVING,
     /** Various nodes can be selected using the selection rectangle. */
@@ -38,7 +38,7 @@ public enum SelectionState {
     static {
         for (SelectionState state : SelectionState.values()) {
             state.currentCursor = switch (state) {
-                case DEFAULT -> CursorLoader.CURSOR_DEFAULT;
+                case NOTHING -> CursorLoader.CURSOR_DEFAULT;
                 case MOVING -> CursorLoader.CURSOR_NODES_MOVEMENT;
                 case SELECTING -> CursorLoader.CURSOR_MULTIPLE_SELECTION;
             };

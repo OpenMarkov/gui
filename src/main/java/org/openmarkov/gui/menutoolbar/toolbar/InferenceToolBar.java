@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.menutoolbar.toolbar;
 
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.graphic.VisualState;
 import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
@@ -182,7 +183,7 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
     }
     
     /**
-     * This method initializes the text field of the Current Evidence Case.
+     * This method initializes the foreground field of the Current Evidence Case.
      *
      * @return a Text Field with the name of the evidence case.
      */
@@ -192,8 +193,12 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
             Font font = new Font(currentEvidenceCaseName.getFont().getName(), Font.PLAIN,
                                  currentEvidenceCaseName.getFont().getSize() + 2);
             currentEvidenceCaseName.setFont(font);
-            currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_0_COLOR);
-            currentEvidenceCaseName.setForeground(Color.WHITE);
+            currentEvidenceCaseName.setBackground(GUIColors.Inference.EVIDENCE_CASES_COLORS.getFirst()
+                                                                                           .background()
+                                                                                           .getColor());
+            currentEvidenceCaseName.setForeground(GUIColors.Inference.EVIDENCE_CASES_COLORS.getFirst()
+                                                                                           .foreground()
+                                                                                           .getColor());
             currentEvidenceCaseName.setText("   " + stringDatabase.getString("CaseNumber") + " 0   ");
             currentEvidenceCaseName.setMaximumSize(currentEvidenceCaseName.getPreferredSize());
             currentEvidenceCaseName.setHorizontalAlignment(SwingConstants.CENTER);
@@ -203,8 +208,8 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
     }
     
     /**
-     * This method sets the text and the background color to be shown in the
-     * text field
+     * This method sets the foreground and the background color to be shown in the
+     * foreground field
      *
      * @param currentCase The number of the current case.
      */
@@ -215,22 +220,13 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
         } else {
             currentEvidenceCaseName.setText(stringDatabase.getString("CaseNumber") + " " + currentCase);
         }
-        if (currentCase % 5 == 0) {
-            currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_0_COLOR);
-            currentEvidenceCaseName.setForeground(Color.WHITE);
-        } else if (currentCase % 5 == 1) {
-            currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_1_COLOR);
-            currentEvidenceCaseName.setForeground(Color.WHITE);
-        } else if (currentCase % 5 == 2) {
-            currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_2_COLOR);
-            currentEvidenceCaseName.setForeground(Color.WHITE);
-        } else if (currentCase % 5 == 3) {
-            currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_3_COLOR);
-            currentEvidenceCaseName.setForeground(Color.BLACK);
-        } else if (currentCase % 5 == 4) {
-            currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_4_COLOR);
-            currentEvidenceCaseName.setForeground(Color.BLACK);
-        }
+        
+        GUIColors.Inference.EvidenceCaseColor evidenceCaseColor = GUIColors.Inference.EVIDENCE_CASES_COLORS
+                .get(currentCase % GUIColors.Inference.EVIDENCE_CASES_COLORS.size());
+        
+        currentEvidenceCaseName.setBackground(evidenceCaseColor.background().getColor());
+        currentEvidenceCaseName.setForeground(evidenceCaseColor.foreground().getColor());
+
     }
     
     /**

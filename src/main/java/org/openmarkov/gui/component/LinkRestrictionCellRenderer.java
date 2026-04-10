@@ -8,34 +8,31 @@
 package org.openmarkov.gui.component;
 
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
-import java.awt.*;
 
 @SuppressWarnings("serial") public class LinkRestrictionCellRenderer extends ValuesTableCellRenderer {
-
-	private static final Color INCOMPATIBILITY_COLOR = new Color(255, 88, 88);
-	private static final Color COMPATIBILITY_COLOR = new Color(174, 255, 174);
+    
     private static final String INCOMPATIBILITY_VALUE = "0";
     private static final String COMPATIBILITY_VALUE = "1";
-
-	public LinkRestrictionCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns, TablePotential potential) {
-		super(firstEditableRow, uncertaintyInColumns);
-
-	}
-
-	@Override protected void setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-			int column) {
-		super.setCellColors(table, value, isSelected, hasFocus, row, column);
-
-		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
-			if (value.toString().equalsIgnoreCase(INCOMPATIBILITY_VALUE)) {
-				setBackground(INCOMPATIBILITY_COLOR);
-			}
-			if (value.toString().equalsIgnoreCase(COMPATIBILITY_VALUE)) {
-				setBackground(COMPATIBILITY_COLOR);
-			}
-		}
-	}
-
+    
+    public LinkRestrictionCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns, TablePotential potential) {
+        super(firstEditableRow, uncertaintyInColumns);
+        
+    }
+    
+    @Override protected void setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+                                           int column) {
+        super.setCellColors(table, value, isSelected, hasFocus, row, column);
+        
+        if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
+            if (value.toString().equalsIgnoreCase(INCOMPATIBILITY_VALUE)) {
+                setBackground(GUIColors.Network.LinkRestriction.INCOMPATIBILITY_COLOR.getColor());
+            } else if (value.toString().equalsIgnoreCase(COMPATIBILITY_VALUE)) {
+                setBackground(GUIColors.Network.LinkRestriction.COMPATIBILITY_COLOR.getColor());
+            }
+        }
+    }
+    
 }

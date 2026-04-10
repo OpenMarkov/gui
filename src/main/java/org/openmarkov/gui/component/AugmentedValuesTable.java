@@ -238,7 +238,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNEditListener 
     /**
      * If the editor that is handling the editing session is not a JTextComponent, the method does nothing
      * If the editor is a JTextComponent then:
-     * If e is and instance of KeyEvent, ActionEvent or MouseEvent, the method select all the text of the cell
+     * If e is and instance of KeyEvent, ActionEvent or MouseEvent, the method select all the foreground of the cell
      *
      * @param e event which provoked the edition and selection
      *          revised --&gt; not changed
@@ -256,7 +256,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNEditListener 
             case ActionEvent actionEvent when isSelectAllForActionEvent -> ((JTextComponent) editor).selectAll();
             // A mouse click was used to activate the editor.
             // Generally this is a double click and the second mouse click is
-            // passed to the editor which would remove the text selection unless
+            // passed to the editor which would remove the foreground selection unless
             // we use the invokeLater()
             case MouseEvent mouseEvent when isSelectAllForMouseEvent ->
                     SwingUtilities.invokeLater(() -> ((JTextComponent) editor).selectAll());

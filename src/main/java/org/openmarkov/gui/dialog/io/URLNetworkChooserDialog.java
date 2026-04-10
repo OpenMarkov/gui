@@ -104,17 +104,16 @@ public class URLNetworkChooserDialog extends OkCancelDialog {
             contentsPanel.setLayout(new GridLayout(0, 1, 0, 0));
             contentsPanel.setBorder(BorderFactory
                                             .createTitledBorder(null, stringDatabase.getString("NetworkURLValues.Title"),
-                                                                TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null,
-                                                                new Color(51, 51, 51)));
+                                                                TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null));
             contentsPanel.add(getURLTextField(), null);
         }
         return contentsPanel;
     }
     
     /**
-     * This method initialises the URL text field.
+     * This method initialises the URL foreground field.
      *
-     * @return a new text field to indicate the network URL.
+     * @return a new foreground field to indicate the network URL.
      */
     private JTextField getURLTextField() {
         if (urlTextField == null) {

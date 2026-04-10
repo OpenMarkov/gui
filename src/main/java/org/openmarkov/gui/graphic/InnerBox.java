@@ -23,18 +23,8 @@ public abstract class InnerBox extends VisualElement {
 	 * Font type Helvetica, plain, size 11.
 	 */
 	protected static final Font INNERBOX_FONT = new Font("Helvetica", Font.PLAIN, 11);
-
-	/**
-	 * Color of the Box.
-	 */
-	protected static final Color BACKGROUND_COLOR = Color.WHITE;
-
-	/**
-	 * Color of lines and letters.
-	 */
-	protected static final Color FOREGROUND_COLOR = Color.BLACK;
-
-	/**
+    
+    /**
 	 * Internal margin around the Box.
 	 */
 	protected static final double INTERNAL_MARGIN = 4;
@@ -88,7 +78,7 @@ public abstract class InnerBox extends VisualElement {
 			+ STATES_INDENT;
 
 	/**
-	 * Object used to measure text in a specific font.
+     * Object used to measure foreground in a specific font.
 	 */
 	private static final FontMetrics fontMeter = new JPanel().getFontMetrics(INNERBOX_FONT);
 
@@ -103,22 +93,22 @@ public abstract class InnerBox extends VisualElement {
 	protected VisualNode visualNode;
 
 	/**
-	 * Returns the height of the text used in the innerBox.
+     * Returns the height of the foreground used in the innerBox.
 	 *
-	 * @param text text that appears in the innerBox.
+     * @param text foreground that appears in the innerBox.
 	 * @param g    graphics object where to paint the element.
-	 * @return the height of the text used in the innerBox.
+     * @return the height of the foreground used in the innerBox.
 	 */
 	protected static double getInnerBoxTextHeight(String text, Graphics2D g) {
 		return fontMeter.getStringBounds(text, g).getHeight();
 	}
 
 	/**
-	 * Returns the width of the text used in the innerBox.
+     * Returns the width of the foreground used in the innerBox.
 	 *
-	 * @param text text that appears in the innerBox.
+     * @param text foreground that appears in the innerBox.
 	 * @param g    graphics object where to paint the element.
-	 * @return the width of the text used in the innerBox.
+     * @return the width of the foreground used in the innerBox.
 	 */
 	protected static double getInnerBoxTextWidth(String text, Graphics2D g) {
 		return fontMeter.getStringBounds(text, g).getWidth();

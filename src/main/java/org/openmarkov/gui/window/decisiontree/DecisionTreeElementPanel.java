@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.window.decisiontree;
 
+import org.openmarkov.gui.configuration.GUIColors;
+
 import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -21,8 +23,8 @@ import java.util.Locale;
  */
 @SuppressWarnings("serial") 
 public abstract class DecisionTreeElementPanel extends JPanel {
-
-	/** Container of SummaryBox' text or the variable's icon. */
+    
+    /** Container of SummaryBox' foreground or the variable's icon. */
 	protected final JLabel leftLabel = new JLabel();
 	
 	/**Container for leaf specific data, such as potential descriptions or values. */
@@ -41,11 +43,14 @@ public abstract class DecisionTreeElementPanel extends JPanel {
 		super(new BorderLayout());
 		this.add(leftLabel, BorderLayout.WEST);
 		this.add(rightLabel, BorderLayout.CENTER);
-		setBackground(Color.white);
-
 		children = new ArrayList<>();
 	}
-
+    
+    @Override public void updateUI() {
+        super.updateUI();
+        this.setBackground(GUIColors.DecisionTree.BACKGROUND.getColor());
+    }
+    
     /**
      * Updates the panel's visual state based on its current status in the JTree.
      * * @param selected True if the element is selected.

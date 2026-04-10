@@ -250,7 +250,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 	}
 
 	/**
-	 * @return a text area with instructions
+     * @return a foreground area with instructions
 	 */
 	protected JTextArea getJTextAreaInstructions() {
 		if (jTextAreaInstructions == null) {

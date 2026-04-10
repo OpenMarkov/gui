@@ -81,6 +81,8 @@
     <Localization class="org.openmarkov.gui.exception.ResourceNotFoundException" value="Could not find resource {resource}."/>
     <Localization class="org.openmarkov.gui.exception.ThereIsNoNextEvidenceCaseException"
                   value="There is no next Evidence Case."/>
+    <Localization class="org.openmarkov.gui.exception.OtherPropertyAlreadyExistsException"
+                  value="There is already a property named {propertyName}."/>
     <Localization class="org.openmarkov.gui.exception.ThereIsNoNodeInDataException" value="There is no node in data."/>
     <Localization class="org.openmarkov.gui.exception.ThereIsNoPreviousEvidenceCaseException"
                   value="There is no previous Evidence Case."/>

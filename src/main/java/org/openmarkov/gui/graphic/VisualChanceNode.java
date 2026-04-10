@@ -9,7 +9,7 @@ package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.gui.configuration.LocalPreferences;
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -25,40 +25,8 @@ public class VisualChanceNode extends VisualNode{
 
 	protected static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(6.0f);
 	protected static final BasicStroke OBSERVED_NORMAL_STROKE = new BasicStroke(3.0f);
-
-	/**
-	 * Internal color of the visual node when there is no finding established.
-	 */
-    private static final Color BACKGROUND_COLOR = LocalPreferences.NODECHANCE_BACKGROUND_COLOR.get();
-
-	/**
-	 * Internal color of the visual node when there is a preResolution
-	 * finding established.
-	 */
-	private static final Color BACKGROUND_PRE_RESOLUTION_FINDING_COLOR = Color.GRAY; //...asaez...........
-
-	/**
-	 * Internal color of the visual node when there is a postResolution
-	 * finding established.
-	 */
-	private static final Color BACKGROUND_POST_RESOLUTION_FINDING_COLOR = Color.LIGHT_GRAY;
-
-	/**
-	 * Color of lines and letters.
-	 */
-    private static final Color FOREGROUND_COLOR = LocalPreferences.NODECHANCE_FOREGROUND_COLOR.get();
-
-	/**
-	 * Color of the border when the node is alwaysObserved.
-	 */
-    private static final Color ALWAYS_OBSERVED_COLOR = LocalPreferences.ALWAYS_OBSERVED_VARIABLE.get();
-
-	/**
-	 * Color of the letters
-	 */
-    private static final Color TEXT_FOREGROUND_COLOR = LocalPreferences.NODECHANCE_TEXT_COLOR.get();
-
-	/**
+    
+    /**
 	 * Width of a the arc of the rounded rectangle.
 	 */
 	private static final double ARC_WIDTH = 20;
@@ -278,19 +246,19 @@ public class VisualChanceNode extends VisualNode{
 		double[] dimensions = getNodeDimensions(g);
 
 		if (preResolutionFinding) {
-			g.setPaint(BACKGROUND_PRE_RESOLUTION_FINDING_COLOR);
+            g.setPaint(GUIColors.Network.ChanceNode.BACKGROUND_ON_PRE_RESOLUTION_FINDING.getColor());
 		} else if (postResolutionFinding && (
                 visualNetwork.getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
 		)) {
-			g.setPaint(BACKGROUND_POST_RESOLUTION_FINDING_COLOR);
+            g.setPaint(GUIColors.Network.ChanceNode.BACKGROUND_ON_POST_RESOLUTION_FINDING.getColor());
 		} else {
-			g.setPaint(BACKGROUND_COLOR);
+            g.setPaint(GUIColors.Network.ChanceNode.BACKGROUND.getColor());
 		}
 		g.fill(shape);
-		g.setPaint(FOREGROUND_COLOR);
+        g.setPaint(GUIColors.Network.ChanceNode.FOREGROUND.getColor());
 
 		if (node.isAlwaysObserved()) {
-			g.setPaint(ALWAYS_OBSERVED_COLOR);
+            g.setPaint(GUIColors.Network.ALWAYS_OBSERVED.getColor());
 			g.setStroke((isSelected()) ? OBSERVED_WIDE_STROKE : OBSERVED_NORMAL_STROKE);
 		} else if (node.isInput()) {
 			g.setStroke((isSelected()) ? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE);
@@ -300,7 +268,7 @@ public class VisualChanceNode extends VisualNode{
 
 		g.draw(shape);
 		g.setFont(FONT_HELVETICA);
-		g.setPaint(TEXT_FOREGROUND_COLOR);
+        g.setPaint(GUIColors.Network.ChanceNode.TEXT.getColor());
 
 		if (isExpanded()) {
 			text = adjustText(text, dimensions[2], 3, FONT_HELVETICA, g);

@@ -223,6 +223,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 		if (objectSelectionButton == null) {
 			objectSelectionButton = new JToggleButton();
             objectSelectionButton.setIcon(IconBind.SELECTION_ENABLED.icon());
+            objectSelectionButton.setName("ObjectSelectionMode");
             objectSelectionButton.setActionCommand(ActionCommands.OBJECT_SELECTION.getCommandName());
 			objectSelectionButton.setFocusable(false);
 			objectSelectionButton
@@ -243,6 +244,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 		if (chanceCreationButton == null) {
 			chanceCreationButton = new JToggleButton();
             chanceCreationButton.setIcon(IconBind.CHANCE_ENABLED.icon());
+            chanceCreationButton.setName("ChanceCreationMode");
             chanceCreationButton.setActionCommand(ActionCommands.CHANCE_CREATION.getCommandName());
 			chanceCreationButton.setFocusable(false);
 			chanceCreationButton
@@ -263,6 +265,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 		if (decisionCreationButton == null) {
 			decisionCreationButton = new JToggleButton();
             decisionCreationButton.setIcon(IconBind.DECISION_ENABLED.icon());
+            decisionCreationButton.setName("DecisionCreationMode");
             decisionCreationButton.setActionCommand(ActionCommands.DECISION_CREATION.getCommandName());
 			decisionCreationButton.setFocusable(false);
 			decisionCreationButton
@@ -285,6 +288,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
             utilityCreationButton.setIcon(IconBind.UTILITY_ENABLED.icon());
             utilityCreationButton.setActionCommand(ActionCommands.UTILITY_CREATION.getCommandName());
 			utilityCreationButton.setFocusable(false);
+            utilityCreationButton.setName("UtilityCreationMode");
 			utilityCreationButton
 					.setToolTipText(stringDatabase.getString(ActionCommands.UTILITY_CREATION + STRING_TOOLTIP_SUFFIX));
 			utilityCreationButton.addActionListener(listener);
@@ -305,6 +309,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
             linkCreationButton.setIcon(IconBind.LINK_ENABLED.icon());
             linkCreationButton.setActionCommand(ActionCommands.LINK_CREATION.getCommandName());
 			linkCreationButton.setFocusable(false);
+            linkCreationButton.setName("LinkCreationMode");
 			linkCreationButton
 					.setToolTipText(stringDatabase.getString(ActionCommands.LINK_CREATION + STRING_TOOLTIP_SUFFIX));
 			linkCreationButton.addActionListener(listener);

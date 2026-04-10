@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.dialog;
 
+import org.openmarkov.gui.configuration.GUIColors;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serial;
@@ -59,7 +61,8 @@ public class SplashScreen extends JFrame {
         this.getContentPane().setLayout(new BorderLayout());
         
         progressBar.setStringPainted(true);
-        progressBar.setForeground(new Color(10, 110, 230));
+        progressBar.setForeground(GUIColors.SplashScreen.PROGRESS_BAR_FOREGROUND.getColor());
+        progressBar.setBackground(GUIColors.SplashScreen.PROGRESS_BAR_BACKGROUND.getColor());
         this.getContentPane().add(progressBar, BorderLayout.SOUTH);
         
         imageLabel.setIcon(imageIcon);
@@ -132,4 +135,5 @@ public class SplashScreen extends JFrame {
             }
         });
     }
+    
 }

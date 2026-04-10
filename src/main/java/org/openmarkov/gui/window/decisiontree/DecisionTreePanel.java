@@ -16,6 +16,7 @@ import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.dialog.costeffectiveness.CEPDialog;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
@@ -93,10 +94,13 @@ public class DecisionTreePanel extends JScrollPane {
             jTree.expandRow(i);
         }
         setViewportView(jTree);
-        setBackground(Color.white);
-
     }
-
+    
+    @Override public void updateUI() {
+        super.updateUI();
+        this.setBackground(GUIColors.DecisionTree.BACKGROUND.getColor());
+    }
+    
     private static final int DEFAULT_DEPTH = 5;
 
     /**

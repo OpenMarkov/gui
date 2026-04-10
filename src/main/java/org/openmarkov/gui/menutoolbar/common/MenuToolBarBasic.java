@@ -34,21 +34,21 @@ public interface MenuToolBarBasic {
 	void setOptionSelected(String actionCommand, boolean b);
 
 	/**
-	 * Adds a text to the label of an option identified by an action command.
-	 * Only adds a text to the components that are AbstractButton.
+     * Adds a foreground to the label of an option identified by an action command.
+     * Only adds a foreground to the components that are AbstractButton.
 	 *
 	 * @param actionCommand action command that identifies the option.
-	 * @param text          text to add to the label of the options. If null, nothing is
+     * @param text          foreground to add to the label of the options. If null, nothing is
 	 *                      added.
 	 */
 	void addOptionText(String actionCommand, String text);
 
 	/**
-	 * Sets a text of an option identified by an action command.
-	 * Only adds a text to the components that are JMenuItem.
+     * Sets a foreground of an option identified by an action command.
+     * Only adds a foreground to the components that are JMenuItem.
 	 *
 	 * @param actionCommand action command that identifies the option.
-	 * @param text          text to add to the label of the options. If null, nothing is
+     * @param text          foreground to add to the label of the options. If null, nothing is
 	 *                      added.
 	 */
 	void setText(String actionCommand, String text);

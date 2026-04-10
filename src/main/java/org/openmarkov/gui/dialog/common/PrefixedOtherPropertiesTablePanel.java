@@ -9,6 +9,9 @@ package org.openmarkov.gui.dialog.common;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -242,30 +245,36 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
      * Invoked when the button 'add' is pressed.
      */
     @Override protected void actionPerformedAddValue() throws DoEditException {
-        String propertyName = JOptionPane.showInputDialog(this, stringDatabase.getString("AddOtherProperty.Name.Message"),
-                                                          stringDatabase.getString("AddOtherProperty.Name.Title"), JOptionPane.QUESTION_MESSAGE);
-        if (propertyName == null) {
-            return;
+        Set<String> existingKeys = IntStream.range(0, tableModel.getRowCount())
+                                            .mapToObj(i -> tableModel.getValueAt(i, 1))
+                                            .map(String.class::cast)
+                                            .collect(Collectors.toSet());
+        String propertyName;
+        int propertyNumberName = 1;
+        while (true) {
+            propertyName = stringDatabase.getString("AddOtherProperty.DefaultName") + " " + propertyNumberName;
+            if (!existingKeys.contains(propertyName)) {
+                break;
+            }
+            propertyNumberName += 1;
         }
-        String propertyValue = JOptionPane.showInputDialog(this, stringDatabase.getString("AddOtherProperty.Value.Message"),
-                                                           stringDatabase.getString("AddOtherProperty.Value.Title"), JOptionPane.QUESTION_MESSAGE);
+        
+        String propertyValue = stringDatabase.getString("AddOtherProperty.DefaultValue");
         int newIndex = valuesTable.getRowCount();
         String propertyID = getKeyString(newIndex);
         int selectedRowIndex = valuesTable.getSelectedRow();
         int rowCount = valuesTable.getRowCount();
         String[] rowData = {propertyID, propertyName, propertyValue};
+        
         tableModel.addRow(rowData);    // Add row to the end of the model
         //tableModel.moveRow(rowCount, rowCount, selectedRowIndex + 1);
         //valuesTable.setRowSelectionInterval(selectedRowIndex + 1, selectedRowIndex + 1);
         valuesTable.setRowSelectionInterval(rowCount, rowCount);
         String[] noIDrowData = {propertyName, propertyValue};
         if (node != null) {
-            OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "ADD", selectedRowIndex, noIDrowData);
-            ProbNet probNet1 = node.getProbNet();
-            otherPropertyEdit.executeEdit();
+            new OtherPropertyEdit(node, "ADD", selectedRowIndex, noIDrowData).executeEdit();
         } else if (probNet != null) {
-            OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "ADD", selectedRowIndex, noIDrowData);
-            otherPropertyEdit.executeEdit();
+            new OtherPropertyEdit(probNet, "ADD", selectedRowIndex, noIDrowData).executeEdit();
         }
     }
     
@@ -344,11 +353,9 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
         String[] rowData = {newName, newValue};
         try {
             if (node != null) {
-                OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(node, "RENAME", row, rowData);
-                otherPropertyEdit.executeEdit();
+                new OtherPropertyEdit(node, "RENAME", row, rowData).executeEdit();
             } else if (probNet != null) {
-                OtherPropertyEdit otherPropertyEdit = new OtherPropertyEdit(probNet, "RENAME", row, rowData);
-                otherPropertyEdit.executeEdit();
+                new OtherPropertyEdit(probNet, "RENAME", row, rowData).executeEdit();
             }
         } catch (DoEditException e1) {
             String oldName = new ArrayList<>(node.getAdditionalProperties().keySet()).get(row);

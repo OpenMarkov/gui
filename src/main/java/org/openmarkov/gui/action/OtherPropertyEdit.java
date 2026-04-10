@@ -10,12 +10,15 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.exception.OtherPropertyAlreadyExistsException;
 import org.openmarkov.java.collectionsUtils.arrayUtils.ArrayUtils;
 import org.openmarkov.java.collectionsUtils.arrayUtils.MapUtils;
 
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 /**
  * {@code OtherPropertyEdit} is a simple edit that allow modify the additional properties of one node.
@@ -77,7 +80,7 @@ public class OtherPropertyEdit extends PNEdit {
         this.otherPropertyAction = otherPropertyAction;
     }
     
-    @Override protected void doEdit() {
+    @Override protected void doEdit() throws OtherPropertyAlreadyExistsException {
         switch (this.otherPropertyAction) {
             case "ADD" -> {
                 this.newProperties = new LinkedHashMap<>(this.oldProperties);
@@ -90,7 +93,14 @@ public class OtherPropertyEdit extends PNEdit {
             }
             case "RENAME" -> {
                 var newPropertiesArray = MapUtils.mapToArray(this.oldProperties);
-                newPropertiesArray[this.propertyIndex] = new AbstractMap.SimpleEntry<>(this.newProperty[0], this.newProperty[1]);
+                String key = this.newProperty[0];
+                var indexOfRepeatedKey = IntStream.range(0, newPropertiesArray.length)
+                                                  .filter(i -> Objects.equals(newPropertiesArray[i].getKey(), key))
+                                                  .findFirst();
+                if (indexOfRepeatedKey.isPresent() && indexOfRepeatedKey.getAsInt() != this.propertyIndex) {
+                    throw new OtherPropertyAlreadyExistsException(key);
+                }
+                newPropertiesArray[this.propertyIndex] = new AbstractMap.SimpleEntry<>(key, this.newProperty[1]);
                 this.newProperties = ArrayUtils.arrayToLinkedMap(newPropertiesArray);
             }
             case "DOWN" -> {

@@ -444,9 +444,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         switch (workingMode) {
             case EDITION -> {
                 setOptionEnabled(EDITING_ACTION_COMMANDS, true);
-                setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
-                setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
                 setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
+                setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
+                setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, true);
             }
             case INFERENCE -> {
                 setOptionEnabled(EDITING_ACTION_COMMANDS, false);
@@ -757,7 +757,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
             updateOptionsNetworkDependent(currentNetworkPanel);
             // updateNetworkAgents(currentNetworkPanel);
         }
-        updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo(), probNet.getPNESupport().getCanRedo());
+        NetworkPanel.WorkingMode workingMode = currentNetworkPanel.getEditorPanel().getVisualNetwork().getWorkingMode();
+        boolean workingModeIsNotInference = workingMode != NetworkPanel.WorkingMode.INFERENCE;
+        
+        updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo() && workingModeIsNotInference,
+                                     probNet.getPNESupport().getCanRedo() && workingModeIsNotInference);
         /*
          * updateOptionsNetworkModified(((ProbNet)e.getSource()).getPNESupport().
          * getCanUndo(), ((ProbNet)e.getSource()).getPNESupport().getCanRedo());

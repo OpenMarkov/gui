@@ -22,6 +22,8 @@ import org.openmarkov.java.classUtils.ClassUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 
 /**
@@ -231,6 +233,14 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
                     stringDatabase.getString("NetworkDefinitionPanel.ShowComment.Text"), false);
             jcheckBoxShowCommentOnOpening.setEnabled(true);
             jcheckBoxShowCommentOnOpening.setSelected(probNet != null && probNet.getShowCommentWhenOpening());
+            jcheckBoxShowCommentOnOpening.addActionListener(e -> {
+                try {
+                    new NetworkCommentEdit(probNet, probNet.getComment(), jcheckBoxShowCommentOnOpening.isSelected())
+                            .executeEdit();
+                } catch (DoEditException ex) {
+                    throw new UnreachableException(ex);
+                }
+            });
         }
         return jcheckBoxShowCommentOnOpening;
     }
@@ -273,7 +283,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
         String comment = getCommentHTMLScrollPaneNetworkDefinition().isEmpty() ?
                 "" :
                 getCommentHTMLScrollPaneNetworkDefinition().getCommentText();
-        NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit(probNet, comment, getShowComment());
+        NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit(probNet, comment, jcheckBoxShowCommentOnOpening.isSelected());
         networkCommentEdit.executeEdit();
     }
     
@@ -316,7 +326,4 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
         return getCommentHTMLScrollPaneNetworkDefinition().getCommentText();
     }
     
-    public boolean getShowComment() {
-        return jcheckBoxShowCommentOnOpening.isSelected();
-    }
 }

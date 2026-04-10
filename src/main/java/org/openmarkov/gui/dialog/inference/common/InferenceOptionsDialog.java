@@ -546,7 +546,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                 return component;
             }
             
-            // Gets only the numerical value and select all the text in editing mode
+            // Gets only the numerical value and select all the foreground in editing mode
             @Override public boolean editCellAt(int row, int column, EventObject e) {
                 boolean result = super.editCellAt(row, column, e);
                 final Component editor = getEditorComponent();
@@ -891,6 +891,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
             slicesPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
             slicesPanel.add(getJLabelNumSlices());
             slicesPanel.add(getNumSlicesTextField());
+            slicesPanel.add(new JLabel(stringDatabase.getString("CostEffectiveness.Cycles")));
             
             numSlicesPanel.setLayout(new BoxLayout(numSlicesPanel, BoxLayout.LINE_AXIS));
             numSlicesPanel.add(slicesPanel);

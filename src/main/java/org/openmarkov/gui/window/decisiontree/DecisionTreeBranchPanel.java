@@ -35,32 +35,27 @@ public class DecisionTreeBranchPanel extends DecisionTreeElementPanel {
 	}
 
 	/**
-	 * Builds the text to be shown in the branch
+	 * Builds the foreground to be shown in the branch
 	 * @return A HTML string with the branch description
 	 */
 	public String getBranchDescriptiontHTML() {
-		StringBuilder txtLeft = new StringBuilder("<html><table border=1>");
+		String txtLeft = "<html><table border=1>";
 		DecisionTreeNode parent = treeBranch.getParent();
 		if (parent != null && parent.getNodeType() == NodeType.DECISION) {
 			if (parent.isBestDecision(treeBranch)) {
-				txtLeft.append("<td width=10px bgcolor=red border=0></td>");
+				txtLeft += "<td width=10px bgcolor=red border=0></td>";
 			} else {
-				txtLeft.append("<td width=10px border=0></td>");
+				txtLeft += "<td width=10px border=0></td>";
 			}
 		}
-		txtLeft.append("<td align=center border=0>");
+		txtLeft += "<td align=center border=0>";
 		if (treeBranch.getBranchVariable() != null) {
-			txtLeft.append(treeBranch.getBranchVariable().getName() + "=");
-			txtLeft.append(treeBranch.getBranchState().getName());
+			txtLeft += treeBranch.getBranchVariable().getName() + "=" + treeBranch.getBranchState().getName();
 		}
 		if (parent != null && parent.getNodeType() == NodeType.CHANCE) {
-			txtLeft.append(" / ");
-			txtLeft.append(" P=" + df.format(treeBranch.getBranchProbability()));
+			txtLeft += " /  P=" + df.format(treeBranch.getBranchProbability());
 		}
-		
-		txtLeft.append(treeBranch.getChild().formatUtility(df,parent != null));
-		txtLeft.append("</td>");
-		txtLeft.append("</table></html>");
+		txtLeft += treeBranch.getChild().formatUtility(df, parent != null) + "</td></table></html>";
 		return txtLeft.toString();
 	}
 

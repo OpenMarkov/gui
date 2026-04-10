@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.gui.configuration.GUIColors;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -39,18 +41,8 @@ public class KeyTable extends JTable {
      * Width of the key column.
      */
     protected static final int ROW_HEIGHT = 20;
-    /**
-     * Selection Background color
-     */
-    protected static final Color SELECTION_BACKGROUND_COLOR = new Color(211, 211, 211);
-    /**
-     * Selection Foreground color
-     */
-    protected static final Color SELECTION_FOREGROUND_COLOR = Color.BLACK;
-    /**
-     * Background color
-     */
-    protected static final Color BACKGROUND_COLOR = new Color(230, 230, 250);
+    
+    
     /**
      * Static field for serializable class.
      */
@@ -209,13 +201,13 @@ public class KeyTable extends JTable {
         TableCellEditor editorCell;
         
         setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        setBackground(BACKGROUND_COLOR);// Component color
-        setSelectionBackground(SELECTION_BACKGROUND_COLOR);// Color for cell
+        setBackground(GUIColors.Tables.KeyTable.BACKGROUND_COLOR.getColor());// Component color
+        setSelectionBackground(GUIColors.Tables.KeyTable.SELECTION_BACKGROUND_COLOR.getColor());// Color for cell
         // renderers
-        setSelectionForeground(SELECTION_FOREGROUND_COLOR);
+        setSelectionForeground(GUIColors.Tables.KeyTable.SELECTION_FOREGROUND_COLOR.getColor());
         setRowHeight(ROW_HEIGHT);
         setShowGrid(true);
-        setGridColor(Color.DARK_GRAY);
+        setGridColor(GUIColors.Tables.KeyTable.GRID_COLOR.getColor());
         setShowVerticalLines(false);
         DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
         tcr.setHorizontalAlignment(SwingConstants.CENTER);
