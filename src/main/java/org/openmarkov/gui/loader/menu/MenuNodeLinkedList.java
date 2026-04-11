@@ -111,19 +111,14 @@ public class MenuNodeLinkedList {
 	 * @return String the element
 	 */
 	public String toString() {
-
-		StringBuilder buf = new StringBuilder();
-		buf.append("[MenuNodeLinkedList ->");
-		buf.append(" size= " + getSize());
-		buf.append(" ,elements= [");
+		String out = "[MenuNodeLinkedList -> size= " + getSize() + " ,elements= [";
 		if (!this.isEmpty()) {
 			for (MenuNode node : this.menuList) {
-				buf.append("\n\t\t " + node.toString());
+				out += "\n\t\t " + node.toString();
 			}
 		}
-		buf.append(" ]");
-		buf.append(" ]");
-		return buf.toString();
+		out += " ] ]";
+		return out;
 	}
 
 }

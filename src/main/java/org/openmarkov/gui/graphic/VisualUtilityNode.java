@@ -9,7 +9,7 @@ package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.gui.configuration.LocalPreferences;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
@@ -22,23 +22,8 @@ import java.awt.geom.Path2D;
  * @version 1.2 asaez - add expanded representation
  */
 public class VisualUtilityNode extends VisualNode {
-
-	/**
-	 * Internal color of the visual node.
-	 */
-    private static final Color BACKGROUND_COLOR = LocalPreferences.NODEUTILITY_BACKGROUND_COLOR.get();
-
-	/**
-	 * Color of lines and letters.
-	 */
-    private static final Color FOREGROUND_COLOR = LocalPreferences.NODEUTILITY_FOREGROUND_COLOR.get();
-
-	/**
-	 * Color of the letters
-	 */
-    private static final Color TEXT_FOREGROUND_COLOR = LocalPreferences.NODEUTILITY_TEXT_COLOR.get();
-
-	/**
+    
+    /**
 	 * Creates a new visual node from a node.
 	 *
 	 * @param node          object that has the information of the node.
@@ -180,15 +165,15 @@ public class VisualUtilityNode extends VisualNode {
 		double textWidth = getWidth(text, g);
 		Shape shape = getShape(g);
 		Point2D.Double[] points = getPoints(g);
-
-		g.setPaint(BACKGROUND_COLOR);
+        
+        g.setPaint(GUIColors.Network.UtilityNode.BACKGROUND.getColor());
 		g.fill(shape);
-		g.setPaint(FOREGROUND_COLOR);
+        g.setPaint(GUIColors.Network.UtilityNode.FOREGROUND.getColor());
 		g.setStroke(getContourStroke());
 
 		g.draw(shape);
 		g.setFont(FONT_HELVETICA);
-		g.setPaint(TEXT_FOREGROUND_COLOR);
+        g.setPaint(GUIColors.Network.UtilityNode.TEXT.getColor());
 
 		if (isExpanded()) {
 			double interiorWitdh = points[2].getX() - points[1].getX();

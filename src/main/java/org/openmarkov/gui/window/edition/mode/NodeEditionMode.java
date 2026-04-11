@@ -16,17 +16,19 @@ import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.List;
 
 /**
- * Abstract base edition mode for creating nodes. Subclasses specify the
- * {@link org.openmarkov.core.model.network.NodeType} (chance, decision, utility).
+ * Edition mode for creating nodes of a given {@link NodeType}.
+ * One instance per node type is registered in {@link EditionModeManager};
+ * there is no need for per-type subclasses.
  */
-public abstract class NodeEditionMode extends EditionMode {
+public class NodeEditionMode extends EditionMode {
     private final NodeType nodeType;
-    
+
     public NodeEditionMode(NetworkEditorPanel networkEditorPanel, ProbNet probNet, NodeType nodeType) {
         super(networkEditorPanel, probNet);
         this.nodeType = nodeType;
@@ -41,7 +43,7 @@ public abstract class NodeEditionMode extends EditionMode {
             return;
         }
         probNet.getPNESupport().setWithUndo(true);
-        HashSet<String> existingNames = new HashSet<String>();
+        HashSet<String> existingNames = new HashSet<>();
         for (Node node : probNet.getNodes()) {
             String name = node.getName();
             if (name.contains("[")) {
@@ -63,7 +65,7 @@ public abstract class NodeEditionMode extends EditionMode {
         }
         List<Criterion> decisionCriteria = probNet.getDecisionCriteria();
         if (nodeType == NodeType.UTILITY && decisionCriteria != null) {
-            variable.setDecisionCriterion(decisionCriteria.get(0));
+            variable.setDecisionCriterion(decisionCriteria.getFirst());
         }
         
         AddNodeEdit addNodeEdit = new AddNodeEdit(probNet, variable, nodeType, position);
@@ -79,5 +81,17 @@ public abstract class NodeEditionMode extends EditionMode {
     @Override public void mouseDragged(MouseEvent e, Point2D.Double position, double diffX, double diffY,
                                        Graphics2D g) {
         // TODO Auto-generated method stub
+    }
+    
+    @Override public void keyTyped(KeyEvent e) {
+    
+    }
+    
+    @Override public void keyPressed(KeyEvent e) {
+    
+    }
+    
+    @Override public void keyReleased(KeyEvent e) {
+    
     }
 }

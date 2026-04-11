@@ -12,6 +12,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -47,11 +48,12 @@ public class TemporalEvolutionTablePane extends JScrollPane {
                 }
             }
             if (column == 0) {
-                setBackground(new Color(220, 220, 220));
+                setBackground(GUIColors.Tables.FROZEN_CELL_BACKGROUND.getColor());
+                setForeground(GUIColors.Tables.FROZEN_CELL_FOREGROUND.getColor());
             } else {
-                setBackground(Color.WHITE);
+                setBackground(GUIColors.Tables.EDITABLE_CELL_BACKGROUND.getColor());
+                setForeground(GUIColors.Tables.EDITABLE_CELL_FOREGROUND.getColor());
             }
-            setForeground(Color.BLACK);
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
     };
@@ -138,7 +140,7 @@ public class TemporalEvolutionTablePane extends JScrollPane {
 //					}
 //				}
 //				if (column == 0) {
-//					setBackground(new Color(220, 220, 220));
+//					setBackground(GUIColors.Potential.Tables.HEADER_BACKGROUND.getColor());
 //				} else {
 //					setBackground(Color.WHITE);
 //				}

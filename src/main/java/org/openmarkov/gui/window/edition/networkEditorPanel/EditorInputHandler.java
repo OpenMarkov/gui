@@ -240,23 +240,18 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
     
     @Override
     public void keyPressed(KeyEvent keyEvent) {
-        switch (keyEvent.getKeyCode()) {
-            case KeyEvent.VK_UP -> this.networkEditorPanel.getVisualNetwork().moveSelectedElements(0, -2);
-            case KeyEvent.VK_RIGHT -> this.networkEditorPanel.getVisualNetwork().moveSelectedElements(2, 0);
-            case KeyEvent.VK_DOWN -> this.networkEditorPanel.getVisualNetwork().moveSelectedElements(0, 2);
-            case KeyEvent.VK_LEFT -> this.networkEditorPanel.getVisualNetwork().moveSelectedElements(-2, 0);
-        }
-        this.networkEditorPanel.repaint();
+        this.networkEditorPanel.getEditionMode().keyPressed(keyEvent);
     }
     
     @Override
     public void keyReleased(KeyEvent keyEvent) {
-    
+        this.networkEditorPanel.getEditionMode().keyReleased(keyEvent);
     }
     
     
     @Override
     public void keyTyped(KeyEvent keyEvent) {
+        this.networkEditorPanel.getEditionMode().keyTyped(keyEvent);
     }
     
     /**

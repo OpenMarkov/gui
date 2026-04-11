@@ -1338,6 +1338,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
             mainPanel.adaptToolBarSize();
         }
+        mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(newWorkingMode, getCurrentNetworkPanel());
     }
     
     /**
@@ -1512,48 +1513,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
         }
         
-    }
-    
-    /**
-     * @param buffer    {@code StringBuffer}
-     * @param mainPanel {@code MainPanel}
-     */
-    private static void showTextWindow(StringBuilder buffer, MainPanel mainPanel) {
-        JFrame frame = new JFrame("Cost-Effectiveness analysis");
-        String text = buffer.toString();
-        JTextArea textArea = new JTextArea(40, getMaxCharsInALine(text));
-        frame.getContentPane().add(textArea, BorderLayout.CENTER);
-        JScrollPane scroll = new JScrollPane(textArea);
-        frame.getContentPane().add(scroll, BorderLayout.CENTER);
-        textArea.setText(text);
-        frame.setLocationRelativeTo(mainPanel);
-        frame.pack();
-        frame.setVisible(true);
-    }
-    
-    /**
-     * @param text {@code String}
-     *
-     * @return {@code int}
-     */
-    private static int getMaxCharsInALine(String text) {
-        int maxLengthLine = 0;
-        if (text != null) {
-            int position = 0;
-            int nextEndLine;
-            int textLength = text.length();
-            do {
-                nextEndLine = text.indexOf('\n', position);
-                if (nextEndLine > 0) {
-                    int lengthLine = nextEndLine - position;
-                    if (lengthLine > maxLengthLine) {
-                        maxLengthLine = lengthLine;
-                    }
-                    position = nextEndLine + 1;
-                }
-            } while (nextEndLine != -1 && position < textLength);
-        }
-        return maxLengthLine;
     }
     
     @Override public void componentResized(ComponentEvent e) {

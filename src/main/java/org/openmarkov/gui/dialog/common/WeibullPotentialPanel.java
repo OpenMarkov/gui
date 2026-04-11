@@ -15,6 +15,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GLMPotential.MatrixType;
 import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -314,11 +315,11 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     private static class CovarianceTableCellRenderer extends DefaultTableCellRenderer {
         @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                                  boolean hasFocus, int row, int column) {
-            Color backgroundColor = Color.WHITE;
+            Color backgroundColor = GUIColors.Network.BACKGROUND.getColor();
             if (row == 0 || column == 0) {
-                backgroundColor = new Color(207, 227, 253);
+                backgroundColor = GUIColors.Network.DecisionNode.BACKGROUND.getColor();
             } else if (column > row) {
-                backgroundColor = new Color(220, 220, 220);
+                backgroundColor = GUIColors.Tables.HEADER_BACKGROUND.getColor();
             }
             setBackground(backgroundColor);
             

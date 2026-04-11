@@ -33,6 +33,7 @@ import org.openmarkov.core.inference.tasks.TemporalEvolution;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.dialog.io.OMFileChooser;
 import org.openmarkov.inference.algorithm.temporalevaluation.tasks.MIDTemporalEvolution;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VETemporalEvolution;
@@ -602,8 +603,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         plot.setRenderer(renderer);
         plot.setDomainGridlinesVisible(true);
         plot.setRangeGridlinesVisible(true);
-        plot.setDomainGridlinePaint(Color.darkGray);
-        plot.setRangeGridlinePaint(Color.darkGray);
+        plot.setDomainGridlinePaint(GUIColors.TemporalEvoluation.DOMAIN.getColor());
+        plot.setRangeGridlinePaint(GUIColors.TemporalEvoluation.DOMAIN.getColor());
 //        ValueAxis axis1 =plot.getRangeAxis();
 //        plot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
         
@@ -943,7 +944,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 stringDatabase.getString("TemporalEvolutionResultDialog.Legend.Title"));
         
         panel.setBorder(border);
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(GUIColors.TemporalEvoluation.BACKGROUND.getColor());
         
         for (JLabel legend : legendLabels) {
             panel.add(legend);
@@ -980,8 +981,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         chart.getXYPlot().setRenderer(renderer);
         chart.getXYPlot().setDomainGridlinesVisible(true);
         chart.getXYPlot().setRangeGridlinesVisible(true);
-        chart.getXYPlot().setDomainGridlinePaint(Color.darkGray);
-        chart.getXYPlot().setRangeGridlinePaint(Color.darkGray);
+        chart.getXYPlot().setDomainGridlinePaint(GUIColors.TemporalEvoluation.DOMAIN.getColor());
+        chart.getXYPlot().setRangeGridlinePaint(GUIColors.TemporalEvoluation.DOMAIN.getColor());
         
         // Create the custom legend in an adjoined panel
         getLegendTitle();
@@ -1508,11 +1509,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                                                                                   .getSeriesPaint(item.getSeriesIndex())));
             // get metrics from the graphics
             FontMetrics metrics = itemLegendLabel.getFontMetrics(itemLegendLabel.getFont());
-            // get the height of a line of text in this font and render context
+            // get the height of a line of foreground in this font and render context
             int hgt = metrics.getHeight();
-            // get the advance of my text in this font and render context
+            // get the advance of my foreground in this font and render context
             int adv = metrics.stringWidth(itemLegendLabel.getText());
-            // calculate the size of a box to hold the text with some padding.
+            // calculate the size of a box to hold the foreground with some padding.
             Dimension size = new Dimension(adv + 30, hgt + 10);
             itemLegendLabel.setMinimumSize(size);
             itemLegendLabel.setMaximumSize(size);
@@ -1532,11 +1533,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             groupLabel.setFont(new Font(groupLabel.getFont().getName(), Font.BOLD, groupLabel.getFont().getSize()));
             // get metrics from the graphics
             FontMetrics metrics = groupLabel.getFontMetrics(groupLabel.getFont());
-            // get the height of a line of text in this font and render context
+            // get the height of a line of foreground in this font and render context
             int hgt = metrics.getHeight();
-            // get the advance of my text in this font and render context
+            // get the advance of my foreground in this font and render context
             int adv = metrics.stringWidth(groupLabel.getText());
-            // calculate the size of a box to hold the text with some padding.
+            // calculate the size of a box to hold the foreground with some padding.
             Dimension size = new Dimension(adv + 5, hgt + 10);
             groupLabel.setMinimumSize(size);
             groupLabel.setMaximumSize(size);
@@ -1574,11 +1575,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 
                 // get metrics from the graphics
                 FontMetrics metrics = groupLabel.getFontMetrics(groupLabel.getFont());
-                // get the height of a line of text in this font and render context
+                // get the height of a line of foreground in this font and render context
                 int hgt = metrics.getHeight();
-                // get the advance of my text in this font and render context
+                // get the advance of my foreground in this font and render context
                 int adv = metrics.stringWidth(subListTitle);
-                // calculate the size of a box to hold the text with some padding.
+                // calculate the size of a box to hold the foreground with some padding.
                 Dimension size = new Dimension(adv + 5, hgt + 10);
                 
                 groupLabel.setMinimumSize(size);
@@ -1608,11 +1609,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                     JLabel itemLegendLabel = makeLegendLabel(nameItem2, img);
                     // get metrics from the graphics
                     FontMetrics metrics = itemLegendLabel.getFontMetrics(itemLegendLabel.getFont());
-                    // get the height of a line of text in this font and render context
+                    // get the height of a line of foreground in this font and render context
                     int hgt = metrics.getHeight();
-                    // get the advance of my text in this font and render context
+                    // get the advance of my foreground in this font and render context
                     int adv = metrics.stringWidth(nameItem2);
-                    // calculate the size of a box to hold the text with some padding.
+                    // calculate the size of a box to hold the foreground with some padding.
                     
                     Dimension size = new Dimension(adv + 30, hgt + 10);
                     itemLegendLabel.setMinimumSize(size);
@@ -1749,7 +1750,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         
         Graphics2D gr = image.createGraphics();
         gr.scale(shapeScale, shapeScale);
-        gr.setBackground(Color.WHITE);
+        gr.setBackground(GUIColors.TemporalEvoluation.BACKGROUND.getColor());
         gr.clearRect(0, 0, image.getWidth(), image.getHeight());
         gr.setColor(color);
         
@@ -1762,4 +1763,5 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         
         return image;
     }
+    
 }

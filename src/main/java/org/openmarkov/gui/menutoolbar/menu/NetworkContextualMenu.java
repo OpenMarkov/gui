@@ -11,6 +11,9 @@ import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
+import org.openmarkov.gui.window.MainGUI;
+import org.openmarkov.gui.window.MainPanel;
+import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -23,86 +26,83 @@ import java.awt.event.KeyEvent;
  *
  * @author jmendoza
  * @author jlgozalo
- * @version 1.1 jlgozalo - Add change locale management setting the item names.
- * @version 1.2 - cmyago 20/10/2022 - Removed "Expand network" and "Expand network CE"  menu item and "Temporal evolution by criterion" menu item added. This is done by refactoring expandNetworkMenuItem and changing behaviour
  * @version 1.2.1 - cmyago 26/02/2023 - Added "Expand network" menu item added (fixing regression).
  */
 class NetworkContextualMenu extends ContextualMenu {
-	/**
-	 * Static field for serializable class.
-	 */
-	private static final long serialVersionUID = 3673127766586232832L;
-	/**
-	 * Object that represents the item 'Paste'.
-	 */
-	private JMenuItem pasteMenuItem = null;
-	/**
-	 * Object that represents the item 'Network additionalProperties'.
-	 */
-	private JMenuItem networkPropertiesMenuItem = null;
-
-
-	private JMenuItem expandNetworkMenuItem;
-	private JMenuItem teCriterionMenuItem;
-
-	private JMenuItem expandNetworCEkMenuItem;
-	private final boolean canBeExpanded;
-
-	/**
-	 * This constructor creates a new instance.
-	 *
-	 * @param newListener object that listens to the menu events.
-	 */
-	public NetworkContextualMenu(ActionListener newListener, boolean canBeExpanded) {
-		super(newListener);
-		this.canBeExpanded = canBeExpanded;
-		initialize();
-	}
-
-	/**
-	 * This method initializes this instance.
-	 */
-	private void initialize() {
-		add(getPasteMenuItem());
-		addSeparator();
-		add(getNetworkPropertiesMenuItem());
-		if (canBeExpanded) {
-			addSeparator();
-			add(getTECriterionMenuItem());
-			addSeparator();
-			add(getExpandedNetworkMenuItem());
-		}
-	}
-
-
-	/**
-	 * This method initializes pasteMenuItem.
-	 *
-	 * @return a new 'ExpandedNetworkMenuItem' menu item.
-	 */
-	private JMenuItem getExpandedNetworkMenuItem() {
-		if (expandNetworkMenuItem == null) {
-			expandNetworkMenuItem = new LocalizedMenuItem(MenuItemNames.EXPAND_NETWORK_MENUITEM,
+    /**
+     * Static field for serializable class.
+     */
+    private static final long serialVersionUID = 3673127766586232832L;
+    /**
+     * Object that represents the item 'Paste'.
+     */
+    private JMenuItem pasteMenuItem = null;
+    /**
+     * Object that represents the item 'Network additionalProperties'.
+     */
+    private JMenuItem networkPropertiesMenuItem = null;
+    
+    
+    private JMenuItem expandNetworkMenuItem;
+    private JMenuItem teCriterionMenuItem;
+    
+    private JMenuItem expandNetworCEkMenuItem;
+    private final boolean canBeExpanded;
+    
+    /**
+     * This constructor creates a new instance.
+     *
+     * @param newListener object that listens to the menu events.
+     */
+    public NetworkContextualMenu(ActionListener newListener, boolean canBeExpanded) {
+        super(newListener);
+        this.canBeExpanded = canBeExpanded;
+        initialize();
+    }
+    
+    /**
+     * This method initializes this instance.
+     */
+    private void initialize() {
+        add(getPasteMenuItem());
+        addSeparator();
+        add(getNetworkPropertiesMenuItem());
+        if (canBeExpanded) {
+            addSeparator();
+            add(getTECriterionMenuItem());
+            addSeparator();
+            add(getExpandedNetworkMenuItem());
+        }
+    }
+    
+    
+    /**
+     * This method initializes pasteMenuItem.
+     *
+     * @return a new 'ExpandedNetworkMenuItem' menu item.
+     */
+    private JMenuItem getExpandedNetworkMenuItem() {
+        if (expandNetworkMenuItem == null) {
+            expandNetworkMenuItem = new LocalizedMenuItem(MenuItemNames.EXPAND_NETWORK_MENUITEM,
                                                           ActionCommands.EXPAND_NETWORK.getCommandName());
-			expandNetworkMenuItem.addActionListener(listener);
-		}
-		return expandNetworkMenuItem;
-	}
-
-	/**
-	 * This method initializes pasteMenuItem.
-	 *
-	 * @return a new 'Temporal Evolution by Criterion' menu item.
-	 */
-	private JMenuItem getTECriterionMenuItem() {
-		if (teCriterionMenuItem == null) {
-			teCriterionMenuItem = new LocalizedMenuItem(MenuItemNames.TEMPORAL_EVOLUTION_BY_CRITERION_MENUITEM,
+            expandNetworkMenuItem.addActionListener(listener);
+        }
+        return expandNetworkMenuItem;
+    }
+    
+    /**
+     * This method initializes pasteMenuItem.
+     *
+     * @return a new 'Temporal Evolution by Criterion' menu item.
+     */
+    private JMenuItem getTECriterionMenuItem() {
+        if (teCriterionMenuItem == null) {
+            teCriterionMenuItem = new LocalizedMenuItem(MenuItemNames.TEMPORAL_EVOLUTION_BY_CRITERION_MENUITEM,
                                                         ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION.getCommandName());
-			teCriterionMenuItem.addActionListener(listener);
-		}
-		return teCriterionMenuItem;
-	}
-
+            teCriterionMenuItem.addActionListener(listener);
+        }
+        return teCriterionMenuItem;
+    }
 
 
 //	/**
@@ -118,48 +118,53 @@ class NetworkContextualMenu extends ContextualMenu {
 //		}
 //		return expandNetworCEkMenuItem;
 //	}
-
-	/**
-	 * This method initializes pasteMenuItem.
-	 *
-	 * @return a new 'Paste' menu item.
-	 */
-	private JMenuItem getPasteMenuItem() {
-		if (pasteMenuItem == null) {
+    
+    /**
+     * This method initializes pasteMenuItem.
+     *
+     * @return a new 'Paste' menu item.
+     */
+    private JMenuItem getPasteMenuItem() {
+        if (pasteMenuItem == null) {
             pasteMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_PASTE_MENUITEM, ActionCommands.CLIPBOARD_PASTE.getCommandName(),
                                                   IconBind.PASTE_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
-			pasteMenuItem.addActionListener(listener);
-		}
-		return pasteMenuItem;
-	}
-
-	/**
-	 * This method initializes networkPropertiesMenuItem.
-	 *
-	 * @return a new 'Network additionalProperties' menu item.
-	 */
-	private JMenuItem getNetworkPropertiesMenuItem() {
-		if (networkPropertiesMenuItem == null) {
-			networkPropertiesMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_NETWORKPROPERTIES_MENUITEM,
+            pasteMenuItem.addActionListener(listener);
+            pasteMenuItem.setEnabled(MainPanel.getCurrentNetworkPanel()
+                                              .getEditorPanel()
+                                              .getVisualNetwork()
+                                              .getWorkingMode() == NetworkPanel.WorkingMode.EDITION);
+        }
+        return pasteMenuItem;
+    }
+    
+    /**
+     * This method initializes networkPropertiesMenuItem.
+     *
+     * @return a new 'Network additionalProperties' menu item.
+     */
+    private JMenuItem getNetworkPropertiesMenuItem() {
+        if (networkPropertiesMenuItem == null) {
+            networkPropertiesMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_NETWORKPROPERTIES_MENUITEM,
                                                               ActionCommands.NETWORK_PROPERTIES.getCommandName());
-			networkPropertiesMenuItem.addActionListener(listener);
-		}
-		return networkPropertiesMenuItem;
-	}
-
-	/**
-	 * Returns the component that corresponds to an action command.
-	 *
-	 * @param actionCommand action command that identifies the component.
-	 * @return a components identified by the action command.
-	 */
-	@Override protected JComponent getJComponentActionCommand(String actionCommand) {
-		JComponent component = null;
+            networkPropertiesMenuItem.addActionListener(listener);
+        }
+        return networkPropertiesMenuItem;
+    }
+    
+    /**
+     * Returns the component that corresponds to an action command.
+     *
+     * @param actionCommand action command that identifies the component.
+     *
+     * @return a components identified by the action command.
+     */
+    @Override protected JComponent getJComponentActionCommand(String actionCommand) {
+        JComponent component = null;
         if (actionCommand.equals(ActionCommands.CLIPBOARD_PASTE.getCommandName())) {
-			component = pasteMenuItem;
+            component = pasteMenuItem;
         } else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES.getCommandName())) {
-			component = networkPropertiesMenuItem;
-		}
-		return component;
-	}
+            component = networkPropertiesMenuItem;
+        }
+        return component;
+    }
 }

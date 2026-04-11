@@ -10,6 +10,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GLMPotential;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -143,9 +144,9 @@ import java.util.List;
     private static class CoefficientTableCellRenderer extends DefaultTableCellRenderer {
         @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                                  boolean hasFocus, int row, int column) {
-            Color backgroundColor = Color.WHITE;
+            Color backgroundColor = GUIColors.Network.BACKGROUND.getColor();
             if (column == 0) {
-                backgroundColor = new Color(207, 227, 253);
+                backgroundColor = GUIColors.Network.DecisionNode.BACKGROUND.getColor();
             }
             setBackground(backgroundColor);
             

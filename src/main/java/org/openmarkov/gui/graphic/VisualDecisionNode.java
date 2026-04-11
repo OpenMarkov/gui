@@ -11,7 +11,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.gui.configuration.LocalPreferences;
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
@@ -24,41 +24,8 @@ import java.awt.geom.Rectangle2D;
  * @version 1.2 asaez - add expanded representation
  */
 public class VisualDecisionNode extends VisualNode{
-
-	/**
-	 * Internal color of the visual node when there is no finding established.
-	 */
-    private static final Color BACKGROUND_COLOR = LocalPreferences.NODEDECISION_BACKGROUND_COLOR.get();
-
-	/**
-	 * Internal color of the visual node when there is a preResolution finding
-	 * established.
-	 */
-	private static final Color BACKGROUND_PRE_FINDING_COLOR = Color.GRAY;                     // ...asaez...........
-
-	/**
-	 * Internal color of the visual node when there is a postResolution finding
-	 * established.
-	 */
-	private static final Color BACKGROUND_POST_FINDING_COLOR = Color.LIGHT_GRAY;
-
-	/**
-	 * Internal color of the visual node when there is an imposed policy
-	 * established.
-	 */
-	private static final Color BACKGROUND_POLICY_SET_COLOR = new Color(112, 142, 184);
-
-	/**
-	 * Color of lines and letters.
-	 */
-    private static final Color FOREGROUND_COLOR = LocalPreferences.NODEDECISION_FOREGROUND_COLOR.get();
-
-	/**
-	 * Color of the letters
-	 */
-    private static final Color TEXT_FOREGROUND_COLOR = LocalPreferences.NODEDECISION_TEXT_COLOR.get();
-
-	/**
+    
+    /**
 	 * This attribute indicates if the node has an imposed policy
 	 */
 	private boolean hasPolicy = false;
@@ -224,22 +191,22 @@ public class VisualDecisionNode extends VisualNode{
 		Point2D.Double[] points = getPoints(g);
 
 		if (preResolutionFinding) {
-			g.setPaint(BACKGROUND_PRE_FINDING_COLOR);
+            g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_PRE_RESOLUTION_FINDING.getColor());
         } else if (postResolutionFinding && (visualNetwork.getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE)) {
-			g.setPaint(BACKGROUND_POST_FINDING_COLOR);
+            g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_POST_RESOLUTION_FINDING.getColor());
 		} else {
 			if (hasPolicy) {
-				g.setPaint(BACKGROUND_POLICY_SET_COLOR);
+                g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_POLICY.getColor());
 			} else {
-				g.setPaint(BACKGROUND_COLOR);
+                g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND.getColor());
 			}
 		}
 		g.fill(shape);
-		g.setPaint(FOREGROUND_COLOR);
+        g.setPaint(GUIColors.Network.DecisionNode.FOREGROUND.getColor());
 		g.setStroke(getContourStroke());
 		g.draw(shape);
 		g.setFont(FONT_HELVETICA);
-		g.setPaint(TEXT_FOREGROUND_COLOR);
+        g.setPaint(GUIColors.Network.DecisionNode.TEXT.getColor());
 
 		if (isExpanded()) {
 			double rectangleWitdh = points[1].getX() - points[0].getX();

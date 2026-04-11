@@ -922,13 +922,7 @@
         </Scenario>
     </ScopeSelector>
     <AddOtherProperty>
-        <Name>
-            <Title value="Add property"/>
-            <Message value="Property name"/>
-        </Name>
-        <Value>
-            <Title value="Add property"/>
-            <Message value="Value"/>
-        </Value>
+        <DefaultName value="New property"/>
+        <DefaultValue value="Value"/>
     </AddOtherProperty>
 </properties>

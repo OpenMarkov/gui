@@ -10,7 +10,7 @@
 
 package org.openmarkov.gui.component;
 
-import org.openmarkov.gui.configuration.LocalPreferences;
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.loader.element.IconBind;
 
 import javax.swing.*;
@@ -19,7 +19,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.stream.IntStream;
 
 /**
  * This class is used for painting and coloring the table and the headers
@@ -28,22 +30,6 @@ import java.util.Locale;
  * @version 1.0 15/08/2009
  */
 public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
-    /**
-     * first color to use in header rows
-     */
-    protected static final Color TABLE_HEADER_TEXT_COLOR_1 = LocalPreferences.TABLE_HEADER_TEXT_COLOR_1.get();
-    /**
-     * second color to use in header rows
-     */
-    protected static final Color TABLE_HEADER_TEXT_COLOR_2 = LocalPreferences.TABLE_HEADER_TEXT_COLOR_2.get();
-    /**
-     * third color to use in header rows
-     */
-    protected static final Color TABLE_HEADER_TEXT_COLOR_3 = LocalPreferences.TABLE_HEADER_TEXT_COLOR_3.get();
-    /**
-     * color to use in the background of header rows
-     */
-    protected static final Color TABLE_HEADER_BACKGROUND_COLOR = new Color(220, 220, 220);
     /**
      * default serial ID
      */
@@ -146,66 +132,32 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
                                  int column) {
         if ((column < ValuesTable.FIRST_EDITABLE_COLUMN) & (row < firstEditableRow)) {
             // PARENTS CELLS set alternate colors
-            switch (row % 3) {
-                case 0:
-                    setBackground(TABLE_HEADER_BACKGROUND_COLOR);
-                    setForeground(TABLE_HEADER_TEXT_COLOR_1);
-                    break;
-                case 1:
-                    setBackground(TABLE_HEADER_BACKGROUND_COLOR);
-                    setForeground(TABLE_HEADER_TEXT_COLOR_2);
-                    break;
-                case 2:
-                    setBackground(TABLE_HEADER_BACKGROUND_COLOR);
-                    setForeground(TABLE_HEADER_TEXT_COLOR_3);
-                    break;
-                default:
-                    break;
-            }
+            setBackground(GUIColors.Tables.HEADER_BACKGROUND.getColor());
+            setForeground(GUIColors.Tables.FROZEN_CELL_FOREGROUND.getColor());
         }
         if ((column < ValuesTable.FIRST_EDITABLE_COLUMN) & (row >= firstEditableRow)) {
             // NODE STATES CELLS
-            setBackground(TABLE_HEADER_BACKGROUND_COLOR);
-            setForeground(Color.BLACK);
+            setBackground(GUIColors.Tables.FROZEN_CELL_BACKGROUND.getColor());
+            setForeground(GUIColors.Tables.FROZEN_CELL_FOREGROUND.getColor());
         }
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) & (row < firstEditableRow)) {
             // HEADER CELLS
             switch (row % 3) {
                 case 0, 1, 2:
-                    setBackground(TABLE_HEADER_BACKGROUND_COLOR);
+                    setBackground(GUIColors.Tables.HEADER_BACKGROUND.getColor());
                     break;
                 default:
                     break;
             }
-            switch (row % 2) {
-                case 0:
-                    if (column % 2 == 0) {
-                        setForeground(new Color(128, 0, 64));
-                    } else {
-                        setForeground(Color.BLUE.darker());
-                    }
-                    break;
-                case 1:
-                    if (column % 2 == 0) {
-                        setForeground(Color.BLUE.darker());
-                    } else {
-                        setForeground(new Color(128, 0, 64).darker());
-                    }
-                    break;
-                default:
-                    break;
-            }
+            var valuesOfRow = IntStream.range(0, table.getModel().getColumnCount())
+                                       .mapToObj(columnIndex -> table.getModel().getValueAt(row, columnIndex))
+                                       .distinct().toList();
+            setForeground(GUIColors.Tables.HEADER_FOREGROUND_COLORS.get(valuesOfRow.indexOf(value) % GUIColors.Tables.HEADER_FOREGROUND_COLORS.size())
+                                                                   .getColor());
         }
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
-            
-            setBackground(Color.WHITE);
-            setForeground(Color.BLACK);
-            if (hasFocus) {
-                if (table.isCellEditable(row, column)) {
-                    setForeground(Color.BLUE);
-                    setBackground(Color.YELLOW);
-                }
-            }
+            setBackground(GUIColors.Tables.EDITABLE_CELL_BACKGROUND.getColor());
+            setForeground(GUIColors.Tables.EDITABLE_CELL_FOREGROUND.getColor());
         }
     }
     
@@ -222,7 +174,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
      * @param column     - column of the cell
      */
     private void setCellBorders(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        setBorder(new LineBorder(Color.BLACK, 5));
+        setBorder(new LineBorder(GUIColors.Tables.ValuesTable.GRID_COLOR.getColor(), 5));
         if (hasFocus) {
             setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
             getUncertaintyIcon().setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
@@ -273,8 +225,9 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
             jUncertaintyIcon.setHorizontalAlignment(SwingConstants.RIGHT);
             jUncertaintyIcon.setHorizontalTextPosition(SwingConstants.LEFT);
             jUncertaintyIcon.setIconTextGap(0);
-            jUncertaintyIcon.setBackground(Color.WHITE);
+            jUncertaintyIcon.setBackground(GUIColors.Tables.ValuesTable.UNCERTAINTY_BACKGROUND.getColor());
         }
         return jUncertaintyIcon;
     }
+    
 }

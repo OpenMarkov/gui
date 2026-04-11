@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * This Panel contains both a text area where an user can create and see Styled Documents in HTML format, allowing them
+ * This Panel contains both a foreground area where an user can create and see Styled Documents in HTML format, allowing them
  * to forget specifics on how to create an HTML document.
  * <p>
  * Among the utilities it offers, a toolbar with buttons and other elements is provided to allow the user to modify the
@@ -164,7 +164,7 @@ public final class SimpleHTMLEditor extends JPanel {
     }
     
     /**
-     * Sets the focus on the editing text area.
+     * Sets the focus on the editing foreground area.
      */
     public void focusOnEditor() {
         this.editorPane.requestFocus(false);
@@ -186,7 +186,7 @@ public final class SimpleHTMLEditor extends JPanel {
                                     JToolBar toolBar) {
         
         /**
-         * Returns the focus to the text editor area.
+         * Returns the focus to the foreground editor area.
          */
         public void returnFocusToEditor() {
             this.editorPane.requestFocus(false);
@@ -211,10 +211,10 @@ public final class SimpleHTMLEditor extends JPanel {
     
     /**
      * Creates a {@link JButton} than once pressed, it shows a dialog for the user to choose a {@link Color}, and if
-     * chosen, it sets the current selected text to match said {@link Color}.
+     * chosen, it sets the current selected foreground to match said {@link Color}.
      *
      * @return a {@link JButton} than once pressed, it shows a dialog for the user to choose a {@link Color}, and if
-     *         chosen, it sets the current selected text to match said {@link Color}.
+     *         chosen, it sets the current selected foreground to match said {@link Color}.
      */
     private static JButton createChangeForegroundColorUI(CommonComponents commonComponents) {
         JColorChooser colorChooser = new JColorChooser();
@@ -231,10 +231,10 @@ public final class SimpleHTMLEditor extends JPanel {
     
     /**
      * Creates a {@link JComboBox} containing all {@link Font}s the user has installed, and when selecting a letter
-     * font, changes the currently selected text of the panel to said letter font.
+     * font, changes the currently selected foreground of the panel to said letter font.
      *
      * @return a {@link JComboBox} containing all {@link Font}s the user has installed, and when selecting a letter
-     *         font, changes the currently selected text of the panel to said letter font.
+     *         font, changes the currently selected foreground of the panel to said letter font.
      */
     @SuppressWarnings("ZeroLengthArrayAllocation")
     private static JComboBox<String> createChangeFamilyFontUI(CommonComponents commonComponents) {
@@ -251,10 +251,10 @@ public final class SimpleHTMLEditor extends JPanel {
     }
     
     /**
-     * Creates a {@link JButton} than once pressed, it turns the current selected text to bold (Or removes said style if
+     * Creates a {@link JButton} than once pressed, it turns the current selected foreground to bold (Or removes said style if
      * already applied).
      *
-     * @return a {@link JButton} than once pressed, it turns the current selected text to bold (Or removes said style if
+     * @return a {@link JButton} than once pressed, it turns the current selected foreground to bold (Or removes said style if
      *         already applied).
      */
     private static JButton createMakeBoldUI(CommonComponents commonComponents) {
@@ -269,10 +269,10 @@ public final class SimpleHTMLEditor extends JPanel {
     }
     
     /**
-     * Creates a {@link JButton} than once pressed, it turns the current selected text to italic (Or removes said style
+     * Creates a {@link JButton} than once pressed, it turns the current selected foreground to italic (Or removes said style
      * if already applied).
      *
-     * @return a {@link JButton} than once pressed, it turns the current selected text to italic (Or removes said style
+     * @return a {@link JButton} than once pressed, it turns the current selected foreground to italic (Or removes said style
      *         if already applied).
      */
     private static JButton createMakeItalicUI(CommonComponents commonComponents) {
@@ -287,10 +287,10 @@ public final class SimpleHTMLEditor extends JPanel {
     }
     
     /**
-     * Creates a {@link JButton} than once pressed, it turns the current selected text to understrike (Or removes said
+     * Creates a {@link JButton} than once pressed, it turns the current selected foreground to understrike (Or removes said
      * style if already applied).
      *
-     * @return a {@link JButton} than once pressed, it turns the current selected text to understrike (Or removes said
+     * @return a {@link JButton} than once pressed, it turns the current selected foreground to understrike (Or removes said
      *         style if already applied).
      */
     private static JButton createMakeUnderStrikedUI(CommonComponents commonComponents) {
@@ -309,10 +309,10 @@ public final class SimpleHTMLEditor extends JPanel {
     
     /**
      * Creates a {@link JComboBox} containing letter sizes, and when selecting a letter size, it resizes the current
-     * selected text of the panel to said letter size.
+     * selected foreground of the panel to said letter size.
      *
      * @return a {@link JComboBox} containing letter sizes, and when selecting a letter size, it resizes the current
-     * selected text of the panel to said letter size.
+     * selected foreground of the panel to said letter size.
      */
     @SuppressWarnings({"ZeroLengthArrayAllocation", "DuplicateStringLiteralInspection"})
     private static JComboBox<String> createChangeFontSizeUI(CommonComponents commonComponents) {
@@ -368,7 +368,7 @@ public final class SimpleHTMLEditor extends JPanel {
     
     /**
      * This action opens a dialog to request an URL, and if indicated, it sets said URL as an hyperlink over the
-     * currently selected text.
+     * currently selected foreground.
      */
     static class AddHyperlinkAction extends StyledEditorKit.StyledTextAction {
         
@@ -388,7 +388,7 @@ public final class SimpleHTMLEditor extends JPanel {
             int start = editorPane.getSelectionStart();
             int end = editorPane.getSelectionEnd();
             if (start == end) {
-                JOptionPane.showMessageDialog(editorPane, "No text selected.", "Information", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(editorPane, "No foreground selected.", "Information", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
             String selectedText = editorPane.getSelectedText();

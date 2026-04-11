@@ -112,7 +112,7 @@ class InferencePresenter {
                 }
                 default -> throw new UnrecoverableException(new NotSupportedOperationException(
                         "Table potentials with more than 1 variables aren't supported yet, meaning potential "
-                                + variable + " cannot be treated yet"));
+                                + variable.getName() + " cannot be treated yet"));
             }
             
         } else  // if numeric variable

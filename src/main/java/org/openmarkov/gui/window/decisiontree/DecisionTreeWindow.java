@@ -8,6 +8,7 @@
 package org.openmarkov.gui.window.decisiontree;
 
 import org.openmarkov.core.exception.*;
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.ZoomableContentPanel;
 
@@ -41,7 +42,7 @@ public class DecisionTreeWindow extends ZoomableContentPanel {
         this.decisionTreePanel = new DecisionTreePanel(networkPanel.probNet);
         this.networkPanel.addDecisionTreeWindows(this);
         this.add(decisionTreePanel, BorderLayout.CENTER);
-        this.setBackground(Color.blue);
+        this.setBackground(GUIColors.DecisionTree.WINDOW.getColor());
     }
     
     /**

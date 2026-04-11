@@ -8,6 +8,7 @@
 package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.PartitionedInterval;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -179,10 +180,10 @@ public class NumericVariableBox extends InnerBox {
 	 */
 	@Override public void paint(Graphics2D g) {
 		Shape shape = getShape(g);
-		g.setPaint(BACKGROUND_COLOR);
+        g.setPaint(GUIColors.Inference.BOX_BACKGROUND.getColor());
 		g.fill(shape);
 		g.setStroke(NORMAL_STROKE);
-		g.setPaint(FOREGROUND_COLOR);
+        g.setPaint(GUIColors.Inference.BOX_FOREGROUND.getColor());
 		g.draw(shape);
 		g.setFont(INNERBOX_FONT);
 

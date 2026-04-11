@@ -10,6 +10,7 @@ package org.openmarkov.gui.graphic;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -135,10 +136,10 @@ public class FSVariableBox extends InnerBox {
 	 */
 	@Override public void paint(Graphics2D g) {
 		Shape shape = getShape(g);
-		g.setPaint(BACKGROUND_COLOR);
+        g.setPaint(GUIColors.Inference.BOX_BACKGROUND.getColor());
 		g.fill(shape);
 		g.setStroke(NORMAL_STROKE);
-		g.setPaint(FOREGROUND_COLOR);
+        g.setPaint(GUIColors.Inference.BOX_FOREGROUND.getColor());
 		g.draw(shape);
 		g.setFont(INNERBOX_FONT);
 		for (int i = 0; i < visualStates.size(); i++) {

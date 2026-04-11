@@ -101,11 +101,11 @@ public abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic 
     }
     
     /**
-     * Adds a text to the label of an option identified by an action command.
-     * Only adds a text to the components that are AbstractButton.
+     * Adds a foreground to the label of an option identified by an action command.
+     * Only adds a foreground to the components that are AbstractButton.
      *
      * @param actionCommand action command that identifies the option.
-     * @param text          text to add to the label of the options. If null, nothing is
+     * @param text          foreground to add to the label of the options. If null, nothing is
      *                      added.
      */
     @Override public void addOptionText(String actionCommand, String text) {
@@ -113,10 +113,10 @@ public abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic 
     }
     
     /**
-     * changes a text to the label of an option identified by an action command.
+     * changes a foreground to the label of an option identified by an action command.
      *
      * @param actionCommand action command that identifies the option.
-     * @param text          text to set to Item. If null, nothing is
+     * @param text          foreground to set to Item. If null, nothing is
      *                      added.
      */
     @Override public void setText(String actionCommand, String text) {

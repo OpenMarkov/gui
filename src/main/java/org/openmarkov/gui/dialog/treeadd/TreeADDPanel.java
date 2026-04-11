@@ -11,6 +11,7 @@ import org.openmarkov.core.action.core.SetPotentialEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.dialog.common.PotentialPanel;
 import org.openmarkov.gui.dialog.common.PotentialPanelPlugin;
 
@@ -49,7 +50,7 @@ public class TreeADDPanel extends PotentialPanel {
         // treeADDController.setPreferredSize(new Dimension(10, 10));
         add(treeADDController, BorderLayout.CENTER);
         setName("nodeTreeADDPotentialPanel");
-        setBackground(Color.blue);
+        setBackground(GUIColors.DecisionTree.WINDOW.getColor());
         // nodeADDPotentialPanel.setNewNode(newNode);
         // nodeADDPotentialPanel.setNodeProperties(node);
     }

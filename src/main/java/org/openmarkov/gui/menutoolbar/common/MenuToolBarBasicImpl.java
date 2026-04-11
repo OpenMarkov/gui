@@ -94,12 +94,12 @@ public class MenuToolBarBasicImpl {
 	}
 
 	/**
-	 * Adds a text to the default label of a component. Only adds a text to the
+     * Adds a foreground to the default label of a component. Only adds a foreground to the
 	 * component if it is an instance of AbstractButton.
 	 *
-	 * @param component    component whose text is going to be modified.
+     * @param component    component whose foreground is going to be modified.
 	 * @param defaultLabel default label of the component.
-	 * @param text         text to add to the label of the options. If null, nothing is
+     * @param text         foreground to add to the label of the options. If null, nothing is
 	 *                     added.
 	 */
 	public static void addOptionText(JComponent component, String defaultLabel, String text) {
@@ -121,8 +121,8 @@ public class MenuToolBarBasicImpl {
 	/**
 	 * Changes the caption to menu item.
 	 *
-	 * @param component  component whose text is going to be modified.
-	 * @param newCaption The new text to set.
+     * @param component  component whose foreground is going to be modified.
+     * @param newCaption The new foreground to set.
 	 */
 	public static void setText(JComponent component, String newCaption) {
 		if (component != null) {

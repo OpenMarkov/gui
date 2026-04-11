@@ -18,7 +18,7 @@ import javax.swing.*;
  * OpenMarkov directly. It will have a scroll table with two visible columns and
  * a third column to store the object type. Also, a "+" and "-" buttons to
  * manage the insert and delete additionalProperties in the right side and the
- * "Accept" and "Cancel" buttons on the bottom, and a HTML comment text field
+ * "Accept" and "Cancel" buttons on the bottom, and a HTML comment foreground field
  *
  * @author jlgozalo
  * @version 1.0 jlgozalo initial

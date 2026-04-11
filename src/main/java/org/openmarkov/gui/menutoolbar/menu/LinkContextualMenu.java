@@ -79,7 +79,7 @@ class LinkContextualMenu extends ContextualMenu {
      * This constructor creates a new instance.
      *
      * @param newListener  object that listens to the menu events.
-     * @param panel the panel
+     * @param panel        the panel
      * @param selectedLink the selected link
      */
     public LinkContextualMenu(ActionListener newListener, VisualLink selectedLink, NetworkEditorPanel panel) {
@@ -91,26 +91,38 @@ class LinkContextualMenu extends ContextualMenu {
         
         boolean linkRestrictionEnabled = LinkRestrictionValidator.validate(link);
         
-        setOptionEnabled(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
-                         (linkRestrictionEnabled && !link.hasRestrictions()));
-        setOptionEnabled(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES,
-                         (linkRestrictionEnabled && link.hasRestrictions()));
-        setOptionEnabled(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
-                         (linkRestrictionEnabled && link.hasRestrictions()));
-        
-        // Test if revelation arc should be enabled. Validate method returns true if that's the case
-        setOptionEnabled(ActionCommands.LINK_REVELATIONARC_PROPERTIES,
-                         RevelationArcValidator.validate(link));
-        
-        try {
-            LinkInversionWithPotentialsUpdateValidator.validate(link);
-            setOptionEnabled(ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS, true);
-            getInvertLinkAndUpdatePotentialsMenuItem().setToolTipText(null);
-        } catch (LinkInversionRequiresChanceVariablesWithPotential | ConstraintViolatedException |
-                 CannotInvertUndirectedLinks e) {
-            setOptionEnabled(ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS, false);
-            getInvertLinkAndUpdatePotentialsMenuItem().setToolTipText(e.toString());
+        switch (panel.getNetworkPanel().getWorkingMode()) {
+            case EDITION -> {
+                setOptionEnabled(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
+                                 (linkRestrictionEnabled && !link.hasRestrictions()));
+                setOptionEnabled(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES,
+                                 (linkRestrictionEnabled && link.hasRestrictions()));
+                setOptionEnabled(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
+                                 (linkRestrictionEnabled && link.hasRestrictions()));
+                
+                // Test if revelation arc should be enabled. Validate method returns true if that's the case
+                setOptionEnabled(ActionCommands.LINK_REVELATIONARC_PROPERTIES,
+                                 RevelationArcValidator.validate(link));
+                
+                try {
+                    LinkInversionWithPotentialsUpdateValidator.validate(link);
+                    setOptionEnabled(ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS, true);
+                    getInvertLinkAndUpdatePotentialsMenuItem().setToolTipText(null);
+                } catch (LinkInversionRequiresChanceVariablesWithPotential | ConstraintViolatedException |
+                         CannotInvertUndirectedLinks e) {
+                    setOptionEnabled(ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS, false);
+                    getInvertLinkAndUpdatePotentialsMenuItem().setToolTipText(e.toString());
+                }
+            }
+            case INFERENCE -> {
+                setOptionEnabled(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES, false);
+                setOptionEnabled(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES, false);
+                setOptionEnabled(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES, false);
+                setOptionEnabled(ActionCommands.LINK_REVELATIONARC_PROPERTIES, false);
+                setOptionEnabled(ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS, false);
+            }
         }
+        
         
         // Test if arc reversal should be enabled. Validate method returns true if that's the case
         

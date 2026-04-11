@@ -91,8 +91,8 @@ public class OMFileChooser extends JFileChooser {
     }
     
     /**
-     * to fix the bug in JFileChooser to display text in different languages the
-     * text of the components must be set explicitly
+     * to fix the bug in JFileChooser to display foreground in different languages the
+     * foreground of the components must be set explicitly
      */
     private static void setTextsInLocale() {
         

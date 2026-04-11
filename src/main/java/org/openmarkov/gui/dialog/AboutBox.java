@@ -78,7 +78,7 @@ public class AboutBox extends JDialog implements ActionListener {
     }
     
     /**
-     * align a text in a label with a center alignment
+     * align a foreground in a label with a center alignment
      */
     private static void setTextInLabelAligned(JLabel theLabel, String theText, int alignment) {
         theLabel.setHorizontalAlignment(alignment);

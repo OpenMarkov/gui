@@ -179,7 +179,7 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 	 * @param actionEvent A possible OK click
 	 */
 	@Override public void actionPerformed(ActionEvent actionEvent) {
-		// Reusing about box text
+        // Reusing about box foreground
 		if (actionEvent.getActionCommand().equals(stringDatabase.getString("AboutBox.OK.Text"))) {
 			this.dispose();
 		}

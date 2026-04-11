@@ -431,7 +431,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
     }
     
     /**
-     * Returns the presentation mode of the text of the nodes.
+     * Returns the presentation mode of the foreground of the nodes.
      *
      * @return true if the title of the nodes is the name or false if it is the
      * name.
@@ -441,9 +441,9 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
     }
     
     /**
-     * Changes the presentation mode of the text of the nodes.
+     * Changes the presentation mode of the foreground of the nodes.
      *
-     * @param value new value of the presentation mode of the text of the nodes.
+     * @param value new value of the presentation mode of the foreground of the nodes.
      */
     public void setByTitle(boolean value) {
         networkEditorPanel.setByTitle(value);

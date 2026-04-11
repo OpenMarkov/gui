@@ -13,7 +13,7 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
-import org.openmarkov.gui.configuration.LocalPreferences;
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.inference.temporalevolution.TemporalEvolutionDialog;
 import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
@@ -140,12 +140,7 @@ public final class NetworkEditorPanel extends JPanel {
     @Override
     public void updateUI() {
         super.updateUI();
-        switch (LocalPreferences.PREFERRED_THEME.get()) {
-            case SYSTEM, LIGHT -> this.setBackground(Color.WHITE);
-            case DARK -> {
-                //setBackground(Color.GRAY);
-            }
-        }
+        this.setBackground(GUIColors.Network.BACKGROUND.getColor());
     }
     
     public double getCurrentWidth() {
@@ -157,9 +152,9 @@ public final class NetworkEditorPanel extends JPanel {
     }
     
     /**
-     * Changes the presentation mode of the text of the nodes.
+     * Changes the presentation mode of the foreground of the nodes.
      *
-     * @param value new value of the presentation mode of the text of the nodes.
+     * @param value new value of the presentation mode of the foreground of the nodes.
      */
     public void setByTitle(boolean value) {
         this.visualNetwork.setByTitle(value);

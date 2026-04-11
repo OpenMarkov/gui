@@ -40,6 +40,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit {
 		super(visualNetwork.getNetwork());
 		this.nodesToRemove = visualNetwork.getSelectedNodes();
 		this.linksToRemove = union(visualNetwork.getSelectedLinks(), visualNetwork.getLinksOfNodes(this.nodesToRemove));
+        System.out.println();
 	}
     
     @Override public ArrayList<PNEdit> generateEdits() {

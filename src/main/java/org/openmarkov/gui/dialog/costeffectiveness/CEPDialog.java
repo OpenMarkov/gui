@@ -12,10 +12,12 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.dialog.common.DialogBase;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
@@ -29,7 +31,7 @@ import java.util.EventObject;
  * Dialog that presents cost-effectiveness analysis results in a table, including
  * cost, effectiveness, ICER, and the net monetary benefit for each intervention.
  */
-@SuppressWarnings("serial") public class CEPDialog extends JDialog {
+@SuppressWarnings("serial") public class CEPDialog extends DialogBase {
     
     // Constants
     private static final int DEFAULT_NUM_DECIMALS = 6;
@@ -55,26 +57,25 @@ import java.util.EventObject;
      */
     public CEPDialog(Window owner, CEP cep, ProbNet probNet) {
         super(owner);
-        
         this.cep = cep;
         this.probNet = probNet.copy();
-        
         initialize();
-        
-        //        // Center dialog
         this.setLocationRelativeTo(owner);
-        //        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        //        Dimension screenSize = toolkit.getScreenSize();
-        //        int x = (screenSize.width - this.getWidth()) / 2;
-        //        int y = (screenSize.height - this.getHeight()) / 2;
-        //        this.setLocation(x, y);
     }
     
     private void initialize() {
         setTitle(stringDatabase.getString("CostEffectivenessResults.Intervals.Title"));
         getContentPane().add(getJContentPane(), BorderLayout.CENTER);
-        pack();
         jtableCEP.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        JButton cancelButton = new JButton();
+        cancelButton.addActionListener(e -> this.setVisible(false));
+        setCancelButton(cancelButton);
+        pack();
+        packColumns(jtableCEP);
+        setMinimumSize(new Dimension((int) Math.min(45 + jtableCEP.getMinimumSize()
+                                                                  .getWidth(), 900), (int) Math.min(85 + jtableCEP.getMinimumSize()
+                                                                                                                  .getHeight(), 500)));
+        setSize(getMinimumSize());
     }
     
     /**
@@ -86,7 +87,6 @@ import java.util.EventObject;
         JPanel jContentPane = new JPanel();
         jContentPane.setLayout(new BorderLayout());
         jContentPane.add(getComponentsPanel(), BorderLayout.CENTER);
-        jContentPane.add(getBottomPanel(), BorderLayout.SOUTH);
         return jContentPane;
     }
     
@@ -120,54 +120,68 @@ import java.util.EventObject;
      */
     public JTable getJTableFromCEP(final CEP cep) {
         // Set data in jTable
-        jtableCEP = new JTable(getDataFromCEP(cep), getColumnsStrings()) {
-            @Override public void doLayout() {
-                if (tableHeader != null) {
-                    TableColumn resizingColumn = tableHeader.getResizingColumn();
-                    //  Viewport size changed. Increase last columns width
-                    
-                    if (resizingColumn == null) {
-                        TableColumnModel tcm = getColumnModel();
-                        int lastColumn = tcm.getColumnCount() - 1;
-                        tableHeader.setResizingColumn(tcm.getColumn(lastColumn));
+        if (jtableCEP == null) {
+            jtableCEP = new JTable(getDataFromCEP(cep), getColumnsStrings());
+            CellEditorNotEditable notEditableCellEditor = new CellEditorNotEditable(new JTextField());
+            DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+            for (CEPColumns cepColumn : CEPColumns.values()) {
+                jtableCEP.getColumnModel().getColumn(cepColumn.ordinal()).setCellEditor(notEditableCellEditor);
+            }
+            headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            jtableCEP.getTableHeader().setDefaultRenderer(headerRenderer);
+            // Set colors in jTable
+            setColumnCellRenderer(jtableCEP, CEPColumns.LAMBDA_INF.ordinal(), Color.decode(INTERVENTION_RANGE_COLOR));
+            setColumnCellRenderer(jtableCEP, CEPColumns.LAMBDA_SUP.ordinal(), Color.decode(INTERVENTION_RANGE_COLOR));
+            setColumnCellRenderer(jtableCEP, CEPColumns.COST.ordinal());
+            setColumnCellRenderer(jtableCEP, CEPColumns.EFFECTIVENESS.ordinal());
+            setColumnCellRenderer(jtableCEP, CEPColumns.INTERVENTION.ordinal(), Color.decode(CLICKABLE_COLUMN_COLOR),
+                                  stringDatabase.getString("CostEffectivenessResults.Intervals.InterventionTooltip"));
+            
+            jtableCEP.addMouseListener(new MouseAdapter() {
+                @Override public void mouseClicked(MouseEvent event) {
+                    int column = jtableCEP.columnAtPoint(event.getPoint());
+                    if (column == CEPColumns.INTERVENTION.ordinal()) {
+                        int row = jtableCEP.rowAtPoint(event.getPoint());
+                        new InterventionDialog(getOwner(), probNet, cep.getStrategyTrees()[row]).setVisible(true);
                     }
                 }
-                
-                super.doLayout();
-            }
-            
-            @Override public boolean getScrollableTracksViewportWidth() {
-                return getPreferredSize().width < getParent().getWidth();
-            }
-        };
-        CellEditorNotEditable notEditableCellEditor = new CellEditorNotEditable(new JTextField());
-        
-        DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
-        for (CEPColumns cepColumn : CEPColumns.values()) {
-            jtableCEP.getColumnModel().getColumn(cepColumn.ordinal()).setCellEditor(notEditableCellEditor);
+            });
         }
-        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        jtableCEP.getTableHeader().setDefaultRenderer(headerRenderer);
-        // Set colors in jTable
-        setColumnCellRenderer(jtableCEP, CEPColumns.LAMBDA_INF.ordinal(), Color.decode(INTERVENTION_RANGE_COLOR));
-        setColumnCellRenderer(jtableCEP, CEPColumns.LAMBDA_SUP.ordinal(), Color.decode(INTERVENTION_RANGE_COLOR));
-        setColumnCellRenderer(jtableCEP, CEPColumns.COST.ordinal());
-        setColumnCellRenderer(jtableCEP, CEPColumns.EFFECTIVENESS.ordinal());
-        setColumnCellRenderer(jtableCEP, CEPColumns.INTERVENTION.ordinal(), Color.decode(CLICKABLE_COLUMN_COLOR),
-                              stringDatabase.getString("CostEffectivenessResults.Intervals.InterventionTooltip"));
-        
-        jtableCEP.addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent event) {
-                int row = jtableCEP.rowAtPoint(event.getPoint());
-                int column = jtableCEP.columnAtPoint(event.getPoint());
-                if (column == CEPColumns.INTERVENTION.ordinal()) {
-                    InterventionDialog interventionDialog = new InterventionDialog(getOwner(), probNet, cep.getStrategyTrees()[row]);
-                    interventionDialog.setVisible(true);
-                }
-            }
-        });
+
         
         return jtableCEP;
+    }
+    
+    public static void packColumns(JTable table) {
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // Critical: stops columns from squishing
+        int widthSum = 0;
+        for (int col = 0; col < table.getColumnCount(); col++) {
+            TableColumn tableColumn = table.getColumnModel().getColumn(col);
+            
+            // 1. Calculate the absolute minimum to show the header
+            TableCellRenderer headerRenderer = table.getTableHeader().getDefaultRenderer();
+            Component headerComp = headerRenderer.getTableCellRendererComponent(
+                    table, tableColumn.getHeaderValue(), false, false, 0, col);
+            int targetWidth = headerComp.getPreferredSize().width;
+            // 2. Check every row to find the widest content
+            for (int row = 0; row < table.getRowCount(); row++) {
+                TableCellRenderer renderer = table.getCellRenderer(row, col);
+                Component comp = table.prepareRenderer(renderer, row, col);
+                // Add a small margin (e.g., 2-5px) so text doesn't touch the grid lines
+                int cellWidth = comp.getPreferredSize().width + 5;
+                targetWidth = Math.max(targetWidth, cellWidth);
+            }
+            widthSum += targetWidth;
+            
+            // 3. Force the column to this width
+            // By setting min and max to the same value, we "lock" it.
+            tableColumn.setMinWidth(targetWidth);
+            tableColumn.setPreferredWidth(targetWidth);
+            tableColumn.setWidth(targetWidth);
+        }
+        table.setMinimumSize(new Dimension(Math.max((int) table.getMinimumSize()
+                                                               .getWidth(), widthSum), (int) table.getMinimumSize()
+                                                                                                  .getHeight()));
     }
     
     /**

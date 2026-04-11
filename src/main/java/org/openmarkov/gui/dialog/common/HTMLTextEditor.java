@@ -40,7 +40,7 @@ public class HTMLTextEditor extends JDialog {
     private boolean okButton = false;
 	
     /**
-	 * Document to keep the original document text for undo
+     * Document to keep the original document foreground for undo
 	 * and the new one if it is accepted after the edition.
 	 * <p>
 	 * TODO: Previous comment can be misleading, as it doesn't
@@ -138,7 +138,7 @@ public class HTMLTextEditor extends JDialog {
 	}
 
 	/**
-	 * Method to return the document text
+     * Method to return the document foreground
 	 *
 	 * @return String with the Text
 	 */

@@ -8,6 +8,7 @@
 package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -26,31 +27,6 @@ import java.util.Locale;
  */
 public class VisualState extends VisualElement {
     /**
-     * Color associated to the Evidence Case number N+0 (where N = [0, 5, 10
-     * ,...]).
-     */
-    public static final Color EVIDENCE_CASE_0_COLOR = Color.RED;
-    /**
-     * Color associated to the Evidence Case number N+1 (where N = [0, 5, 10
-     * ,...]).
-     */
-    public static final Color EVIDENCE_CASE_1_COLOR = Color.BLUE;
-    /**
-     * Color associated to the Evidence Case number N+2 (where N = [0, 5, 10
-     * ,...]).
-     */
-    public static final Color EVIDENCE_CASE_2_COLOR = new Color(0, 190, 0);
-    /**
-     * Color associated to the Evidence Case number N+3 (where N = [0, 5, 10
-     * ,...]).
-     */
-    public static final Color EVIDENCE_CASE_3_COLOR = Color.MAGENTA;
-    /**
-     * Color associated to the Evidence Case number N+4 (where N = [0, 5, 10
-     * ,...]).
-     */
-    public static final Color EVIDENCE_CASE_4_COLOR = new Color(255, 153, 51);
-    /**
      * Number of decimals
      */
     public static final int NUMBER_OF_DECIMALS = 4;
@@ -58,10 +34,6 @@ public class VisualState extends VisualElement {
      * Font type Helvetica, plain, size 11.
      */
     protected static final Font STATES_FONT = new Font("Helvetica", Font.PLAIN, 11);
-    /**
-     * Color for the text of the state's name.
-     */
-    private static final Color TEXT_COLOR = Color.BLACK;
     
     /** Factor to multiply a number in the range of (0,1) to draw a bar to obtain its size in pixels. */
     private static final double lengthRelationInBars = 10000.0;
@@ -265,17 +237,9 @@ public class VisualState extends VisualElement {
      * @param g          graphics object where paint the node.
      */
     private static void setColorCaseDependent(int caseNumber, Graphics2D g) {
-        if (caseNumber % 5 == 0) {
-            g.setPaint(EVIDENCE_CASE_0_COLOR);
-        } else if (caseNumber % 5 == 1) {
-            g.setPaint(EVIDENCE_CASE_1_COLOR);
-        } else if (caseNumber % 5 == 2) {
-            g.setPaint(EVIDENCE_CASE_2_COLOR);
-        } else if (caseNumber % 5 == 3) {
-            g.setPaint(EVIDENCE_CASE_3_COLOR);
-        } else if (caseNumber % 5 == 4) {
-            g.setPaint(EVIDENCE_CASE_4_COLOR);
-        }
+        g.setPaint(GUIColors.Inference.EVIDENCE_CASES_COLORS.get(caseNumber % GUIColors.Inference.EVIDENCE_CASES_COLORS.size())
+                                                            .background()
+                                                            .getColor());
     }
     
     /**
@@ -298,7 +262,7 @@ public class VisualState extends VisualElement {
     /**
      * Returns a fictitious rectangular shape around the state. This shape has a
      * height equivalent to the sum of the height of all the bars of the state
-     * (a narrow margin is added) and its width includes the text of the name
+     * (a narrow margin is added) and its width includes the foreground of the name
      * and the numerical value (a margin is also added).
      *
      * @param g graphics object where paint the node.
@@ -363,13 +327,13 @@ public class VisualState extends VisualElement {
                     InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
             ) - InnerBox.BAR_HEIGHT - 1;
         }
-        g.setPaint(TEXT_COLOR);
+        g.setColor(GUIColors.Inference.BOX_TEXT.getColor());
         g.setFont(STATES_FONT);
         stateName = adjustText(stateName, InnerBox.BAR_HORIZONTAL_POSITION, 2, STATES_FONT, g);
         g.drawString(stateName, (int) xName, (int) yText);
         if (getVisualNode().getVisualNetwork().isPropagationActive()) {
             for (int i = 0; i < stateValues.size(); i++) {
-                g.setPaint(Color.BLACK);
+                g.setPaint(GUIColors.Inference.STATE_BAR_BORDER.getColor());
                 g.drawLine(Double.valueOf(xBar - 1).intValue(),
                            Double.valueOf(yFirstBar + (i * InnerBox.BAR_HEIGHT) - 1).intValue(),
                            Double.valueOf(xBar - 1).intValue(),
@@ -403,7 +367,7 @@ public class VisualState extends VisualElement {
                 }
             }
         } else {
-            g.setPaint(Color.BLACK);
+            g.setPaint(GUIColors.Inference.STATE_BAR_BORDER.getColor());
             g.drawLine(Double.valueOf(xBar - 1).intValue(), Double.valueOf(yFirstBar - 1).intValue(),
                        Double.valueOf(xBar - 1).intValue(), Double.valueOf(yFirstBar + InnerBox.BAR_HEIGHT).intValue());
             g.drawLine(Double.valueOf(xBar + InnerBox.BAR_FULL_LENGTH).intValue(), Double.valueOf(yFirstBar - 1)
@@ -414,7 +378,7 @@ public class VisualState extends VisualElement {
                 if (evidence.get(currentStateValue)) {
                     setColorCaseDependent(currentStateValue, g);
                     g.fill(new Rectangle2D.Double(xBar, yFirstBar, InnerBox.BAR_FULL_LENGTH, InnerBox.BAR_HEIGHT));
-                    g.setPaint(Color.BLACK);
+                    g.setPaint(GUIColors.Inference.STATE_BAR_BORDER.getColor());
                 } else {
                     paintNotCompiled(xBar, yFirstBar, g);
                 }
@@ -422,7 +386,7 @@ public class VisualState extends VisualElement {
                 paintNotCompiled(xBar, yFirstBar, g);
             }
         }
-        g.setPaint(TEXT_COLOR);
+        g.setPaint(GUIColors.Inference.BOX_TEXT.getColor());
     }
     
     public void removeFinding() {

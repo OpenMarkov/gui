@@ -9,6 +9,7 @@ package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -27,13 +28,8 @@ public class SelectionRectangle {
 	 */
 	private static final BasicStroke DASHED_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
 			10.0f, new float[] { 3.0f }, 0.0f);
-
-	/**
-	 * Color of lines.
-	 */
-	private static final Color FOREGROUND_COLOR = Color.black;
-
-	/**
+    
+    /**
 	 * Shape of the selection. The dimensions of the shape can't be negative.
 	 * This shape is only used in 'paint' and 'selectingNode' methods.
 	 */
@@ -160,7 +156,7 @@ public class SelectionRectangle {
 		double width = this.w;
 		double height = this.h;
 		g.setStroke(DASHED_STROKE);
-		g.setPaint(FOREGROUND_COLOR);
+        g.setPaint(GUIColors.General.TEXT.getColor());
 
 		if (!(width == 0.0 && height == 0.0)) {
 			g.draw(this.rectangleSelection);

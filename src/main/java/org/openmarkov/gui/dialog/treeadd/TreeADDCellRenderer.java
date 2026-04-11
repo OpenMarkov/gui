@@ -15,6 +15,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
 import javax.swing.tree.TreeCellRenderer;
@@ -29,7 +30,7 @@ import java.util.List;
 public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
     private static final long serialVersionUID = 1L;
     /**
-     * Container of SummaryBox' text or the variable icon
+     * Container of SummaryBox' foreground or the variable icon
      */
     private final JLabel leftLabel = new JLabel();
     /**
@@ -41,7 +42,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
      */
     private final HashMap<Variable, Icon> iconsPool = new HashMap<Variable, Icon>();
     /**
-     * Font used in icon text
+     * Font used in icon foreground
      */
     private final Font textIconFont;
     
@@ -65,7 +66,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
         leftLabel.setHorizontalAlignment(SwingConstants.CENTER);
         leftLabel.setHorizontalTextPosition(SwingConstants.LEADING);
         rightLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        setBackground(Color.white);
+        setBackground(GUIColors.DecisionTree.BACKGROUND.getColor());
         // TODO: Add a background color attribute
         textIconFont = new Font("Helvetica", Font.BOLD, 15);
         // precisionProxy= new PrecisionProxy(2);

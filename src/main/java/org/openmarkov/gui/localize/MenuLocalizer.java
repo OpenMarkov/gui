@@ -36,7 +36,7 @@ public class MenuLocalizer {
 	 * Returns the localized label for a menu item.
 	 *
 	 * @param stringId the resource identifier for the menu item
-	 * @return the localized label text
+     * @return the localized label foreground
 	 */
 	public static String getLabel(String stringId) {
         return StringDatabase.getUniqueInstance().getString(stringId);

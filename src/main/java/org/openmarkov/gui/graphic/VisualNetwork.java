@@ -32,6 +32,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class implements the visual representation of a network.
@@ -176,11 +177,13 @@ public class VisualNetwork implements PNEditListener {
      */
     private void constructVisualInfo() {
         reconstructVisualInfo((visualNode, currentNodesToAdd) ->
-                currentNodesToAdd.contains(visualNode.getNode())
-                        && visualNode.getTemporalPosition().getX()
-                        == currentNodesToAdd.get(currentNodesToAdd.indexOf(visualNode.getNode())).getCoordinateX()
-                        && visualNode.getTemporalPosition().getX()
-                        == currentNodesToAdd.get(currentNodesToAdd.indexOf(visualNode.getNode())).getCoordinateX());
+                                      currentNodesToAdd.contains(visualNode.getNode())
+                                              && visualNode.getTemporalPosition().getX()
+                                              == currentNodesToAdd.get(currentNodesToAdd.indexOf(visualNode.getNode()))
+                                                                  .getCoordinateX()
+                                              && visualNode.getTemporalPosition().getX()
+                                              == currentNodesToAdd.get(currentNodesToAdd.indexOf(visualNode.getNode()))
+                                                                  .getCoordinateX());
     }
     
     private void reconstructVisualInfo(NodeIsToKeep nodeIsToKeep) {
@@ -239,7 +242,7 @@ public class VisualNetwork implements PNEditListener {
     /**
      * Returns whether the link contains nodes to delete
      *
-     * @param linkToCheck the link to check
+     * @param linkToCheck    the link to check
      * @param vNodesToDelete the v nodes to delete
      *
      * @return True iff the link contains the node to delete
@@ -254,7 +257,7 @@ public class VisualNetwork implements PNEditListener {
     }
     
     /**
-     * Returns the presentation mode of the text of the nodes.
+     * Returns the presentation mode of the foreground of the nodes.
      *
      * @return true if the title of the nodes is the name or false if it is the
      * name.
@@ -264,9 +267,9 @@ public class VisualNetwork implements PNEditListener {
     }
     
     /**
-     * Changes the presentation mode of the text of the nodes.
+     * Changes the presentation mode of the foreground of the nodes.
      *
-     * @param value new value of the presentation mode of the text of the nodes.
+     * @param value new value of the presentation mode of the foreground of the nodes.
      */
     public void setByTitle(boolean value) {
         
@@ -786,16 +789,9 @@ public class VisualNetwork implements PNEditListener {
      * @return list where are the moved nodes information.
      */
     public List<VisualNode> fillVisualNodesSelected() {
-        
-        List<VisualNode> movedNodes = new ArrayList<>();
-        
-        for (VisualNode node : visualNodes) {
-            if (node.isSelected()) {
-                movedNodes.add(node);
-            }
-        }
-        
-        return movedNodes;
+        return this.visualNodes.stream()
+                               .filter(VisualElement::isSelected)
+                               .collect(Collectors.toList());
         
     }
     
@@ -942,7 +938,7 @@ public class VisualNetwork implements PNEditListener {
     
     private void visualDecisionNodeRefresh() {
         reconstructVisualInfo((visualNode, currentNodesToAdd)
-                -> visualNode.getNode().getNodeType() != NodeType.DECISION);
+                                      -> visualNode.getNode().getNodeType() != NodeType.DECISION);
     }
     
     /**
@@ -986,7 +982,7 @@ public class VisualNetwork implements PNEditListener {
      * Adds whatever is in that position to the selection
      *
      * @param cursorPosition the cursor position
-     * @param g the g
+     * @param g              the g
      */
     public void addToSelection(Point2D.Double cursorPosition, Graphics2D g) {
         VisualNode node;
@@ -1003,37 +999,36 @@ public class VisualNetwork implements PNEditListener {
      * Cleans selection and sets it to whatever is in the cursorPosition
      *
      * @param cursorPosition the cursor position
-     * @param g the g
+     * @param g              the g
      *
      * @return true if there is an element in the position
      */
-    public VisualElement selectElementInPosition(Point2D.Double cursorPosition, Graphics2D g) {
-        VisualNode node;
-        VisualLink link;
-        VisualElement selectedElement = null;
-        if ((node = whatNodeInPosition(cursorPosition, g)) != null) {
+    public @Nullable VisualElement selectElementInPosition(Point2D.Double cursorPosition, Graphics2D g) {
+        VisualNode node = whatNodeInPosition(cursorPosition, g);
+        if (node != null) {
             if (!node.isSelected()) {
                 setSelectedAllObjects(false);
                 setSelectedNode(node, true);
             }
-            selectedElement = node;
-        } else if ((link = whatLinkInPosition(cursorPosition, g)) != null) {
+            return node;
+        }
+        VisualLink link = whatLinkInPosition(cursorPosition, g);
+        if (link != null) {
             if (!link.isSelected()) {
                 setSelectedAllObjects(false);
                 setSelectedLink(link, true);
             }
-            selectedElement = link;
-        } else {
-            setSelectedAllObjects(false);
+            return link;
         }
-        return selectedElement;
+        setSelectedAllObjects(false);
+        return null;
     }
     
     /**
      * Starts link creation
      *
      * @param cursorPosition the cursor position
-     * @param g the g
+     * @param g              the g
      */
     public void startLinkCreation(Point2D.Double cursorPosition, Graphics2D g) {
         VisualNode node;
@@ -1054,7 +1049,7 @@ public class VisualNetwork implements PNEditListener {
      * Finishes link creation and returns edit for the new link
      *
      * @param point the point
-     * @param g the g
+     * @param g     the g
      *
      * @return The edit for the new link created
      */

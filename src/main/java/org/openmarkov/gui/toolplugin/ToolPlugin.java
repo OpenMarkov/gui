@@ -29,7 +29,7 @@ import javax.swing.*;
  * <p>
  * The methods that you can override are:
  * <ul>
- *   <li>{@link ToolPlugin#menuOptionText()} this returns the visual text, and it is the same text that will show for
+ *   <li>{@link ToolPlugin#menuOptionText()} this returns the visual foreground, and it is the same foreground that will show for
  *   this {@code tool plugin}'s menu item in the {@code Tools} bar</li>
  *   <li>{@link ToolPlugin#mnemonic()} this is a shortcut for easily accessing this {@code tool plugin}. You can return
  *   {@code null} if there is no mnemonic.</li>

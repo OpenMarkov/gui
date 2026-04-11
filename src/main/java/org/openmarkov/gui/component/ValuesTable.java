@@ -23,6 +23,7 @@ import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.action.TablePotentialValueEdit;
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.dialog.common.KeyTable;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.MismatchedValueException;
@@ -296,7 +297,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         setRowSelectionAllowed(true);
         setColumnSelectionAllowed(true);
-        setGridColor(Color.DARK_GRAY);
+        setGridColor(GUIColors.Tables.ValuesTable.GRID_COLOR.getColor());
         setDefaultRenderer(Double.class, new ValuesTableCellRenderer(0));
         setDefaultRenderer(String.class, new ValuesTableCellRenderer(0));
         // next two lines is a cool trick to enhance table performance
@@ -776,7 +777,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
     /**
      * If the editor that is handling the editing session is not a JTextComponent, the method does nothing
      * If the editor is a JTextComponent then:
-     * If e is and instance of KeyEvent, ActionEvent or MouseEvent, the method select all the text of the cell
+     * If e is and instance of KeyEvent, ActionEvent or MouseEvent, the method select all the foreground of the cell
      *
      * @param e event which provoked the edition and selection
      */
@@ -793,7 +794,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
             case ActionEvent actionEvent when isSelectAllForActionEvent -> ((JTextComponent) editor).selectAll();
             // A mouse click was used to activate the editor.
             // Generally this is a double click and the second mouse click is
-            // passed to the editor which would remove the text selection unless
+            // passed to the editor which would remove the foreground selection unless
             // we use the invokeLater()
             case MouseEvent mouseEvent when isSelectAllForMouseEvent ->
                     SwingUtilities.invokeLater(() -> ((JTextComponent) editor).selectAll());
@@ -873,4 +874,5 @@ public class ValuesTable extends KeyTable implements PNEditListener {
             }
         }
     }
+    
 }

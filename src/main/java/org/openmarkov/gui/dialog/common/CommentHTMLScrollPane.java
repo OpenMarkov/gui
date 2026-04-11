@@ -110,9 +110,9 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
     }
     
     /**
-     * This method set the text of jTextPaneCommentHTML
+     * This method set the foreground of jTextPaneCommentHTML
      *
-     * @param text the text to put in the comment
+     * @param text the foreground to put in the comment
      */
     public void setCommentHTMLTextPaneText(String text) {
         /*
@@ -134,9 +134,9 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
     }
     
     /**
-     * This method get the text of jTextPaneCommentHTML
+     * This method get the foreground of jTextPaneCommentHTML
      *
-     * @return the text of the comment
+     * @return the foreground of the comment
      */
     public String getCommentText() {
         String text = "";
@@ -210,7 +210,7 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
     }
     
     /**
-     * Registers a listener to be notified when the comment text changes.
+     * Registers a listener to be notified when the comment foreground changes.
      *
      * @param newCommentListener the listener to add
      */

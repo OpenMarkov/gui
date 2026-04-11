@@ -101,18 +101,13 @@ public class MenuNode {
 	 * toString
 	 */
 	public String toString() {
-
-		StringBuilder buf = new StringBuilder();
-		buf.append("[MenuNode ->");
-		buf.append(" name= ").append(this.name);
-		buf.append(" ,object=").append(this.getObject().getName());
+		String out = "[MenuNode -> name= " + this.name + " ,object=" + this.getObject().getName();
 		if (this.list != null) {
-			buf.append(" ,listSize= ").append(this.getList().getSize());
-			buf.append("\n\t\t").append(this.getList().toString());
+			out += " ,listSize= " + this.getList().getSize() + "\n\t\t" + this.getList().toString();
 		} else {
-			buf.append(" ,listSize= 0");
+			out += " ,listSize= 0";
 		}
-		buf.append(" ]");
-		return buf.toString();
+		out += " ]";
+		return out.toString();
 	}
 }

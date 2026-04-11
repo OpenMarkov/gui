@@ -13,6 +13,7 @@ import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.io.format.annotation.NoReaderForFileException;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
@@ -480,7 +481,7 @@ public class MainPanel extends JPanel {
         if (component instanceof NetworkPanel networkPanel) {
             Consumer<NetworkPanel> reloadNamesAndColor = networkP -> {
                 if (networkP.getModified()) {
-                    header.titleLabel.setForeground(new Color(212, 56, 56));
+                    header.titleLabel.setForeground(GUIColors.General.ATTENTION.getColor());
                 } else {
                     header.titleLabel.setForeground(null);
                 }

@@ -15,6 +15,7 @@ import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 @EditionState(name = "Edit.Mode.Link", icon = "link.gif", cursor = "link.gif") public class LinkEditionMode
@@ -49,5 +50,17 @@ import java.awt.event.MouseEvent;
         }
         visualNetwork.updateLinkCreation(cursorPosition);
         networkEditorPanel.repaint();
+    }
+    
+    @Override public void keyTyped(KeyEvent e) {
+    
+    }
+    
+    @Override public void keyPressed(KeyEvent e) {
+    
+    }
+    
+    @Override public void keyReleased(KeyEvent e) {
+    
     }
 }

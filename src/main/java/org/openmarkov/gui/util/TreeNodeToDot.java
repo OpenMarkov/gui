@@ -154,19 +154,15 @@ public class TreeNodeToDot {
         
         parseTreeNode(sourceNode, treeNode);
         
-        StringBuilder graph = new StringBuilder();
-        graph.append("digraph G {" + "\n");
-        graph.append("\tgraph [dpi = " + graphDPI + "];\n");
-        graph.append("\trankdir=LR;\n");
-        graph.append("\tnode [style=\"filled\"]; \n");
+        String graph = "digraph G {" + "\n\tgraph [dpi = " + graphDPI + "];\n\trankdir=LR;\n\tnode [style=\"filled\"]; \n";
         for (DotNode node : dotNodes) {
-            graph.append("\t" + node.toString() + "\n");
+            graph += "\t" + node.toString() + "\n";
         }
         
         for (DotLink dotLink : dotLinks) {
-            graph.append("\t" + dotLink + "\n");
+            graph += "\t" + dotLink + "\n";
         }
-        graph.append("}");
+        graph += "}";
         
         System.out.println(graph.toString());
         

@@ -63,9 +63,9 @@ public enum ActionCommands {
     NETWORK_PROPERTIES("NetworkProperties"),
     /** Action invoked when the user wants to exit the application. */
     EXIT_APPLICATION("ExitApplication"),
-    /** Action invoked when the user wants to set the nodes to paint its text by title. */
+    /** Action invoked when the user wants to set the nodes to paint its foreground by title. */
     BYTITLE_NODES("ByTitleNodes"),
-    /** Action invoked when the user wants to set the nodes to paint its text by name. */
+    /** Action invoked when the user wants to set the nodes to paint its foreground by name. */
     BYNAME_NODES("ByNameNodes"),
     /** Represents all the actions related to the nodes viewing. */
     NODES("Nodes"),
