@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.action;
 
+import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.action.base.MultiStepEdit;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.core.AddNodeEdit;
@@ -28,10 +30,11 @@ import java.util.stream.IntStream;
  * Duplicate variable names are resolved by appending apostrophes. Potentials
  * are copied and variable references are updated to point to the new nodes.
  */
-@SuppressWarnings("serial") public class PasteEdit extends PNEdit {
+@SuppressWarnings("serial")
+public class PasteEdit extends MultiStepEdit {
     private final SelectedContent clipboardContent;
-    private SelectedContent pastedContent;
-    ArrayList<PNEdit> edits;
+    private @Nullable SelectedContent pastedContent;
+
 
     /**
      * Creates a new paste edit.
@@ -43,12 +46,11 @@ import java.util.stream.IntStream;
         super(probNet);
         this.clipboardContent = clipboardContent;
         this.pastedContent = null;
-        edits = new ArrayList<>();
     }
     
-    @Override protected void doEdit() throws DoEditException {
+    
+    @Override protected void doMultiStepEdit(StepExecuter stepExecuter) throws DoEditException {
         newVariables = new HashMap<>();
-        edits = new ArrayList<>();
         // Gather new node creation edits
         for (Node node : clipboardContent.nodes()) {
             String oldName = node.getName();
@@ -61,8 +63,7 @@ import java.util.stream.IntStream;
             newVariables.put(oldName, newName);
             Point2D.Double position = new Point2D.Double(node.getCoordinateX() + 3.0, node.getCoordinateY());
             AddNodeEdit addNodeEdit = new AddNodeEdit(probNet, variable, node.getNodeType(), position);
-            addNodeEdit.executeEdit();
-            edits.add(addNodeEdit);
+            stepExecuter.execute(addNodeEdit);
         }
         //Gather link creation edits
         for (Link<Node> link : clipboardContent.links()) {
@@ -70,17 +71,16 @@ import java.util.stream.IntStream;
             String originalDestinationNodeName = link.getTo().getName();
             AddLinkEdit addLinkEdit = new AddLinkEdit(probNet, probNet.getVariable(newVariables.get(originalSourceNodeName)),
                                                       probNet.getVariable(newVariables.get(originalDestinationNodeName)), link.isDirected());
-            addLinkEdit.executeEdit();
-            edits.add(addLinkEdit);
+            stepExecuter.execute(addLinkEdit);
         }
         
         PNEdit finalizer = new PNEdit(this.probNet) {
             @Override protected void doEdit() {
                 // Apply node generation edits
                 ArrayList<Node> pastedNodes = new ArrayList<>();
-                //Apply link creation edits
+                // Apply link creation edits
                 List<Link<Node>> pastedLinks = new ArrayList<>();
-                for (PNEdit edit : edits) {
+                for (PNEdit edit : stepExecuter.currentlyExecutedEdits().toList()) {
                     switch (edit) {
                         case AddNodeEdit addNodeEdit -> pastedNodes.add(addNodeEdit.getNode());
                         case AddLinkEdit linkEdit -> pastedLinks.add(linkEdit.getLink());
@@ -120,25 +120,9 @@ import java.util.stream.IntStream;
                 }
             }
         };
-        finalizer.executeEdit();
-        edits.add(finalizer);
+        stepExecuter.execute(finalizer);
     }
     
-    @Override public void redo() {
-        edits.forEach(PNEdit::redo);
-        setTypicalRedo(false);
-        super.redo();
-    }
-    
-    @Override public void undo() {
-        IntStream.range(0, edits.size())
-                 .mapToObj(i -> {
-                     int realIndex = edits.size() - 1 - i;
-                     return edits.get(realIndex);
-                 })
-                 .forEach(PNEdit::undo);
-        super.undo();
-    }
     
     /**
      * Returns the pasted content.

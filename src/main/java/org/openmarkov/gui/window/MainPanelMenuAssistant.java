@@ -759,22 +759,28 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         }
         NetworkPanel.WorkingMode workingMode = currentNetworkPanel.getEditorPanel().getVisualNetwork().getWorkingMode();
         boolean workingModeIsNotInference = workingMode != NetworkPanel.WorkingMode.INFERENCE;
-        
         updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo() && workingModeIsNotInference,
                                      probNet.getPNESupport().getCanRedo() && workingModeIsNotInference);
-        /*
-         * updateOptionsNetworkModified(((ProbNet)e.getSource()).getPNESupport().
-         * getCanUndo(), ((ProbNet)e.getSource()).getPNESupport().getCanRedo());
-         */
     }
     
     @Override public void afterUndoingEdit(PNEdit edit) {
-        updateOptionsNetworkModified(edit.getProbNet().getPNESupport().getCanUndo(),
-                                     edit.getProbNet().getPNESupport().getCanRedo());
-        /*
-         * updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo
-         * (), ((PNESupport)event.getSource()).getCanRedo());
-         */
+        ProbNet probNet = getCurrentNetworkPanel().getProbNet();
+        NetworkPanel.WorkingMode workingMode = getCurrentNetworkPanel().getEditorPanel()
+                                                                       .getVisualNetwork()
+                                                                       .getWorkingMode();
+        boolean workingModeIsNotInference = workingMode != NetworkPanel.WorkingMode.INFERENCE;
+        updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo() && workingModeIsNotInference,
+                                     probNet.getPNESupport().getCanRedo() && workingModeIsNotInference);
+    }
+    
+    @Override public void afterRedoingEdit(PNEdit edit) {
+        ProbNet probNet = getCurrentNetworkPanel().getProbNet();
+        NetworkPanel.WorkingMode workingMode = getCurrentNetworkPanel().getEditorPanel()
+                                                                       .getVisualNetwork()
+                                                                       .getWorkingMode();
+        boolean workingModeIsNotInference = workingMode != NetworkPanel.WorkingMode.INFERENCE;
+        updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo() && workingModeIsNotInference,
+                                     probNet.getPNESupport().getCanRedo() && workingModeIsNotInference);
     }
     
     public NetworkPanel getCurrentNetworkPanel() {
