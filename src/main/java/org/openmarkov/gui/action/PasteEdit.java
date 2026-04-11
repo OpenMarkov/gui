@@ -95,12 +95,18 @@ import java.util.stream.IntStream;
                     Node newNode = probNet.getNode(newVariables.get(originalNode.getName()));
                     for (Potential originalPotential : originalNode.getPotentials()) {
                         Potential potential = originalPotential.copy();
+                        List<Variable> externalVars = new ArrayList<>();
                         for (int i = 0; i < potential.getNumVariables(); ++i) {
                             String variableName = potential.getVariable(i).getName();
                             if (newVariables.containsKey(variableName)) {
                                 Variable variable = probNet.getVariable(newVariables.get(variableName));
                                 potential.replaceVariable(i, variable);
+                            } else {
+                                externalVars.add(potential.getVariable(i));
                             }
+                        }
+                        for (Variable extVar : externalVars) {
+                            potential = potential.removeVariable(extVar);
                         }
                         if (potential instanceof ExactDistrPotential) {
                             Variable child = ((ExactDistrPotential) potential).getChildVariable();
