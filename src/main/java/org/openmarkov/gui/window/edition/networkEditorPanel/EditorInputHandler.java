@@ -19,6 +19,7 @@ import org.openmarkov.gui.window.edition.NetworkPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -116,10 +117,10 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
                 try {
                     boolean userAcceptedChanges = this.networkEditorPanel.changeNodeProperties(node, this.lastLeftClickProducedANode);
                     if (!userAcceptedChanges && this.lastLeftClickProducedANode) {
-                        PNEdit undone;
+                        ArrayList<PNEdit> undone;
                         do {
                             undone = this.networkEditorPanel.getNetworkPanel().getProbNet().getPNESupport().undo();
-                        } while (undone != null && !(undone instanceof AddNodeEdit));
+                        } while (undone != null && undone.stream().noneMatch(AddNodeEdit.class::isInstance));
                         this.networkEditorPanel.getNetworkPanel().getProbNet().getPNESupport().removeUndoneEdits();
                     }
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
