@@ -7,19 +7,17 @@
 
 package org.openmarkov.gui.component;
 
-import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
 
 @SuppressWarnings("serial") public class LinkRestrictionCellRenderer extends ValuesTableCellRenderer {
-    
+
     private static final String INCOMPATIBILITY_VALUE = "0";
     private static final String COMPATIBILITY_VALUE = "1";
-    
-    public LinkRestrictionCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns, TablePotential potential) {
+
+    public LinkRestrictionCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns) {
         super(firstEditableRow, uncertaintyInColumns);
-        
     }
     
     @Override protected void setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,

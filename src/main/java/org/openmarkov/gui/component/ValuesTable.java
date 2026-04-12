@@ -646,27 +646,6 @@ public class ValuesTable extends KeyTable implements PNEditListener {
     /**
      * print the NodePotentialTable
      */
-    public void printTable() {
-        System.out.println("NodePotentialTable: ");
-        if (getVariable() != null) {
-            System.out.println("    variable = " + getVariable().getName());
-        } else {
-            System.out.println("    variable = not defined yet");
-        }
-        if (tableModel != null) {
-            System.out.println("    tableModel.firstEditableRow = " + tableModel.getFirstEditableRow());
-            System.out.println("    tableModel.rowCount = " + tableModel.getRowCount());
-            System.out.println("    tableModel.columnCount = " + tableModel.getColumnCount());
-        } else {
-            System.out.println("    tableModel.firstEditableRow = not tableModel yet");
-        }
-        System.out.println("    lastEditableRow = " + lastEditableRow);
-        System.out.println("    usingGeneralPotencial = " + isUsingGeneralPotential());
-        System.out.println("    showingAllParameters = " + isShowingAllParameters());
-        System.out.println("    showingProbabilitiesValues = " + isShowingProbabilitiesValues());
-        System.out.println("    showingTPCvalues = " + isShowingTPCvalues());
-    }
-    
     @Override public void afterEditExecutes(@UnknownNullability PNEdit edit) {
         if (edit instanceof TablePotentialValueEdit tpEdit) {
             tablePotentialValueEditHappened(tpEdit);

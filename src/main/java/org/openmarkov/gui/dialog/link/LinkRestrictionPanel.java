@@ -307,12 +307,9 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	protected void setCellRenderers() {
 		int size = valuesTable.getColumnCount();
 		boolean[] aux = new boolean[size - 1];
-		valuesTable.setDefaultRenderer(Double.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux,
-				link.getRestrictionsPotential()));
-		valuesTable.setDefaultRenderer(String.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux,
-				link.getRestrictionsPotential()));
-		valuesTable.setDefaultRenderer(Integer.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux,
-				link.getRestrictionsPotential()));
+		valuesTable.setDefaultRenderer(Double.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux));
+		valuesTable.setDefaultRenderer(String.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux));
+		valuesTable.setDefaultRenderer(Integer.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux));
 	}
 
 	@Override public void setData(Node node) {

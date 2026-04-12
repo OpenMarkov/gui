@@ -11,18 +11,12 @@ import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
-import java.util.Iterator;
 import java.util.List;
-
-//import org.openmarkov.core.model.network.Variable;
-//import org.openmarkov.core.model.network.potential.Potential;
-//import org.openmarkov.core.model.network.potential.PotentialRole;
 
 /**
  * {@code NodePotentialEdit} is a simple edit that allows to modify the
@@ -159,49 +153,8 @@ public class TablePotentialValueEdit extends PotentialChangeEdit {
                 priorityList.remove((Integer) potentialSelected);
                 priorityList.add(potentialSelected);
             }
-            Iterator<Integer> listIterator = priorityList.listIterator();
-            double sum = 0.0;
-            int position;
-            int maxDecimals = 10;
-            double epsilon = Math.pow(10, -(maxDecimals + 2));
-            newTable[potentialSelected] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
-            while (listIterator.hasNext()) {
-                position = listIterator.next();
-                if (isEditablePosition(position)) {
-                    sum = Util.roundAndReduce(sum + newTable[position], epsilon, maxDecimals);
-                }
-                // sum += newTable[pos];
-            }
-            double rest = Math.abs(Util.roundAndReduce(1 - sum, epsilon, maxDecimals));
-            // rest = Math.abs( 1 - sum );
-            if (sum > 1.0) {
-                listIterator = priorityList.listIterator();
-                while (listIterator.hasNext() && rest != 0) {
-                    position = listIterator.next();
-                    if (this.isEditablePosition(position)) {
-                        rest = Util.roundAndReduce(rest - newTable[position], epsilon, maxDecimals);
-                        // rest = rest - newTable[pos];
-                        if (rest < 0) {// it is because the value of the table
-                            // is bigger than the rest
-                            // and now there's nothing left to reach
-                            // one
-                            newTable[position] = Math.abs(Util.roundAndReduce(rest, epsilon, maxDecimals));
-                            break;
-                        } else
-                            newTable[position] = 0.0;
-                    }
-                }
-            } else {// =< 1
-                boolean updated = false;
-                listIterator = priorityList.listIterator();
-                while (listIterator.hasNext() && !updated) {
-                    position = listIterator.next();
-                    if (this.isEditablePosition(position)) {
-                        newTable[position] = Util.roundAndReduce(newTable[position] + rest, epsilon, maxDecimals);
-                        updated = true;
-                    }
-                }
-            }
+            PotentialsTablePanelOperations.redistributeProbabilities(
+                    newTable, potentialSelected, newValue, priorityList, this::isEditablePosition);
             this.oldPotential = oldTablePotential;
             this.newPotential = tablePotential;
         } else {

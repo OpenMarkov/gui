@@ -15,7 +15,6 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
@@ -51,15 +50,7 @@ public class LinkRestrictionValuesTable extends ValuesTable
     public LinkRestrictionValuesTable(Link<Node> link, ValuesTableModel tableModel, final boolean modifiable) {
         super(tableModel, modifiable);
         this.link = link;
-        /****
-         * The parent node of the link
-         */
-        Node node1 = link.getFrom();
         node2 = link.getTo();
-        /***
-         * The ProbNet containing the link.
-         */
-        ProbNet net = node1.getProbNet();
     }
     
     /**

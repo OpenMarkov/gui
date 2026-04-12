@@ -11,12 +11,11 @@ import org.openmarkov.core.action.core.ICIPotentialEdit;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
+import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -190,87 +189,13 @@ import java.util.List;
             
         }
         
-        Iterator<Integer> listIterator = priorityList.listIterator();
-        int maxDecimals = 10;
-        
-        double epsilon = Math.pow(10, -(maxDecimals + 2));
-        double sum = 0.0;
-        double rest;
-        int priorityListPosition;
-        ICIPotentialEdit iciPotentialEdit;
-        
-        if (leakyFlag) {//leaky parameters
-            newLeakyParameters[position] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
-            while (listIterator.hasNext()) {
-                priorityListPosition = listIterator.next();
-                sum = Util.roundAndReduce(sum + newLeakyParameters[priorityListPosition], epsilon, maxDecimals);
-                //sum = roundingDouble(sum + newLeakyParameters[priorityListPosition]);
-                //sum += newTable[pos];
-            }
-            //rest = Math.abs(1-sum);
-            rest = Math.abs(Util.roundAndReduce(1 - sum, epsilon, maxDecimals));
-            //rest = Math.abs( 1 - sum );
-            
-            if (sum > 1.0) {
-                listIterator = priorityList.listIterator();
-                while (listIterator.hasNext() && rest != 0) {
-                    priorityListPosition = listIterator.next();
-                    rest = Util.roundAndReduce(rest - newLeakyParameters[priorityListPosition], epsilon, maxDecimals);
-                    //rest = roundingDouble(rest - newLeakyParameters[priorityListPosition]);
-                    //rest = rest - newTable[pos];
-                    if (rest < 0) {
-                        newLeakyParameters[priorityListPosition] = Math
-                                .abs(Util.roundAndReduce(rest, epsilon, maxDecimals));
-                        break;
-                    }
-                    newLeakyParameters[priorityListPosition] = 0.0;
-                }
-            } else {
-                priorityListPosition = priorityList.get(0);
-                newLeakyParameters[priorityListPosition] = Util
-                        .roundAndReduce(newLeakyParameters[priorityListPosition] + rest, epsilon, maxDecimals);
-                //newLeakyParameters[priorityListPosition] = roundingDouble(newLeakyParameters[priorityListPosition] + rest);
-                //newTable[pos] = newTable[pos] + rest;
-            }
-            iciPotentialEdit = new ICIPotentialEdit(probNet, iciPotential, newLeakyParameters);
-        } else {//noisy parameters
-            newNoisyParameters[position] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
-            while (listIterator.hasNext()) {
-                priorityListPosition = listIterator.next();
-                sum = Util.roundAndReduce(sum + newNoisyParameters[priorityListPosition], epsilon, maxDecimals);
-                //sum = sum + newNoisyParameters[priorityListPosition];
-                //sum = roundingDouble(sum + newNoisyParameters[priorityListPosition]);
-                //sum += newTable[pos];
-            }
-            //rest = Math.abs(1-sum);
-            rest = Math.abs(Util.roundAndReduce(1 - sum, epsilon, maxDecimals));
-            //rest = Math.abs( 1 - sum );
-            
-            if (sum > 1.0) {
-                listIterator = priorityList.listIterator();
-                while (listIterator.hasNext() && rest != 0) {
-                    priorityListPosition = listIterator.next();
-                    //rest = rest - newNoisyParameters[priorityListPosition];
-                    rest = Util.roundAndReduce(rest - newNoisyParameters[priorityListPosition], epsilon, maxDecimals);
-                    //rest = rest - newTable[pos];
-                    if (rest < 0) {
-                        newNoisyParameters[priorityListPosition] = Math
-                                .abs(Util.roundAndReduce(rest, epsilon, maxDecimals));
-                        break;
-                    }
-                    newNoisyParameters[priorityListPosition] = 0.0;
-                    
-                }
-            } else {
-                priorityListPosition = priorityList.get(0);
-                newNoisyParameters[priorityListPosition] = Util
-                        .roundAndReduce(newNoisyParameters[priorityListPosition] + rest, epsilon, maxDecimals);
-                //newNoisyParameters[priorityListPosition] = roundingDouble(newNoisyParameters[priorityListPosition] + rest);
-                //newTable[pos] = newTable[pos] + rest;
-            }
-            iciPotentialEdit = new ICIPotentialEdit(probNet, iciPotential, noisyVariable, newNoisyParameters);
-            
-        }
+        double[] params = leakyFlag ? newLeakyParameters : newNoisyParameters;
+        PotentialsTablePanelOperations.redistributeProbabilities(
+                params, position, newValue, priorityList, pos -> true);
+
+        ICIPotentialEdit iciPotentialEdit = leakyFlag
+                ? new ICIPotentialEdit(probNet, iciPotential, newLeakyParameters)
+                : new ICIPotentialEdit(probNet, iciPotential, noisyVariable, newNoisyParameters);
         iciPotentialEdit.executeEdit();
     }
     

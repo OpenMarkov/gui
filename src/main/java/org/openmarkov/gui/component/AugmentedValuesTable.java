@@ -21,12 +21,6 @@ import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.util.EventObject;
 
 /**
  * This table implementation is responsible for the graphical and data model
@@ -134,33 +128,6 @@ public class AugmentedValuesTable extends ValuesTable implements PNEditListener 
     }
     
     /**
-     * print the NodePotentialTable
-     * carmenyago only removed the println of the deterministic attribute
-     *
-     * @author carmenyago revised--&gt;minor changes
-     */
-    @Override public void printTable() {
-        System.out.println("NodePotentialTable: ");
-        if (getVariable() != null) {
-            System.out.println("    variable = " + getVariable().getName());
-        } else {
-            System.out.println("    variable = not defined yet");
-        }
-        if (tableModel != null) {
-            System.out.println("    tableModel.firstEditableRow = " + tableModel.getFirstEditableRow());
-            System.out.println("    tableModel.rowCount = " + tableModel.getRowCount());
-            System.out.println("    tableModel.columnCount = " + tableModel.getColumnCount());
-        } else {
-            System.out.println("    tableModel.firstEditableRow = not tableModel yet");
-        }
-        System.out.println("    lastEditableRow = " + lastEditableRow);
-        System.out.println("    usingGeneralPotencial = " + isUsingGeneralPotential());
-        System.out.println("    showingAllParameters = " + isShowingAllParameters());
-        System.out.println("    showingProbabilitiesValues = " + isShowingProbabilitiesValues());
-        System.out.println("    showingTPCvalues = " + isShowingTPCvalues());
-    }
-    
-    /**
      * Updates the edited column
      */
     @Override public void afterEditExecutes(@UnknownNullability PNEdit edit) {
@@ -212,57 +179,6 @@ public class AugmentedValuesTable extends ValuesTable implements PNEditListener 
                              augmentedEdit.getColumnPosition());
         }
 
-    }
-    
-    /**
-     * This method edits the cell at row, column.
-     * If isSelectAllForMouseEvent,isSelectAllForActionEvent, or isSelectAllForKeyEvent the entire cell is selected
-     * UNCLEAR isSelectAllForMouseEvent,isSelectAllForActionEvent, or isSelectAllForKeyEvent values never change
-     * Overrided to provide Select All editing functionality
-     *
-     * @param row    - the row of the edited cell
-     * @param column - the column of the edited cell
-     * @param e      - event to pass into shouldSelectCell;
-     *               revised--&gt; not changed
-     */
-    @Override public boolean editCellAt(int row, int column, EventObject e) {
-        boolean result = super.editCellAt(row, column, e);
-        
-        if (e instanceof MouseEvent)
-            System.err.println("CLICK COUNT" + ((MouseEvent) e).getClickCount());
-        
-        return result;
-        
-    }
-    
-    /**
-     * If the editor that is handling the editing session is not a JTextComponent, the method does nothing
-     * If the editor is a JTextComponent then:
-     * If e is and instance of KeyEvent, ActionEvent or MouseEvent, the method select all the foreground of the cell
-     *
-     * @param e event which provoked the edition and selection
-     *          revised --&gt; not changed
-     */
-    private void selectAll(EventObject e) {
-        // Returns the component that is handling the editing session.
-        final Component editor = getEditorComponent();
-        if (!(editor instanceof JTextComponent))
-            return;
-        switch (e) {
-            case null -> ((JTextComponent) editor).selectAll();
-            // Typing in the cell was used to activate the editor
-            case KeyEvent keyEvent when isSelectAllForKeyEvent -> ((JTextComponent) editor).selectAll();
-            // F2 was used to activate the editor
-            case ActionEvent actionEvent when isSelectAllForActionEvent -> ((JTextComponent) editor).selectAll();
-            // A mouse click was used to activate the editor.
-            // Generally this is a double click and the second mouse click is
-            // passed to the editor which would remove the foreground selection unless
-            // we use the invokeLater()
-            case MouseEvent mouseEvent when isSelectAllForMouseEvent ->
-                    SwingUtilities.invokeLater(() -> ((JTextComponent) editor).selectAll());
-            default -> {
-            }
-        }
     }
     
 }

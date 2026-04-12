@@ -93,7 +93,7 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
         this.mainPanel = mainPanel;
         this.onModificationListener = new ArrayList<>();
         probNet.getPNESupport().addListener(this);
-        this.networkEditorPanel = new NetworkEditorPanel(this, new VisualNetwork(probNet, this.mainPanel.mainGUI));
+        this.networkEditorPanel = new NetworkEditorPanel(this, new VisualNetwork(probNet));
         initialize();
         decisionTreeWindows = new ArrayList<>();
     }

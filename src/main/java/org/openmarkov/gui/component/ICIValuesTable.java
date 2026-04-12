@@ -23,11 +23,7 @@ import org.openmarkov.gui.exception.MismatchedValueException;
 import java.util.ListIterator;
 
 @SuppressWarnings("serial") public class ICIValuesTable extends ValuesTable implements PNEditListener {
-    /**
-     * Define the last column of the table that was modified
-     */
-    private int lastCol = -1;
-    
+
     public ICIValuesTable(Node node, ValuesTableModel tableModel, final boolean modifiable) {
         super(node, tableModel, modifiable);
     }

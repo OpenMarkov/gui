@@ -22,7 +22,6 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.action.PasteEdit;
 import org.openmarkov.gui.action.RemoveSelectedEdit;
 import org.openmarkov.gui.util.MovedNodeInfo;
-import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.edition.EditorPanelClipboardAssistant;
 import org.openmarkov.gui.window.edition.SelectedContent;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
@@ -48,8 +47,6 @@ public class VisualNetwork implements PNEditListener {
      * Network whose visual representation is managed by this object.
      */
     private final ProbNet probNet;
-    
-    private final MainGUI mainGUI;
     
     /**
      * This variable indicates if nodes must be drawn by title.
@@ -119,11 +116,9 @@ public class VisualNetwork implements PNEditListener {
      * Creates a new visual network.
      *
      * @param probNet object that has the information of the network.
-     * @param mainGUI the main gui
      */
-    public VisualNetwork(ProbNet probNet, MainGUI mainGUI) {
+    public VisualNetwork(ProbNet probNet) {
         this.probNet = probNet;
-        this.mainGUI = mainGUI;
         this.probNet.getPNESupport().addListener(this);
         this.clipboardAssistant = new EditorPanelClipboardAssistant();
         
@@ -932,8 +927,6 @@ public class VisualNetwork implements PNEditListener {
         if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();
         }
-        mainGUI.mainPanel.getEditionToolBar().getUndoButton().setEnabled(this.probNet.getPNESupport().getCanUndo());
-        mainGUI.mainPanel.getEditionToolBar().getRedoButton().setEnabled(this.probNet.getPNESupport().getCanRedo());
     }
     
     private void visualDecisionNodeRefresh() {
@@ -972,10 +965,6 @@ public class VisualNetwork implements PNEditListener {
         if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();
         }
-        boolean canUndo = this.probNet.getPNESupport().getCanUndo();
-        mainGUI.mainPanel.getEditionToolBar().getUndoButton().setEnabled(canUndo);
-        boolean canRedo = this.probNet.getPNESupport().getCanRedo();
-        mainGUI.mainPanel.getEditionToolBar().getRedoButton().setEnabled(canRedo);
     }
     
     /**

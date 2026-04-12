@@ -11,9 +11,13 @@ package org.openmarkov.gui.component;
 
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+
+import java.util.List;
+import java.util.function.IntPredicate;
 
 
 /**
@@ -180,6 +184,55 @@ public class PotentialsTablePanelOperations {
 			temp = temp / dimension;
 		}
 		return position;
+	}
+
+	/**
+	 * Redistributes probability values so they sum to 1.0, following the priority list order.
+	 * Sets the value at {@code editedPosition} first, then adjusts others by priority:
+	 * if the sum exceeds 1.0, values are decremented in priority order;
+	 * otherwise the remainder is added to the first editable position.
+	 *
+	 * @param values          the probability array to modify in place
+	 * @param editedPosition  the index that was just edited
+	 * @param newValue        the new value for the edited position
+	 * @param priorityList    positions ordered by editing priority (least recently edited first)
+	 * @param isEditable      predicate that returns true for positions eligible for redistribution
+	 */
+	public static void redistributeProbabilities(
+			double[] values, int editedPosition, double newValue,
+			List<Integer> priorityList, IntPredicate isEditable) {
+		int maxDecimals = 10;
+		double epsilon = Math.pow(10, -(maxDecimals + 2));
+		values[editedPosition] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
+
+		double sum = 0.0;
+		for (int pos : priorityList) {
+			if (isEditable.test(pos)) {
+				sum = Util.roundAndReduce(sum + values[pos], epsilon, maxDecimals);
+			}
+		}
+
+		double rest = Math.abs(Util.roundAndReduce(1 - sum, epsilon, maxDecimals));
+		if (sum > 1.0) {
+			for (int pos : priorityList) {
+				if (rest == 0) break;
+				if (isEditable.test(pos)) {
+					rest = Util.roundAndReduce(rest - values[pos], epsilon, maxDecimals);
+					if (rest < 0) {
+						values[pos] = Math.abs(Util.roundAndReduce(rest, epsilon, maxDecimals));
+						break;
+					}
+					values[pos] = 0.0;
+				}
+			}
+		} else {
+			for (int pos : priorityList) {
+				if (isEditable.test(pos)) {
+					values[pos] = Util.roundAndReduce(values[pos] + rest, epsilon, maxDecimals);
+					break;
+				}
+			}
+		}
 	}
 
 }
