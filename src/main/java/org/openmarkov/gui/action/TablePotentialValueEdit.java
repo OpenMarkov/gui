@@ -33,15 +33,15 @@ import java.util.List;
  * @version 1.1 28/05/2016 - cmyago - Eliminated the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
  * - adding the attribute getExactDistrPotential
  */
-@SuppressWarnings("serial") public class TablePotentialValueEdit extends PotentialChangeEdit {
+public class TablePotentialValueEdit extends PotentialChangeEdit {
     /**
      * The column of the table where is the potential
      */
-    private int col;
+    private final int col;
     /**
      * The row of the table where is the potential
      */
-    private int row;
+    private final int row;
     /**
      * The new value of the potential
      */
@@ -49,19 +49,15 @@ import java.util.List;
     /**
      * A list that store the edition order
      */
-    private List<Integer> priorityList;
+    private final List<Integer> priorityList;
     /**
      * The index of the value selected in the graphic table
      */
-    private int indexSelected;
-    /**
-     * Index of the value selected
-     */
-    private int potentialSelected;
+    private final int indexSelected;
     /**
      * The potential
      */
-    private TablePotential tablePotential;
+    private final TablePotential tablePotential;
     /**
      * Old table potential
      */
@@ -70,7 +66,7 @@ import java.util.List;
     /**
      * True is the tablePotential belongs to a ExactDistrPotential
      */
-    private boolean isExactDistrPotential;
+    private final boolean isExactDistrPotential;
     
     /**
      * For doEdit
@@ -80,18 +76,14 @@ import java.util.List;
     /**
      * the increment to get the real position of the value modified
      */
-    private int increment;
+    private final int increment;
     
     /**
      * Pseudo-util class with common operations used  in potential tables
      */
-    private PotentialsTablePanelOperations tablePotentialsPanelOperations;
-    
-    /**
-     * the table potential
-     */
-    private double[] newTable;
-    private Object[][] notEditablePostitions;
+    private final PotentialsTablePanelOperations tablePotentialsPanelOperations;
+
+    private final Object[][] notEditablePostitions;
     private final Node node;
     
     // Constructor
@@ -116,11 +108,11 @@ import java.util.List;
         this.node = node;
         Potential potential = node.getFirstPotential();
         this.isExactDistrPotential = potential instanceof ExactDistrPotential;
-        if (getExactDistrPotential()) {
-            this.oldExactDistrPotential = (ExactDistrPotential) (potential);
-            this.oldTablePotential = ((ExactDistrPotential) potential).getTablePotential();
-        } else {
-            this.oldTablePotential = (TablePotential) potential;
+        if (potential instanceof ExactDistrPotential exactDistr) {
+            this.oldExactDistrPotential = exactDistr;
+            this.oldTablePotential = exactDistr.getTablePotential();
+        } else if (potential instanceof TablePotential table) {
+            this.oldTablePotential = table;
         }
         this.row = row;
         this.col = col;
@@ -130,7 +122,11 @@ import java.util.List;
         this.notEditablePostitions = notEditablePositions;
         this.indexSelected = tablePotentialsPanelOperations.calculateLastEditableRow(node) - row;
         this.increment = PotentialsTablePanelOperations.getPotentialStartIndexOfColumn(col, node);
-        
+
+        /**
+         * the table potential
+         */
+        double[] newTable;
         if (isExactDistrPotential) {
             //copy returns null so
             this.exactDistrPotential = new ExactDistrPotential(potential.getVariables(),
@@ -139,20 +135,19 @@ import java.util.List;
             TablePotential newPotential = (TablePotential) (oldExactDistrPotential.getTablePotential().copy());
             this.exactDistrPotential.setTablePotential(newPotential);
             this.tablePotential = newPotential;
-            this.newTable = this.exactDistrPotential.getTablePotential().getValues();
+            newTable = this.exactDistrPotential.getTablePotential().getValues();
         } else {
             // Reorder the values table of TablePotential
             this.tablePotential = (TablePotential) oldTablePotential.copy();
             // values table reordered
-            this.newTable = this.tablePotential.getValues();
+            newTable = this.tablePotential.getValues();
         }
         
         // Get the potential index
-        this.potentialSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, node);
-        
-        ////////////////////////////////////////
-        
-        
+        /**
+         * Index of the value selected
+         */
+        int potentialSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, node);
         
         if (!getExactDistrPotential()) {
             if (priorityList.isEmpty()) {

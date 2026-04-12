@@ -4,10 +4,6 @@
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
  */
-/**
- *
- */
-
 package org.openmarkov.gui.component;
 
 import org.jetbrains.annotations.UnknownNullability;
@@ -41,6 +37,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.Serial;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,6 +69,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
     /**
      * default serial ID
      */
+    @Serial
     private static final long serialVersionUID = 1L;
     /**
      * number of decimals positions to be used for calculations and display
@@ -156,7 +154,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      * Define the priority list when potential values are edited
      */
     
-    protected List<Integer> priorityList = new LinkedList<Integer>();
+    protected List<Integer> priorityList = new LinkedList<>();
     protected final boolean isSelectAllForMouseEvent = true;
     protected final boolean isSelectAllForActionEvent = true;
     protected final boolean isSelectAllForKeyEvent = true;
@@ -179,14 +177,14 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         this.tableModel = tableModel;
         this.node = node;
         this.probNet = node.getProbNet();
-        this.potential = node.getPotentials().get(0);
+        this.potential = node.getPotentials().getFirst();
         //Adding the initialisation of getExactDistrPotential
         
-        this.isExactDistrPotential = (node.getPotentials().get(0) instanceof ExactDistrPotential);
-        if (isExactDistrPotential) {
-            tablePotential = ((ExactDistrPotential) (this.potential)).getTablePotential();
-        } else if (potential instanceof TablePotential) {
-            tablePotential = (TablePotential) this.potential;
+        this.isExactDistrPotential = (node.getPotentials().getFirst() instanceof ExactDistrPotential);
+        if (potential instanceof ExactDistrPotential exactDistr) {
+            tablePotential = exactDistr.getTablePotential();
+        } else if (potential instanceof TablePotential table) {
+            tablePotential = table;
         }
         //
         if (modifiable) {
@@ -335,7 +333,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
     public void setModel(ValuesTableModel newDataModel) throws IllegalArgumentException {
         super.setModel(newDataModel);
         this.tableModel = newDataModel;
-        tableRowSorter = new TableRowSorter<ValuesTableModel>(((ValuesTableModel) getModel()));
+        tableRowSorter = new TableRowSorter<>(((ValuesTableModel) getModel()));
         // not display the last row where the cells has states and not values
         // and it is only required when displaying states values
     }
@@ -438,9 +436,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
             } catch (NumberFormatException ex) {
                 return false;
             }
-        if (newValue instanceof Double)
-            return true;
-        return false;
+        return newValue instanceof Double;
     }
     
     /**
@@ -523,7 +519,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      */
     public void setShowingAllParameters(boolean showingAllParameters) {
         this.showingAllParameters = showingAllParameters;
-        tableRowSorter = new TableRowSorter<ValuesTableModel>(((ValuesTableModel) getModel()));
+        tableRowSorter = new TableRowSorter<>(((ValuesTableModel) getModel()));
         if (showingAllParameters) {
             // I suppose variable is != null and has a name
             
@@ -575,7 +571,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         } else {
             int lastRow = getModel().getRowCount() - 1 - 1;
             lastRow = (Math.max(lastRow, 0));
-            LinkedList<RowFilter<Object, Object>> list = new LinkedList<RowFilter<Object, Object>>();
+            LinkedList<RowFilter<Object, Object>> list = new LinkedList<>();
             list.add(RowFilter.notFilter(RowFilter.regexFilter((String) getModel().getValueAt(lastRow, 0), 0)));
             list.add(RowFilter.notFilter(RowFilter.regexFilter(getVariable().getName(), 0)));
             tableRowSorter.setRowFilter(RowFilter.andFilter(list));
@@ -696,7 +692,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         double[] values = tablePotential.getValues();
         int basePosition = edit.getBasePosition();
         if (isChance) {
-            int numStates = varsPotential.get(0).getNumStates();
+            int numStates = varsPotential.getFirst().getNumStates();
             int startRow = numParents + (numStates - 1);
             for (int i = 0; i < numStates; i++) {
                 row = startRow - i;

@@ -5,9 +5,6 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-/**
- * OpenMarkov - PotentialsTablePanelOperations.java
- */
 package org.openmarkov.gui.component;
 
 //import java.util.ArrayList;
@@ -122,18 +119,11 @@ public class PotentialsTablePanelOperations {
 	}
     
     public static int calculateFirstEditableRow(TablePotential potential) {
-        int row = potential.getNumVariables() - 1;
-		return row;
+        return potential.getNumVariables() - 1;
 	}
     
     public static int calculateLastEditableRow(TablePotential potential) {
-        
-        //	if (getIsExactDistrPotential(potential))
-		//		row =potential.getNumVariables()-1;
-
-		// Number of parents + Number of variable states -1
-        int row = potential.getNumVariables() - 1 + potential.getVariable(0).getStates().length - 1;
-		return row;
+        return potential.getNumVariables() - 1 + potential.getVariable(0).getStates().length - 1;
 	}
 
 
@@ -155,8 +145,8 @@ public class PotentialsTablePanelOperations {
         Potential potential = node.getFirstPotential();
         TablePotential tablePotential;
 
-		if (getIsExactDistrPotential(potential))
-			tablePotential = ((ExactDistrPotential) potential).getTablePotential();
+		if (potential instanceof ExactDistrPotential exactDistr)
+			tablePotential = exactDistr.getTablePotential();
 		else
 			tablePotential = (TablePotential) potential;
 

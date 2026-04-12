@@ -65,7 +65,7 @@ import java.util.List;
  * 3. when the potential doesn't exit an exception is raised
  */
 //ExactDistrPotential) potential).getTablePotential() : (TablePotential
-@SuppressWarnings("serial") @PotentialPanelPlugin(potentialClasses = {ExactDistrPotential.class, TablePotential.class})
+@PotentialPanelPlugin(potentialClasses = {ExactDistrPotential.class, TablePotential.class})
 public class TablePotentialPanel extends ProbabilityTablePanel {
     /**
      * JTable where show the values.
@@ -145,7 +145,11 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         // This panel displays the first potential of the node
         potential = node.getFirstPotential();
         isExactDistrPotential = potential instanceof ExactDistrPotential;
-        tablePotential = isExactDistrPotential ? ((ExactDistrPotential) potential).getTablePotential() : (TablePotential) potential;
+        if (potential instanceof ExactDistrPotential exactDistr) {
+            tablePotential = exactDistr.getTablePotential();
+        } else if (potential instanceof TablePotential table) {
+            tablePotential = table;
+        }
         
         // The list of variables of potential
         variables = potential.getVariables();
@@ -783,7 +787,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * revised--&gt;not changed
      */
     protected void updateContextualMenuOptions() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
-        if (!node.getPotentials().isEmpty() && node.getPotentials().get(0) instanceof TablePotential tablePotential) {
+        if (!node.getPotentials().isEmpty() && node.getPotentials().getFirst() instanceof TablePotential tablePotential) {
             boolean hasUncertainty = tablePotential.hasUncertainty(getEvidenceCaseFromSelectedColumn());
             if (hasUncertainty) {
                 getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.getCommandName())
@@ -869,7 +873,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         } else { // node.getNodeType() == NodeType.DECISION)
             if ((node.getPolicyType() == PolicyType.OPTIMAL) && (
                     node.getPotentials().isEmpty() || (
-                            !node.getPotentials().get(0).isAdditive()
+                            !node.getPotentials().getFirst().isAdditive()
                     )
             )) {
                 // UNCLEAR--&gt; When ReadOnly is se?
@@ -878,7 +882,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                 cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow, uncertaintyInColumns
                 );
             } else {
-                boolean showingOptimalPolicy = node.getPotentials().get(0).isAdditive() && isReadOnly();
+                boolean showingOptimalPolicy = node.getPotentials().getFirst().isAdditive() && isReadOnly();
                 if (!showingOptimalPolicy) {
                     cellRenderer = new ValuesTableCellRenderer(firstEditableRow, uncertaintyInColumns);
                 } else {

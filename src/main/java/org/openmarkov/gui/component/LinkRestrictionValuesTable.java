@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * This table implementation is responsible for the graphical and data model
  * manipulation of the Link restriction potential.
  **/
-@SuppressWarnings("serial") public class LinkRestrictionValuesTable extends ValuesTable
+public class LinkRestrictionValuesTable extends ValuesTable
         implements PNEditListener {
     /***
      * Constant value to describe compatibility of a position of the link
@@ -44,24 +44,22 @@ import java.util.ArrayList;
      **/
     private final Link<Node> link;
     /****
-     * The parent node of the link
-     */
-    private final Node node1;
-    /****
      * The child node of the link
      */
     private final Node node2;
-    /***
-     * The ProbNet containing the link.
-     */
-    private final ProbNet net;
-    
+
     public LinkRestrictionValuesTable(Link<Node> link, ValuesTableModel tableModel, final boolean modifiable) {
         super(tableModel, modifiable);
         this.link = link;
-        node1 = link.getFrom();
+        /****
+         * The parent node of the link
+         */
+        Node node1 = link.getFrom();
         node2 = link.getTo();
-        net = node1.getProbNet();
+        /***
+         * The ProbNet containing the link.
+         */
+        ProbNet net = node1.getProbNet();
     }
     
     /**
@@ -82,12 +80,12 @@ import java.util.ArrayList;
             int variable1Index = col - 1;
             int variable2Index = node2.getVariable().getNumStates() - row;
             if ((Integer) newValue == 0) {
-                if (!node2.getPotentials().isEmpty() && node2.getPotentials().get(0) instanceof TablePotential) {
+                if (!node2.getPotentials().isEmpty() && node2.getPotentials().getFirst() instanceof TablePotential) {
                     Potential potential = LinkRestrictionPotentialOperations
                             .updatePotentialByAddLinkRestriction(node2,
-                                                                 (TablePotential) link.getRestrictionsPotential(), variable1Index,
+                                                                 link.getRestrictionsPotential(), variable1Index,
                                                                  variable2Index);
-                    ArrayList<Potential> potentials = new ArrayList<Potential>();
+                    ArrayList<Potential> potentials = new ArrayList<>();
                     potentials.add(potential);
                     node2.setPotentials(potentials);
                 }

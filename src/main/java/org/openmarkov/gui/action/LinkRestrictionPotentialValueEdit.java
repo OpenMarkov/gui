@@ -18,7 +18,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * supporting undo and redo. When the restriction becomes trivial (all ones), the
  * restriction potential is removed.
  */
-@SuppressWarnings("serial") public class LinkRestrictionPotentialValueEdit extends PNEdit {
+public class LinkRestrictionPotentialValueEdit extends PNEdit {
 
 	/**
 	 * The column of the table where is the potential
@@ -76,9 +76,9 @@ import org.openmarkov.core.model.network.potential.TablePotential;
         this.node2 = link.getTo();
 		this.col = col;
 		this.row = row;
-		this.tablePotential = (TablePotential) link.getRestrictionsPotential();
+		this.tablePotential = link.getRestrictionsPotential();
 		this.newValue = newValue;
-		this.lastTable = ((TablePotential) link.getRestrictionsPotential()).getValues().clone();
+		this.lastTable = link.getRestrictionsPotential().getValues().clone();
 	}
 	
 	@Override protected void doEdit() {
@@ -88,7 +88,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 		State state1 = node1.getVariable().getStates()[stateIndex1];
 		State state2 = node2.getVariable().getStates()[stateIndex2];
         link.setCompatibilityValue(state1, state2, this.newValue);
-		newTable = ((TablePotential) link.getRestrictionsPotential()).getValues().clone();
+		newTable = link.getRestrictionsPotential().getValues().clone();
 
 	}
     
@@ -97,7 +97,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 		super.redo();
 		if (!link.hasRestrictions()) {
 			link.initializesRestrictionsPotential();
-			this.tablePotential = (TablePotential) link.getRestrictionsPotential();
+			this.tablePotential = link.getRestrictionsPotential();
 		}
 		tablePotential.setValues(newTable);
 		checkRestrictionPotential(newTable);
@@ -107,7 +107,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 		super.undo();
 		if (!link.hasRestrictions()) {
 			link.initializesRestrictionsPotential();
-			this.tablePotential = (TablePotential) link.getRestrictionsPotential();
+			this.tablePotential = link.getRestrictionsPotential();
 		}
 		tablePotential.setValues(lastTable);
 		checkRestrictionPotential(lastTable);

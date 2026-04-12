@@ -3,7 +3,7 @@ package org.openmarkov.gui.action;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNetwork;
 
@@ -18,8 +18,8 @@ public class RemoveLinkRestrictionEdit extends PNEdit {
 
     private final VisualNetwork visualNetwork;
     final List<VisualLink> links;
-    final Potential restriction;
-    Potential lastRestriction;
+    final TablePotential restriction;
+    TablePotential lastRestriction;
 
     /**
      * Creates a new edit that will remove the restriction potential from the first selected link.
@@ -30,13 +30,13 @@ public class RemoveLinkRestrictionEdit extends PNEdit {
         super(visualNetwork.getNetwork());
         this.visualNetwork = visualNetwork;
         this.links = visualNetwork.getSelectedLinks();
-        this.restriction = links.get(0).getLink().getRestrictionsPotential();
+        this.restriction = links.getFirst().getLink().getRestrictionsPotential();
     }
 
     @Override
     protected void doEdit() {
         if (!links.isEmpty()) {
-            Link<Node> link = links.get(0).getLink();
+            Link<Node> link = links.getFirst().getLink();
             link.setRestrictionsPotential(null);
         }
     }
@@ -45,7 +45,7 @@ public class RemoveLinkRestrictionEdit extends PNEdit {
     public void undo() throws CannotUndoException {
         super.undo();
         if (!links.isEmpty()) {
-            Link<Node> link = links.get(0).getLink();
+            Link<Node> link = links.getFirst().getLink();
             lastRestriction = link.getRestrictionsPotential();
             link.setRestrictionsPotential(restriction);
         }
@@ -55,7 +55,7 @@ public class RemoveLinkRestrictionEdit extends PNEdit {
     public void redo() {
         super.redo();
         if (!links.isEmpty()) {
-            Link<Node> link = links.get(0).getLink();
+            Link<Node> link = links.getFirst().getLink();
             link.setRestrictionsPotential(lastRestriction);
         }
     }

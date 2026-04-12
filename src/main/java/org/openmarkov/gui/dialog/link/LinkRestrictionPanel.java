@@ -32,7 +32,7 @@ import java.util.List;
  * @author ckonig
  *
  */
-@SuppressWarnings("serial") public class LinkRestrictionPanel extends ProbabilityTablePanel {
+public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 	/**
 	 * JTable where show the values.
@@ -184,9 +184,7 @@ import java.util.List;
 
 	private Object[][] setPotentialDataInCentreArea(Object[][] oldValues) {
 
-		Object[][] values = oldValues;
-
-		TablePotential tablePotential = (TablePotential) link.getRestrictionsPotential();
+        TablePotential tablePotential = link.getRestrictionsPotential();
 
 		int numStates2 = node2.getVariable().getNumStates();
 		int numStates1 = node1.getVariable().getNumStates();
@@ -194,11 +192,11 @@ import java.util.List;
 			for (int j = 1; j <= numStates1; j++) {
 				int[] statesIndices = new int[] { j - 1, i };
 				int value = (int) tablePotential.getValue(variables, statesIndices);
-				values[numStates2 - i][j] = value;
+				oldValues[numStates2 - i][j] = value;
 			}
 		}
 
-		return values;
+		return oldValues;
 	}
 
 	/**
@@ -210,18 +208,17 @@ import java.util.List;
 	 */
 	private Object[][] setNodeStatesInLeftArea(Object[][] oldValues) {
 
-		Object[][] values = oldValues;
-		NodeType type = node2.getNodeType();
+        NodeType type = node2.getNodeType();
         Variable variable = node2.getVariable();
         State[] states = variable.getStates();
         for (int i = variable.getNumStates(); i > 0; i--) {
 			if (type != NodeType.UTILITY) {
-                values[i][0] = states[variable.getNumStates() - i].getName();
+                oldValues[i][0] = states[variable.getNumStates() - i].getName();
 			} else {
-				values[i][0] = "";
+				oldValues[i][0] = "";
 			}
 		}
-		return values;
+		return oldValues;
 
 	}
 
@@ -255,10 +252,8 @@ import java.util.List;
 
 	private Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues) {
 
-		Object[][] values = oldValues;
-
-		values[0][0] = node1.getVariable();
-		return values;
+        oldValues[0][0] = node1.getVariable();
+		return oldValues;
 	}
 
 	/**
@@ -273,8 +268,7 @@ import java.util.List;
 		setFirstEditableRow(1);
 		variables = link.getRestrictionsPotential().getVariables();
 		// create the array of arrays
-        Object[][] values = new Object[node2.getVariable().getNumStates() + 1][node1.getVariable().getNumStates() + 1];
-		return values;
+        return new Object[node2.getVariable().getNumStates() + 1][node1.getVariable().getNumStates() + 1];
 	}
 
 	/**
@@ -314,11 +308,11 @@ import java.util.List;
 		int size = valuesTable.getColumnCount();
 		boolean[] aux = new boolean[size - 1];
 		valuesTable.setDefaultRenderer(Double.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux,
-				(TablePotential) link.getRestrictionsPotential()));
+				link.getRestrictionsPotential()));
 		valuesTable.setDefaultRenderer(String.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux,
-				(TablePotential) link.getRestrictionsPotential()));
+				link.getRestrictionsPotential()));
 		valuesTable.setDefaultRenderer(Integer.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux,
-				(TablePotential) link.getRestrictionsPotential()));
+				link.getRestrictionsPotential()));
 	}
 
 	@Override public void setData(Node node) {
