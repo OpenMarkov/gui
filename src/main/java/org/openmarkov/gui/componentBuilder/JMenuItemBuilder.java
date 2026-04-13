@@ -17,6 +17,7 @@ public class JMenuItemBuilder {
     
     private @NotNull String title;
     private @Nullable Character mnemonic;
+    private @Nullable KeyStroke accelerator;
     private @Nullable Boolean enabled;
     private final @NotNull ArrayList<ThrowingConsumer<ActionEvent, ? extends Exception>> onClick;
     private final @NotNull ArrayList<ThrowingConsumer<ItemEvent, ? extends Exception>> onItemEvent;
@@ -43,6 +44,11 @@ public class JMenuItemBuilder {
     
     public JMenuItemBuilder withMnemonic(Character mnemonic) {
         this.mnemonic = mnemonic;
+        return this;
+    }
+    
+    public JMenuItemBuilder withAccelerator(KeyStroke accelerator) {
+        this.accelerator = accelerator;
         return this;
     }
     
@@ -116,6 +122,9 @@ public class JMenuItemBuilder {
         }
         if (this.mnemonic != null) {
             jMenuItem.setMnemonic(this.mnemonic);
+        }
+        if (this.accelerator != null) {
+            jMenuItem.setAccelerator(this.accelerator);
         }
         for (var onClick : this.onClick) {
             jMenuItem.addActionListener(e -> {
