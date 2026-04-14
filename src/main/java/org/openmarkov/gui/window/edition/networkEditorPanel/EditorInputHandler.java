@@ -124,8 +124,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
                         this.networkEditorPanel.getNetworkPanel().getProbNet().getPNESupport().removeUndoneEdits();
                     }
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
-                         IncompatibleEvidenceException | CannotNormalizePotentialException |
-                         ConstraintViolatedException | NotSupportedOperationException ex) {
+                         IncompatibleEvidenceException | ConstraintViolatedException | NotSupportedOperationException |
+                         CannotNormalizePotentialException ex) {
                     this.networkEditorPanel.repaint();
                     throw new UnrecoverableException(ex);
                 }
@@ -148,8 +148,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
                 try {
                     this.networkEditorPanel.changeNodeProperties();
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
-                         IncompatibleEvidenceException | CannotNormalizePotentialException |
-                         ConstraintViolatedException | NotSupportedOperationException ex) {
+                         IncompatibleEvidenceException | ConstraintViolatedException | NotSupportedOperationException |
+                         CannotNormalizePotentialException ex) {
                     throw new UnrecoverableException(ex);
                 } finally {
                     this.networkEditorPanel.repaint();
@@ -174,7 +174,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         try {
             this.networkEditorPanel.getEvidenceManager().toggleFinding(visualNode, visualState);
         } catch (IncompatibleEvidenceException | NotEvaluableNetworkException | NonProjectablePotentialException |
-                 NotEnoughMemoryException | CannotNormalizePotentialException | DoEditException ex) {
+                 NotEnoughMemoryException | DoEditException | CannotNormalizePotentialException ex) {
             throw new UnreachableException(ex);
         }
         

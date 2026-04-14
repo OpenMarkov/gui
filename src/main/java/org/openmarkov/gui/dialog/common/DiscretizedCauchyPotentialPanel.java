@@ -49,28 +49,18 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         JPanel buttonPanel = new JPanel();
         editMedianButton = new JButton("Edit median potential");
         editMedianButton.addActionListener(e -> {
-            try {
-                editMedianPotential();
-            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
-                throw new UnrecoverableException(ex);
-            }
+            editMedianPotential();
         });
         editScaleButton = new JButton("Edit scale potential");
         editScaleButton.addActionListener(e -> {
-            try {
-                editScalePotential();
-            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
-                throw new UnrecoverableException(ex);
-            }
+            editScalePotential();
         });
         buttonPanel.add(editMedianButton);
         buttonPanel.add(editScaleButton);
         add(buttonPanel, BorderLayout.PAGE_START);
     }
     
-    private void editMedianPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
+    private void editMedianPotential() {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), medianDummyNode, isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
             // TODO: Do nothing?
@@ -79,7 +69,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         }
     }
     
-    private void editScalePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
+    private void editScalePotential() {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), scaleDummyNode, isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
             // TODO: Do nothing?

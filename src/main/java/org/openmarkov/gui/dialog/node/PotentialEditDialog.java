@@ -479,14 +479,14 @@ public class PotentialEditDialog extends OkCancelDialog
         if (newPotential == null && potentialType == TablePotential.class) {
             try {
                 newPotential = this.node.getPotentials().getFirst().tableProject(null, null);
-            } catch (RuntimeException e) {
+            } catch (NonProjectablePotentialException e) {
             }
         }
         if (newPotential == null && potentialType == TablePotential.class) {
             try {
                 newPotential = this.instanciatePotential(potentialType, currentPotential.getVariables())
                                    .tableProject(null, null);
-            } catch (RuntimeException e) {
+            } catch (NonProjectablePotentialException e) {
             }
         }
         if (newPotential == null) {

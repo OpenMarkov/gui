@@ -41,7 +41,7 @@ public class ImposePolicyEdit extends PNEdit {
     }
 
     @Override
-    protected void doEdit() throws DoEditException {
+    protected void doEdit() {
         visualDecisionNode.setPolicy(newPolicy);
     }
 

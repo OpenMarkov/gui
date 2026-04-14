@@ -57,28 +57,18 @@ public class ConditionalGaussianPotentialPanel
         JPanel buttonPanel = new JPanel();
         JButton editMeanButton = new JButton("Edit mean potential");
         editMeanButton.addActionListener(e -> {
-            try {
-                editMeanPotential();
-            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
-                throw new UnrecoverableException(ex);
-            }
+            editMeanPotential();
         });
         JButton editVarianceButton = new JButton("Edit variance potential");
         editVarianceButton.addActionListener(e -> {
-            try {
-                editVariancePotential();
-            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
-                throw new UnrecoverableException(ex);
-            }
+            editVariancePotential();
         });
         buttonPanel.add(editMeanButton);
         buttonPanel.add(editVarianceButton);
         add(buttonPanel, BorderLayout.PAGE_START);
     }
     
-    private void editMeanPotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
+    private void editMeanPotential() {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), meanDummyNode,
                                                                           isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {
@@ -98,7 +88,7 @@ public class ConditionalGaussianPotentialPanel
         }
     }
     
-    private void editVariancePotential() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
+    private void editVariancePotential() {
         PotentialEditDialog potentialEditDialog = new PotentialEditDialog(GUIUtils.getOwner(this), varianceDummyNode,
                                                                           isReadOnly());
         if (potentialEditDialog.requestValues() == OkCancelDialog.ChosenOption.Ok) {

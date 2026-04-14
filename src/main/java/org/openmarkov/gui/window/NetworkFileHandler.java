@@ -346,8 +346,8 @@ class NetworkFileHandler {
     }
 
     // ── Evidence ──────────────────────────────────────────────────
-
-    void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException {
+    
+    void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException, CannotNormalizePotentialException {
         OMFileChooser evidenceOMFileChooser = new DBReaderOMFileChooser(false);
         evidenceOMFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title"));
         String lastFileFilter = LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.get();

@@ -173,7 +173,7 @@ public class EvidenceManager {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             }
         } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
-                 CannotNormalizePotentialException | IncompatibleEvidenceException e) {
+                 IncompatibleEvidenceException | CannotNormalizePotentialException e) {
             this.networkEditorPanel.setPropagationActive(false);
             throw new UnreachableException(e);
         } finally {
@@ -309,7 +309,7 @@ public class EvidenceManager {
      * This method updates the value of each state for each node in the network
      * with the current individual probabilities.
      */
-    public void updateIndividualProbabilitiesAndUtilities() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void updateIndividualProbabilitiesAndUtilities() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         // if some visualNode has a number of values different from the
         // number of evidence cases in memory, we need to recreate its
         // visual states and consider that the network has been changed.
@@ -364,7 +364,7 @@ public class EvidenceManager {
      * This method removes all the findings established in the current evidence
      * case.
      */
-    public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         this.networkEditorPanel.setPropagationActive(this.networkEditorPanel.isAutomaticPropagation());
         List<VisualNode> visualNodes = this.networkEditorPanel.getVisualNetwork().getAllNodes();
         for (VisualNode visualNode : visualNodes) {
@@ -379,7 +379,7 @@ public class EvidenceManager {
         try {
             this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
         } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
-                 CannotNormalizePotentialException | IncompatibleEvidenceException e) {
+                 IncompatibleEvidenceException | CannotNormalizePotentialException e) {
             this.networkEditorPanel.setPropagationActive(false);
             throw e;
         } finally {
@@ -400,7 +400,7 @@ public class EvidenceManager {
      *
      * @param node the node in which to remove the findings.
      */
-    void removeNodeEvidenceInAllCases(Node node) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    void removeNodeEvidenceInAllCases(Node node) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         try {
             for (int i = 0; i < this.postResolutionEvidence.size(); i++) {
                 List<Finding> findings = this.postResolutionEvidence.get(i).getFindings();
@@ -422,7 +422,7 @@ public class EvidenceManager {
                 }
             }
         } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
-                 CannotNormalizePotentialException | IncompatibleEvidenceException e) {
+                 IncompatibleEvidenceException | CannotNormalizePotentialException e) {
             this.networkEditorPanel.setPropagationActive(false);
             throw e;
         } finally {
@@ -454,7 +454,7 @@ public class EvidenceManager {
      * @param state      the visual state in which the finding is going to be
      *                   set.
      */
-    void toggleFinding(VisualNode visualNode, VisualState state) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException {
+    void toggleFinding(VisualNode visualNode, VisualState state) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, CannotNormalizePotentialException {
         this.setNewFinding(visualNode, null, new Finding(visualNode.getNode()
                                                                    .getVariable(), state.getStateIndex()), true);
     }
@@ -467,7 +467,7 @@ public class EvidenceManager {
      * @param finding    a finding.
      * @param toggle     a boolean value.
      */
-    public void setNewFinding(VisualNode visualNode, Finding previousFinding, Finding finding, boolean toggle) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException {
+    public void setNewFinding(VisualNode visualNode, Finding previousFinding, Finding finding, boolean toggle) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, CannotNormalizePotentialException {
         Variable variable = visualNode.getNode().getVariable();
         
         boolean isInferenceMode = this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE;
@@ -506,7 +506,7 @@ public class EvidenceManager {
                 this.doPropagation(evidenceCase, this.currentCase);
             }
         } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
-                 CannotNormalizePotentialException | IncompatibleEvidenceException e) {
+                 IncompatibleEvidenceException | CannotNormalizePotentialException e) {
             evidenceCase.removeFinding(variable);
             if (alreadyHasFinding) {
                 try {
@@ -553,7 +553,7 @@ public class EvidenceManager {
      *                     done.
      * @param caseNumber   number of this evidence case.
      */
-    public void doPropagation(EvidenceCase evidenceCase, int caseNumber) throws NonProjectablePotentialException, NotEnoughMemoryException, NotEvaluableNetworkException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void doPropagation(EvidenceCase evidenceCase, int caseNumber) throws NonProjectablePotentialException, NotEnoughMemoryException, NotEvaluableNetworkException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         Map<Variable, TablePotential> individualProbabilities = null;
         try {
             this.calculateMinAndMaxUtilityRanges();
@@ -606,7 +606,7 @@ public class EvidenceManager {
     /**
      * This method creates a new evidence case
      */
-    public void createNewEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void createNewEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         EvidenceCase newEvidenceCase = new EvidenceCase();
         EvidenceCase currentEvidenceCase = this.getCurrentEvidenceCase();
         List<Finding> currentFindings = currentEvidenceCase.getFindings();
@@ -619,7 +619,7 @@ public class EvidenceManager {
     /**
      * This method adds a new evidence case
      */
-    public void addNewEvidenceCase(EvidenceCase newEvidenceCase) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void addNewEvidenceCase(EvidenceCase newEvidenceCase) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         this.networkEditorPanel.setPropagationActive(this.networkEditorPanel.isAutomaticPropagation());
         this.postResolutionEvidence.add(newEvidenceCase);
         this.currentCase = (this.postResolutionEvidence.size() - 1);
@@ -633,7 +633,7 @@ public class EvidenceManager {
             try {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
-                     CannotNormalizePotentialException | IncompatibleEvidenceException e) {
+                     IncompatibleEvidenceException | CannotNormalizePotentialException e) {
                 this.networkEditorPanel.setPropagationActive(false);
                 throw e;
             }
@@ -643,7 +643,7 @@ public class EvidenceManager {
     /**
      * This method makes the first evidence case to be the current
      */
-    public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         this.currentCase = 0;
         this.networkEditorPanel.updateAllVisualStates("", this.currentCase);
         this.networkEditorPanel.getNetworkPanel().getMainPanel()
@@ -655,8 +655,8 @@ public class EvidenceManager {
         )) {
             try {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
-            } catch (CannotNormalizePotentialException | IncompatibleEvidenceException |
-                     NonProjectablePotentialException | NotEvaluableNetworkException | NotEnoughMemoryException e) {
+            } catch (IncompatibleEvidenceException | NonProjectablePotentialException | NotEvaluableNetworkException |
+                     NotEnoughMemoryException | CannotNormalizePotentialException e) {
                 this.networkEditorPanel.setPropagationActive(false);
                 throw e;
             }
@@ -668,7 +668,7 @@ public class EvidenceManager {
     /**
      * This method makes the previous evidence case to be the current
      */
-    public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         if (!(this.currentCase > 0)) {
             throw new UnreachableException(new IllegalStateException("Go-to-previous button should have been disabled when at first evidence case"));
         }
@@ -684,7 +684,7 @@ public class EvidenceManager {
             try {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
-                     CannotNormalizePotentialException | IncompatibleEvidenceException e) {
+                     IncompatibleEvidenceException | CannotNormalizePotentialException e) {
                 this.networkEditorPanel.setPropagationActive(false);
                 throw e;
             }
@@ -696,7 +696,7 @@ public class EvidenceManager {
     /**
      * This method makes the next evidence case to be the current
      */
-    public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         if (!(this.currentCase < (this.postResolutionEvidence.size() - 1))) {
             throw new UnreachableException(new IllegalStateException("Go-to-next button should have been disabled when at last evidence case"));
         }
@@ -712,7 +712,7 @@ public class EvidenceManager {
             try {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
-                     CannotNormalizePotentialException | IncompatibleEvidenceException e) {
+                     IncompatibleEvidenceException | CannotNormalizePotentialException e) {
                 this.networkEditorPanel.setPropagationActive(false);
                 throw e;
             }
@@ -724,7 +724,7 @@ public class EvidenceManager {
     /**
      * This method makes the last evidence case to be the current
      */
-    public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         this.currentCase = (this.postResolutionEvidence.size() - 1);
         this.networkEditorPanel.updateAllVisualStates("", this.currentCase);
         this.networkEditorPanel.getNetworkPanel().getMainPanel()
@@ -737,7 +737,7 @@ public class EvidenceManager {
             try {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
-                     CannotNormalizePotentialException | IncompatibleEvidenceException e) {
+                     IncompatibleEvidenceException | CannotNormalizePotentialException e) {
                 this.networkEditorPanel.setPropagationActive(false);
                 throw e;
             }
@@ -751,7 +751,7 @@ public class EvidenceManager {
      * state' in which there is only an initial evidence case with no findings
      * (corresponding to prior probabilities)
      */
-    public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         this.networkEditorPanel.setPropagationActive(this.networkEditorPanel.isAutomaticPropagation());
         this.postResolutionEvidence.clear();
         this.evidenceCasesCompilationState.clear();
@@ -767,7 +767,7 @@ public class EvidenceManager {
         try {
             this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
         } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
-                 CannotNormalizePotentialException | IncompatibleEvidenceException e) {
+                 IncompatibleEvidenceException | CannotNormalizePotentialException e) {
             this.networkEditorPanel.setPropagationActive(false);
             throw e;
         }
@@ -780,7 +780,7 @@ public class EvidenceManager {
      * @param mainPanelMenuAssistant the menu assistant associated to the main
      *                               panel.
      */
-    public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         this.networkEditorPanel.setPropagationActive(true);
         if (this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
             for (int i = 0; i < this.getNumberOfCases(); i++) {
@@ -788,8 +788,8 @@ public class EvidenceManager {
                     try {
                         this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
                     } catch (NonProjectablePotentialException | NotEnoughMemoryException |
-                             NotEvaluableNetworkException |
-                             CannotNormalizePotentialException | IncompatibleEvidenceException e) {
+                             NotEvaluableNetworkException | IncompatibleEvidenceException |
+                             CannotNormalizePotentialException e) {
                         this.networkEditorPanel.setPropagationActive(false);
                         throw e;
                     }

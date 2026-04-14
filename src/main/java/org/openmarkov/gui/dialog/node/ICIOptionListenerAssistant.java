@@ -66,7 +66,7 @@ public class ICIOptionListenerAssistant implements ItemListener {
             try {
                 itemStateChangedTPC(e);
             } catch (NonProjectablePotentialException | IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | NotEnoughMemoryException ex) {
+                     ThereIsNoPotentialsInNodeException ex) {
                 throw new UnrecoverableException(ex);
             }
         }
@@ -97,7 +97,7 @@ public class ICIOptionListenerAssistant implements ItemListener {
         }
     }
     
-    private void itemStateChangedTPC(ItemEvent e) throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
+    private void itemStateChangedTPC(ItemEvent e) throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
         if (e.getStateChange() == ItemEvent.DESELECTED) {
             // has been deselected tpc
             previousModel = TPC;

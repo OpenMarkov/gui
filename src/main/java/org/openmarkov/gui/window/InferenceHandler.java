@@ -54,8 +54,8 @@ class InferenceHandler {
     }
 
     // ── Working mode ──────────────────────────────────────────────
-
-    void toggleWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    
+    void toggleWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         NetworkPanel.WorkingMode currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
         NetworkPanel.WorkingMode newWorkingMode = switch (currentWorkingMode) {
             case EDITION -> NetworkPanel.WorkingMode.INFERENCE;
@@ -63,8 +63,8 @@ class InferenceHandler {
         };
         setWorkingMode(currentWorkingMode, newWorkingMode);
     }
-
-    void setWorkingMode(NetworkPanel.WorkingMode currentWorkingMode, NetworkPanel.WorkingMode newWorkingMode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    
+    void setWorkingMode(NetworkPanel.WorkingMode currentWorkingMode, NetworkPanel.WorkingMode newWorkingMode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         boolean performInference = true;
         boolean isTemporal;
         boolean isMulticriteria = false;
@@ -122,8 +122,8 @@ class InferenceHandler {
     }
 
     // ── Evidence cases ────────────────────────────────────────────
-
-    void evidenceCasesNavigationOption(String command) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException {
+    
+    void evidenceCasesNavigationOption(String command) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         switch (command) {
             case "CREATE_NEW_EVIDENCE_CASE" -> getCurrentNetworkPanel().createNewEvidenceCase();
             case "GO_TO_FIRST_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToFirstEvidenceCase();
@@ -216,8 +216,7 @@ class InferenceHandler {
                                                               networkPanel.getEditorPanel()
                                                                           .getEvidenceManager()
                                                                           .getPreResolutionEvidence());
-            } catch (NotEvaluableNetworkException.NotApplicableNetwork |
-                     NotEvaluableNetworkException.UnsatisfiedConstraints | IncompatibleEvidenceException |
+            } catch (NotEvaluableNetworkException.NotApplicableNetwork | IncompatibleEvidenceException |
                      ConstraintViolatedException e) {
                 throw new UnrecoverableException(e);
             }

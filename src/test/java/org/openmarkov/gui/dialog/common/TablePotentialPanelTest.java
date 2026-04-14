@@ -34,7 +34,7 @@ public class TablePotentialPanelTest extends TablePotentialPanel {
 
 	private static ProbNet probNet;
     
-    public TablePotentialPanelTest() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, NotEnoughMemoryException {
+    public TablePotentialPanelTest() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException {
 		super(probNet.getNode("E"));
 	}
 

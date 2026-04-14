@@ -278,8 +278,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 }
                 // end
                 initialize(owner);
-            } catch (NotEvaluableNetworkException | IncompatibleEvidenceException | CannotNormalizePotentialException |
-                     NonProjectablePotentialException | ConstraintViolatedException e) {
+            } catch (IncompatibleEvidenceException | NonProjectablePotentialException | ConstraintViolatedException |
+                     CannotNormalizePotentialException | NotEvaluableNetworkException.NotApplicableNetwork |
+                     NotEvaluableNetworkException.VariableIsNotTemporal e) {
                 throw new UnrecoverableException(e);
             } catch (IndexOutOfBoundsException ignore) {
                 //When pressing "Cancel" in progressMonitor
@@ -353,8 +354,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 initialize(owner);
             } catch (IndexOutOfBoundsException ignore) {
                 //When pressing "Cancel" in progressMonitor
-            } catch (NotEvaluableNetworkException.NotApplicableNetwork |
-                     NotEvaluableNetworkException.UnsatisfiedConstraints | IncompatibleEvidenceException |
+            } catch (NotEvaluableNetworkException.NotApplicableNetwork | IncompatibleEvidenceException |
                      NotEvaluableNetworkException.VariableIsNotTemporal | NonProjectablePotentialException |
                      ConstraintViolatedException e) {
                 throw new UnrecoverableException(e);
@@ -432,12 +432,14 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @param isDiscounted     if true, discounted series are shown
      * @param showUpfront      if true, upfront values are added to time 0
      */
-    private void showByCriterionSeries(boolean[] markedCheckBoxes, boolean isDiscounted, boolean showUpfront) {
+    private void showByCriterionSeries(boolean[] markedCheckBoxes, boolean isDiscounted, boolean showUpfront) throws UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable {
         
         List<XYSeries> result = new ArrayList<>();
         //At least there is one element marked
         boolean someCheckBoxMarked = IntStream.range(0, markedCheckBoxes.length).anyMatch(i -> markedCheckBoxes[i]);
-        if (arrayXYSeries == null) createByCriterionSeries();
+        if (arrayXYSeries == null) {
+            createByCriterionSeries();
+        }
         
         
         if (someCheckBoxMarked) {
@@ -487,7 +489,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * This method only will be launched at the first time. In later
      * modifications and filters the established series are used to get other combined data
      */
-    private void createByCriterionSeries() {
+    private void createByCriterionSeries() throws UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable {
         //Only one decision variable; conditioningVariables.size() =1
         arrayXYSeriesUpfront = new ArrayList<>();
         arrayXYSeries = new ArrayList<>();
@@ -661,7 +663,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     // end 02/11/2022
     
     
-    private void createExcel(ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) throws IOException, NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException, ConstraintViolatedException {
+    private void createExcel(ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) throws IOException, NotEvaluableNetworkException, NonProjectablePotentialException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         OMFileChooser omFileChooser = new OMFileChooser();
         String netName = probNet.getName();
         omFileChooser.setSelectedFile(new File(netName + "-temporal_evolution.xlsx"));
@@ -1201,12 +1203,12 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         if (isByCriterion) {
             try {
                 showByCriterionSeries(markedCheckBoxes, jCheckBoxDiscounted.isSelected(), jCheckBoxUpfrontValues.isSelected());
-                tabbedPane.removeTabAt(1);
-                tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title"), null, getTablePane(),
-                                  null);
             } catch (UnexpectedInferenceException.ThereIsMoreThanOneConditioningVariable e) {
-                throw new UnreachableException(e);
+                throw new UnrecoverableException(e);
             }
+            tabbedPane.removeTabAt(1);
+            tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title"), null, getTablePane(),
+                              null);
         } else
             // end
             if (isUtility) {

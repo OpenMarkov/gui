@@ -753,7 +753,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             try {
                 showUncertaintyDialog();
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
-                     ThereIsNoPotentialsInNodeException | NonProjectablePotentialException | DoEditException ex) {
+                     ThereIsNoPotentialsInNodeException | DoEditException | NonProjectablePotentialException ex) {
                 throw new UnrecoverableException(ex);
             }
         } else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE.getCommandName())) {
@@ -826,7 +826,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             }
         } catch (ThereIsNoPotentialsInNodeException e) {
             throw new UnreachableException(e);
-        } catch (NonProjectablePotentialException | DoEditException e) {
+        } catch (DoEditException | NonProjectablePotentialException e) {
             throw new UnrecoverableException(e);
         }
     }

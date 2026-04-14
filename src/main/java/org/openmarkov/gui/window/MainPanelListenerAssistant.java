@@ -128,13 +128,14 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 NetworkPanel.WorkingMode initialWorkingMode = getCurrentNetworkPanel().getWorkingMode();
                 try {
                     inferenceHandler.toggleWorkingMode();
-                } catch (NotEnoughMemoryException | IncompatibleEvidenceException |
-                         ConstraintViolatedException | RuntimeException ex) {
+                } catch (NotEnoughMemoryException | IncompatibleEvidenceException | ConstraintViolatedException |
+                         RuntimeException | NotEvaluableNetworkException | NonProjectablePotentialException |
+                         CannotNormalizePotentialException ex) {
                     try {
                         inferenceHandler.setWorkingMode(initialWorkingMode, initialWorkingMode);
                     } catch (NotEvaluableNetworkException | NonProjectablePotentialException |
-                             NotEnoughMemoryException | IncompatibleEvidenceException |
-                             CannotNormalizePotentialException | ConstraintViolatedException exc) {
+                             NotEnoughMemoryException | IncompatibleEvidenceException | ConstraintViolatedException |
+                             CannotNormalizePotentialException exc) {
                         throw new UnreachableException(exc);
                     }
                     throw new UnrecoverableException(ex);
