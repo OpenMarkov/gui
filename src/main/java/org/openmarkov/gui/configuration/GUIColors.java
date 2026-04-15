@@ -103,6 +103,11 @@ public class GUIColors {
         }
     }
     
+    public static final class Graphics {
+        public static final GUIColor DEFAULT_BACKGROUND_COLOR = new GUIColor(Color.LIGHT_GRAY).inDark(Color.DARK_GRAY);
+        public static final GUIColor DEFAULT_BOX_BORDER_COLOR = new GUIColor(Color.BLACK).inDark(Color.WHITE);
+    }
+    
     public static final class SplashScreen {
         
         public static final GUIColor PROGRESS_BAR_FOREGROUND = new GUIColor(new Color(10, 110, 230));

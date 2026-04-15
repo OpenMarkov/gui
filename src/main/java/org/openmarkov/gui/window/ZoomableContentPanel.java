@@ -7,9 +7,18 @@
 
 package org.openmarkov.gui.window;
 
+import org.openmarkov.gui.graphics.BackgroundedElement;
+import org.openmarkov.gui.graphics.BoxedElement;
+import org.openmarkov.gui.graphics.Paintable;
+import org.openmarkov.gui.graphics.TextBox;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents the content panel of a tab.
@@ -23,6 +32,15 @@ public abstract class ZoomableContentPanel extends JPanel {
      * Static field for serializable class.
      */
     private static final long serialVersionUID = 6808692603537287168L;
+    
+
+    
+    
+    public ZoomableContentPanel() {
+
+    }
+    
+
     
     /**
      * Prepares the frame for closing
@@ -39,5 +57,16 @@ public abstract class ZoomableContentPanel extends JPanel {
     public abstract double getZoom();
     
     public abstract void setZoom(double zoom);
+    
+    private boolean avoidPaintRecursion = false;
+    
+    @Override public void paint(Graphics g) {
+        if (avoidPaintRecursion) {
+            return;
+        }
+        avoidPaintRecursion = true;
+        super.paint(g);
+        avoidPaintRecursion = false;
+    }
     
 }

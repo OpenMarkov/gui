@@ -20,6 +20,10 @@ import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.gui.dialog.node.*;
 import org.openmarkov.gui.exception.*;
 import org.openmarkov.gui.graphic.*;
+import org.openmarkov.gui.graphics.BackgroundedElement;
+import org.openmarkov.gui.graphics.BoxedElement;
+import org.openmarkov.gui.graphics.Paintable;
+import org.openmarkov.gui.graphics.TextBox;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.window.MainGUI;
@@ -114,6 +118,12 @@ public final class NetworkEditorPanel extends JPanel {
     
     private final EditionModeManager editionModeManager;
     
+
+    
+    void addToast(String content) {
+        this.editorInputHandler.getToasts().add(new EditorInputHandler.Toast(content));
+    }
+    
     /**
      * Constructor that creates the instance.
      *
@@ -168,9 +178,18 @@ public final class NetworkEditorPanel extends JPanel {
      */
     @Override public void paint(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
-        super.paint(g);
+        var nonNetworkGraphics = g2D.create();
+        super.paint(g2D);
         g2D.scale(this.zoomManager.getZoom(), this.zoomManager.getZoom());
         this.visualNetwork.paint(g2D);
+        this.networkPanel.paint(g2D);
+        
+        var y = this.getHeight() - 20;
+        for (EditorInputHandler.Toast toast : this.editorInputHandler.getToasts()) {
+            Paintable textBox = new BackgroundedElement<>(BoxedElement.of(new TextBox(toast.text)), GUIColors.Graphics.DEFAULT_BACKGROUND_COLOR.getColor());
+            toast.rect = textBox.paint(nonNetworkGraphics, this.getWidth() - textBox.dimensions(nonNetworkGraphics).width - 20, y - textBox.dimensions(nonNetworkGraphics).height);
+            y-=(textBox.dimensions(nonNetworkGraphics).height+30);
+        }
     }
     
     /**
@@ -197,6 +216,13 @@ public final class NetworkEditorPanel extends JPanel {
         this.repaint();
     }
     
+    @Override public void repaint() {
+        if (this.networkPanel!=null){
+            this.networkPanel.repaint();
+        }else{
+            super.repaint();
+        }
+    }
     
     /**
      * Return the height of the panel after applying the zoomManager.

@@ -16,6 +16,10 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.exception.PreResolutionNodeInInferenceException;
 import org.openmarkov.gui.graphic.VisualNetwork;
+import org.openmarkov.gui.graphics.BackgroundedElement;
+import org.openmarkov.gui.graphics.BoxedElement;
+import org.openmarkov.gui.graphics.Paintable;
+import org.openmarkov.gui.graphics.TextBox;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.MainPanel;
@@ -27,6 +31,7 @@ import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 

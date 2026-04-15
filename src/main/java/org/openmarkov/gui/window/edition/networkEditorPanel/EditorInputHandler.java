@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,8 +31,14 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
     
     private final NetworkEditorPanel networkEditorPanel;
     
+    private final List<Toast> toasts = new ArrayList<>();
+    
     EditorInputHandler(NetworkEditorPanel networkEditorPanel) {
         this.networkEditorPanel = networkEditorPanel;
+    }
+    
+    public List<Toast> getToasts() {
+        return this.toasts;
     }
     
     /**
@@ -47,6 +54,15 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
     private int lastClickCount = 0;
     private boolean lastLeftClickProducedANode = false;
     
+    static class Toast {
+        String text;
+        Rectangle rect;
+        
+        public Toast(String text) {
+            this.text = text;
+        }
+    }
+    
     /**
      * Invoked when a mouse button has been pressed on the component.
      *
@@ -54,6 +70,12 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
      */
     @Override public void mousePressed(MouseEvent e) {
         // requestFocusInWindow(); Activate if nodes can't be moved by arrows.
+        var selectedToast = this.toasts.stream().filter(toast -> toast.rect.getBounds().contains(e.getPoint())).findFirst();
+        if(selectedToast.isPresent()){
+            this.toasts.remove(selectedToast.get());
+            e.consume();
+            return;
+        }
         
         if (e.getClickCount() <= (this.lastClickCount + 1)) {
             this.lastLeftClickProducedANode = false;
