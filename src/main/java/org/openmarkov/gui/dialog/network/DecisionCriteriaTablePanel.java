@@ -57,25 +57,28 @@ import java.util.List;
             return;
         }
         PNEdit criteriaEdit = null;
+        String oldCriterionName = null;
+        String oldUnitName = null;
         switch (column) {
             case 1 -> {
-                String criterionName = (String) dataTable[row][column - 1];
-                String newName = (String) ((AdvancedPropertiesTableModel) tableEvent.getSource())
+                oldCriterionName = (String) dataTable[row][column - 1];
+                oldUnitName = (String) dataTable[row][column];
+                String newCriterionName = (String) ((AdvancedPropertiesTableModel) tableEvent.getSource())
                         .getValueAt(row, column);
-                dataTable[row][column - 1] = newName;
-                if (criterionName != newName) {
+                dataTable[row][column - 1] = newCriterionName;
+                if (oldCriterionName != newCriterionName) {
                     criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.RENAME,
-                                                            probNet.getDecisionCriteria().get(row), newName);
+                                                            probNet.getDecisionCriteria().get(row), newCriterionName);
                 }
             }
             case 2 -> {
-                String criterionName = (String) dataTable[row][column - 2];
-                String unitName = (String) dataTable[row][column - 1];
+                oldCriterionName = (String) dataTable[row][column - 2];
+                oldUnitName = (String) dataTable[row][column - 1];
                 String newUnitName = (String) ((AdvancedPropertiesTableModel) tableEvent.getSource())
                         .getValueAt(row, column);
                 dataTable[row][column - 1] = newUnitName;
-                if (unitName != newUnitName) {
-                    criteriaEdit = new DecisionCriterionUnitEdit(probNet, criterionName, newUnitName);
+                if (oldUnitName != newUnitName) {
+                    criteriaEdit = new DecisionCriterionUnitEdit(probNet, oldCriterionName, newUnitName);
                 }
             }
             default -> {
@@ -85,6 +88,16 @@ import java.util.List;
             try {
                 criteriaEdit.executeEdit();
             } catch (DoEditException e) {
+                switch (column) {
+                    case 1 -> {
+                        dataTable[row][column - 1] = oldCriterionName;
+                        this.valuesTable.setValueAt(oldCriterionName, row, column - 1);
+                    }
+                    case 2 -> {
+                        dataTable[row][column - 1] = oldUnitName;
+                        this.valuesTable.setValueAt(oldUnitName, row, column - 1);
+                    }
+                }
                 throw new UnrecoverableException(e);
             }
         }

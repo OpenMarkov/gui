@@ -206,7 +206,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
         Map<String, String> otherProperties = node.getAdditionalProperties();
         setFieldsFromProperties(otherProperties);
     }
-
+    
     /**
      * Set the network additionalProperties in this panel with the provided ones
      */
@@ -215,7 +215,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
         Map<String, String> otherProperties = probNet.getAdditionalProperties();
         setFieldsFromProperties(otherProperties);
     }
-
+    
     public void setProperties() {
         if (node != null) {
             Map<String, String> otherProperties = node.getAdditionalProperties();
@@ -225,7 +225,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
             setFieldsFromProperties(otherProperties);
         }
     }
-
+    
     public void setFieldsFromProperties(Map<String, String> otherProperties) {
         Object[] keys = otherProperties.keySet().toArray();
         Object[] values = otherProperties.values().toArray();
@@ -345,7 +345,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     
     @Override public void tableChanged(TableModelEvent e) {
         int row = e.getLastRow();
-        if (e.getType() != TableModelEvent.UPDATE || getValuesTable().getCellEditor()==null) {
+        if (e.getType() != TableModelEvent.UPDATE || getValuesTable().getCellEditor() == null) {
             return;
         }
         String newName = ((DefaultTableModel) e.getSource()).getValueAt(row, 1).toString();
@@ -358,10 +358,9 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
                 new OtherPropertyEdit(probNet, "RENAME", row, rowData).executeEdit();
             }
         } catch (DoEditException e1) {
-            String oldName = new ArrayList<>(node.getAdditionalProperties().keySet()).get(row);
-            //List<String> keySet = new ArrayList<>(node.getAdditionalProperties().keySet());
-            //String oldKey = keySet.get(index);
-            String oldValue = node.getAdditionalProperties().get(oldName);
+            Map<String, String> additionalProperties = node != null ? node.getAdditionalProperties() : probNet.getAdditionalProperties();
+            String oldName = new ArrayList<>(additionalProperties.keySet()).get(row);
+            String oldValue = additionalProperties.get(oldName);
             valuesTable.setValueAt(oldName, row, 1);
             valuesTable.setValueAt(oldValue, row, 2);
             throw new UnrecoverableException(e1);
