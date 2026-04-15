@@ -619,6 +619,12 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
         networkEditorPanel.setPropagationActive(propagationActive);
     }
     
+    private final ArrayList<Consumer<NetworkPanel>> onNetworkClose = new ArrayList<>();
+    
+    public void onNetworkClose(Consumer<NetworkPanel> onNetworkClose) {
+        this.onNetworkClose.add(onNetworkClose);
+    }
+    
     @Override public boolean close() {
         try {
             if (!MainGUI.INSTANCE.mainPanel.getMainPanelListenerAssistant().networkCanBeClosed(this)) {
@@ -627,8 +633,12 @@ public class NetworkPanel extends ZoomableContentPanel implements PNEditListener
         } catch (WriterException e) {
             throw new UnrecoverableException(e);
         }
-        new ArrayList<>(this.decisionTreeWindows).forEach(DecisionTreeWindow::close);
-        return super.close();
+        boolean close = super.close();
+        if (close) {
+            new ArrayList<>(this.decisionTreeWindows).forEach(DecisionTreeWindow::close);
+            this.onNetworkClose.forEach(action -> action.accept(this));
+        }
+        return close;
     }
     
     // TODO OOPN end
