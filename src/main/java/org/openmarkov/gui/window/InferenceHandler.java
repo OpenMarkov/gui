@@ -184,6 +184,9 @@ class InferenceHandler {
 
     void showDecisionTree(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotEnoughMemoryException {
         try {
+            InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(networkPanel.probNet,
+                    GUIUtils.getOwner(mainPanel),null);
+
             DecisionTreeWindow decisionTree = new DecisionTreeWindow(networkPanel);
             mainPanel.addCloseableTab("Decision tree for " + networkPanel.probNet.getName(), decisionTree);
             mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
