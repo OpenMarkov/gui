@@ -27,7 +27,7 @@ import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.inference.algorithm.decompositionIntoSymmetricDANs.evaluation.DANDecompositionIntoSymmetricDANsEvaluation;
 import org.openmarkov.inference.algorithm.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
@@ -56,20 +56,20 @@ class InferenceHandler {
     // ── Working mode ──────────────────────────────────────────────
     
     void toggleWorkingMode() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
-        NetworkPanel.WorkingMode currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
-        NetworkPanel.WorkingMode newWorkingMode = switch (currentWorkingMode) {
-            case EDITION -> NetworkPanel.WorkingMode.INFERENCE;
-            case INFERENCE -> NetworkPanel.WorkingMode.EDITION;
+        NetworkEditorPanel.WorkingMode currentWorkingMode = getCurrentNetworkEditorPanel().getWorkingMode();
+        NetworkEditorPanel.WorkingMode newWorkingMode = switch (currentWorkingMode) {
+            case EDITION -> NetworkEditorPanel.WorkingMode.INFERENCE;
+            case INFERENCE -> NetworkEditorPanel.WorkingMode.EDITION;
         };
         setWorkingMode(currentWorkingMode, newWorkingMode);
     }
     
-    void setWorkingMode(NetworkPanel.WorkingMode currentWorkingMode, NetworkPanel.WorkingMode newWorkingMode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
+    void setWorkingMode(NetworkEditorPanel.WorkingMode currentWorkingMode, NetworkEditorPanel.WorkingMode newWorkingMode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         boolean performInference = true;
         boolean isTemporal;
         boolean isMulticriteria = false;
 
-        ProbNet probNet = getCurrentNetworkPanel().getProbNet();
+        ProbNet probNet = getCurrentNetworkEditorPanel().getProbNet();
 
         isTemporal = !probNet.hasConstraintOfClass(OnlyAtemporalVariables.class);
         if (probNet.getDecisionCriteria() != null && probNet.getDecisionCriteria().size() > 1) {
@@ -77,22 +77,22 @@ class InferenceHandler {
         }
         boolean requiredInferenceOptions = isTemporal || isMulticriteria;
 
-        if (currentWorkingMode == NetworkPanel.WorkingMode.EDITION && requiredInferenceOptions) {
+        if (currentWorkingMode == NetworkEditorPanel.WorkingMode.EDITION && requiredInferenceOptions) {
             InferenceOptionsDialog dialog = new InferenceOptionsDialog(probNet, GUIUtils.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
 
             if (dialog.getSelectedOption() == OkCancelDialog.ChosenOption.Cancel) {
-                newWorkingMode = NetworkPanel.WorkingMode.EDITION;
+                newWorkingMode = NetworkEditorPanel.WorkingMode.EDITION;
                 performInference = false;
             }
         }
 
         mainPanel.setToolBarPanel(newWorkingMode);
         mainPanel.changeWorkingModeButton(newWorkingMode);
-        if (!fileHandler.getNetworkPanels().isEmpty()) {
-            getCurrentNetworkPanel().setWorkingMode(newWorkingMode);
+        if (!fileHandler.getNetworkEditorPanels().isEmpty()) {
+            getCurrentNetworkEditorPanel().setWorkingMode(newWorkingMode);
         }
-        getCurrentNetworkPanel().setSelectedAllObjects(false);
-        mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(getCurrentNetworkPanel());
+        getCurrentNetworkEditorPanel().setSelectedAllObjects(false);
+        mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(getCurrentNetworkEditorPanel());
 
         try {
             if (performInference) {
@@ -100,53 +100,53 @@ class InferenceHandler {
                     case EDITION -> {
                     }
                     case INFERENCE -> {
-                        getCurrentNetworkPanel().updateIndividualProbabilitiesAndUtilities();
+                        getCurrentNetworkEditorPanel().updateIndividualProbabilitiesAndUtilities();
                         mainPanel.getInferenceToolBar()
-                                 .setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
+                                 .setCurrentEvidenceCaseName(getCurrentNetworkEditorPanel().getCurrentCase());
                     }
                 }
             }
         } finally {
-            getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
+            getCurrentNetworkEditorPanel().updateNodesExpansionState(newWorkingMode);
             mainPanel.adaptToolBarSize();
         }
-        mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(newWorkingMode, getCurrentNetworkPanel());
+        mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(newWorkingMode, getCurrentNetworkEditorPanel());
     }
 
     void setNewExpansionThreshold(Double newValue) {
-        getCurrentNetworkPanel().setExpansionThreshold(newValue);
-        getCurrentNetworkPanel().setSelectedAllNodes(false);
+        getCurrentNetworkEditorPanel().setExpansionThreshold(newValue);
+        getCurrentNetworkEditorPanel().setSelectedAllNodes(false);
         mainPanel.getMainPanelMenuAssistant()
-                 .updateOptionsNewWorkingMode(NetworkPanel.WorkingMode.INFERENCE, getCurrentNetworkPanel());
-        getCurrentNetworkPanel().updateNodesExpansionState(NetworkPanel.WorkingMode.INFERENCE);
+                 .updateOptionsNewWorkingMode(NetworkEditorPanel.WorkingMode.INFERENCE, getCurrentNetworkEditorPanel());
+        getCurrentNetworkEditorPanel().updateNodesExpansionState(NetworkEditorPanel.WorkingMode.INFERENCE);
     }
 
     // ── Evidence cases ────────────────────────────────────────────
     
     void evidenceCasesNavigationOption(String command) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
         switch (command) {
-            case "CREATE_NEW_EVIDENCE_CASE" -> getCurrentNetworkPanel().createNewEvidenceCase();
-            case "GO_TO_FIRST_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToFirstEvidenceCase();
-            case "GO_TO_PREVIOUS_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToPreviousEvidenceCase();
-            case "GO_TO_NEXT_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToNextEvidenceCase();
-            case "GO_TO_LAST_EVIDENCE_CASE" -> getCurrentNetworkPanel().goToLastEvidenceCase();
-            case "CLEAR_OUT_ALL_EVIDENCE_CASES" -> getCurrentNetworkPanel().clearOutAllEvidenceCases();
+            case "CREATE_NEW_EVIDENCE_CASE" -> getCurrentNetworkEditorPanel().createNewEvidenceCase();
+            case "GO_TO_FIRST_EVIDENCE_CASE" -> getCurrentNetworkEditorPanel().goToFirstEvidenceCase();
+            case "GO_TO_PREVIOUS_EVIDENCE_CASE" -> getCurrentNetworkEditorPanel().goToPreviousEvidenceCase();
+            case "GO_TO_NEXT_EVIDENCE_CASE" -> getCurrentNetworkEditorPanel().goToNextEvidenceCase();
+            case "GO_TO_LAST_EVIDENCE_CASE" -> getCurrentNetworkEditorPanel().goToLastEvidenceCase();
+            case "CLEAR_OUT_ALL_EVIDENCE_CASES" -> getCurrentNetworkEditorPanel().clearOutAllEvidenceCases();
         }
-        mainPanel.getMainPanelMenuAssistant().updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
-        mainPanel.getMainPanelMenuAssistant().updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
+        mainPanel.getMainPanelMenuAssistant().updateOptionsEvidenceCasesNavigation(getCurrentNetworkEditorPanel());
+        mainPanel.getMainPanelMenuAssistant().updateOptionsPropagationTypeDependent(getCurrentNetworkEditorPanel());
     }
 
     // ── Propagation & inference options ───────────────────────────
 
     void setPropagationOptions() {
-        NetworkPanel networkPanel = getCurrentNetworkPanel();
+        NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
         new PropagationOptionsDialog(GUIUtils.getOwner(networkPanel.getEditorPanel()), networkPanel.getEditorPanel(),
                                      networkPanel.getMainPanel().getInferenceToolBar())
                 .setVisible(true);
         mainPanel.getMainPanelMenuAssistant().updatePropagateEvidenceButton();
     }
 
-    void setInferenceOptions(NetworkPanel networkPanel) {
+    void setInferenceOptions(NetworkEditorPanel networkPanel) {
         InferenceOptionsDialog dialog = new InferenceOptionsDialog(networkPanel.getProbNet(),
                                                                    GUIUtils.getOwner(mainPanel), null);
     }
@@ -154,7 +154,7 @@ class InferenceHandler {
     // ── Network expansion ─────────────────────────────────────────
 
     void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
-        NetworkPanel networkPanelMID = getCurrentNetworkPanel();
+        NetworkEditorPanel networkPanelMID = getCurrentNetworkEditorPanel();
         String path = (new File(networkPanelMID.getNetworkFile())).getParent();
         InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
                                                                                     GUIUtils.getOwner(mainPanel), null);
@@ -170,25 +170,25 @@ class InferenceHandler {
 
         ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet, preResolutionEvidence, fileName);
 
-        NetworkPanel networkPanel = fileHandler.createNewFrame(expandedNetwork);
+        NetworkEditorPanel networkPanel = fileHandler.createNewFrame(expandedNetwork);
         mainPanel.getMainPanelMenuAssistant()
                  .setOptionEnabled(ActionCommands.SAVE_OPEN_NETWORK.getCommandName(), false);
         networkPanel.setNetworkFile(path + File.separator + fileName);
         networkPanel.getEditorPanel()
                     .getEvidenceManager()
                     .setEvidence(preResolutionEvidence, new ArrayList<>());
-        fileHandler.getNetworkPanels().add(networkPanel);
+        fileHandler.getNetworkEditorPanels().add(networkPanel);
     }
 
     // ── Decision tree & optimal strategy ──────────────────────────
 
-    void showDecisionTree(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotEnoughMemoryException {
+    void showDecisionTree(NetworkEditorPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotEnoughMemoryException {
         try {
-            InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(networkPanel.probNet,
+            InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(networkPanel.getProbNet(),
                     GUIUtils.getOwner(mainPanel),null);
 
             DecisionTreeWindow decisionTree = new DecisionTreeWindow(networkPanel);
-            mainPanel.addCloseableTab("Decision tree for " + networkPanel.probNet.getName(), decisionTree);
+            mainPanel.addCloseableTab("Decision tree for " + networkPanel.getProbNet().getName(), decisionTree);
             mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
             mainPanel.getNetworksTabPanel().setSelectedComponent(decisionTree);
         } catch (OutOfMemoryError e) {
@@ -196,7 +196,7 @@ class InferenceHandler {
         }
     }
 
-    void showOptimalStrategy(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedConstraints, PotentialOperationException.DifferentSizesInPotentialsAndStates {
+    void showOptimalStrategy(NetworkEditorPanel networkPanel) throws IncompatibleEvidenceException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedConstraints, PotentialOperationException.DifferentSizesInPotentialsAndStates {
         if (networkPanel.getModified()) {
             // Network was modified after last inference — would need re-evaluation
         }
@@ -236,7 +236,7 @@ class InferenceHandler {
 
     // ── Helpers ───────────────────────────────────────────────────
 
-    private NetworkPanel getCurrentNetworkPanel() {
-        return mainPanel.getMainPanelMenuAssistant().getCurrentNetworkPanel();
+    private NetworkEditorPanel getCurrentNetworkEditorPanel() {
+        return mainPanel.getMainPanelMenuAssistant().getCurrentNetworkEditorPanel();
     }
 }

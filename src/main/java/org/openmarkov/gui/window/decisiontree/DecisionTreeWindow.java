@@ -9,9 +9,10 @@ package org.openmarkov.gui.window.decisiontree;
 
 import org.openmarkov.core.exception.*;
 import org.openmarkov.gui.configuration.GUIColors;
-import org.openmarkov.gui.window.edition.NetworkPanel;
-import org.openmarkov.gui.window.ZoomableContentPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
+import org.openmarkov.gui.window.EditorPanel;
 
+import javax.swing.*;
 import java.awt.*;
 
 
@@ -20,13 +21,13 @@ import java.awt.*;
  * It acts as a bridge between the decision tree visualization and the main network panel.
  */
 @SuppressWarnings("serial") 
-public class DecisionTreeWindow extends ZoomableContentPanel {
+public class DecisionTreeWindow extends EditorPanel {
     
 	/** The panel containing the visual representation of the decision tree. */
     private final DecisionTreePanel decisionTreePanel;
     
     /** The source network panel associated with this tree window. */
-    private final NetworkPanel networkPanel;
+    private final NetworkEditorPanel networkPanel;
     
     /**
      * Creates a new window to display the decision tree derived from a network panel.
@@ -36,10 +37,10 @@ public class DecisionTreeWindow extends ZoomableContentPanel {
      * @throws NonProjectablePotentialException if the potential cannot be projected
      * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates if different sizes in potentials and states occurs
      */
-    public DecisionTreeWindow(NetworkPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates {
+    public DecisionTreeWindow(NetworkEditorPanel networkPanel) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates {
         this.setLayout(new BorderLayout());
         this.networkPanel = networkPanel;
-        this.decisionTreePanel = new DecisionTreePanel(networkPanel.probNet);
+        this.decisionTreePanel = new DecisionTreePanel(networkPanel.getProbNet());
         this.networkPanel.addDecisionTreeWindows(this);
         this.add(decisionTreePanel, BorderLayout.CENTER);
         this.setBackground(GUIColors.DecisionTree.WINDOW.getColor());
@@ -62,6 +63,10 @@ public class DecisionTreeWindow extends ZoomableContentPanel {
     /** {@inheritDoc} */
     @Override public void setZoom(double zoom) {
         decisionTreePanel.setZoom(zoom);
+    }
+    
+    @Override protected void doPaint(Graphics2D graphics2D) {
+    
     }
     
 }

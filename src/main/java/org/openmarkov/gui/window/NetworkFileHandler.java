@@ -29,7 +29,7 @@ import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.util.GUIUtils;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,10 +54,10 @@ import org.apache.commons.io.FilenameUtils;
 class NetworkFileHandler {
 
     private final MainPanel mainPanel;
-    private final List<NetworkPanel> networkPanels;
+    private final List<NetworkEditorPanel> networkPanels;
     private final StringDatabase stringDatabase;
 
-    NetworkFileHandler(MainPanel mainPanel, List<NetworkPanel> networkPanels, StringDatabase stringDatabase) {
+    NetworkFileHandler(MainPanel mainPanel, List<NetworkEditorPanel> networkPanels, StringDatabase stringDatabase) {
         this.mainPanel = mainPanel;
         this.networkPanels = networkPanels;
         this.stringDatabase = stringDatabase;
@@ -85,8 +85,8 @@ class NetworkFileHandler {
         }
     }
 
-    NetworkPanel createNewFrame(ProbNet probNet) {
-        NetworkPanel networkPanel = new NetworkPanel(probNet, mainPanel);
+    NetworkEditorPanel createNewFrame(ProbNet probNet) {
+        NetworkEditorPanel networkPanel = new NetworkEditorPanel(probNet, mainPanel);
         probNet.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
         mainPanel.addCloseableTab(probNet.getName(), networkPanel);
         mainPanel.getNetworksTabPanel().setSelectedComponent(networkPanel);
@@ -116,7 +116,7 @@ class NetworkFileHandler {
         netReadFromFile.getPNESupport().setWithUndo(true);
         netReadFromFile.setName(new File(fileName).getName());
         var now = Instant.now();
-        NetworkPanel networkPanel = createNewFrame(netReadFromFile);
+        NetworkEditorPanel networkPanel = createNewFrame(netReadFromFile);
         System.out.println("Total: " + Duration.between(now, Instant.now()));
         networkPanel.setNetworkFile(fileName);
         List<EvidenceCase> evidence = probNetInfo.getEvidence();
@@ -138,8 +138,8 @@ class NetworkFileHandler {
     }
 
     void openNetwork(ProbNet probNet) {
-        NetworkPanel newNetworkPanel = createNewFrame(probNet);
-        networkPanels.add(newNetworkPanel);
+        NetworkEditorPanel newNetworkEditorPanel = createNewFrame(probNet);
+        networkPanels.add(newNetworkEditorPanel);
     }
 
     void openNetworkURL() throws NoReaderForFileException, ParserException, IOException, CorruptNetworkFile {
@@ -154,7 +154,7 @@ class NetworkFileHandler {
         netReadFromURL.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
         netReadFromURL.getPNESupport().setWithUndo(true);
         netReadFromURL.setName(new File(urlFile).getName());
-        NetworkPanel networkPanel = createNewFrame(netReadFromURL);
+        NetworkEditorPanel networkPanel = createNewFrame(netReadFromURL);
         networkPanel.setNetworkFile(urlFile);
         List<EvidenceCase> evidence = probNetInfo.getEvidence();
         if (evidence != null && !evidence.isEmpty()) {
@@ -188,17 +188,17 @@ class NetworkFileHandler {
 
     // ── Save ──────────────────────────────────────────────────────
 
-    boolean saveNetwork(NetworkPanel networkPanel) throws WriterException {
+    boolean saveNetwork(NetworkEditorPanel networkPanel) throws WriterException {
         String fileName = networkPanel.getNetworkFile();
         if (fileName != null) {
             createBackUpNetworkFile(fileName, toBakExtension(networkPanel.getNetworkFile()));
         }
-        return (fileName != null && networkPanel.probNet.getWriter() != null)
+        return (fileName != null && networkPanel.getProbNet().getWriter() != null)
                 ? saveNetworkActions(networkPanel, fileName)
                 : saveNetworkAs(networkPanel);
     }
 
-    boolean saveNetworkAs(NetworkPanel networkPanel) throws WriterException {
+    boolean saveNetworkAs(NetworkEditorPanel networkPanel) throws WriterException {
         String fileName = networkPanel.getNetworkFile();
         String suggestedName = (fileName != null) ? fileName : new File(networkPanel.getProbNet().getName()).getName();
         ArrayList<Object> fileNameAndFormat = requestNetworkFileAndFormatToSave(suggestedName);
@@ -223,7 +223,7 @@ class NetworkFileHandler {
         return saveNetworkActions(networkPanel, fileName, fileFormat);
     }
 
-    void saveOpenNetwork(NetworkPanel networkPanel) throws ParserException, IOException, NoReaderForFileException, CorruptNetworkFile, WriterException {
+    void saveOpenNetwork(NetworkEditorPanel networkPanel) throws ParserException, IOException, NoReaderForFileException, CorruptNetworkFile, WriterException {
         String fileName = networkPanel.getNetworkFile();
         if (fileName != null) {
             createBackUpNetworkFile(fileName, toBakExtension(networkPanel.getNetworkFile()));
@@ -234,7 +234,7 @@ class NetworkFileHandler {
         openNetwork(fileName);
     }
 
-    private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat) throws WriterException {
+    private boolean saveNetworkActions(NetworkEditorPanel networkPanel, String fileName, String fileFormat) throws WriterException {
         System.out.println(stringDatabase.getString("SavingNetwork.Text") + " " + fileName);
         NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel()
                                                                       .getEvidenceManager()
@@ -249,7 +249,7 @@ class NetworkFileHandler {
         return true;
     }
 
-    private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) throws WriterException {
+    private boolean saveNetworkActions(NetworkEditorPanel networkPanel, String fileName) throws WriterException {
         String fileFormat = LocalPreferences.LATEST_NETWORK_FORMAT.get();
         return saveNetworkActions(networkPanel, fileName, fileFormat);
     }
@@ -287,39 +287,39 @@ class NetworkFileHandler {
     void closeCurrentTab() throws WriterException {
         var selectedComponent = mainPanel.getNetworksTabPanel().getSelectedComponent();
         switch (selectedComponent) {
-            case NetworkPanel networkPanel -> closeCurrentNetwork();
+            case NetworkEditorPanel networkPanel -> closeCurrentNetwork();
             case null -> {}
             default -> mainPanel.getNetworksTabPanel().remove(selectedComponent);
         }
     }
 
     private boolean closeCurrentNetwork() throws WriterException {
-        return closeNetwork(getCurrentNetworkPanel());
+        return closeNetwork(getCurrentNetworkEditorPanel());
     }
 
-    private boolean closeNetwork(NetworkPanel currentNetworkPanel) throws WriterException {
-        if (currentNetworkPanel == null) {
+    private boolean closeNetwork(NetworkEditorPanel currentNetworkEditorPanel) throws WriterException {
+        if (currentNetworkEditorPanel == null) {
             return true;
         }
-        boolean canClose = networkCanBeClosed(currentNetworkPanel);
+        boolean canClose = networkCanBeClosed(currentNetworkEditorPanel);
         if (canClose) {
-            mainPanel.getNetworksTabPanel().remove(currentNetworkPanel);
+            mainPanel.getNetworksTabPanel().remove(currentNetworkEditorPanel);
             if (networkPanels.isEmpty()) {
-                mainPanel.setToolBarPanel(NetworkPanel.WorkingMode.EDITION);
+                mainPanel.setToolBarPanel(NetworkEditorPanel.WorkingMode.EDITION);
                 mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
             }
         }
         return canClose;
     }
 
-    boolean networkCanBeClosed(NetworkPanel networkPanel) throws WriterException {
+    boolean networkCanBeClosed(NetworkEditorPanel networkPanel) throws WriterException {
         int response;
         boolean canClose = !networkPanel.getModified();
         if (networkPanel.getModified()) {
             String title = StringDatabase.getUniqueInstance()
-                                         .getFormattedString("NetworkNotSaved.Title", networkPanel.probNet.getName());
+                                         .getFormattedString("NetworkNotSaved.Title", networkPanel.getProbNet().getName());
             String message = StringDatabase.getUniqueInstance()
-                                           .getFormattedString("NetworkNotSaved.Text", networkPanel.probNet.getName());
+                                           .getFormattedString("NetworkNotSaved.Text", networkPanel.getProbNet().getName());
             response = JOptionPane
                     .showConfirmDialog(GUIUtils.getOwner(mainPanel), message, title, JOptionPane.YES_NO_CANCEL_OPTION,
                                        JOptionPane.WARNING_MESSAGE);
@@ -347,7 +347,7 @@ class NetworkFileHandler {
 
     // ── Evidence ──────────────────────────────────────────────────
     
-    void loadEvidence(NetworkPanel currentNetworkPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException, CannotNormalizePotentialException {
+    void loadEvidence(NetworkEditorPanel currentNetworkEditorPanel) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ParsingSourceException, IOException, EmptyDatabaseException, ConstraintViolatedException, CannotNormalizePotentialException {
         OMFileChooser evidenceOMFileChooser = new DBReaderOMFileChooser(false);
         evidenceOMFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title"));
         String lastFileFilter = LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.get();
@@ -362,7 +362,7 @@ class NetworkFileHandler {
             } catch (NoWriterForExtensionException e) {
                 throw new UnrecoverableException(e);
             }
-            ProbNet currentNet = currentNetworkPanel.getProbNet();
+            ProbNet currentNet = currentNetworkEditorPanel.getProbNet();
             CaseDatabase caseDatabase = caseDbReader.load(evidenceOMFileChooser.getSelectedFile());
             List<Variable> variables = caseDatabase.getVariables();
             int[][] cases = caseDatabase.getCases();
@@ -378,20 +378,20 @@ class NetworkFileHandler {
                         newEvidenceCase.addFinding(new Finding(variable, stateIndex));
                     }
                 }
-                currentNetworkPanel.getEditorPanel().getEvidenceManager().addNewEvidenceCase(newEvidenceCase);
+                currentNetworkEditorPanel.getEditorPanel().getEvidenceManager().addNewEvidenceCase(newEvidenceCase);
             }
             LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.set(((FileFilterBasic) evidenceOMFileChooser.getFileFilter()).getFilterExtension());
             LocalPreferences.LATEST_OPEN_DIRECTORY.set(evidenceOMFileChooser.getSelectedFile());
         }
     }
 
-    void saveEvidence(NetworkPanel currentNetworkPanel) {
-        List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel().getEvidenceManager().getEvidence();
-        evidence.add(0, currentNetworkPanel.getEditorPanel().getEvidenceManager().getPreResolutionEvidence());
+    void saveEvidence(NetworkEditorPanel currentNetworkEditorPanel) {
+        List<EvidenceCase> evidence = currentNetworkEditorPanel.getEditorPanel().getEvidenceManager().getEvidence();
+        evidence.add(0, currentNetworkEditorPanel.getEditorPanel().getEvidenceManager().getPreResolutionEvidence());
         OMFileChooser omFileChooser = new OMFileChooser();
         File currentDirectory = LocalPreferences.LATEST_OPEN_DIRECTORY.get();
         omFileChooser.setCurrentDirectory(currentDirectory);
-        String suggestedFileName = currentNetworkPanel.probNet.getName();
+        String suggestedFileName = currentNetworkEditorPanel.getProbNet().getName();
         omFileChooser.setSelectedFile(new File(suggestedFileName));
         omFileChooser.setAcceptAllFileFilterUsed(false);
         if (omFileChooser.showSaveDialog(GUIUtils.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
@@ -455,11 +455,11 @@ class NetworkFileHandler {
 
     // ── Helpers ───────────────────────────────────────────────────
 
-    private NetworkPanel getCurrentNetworkPanel() {
-        return mainPanel.getMainPanelMenuAssistant().getCurrentNetworkPanel();
+    private NetworkEditorPanel getCurrentNetworkEditorPanel() {
+        return mainPanel.getMainPanelMenuAssistant().getCurrentNetworkEditorPanel();
     }
 
-    List<NetworkPanel> getNetworkPanels() {
+    List<NetworkEditorPanel> getNetworkEditorPanels() {
         return networkPanels;
     }
 

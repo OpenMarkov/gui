@@ -13,7 +13,7 @@ import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.MainPanel;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -129,10 +129,10 @@ class NetworkContextualMenu extends ContextualMenu {
             pasteMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_PASTE_MENUITEM, ActionCommands.CLIPBOARD_PASTE.getCommandName(),
                                                   IconBind.PASTE_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
             pasteMenuItem.addActionListener(listener);
-            pasteMenuItem.setEnabled(MainPanel.getCurrentNetworkPanel()
+            pasteMenuItem.setEnabled(MainPanel.getCurrentNetworkEditorPanel()
                                               .getEditorPanel()
                                               .getVisualNetwork()
-                                              .getWorkingMode() == NetworkPanel.WorkingMode.EDITION);
+                                              .getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
         }
         return pasteMenuItem;
     }

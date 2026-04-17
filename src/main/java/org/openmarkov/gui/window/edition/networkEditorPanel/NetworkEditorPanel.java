@@ -1,12 +1,13 @@
-/*
+package org.openmarkov.gui.window.edition.networkEditorPanel;/*
  * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
  * Unless required by applicable law or agreed to in writing,
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.window.edition.networkEditorPanel;
 
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.action.core.*;
 import org.openmarkov.core.exception.*;
 
@@ -20,14 +21,13 @@ import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.gui.dialog.node.*;
 import org.openmarkov.gui.exception.*;
 import org.openmarkov.gui.graphic.*;
-import org.openmarkov.gui.graphics.BackgroundedElement;
-import org.openmarkov.gui.graphics.BoxedElement;
-import org.openmarkov.gui.graphics.Paintable;
-import org.openmarkov.gui.graphics.TextBox;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.window.MainGUI;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.MainPanel;
+import org.openmarkov.gui.window.MainPanelMenuAssistant;
+import org.openmarkov.gui.window.EditorPanel;
+import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
 import org.openmarkov.gui.window.edition.ZoomManager;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
@@ -37,7 +37,9 @@ import org.openmarkov.inference.algorithm.variableElimination.tasks.VEExpectedUt
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serial;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * This class implements the behaviour of a panel where a network will be
@@ -50,7 +52,7 @@ import java.util.List;
  * contraction of nodes, - Introduction and elimination of evidence -
  * Management of multiple evidence cases.
  */
-public final class NetworkEditorPanel extends JPanel {
+public final class NetworkEditorPanel extends EditorPanel implements PNEditListener {
     /**
      * Static field for serializable class.
      */
@@ -100,11 +102,7 @@ public final class NetworkEditorPanel extends JPanel {
      * This variable indicates which is the expansion threshold of the network
      */
     private double currentExpansionThreshold = NetworkEditorPanel.DEFAULT_THRESHOLD_VALUE;
-    /**
-     * Network panel associated to this editor panel
-     */
-    private final NetworkPanel networkPanel;
-
+    
     /**
      * This variable indicates if the propagation mode is automatic or manual.
      */
@@ -118,21 +116,18 @@ public final class NetworkEditorPanel extends JPanel {
     
     private final EditionModeManager editionModeManager;
     
-
-    
-    void addToast(String content) {
-        this.editorInputHandler.getToasts().add(new EditorInputHandler.Toast(content));
-    }
-    
     /**
      * Constructor that creates the instance.
      *
-     * @param networkPanel network that will be edited.
+     * @param probNet   network that will be edited.
+     * @param mainPanel application main panel.
      */
-    public NetworkEditorPanel(NetworkPanel networkPanel, VisualNetwork visualNetwork) {
+    public NetworkEditorPanel(ProbNet probNet, MainPanel mainPanel) {
+        this.mainPanel = mainPanel;
+        this.onModificationListener = new ArrayList<>();
+        probNet.getPNESupport().addListener(this);
         this.zoomManager = new ZoomManager();
-        this.networkPanel = networkPanel;
-        this.visualNetwork = visualNetwork;
+        this.visualNetwork = new VisualNetwork(probNet, this);
         this.evidenceManager = new EvidenceManager(this);
         this.visualNetwork.getProbNet().getPNESupport().addListener(new PNEditEventHandler(this));
         this.automaticPropagation = true;
@@ -145,7 +140,12 @@ public final class NetworkEditorPanel extends JPanel {
         this.editionModeManager = new EditionModeManager(this, this.visualNetwork.getProbNet());
         this.editionMode = this.editionModeManager.getDefaultEditionMode();
         this.inferencePresenter = new InferencePresenter(this);
+        setLayout(new BorderLayout());
+        this.scrollPanel.setViewportView(this);
+        this.scrollPanel.getVerticalScrollBar().setUnitIncrement(25);
+        decisionTreeWindows = new ArrayList<>();
     }
+    
     
     @Override
     public void updateUI() {
@@ -171,25 +171,9 @@ public final class NetworkEditorPanel extends JPanel {
         readjustAndRepaint();
     }
     
-    /**
-     * Overwrite 'paint' method to avoid to call it explicitly.
-     *
-     * @param g the graphics context in which to paint.
-     */
-    @Override public void paint(Graphics g) {
-        Graphics2D g2D = (Graphics2D) g;
-        var nonNetworkGraphics = g2D.create();
-        super.paint(g2D);
-        g2D.scale(this.zoomManager.getZoom(), this.zoomManager.getZoom());
-        this.visualNetwork.paint(g2D);
-        this.networkPanel.paint(g2D);
-        
-        var y = this.getHeight() - 20;
-        for (EditorInputHandler.Toast toast : this.editorInputHandler.getToasts()) {
-            Paintable textBox = new BackgroundedElement<>(BoxedElement.of(new TextBox(toast.text)), GUIColors.Graphics.DEFAULT_BACKGROUND_COLOR.getColor());
-            toast.rect = textBox.paint(nonNetworkGraphics, this.getWidth() - textBox.dimensions(nonNetworkGraphics).width - 20, y - textBox.dimensions(nonNetworkGraphics).height);
-            y-=(textBox.dimensions(nonNetworkGraphics).height+30);
-        }
+    @Override protected void doPaint(Graphics2D graphics2D) {
+        graphics2D.scale(this.zoomManager.getZoom(), this.zoomManager.getZoom());
+        this.visualNetwork.paint(graphics2D);
     }
     
     /**
@@ -214,14 +198,6 @@ public final class NetworkEditorPanel extends JPanel {
     public void selectAllObjects() {
         this.visualNetwork.setSelectedAllObjects(true);
         this.repaint();
-    }
-    
-    @Override public void repaint() {
-        if (this.networkPanel!=null){
-            this.networkPanel.repaint();
-        }else{
-            super.repaint();
-        }
     }
     
     /**
@@ -513,16 +489,6 @@ public final class NetworkEditorPanel extends JPanel {
     }
     
     /**
-     * This method returns the propagation status: true if propagation should be
-     * done right now; false otherwise.
-     *
-     * @return true if propagation should be done right now.
-     */
-    public boolean isPropagationActive() {
-        return this.propagationActive;
-    }
-    
-    /**
      * This method sets the propagation status.
      *
      * @param propagationActive new value of the propagation status.
@@ -537,8 +503,8 @@ public final class NetworkEditorPanel extends JPanel {
      *
      * @return the associated network panel.
      */
-    public NetworkPanel getNetworkPanel() {
-        return this.networkPanel;
+    public NetworkEditorPanel getNetworkEditorPanel() {
+        return this;
     }
     
     /**
@@ -567,7 +533,7 @@ public final class NetworkEditorPanel extends JPanel {
      *
      * @param newWorkingMode new value of the working mode.
      */
-    public void updateNodesExpansionState(NetworkPanel.WorkingMode newWorkingMode) {
+    public void updateNodesExpansionState(NetworkEditorPanel.WorkingMode newWorkingMode) {
         switch (newWorkingMode) {
             case EDITION -> {
                 List<VisualNode> allNodes = this.visualNetwork.getAllNodes();
@@ -601,7 +567,7 @@ public final class NetworkEditorPanel extends JPanel {
             this.repaint();
             // TODO - Change code
         } else if (selectedNode.isEmpty()) {
-            new TemporalEvolutionDialog(GUIUtils.getOwner(this), this.networkPanel
+            new TemporalEvolutionDialog(GUIUtils.getOwner(this), this
                     .getProbNet(), this.evidenceManager.getPreResolutionEvidence());
         }
     }
@@ -650,9 +616,10 @@ public final class NetworkEditorPanel extends JPanel {
      *
      * @param newWorkingMode the new working mode
      */
-    public void setWorkingMode(NetworkPanel.WorkingMode newWorkingMode) {
+    public void setWorkingMode(NetworkEditorPanel.WorkingMode newWorkingMode) {
+        this.workingMode = newWorkingMode;
         this.visualNetwork.setWorkingMode(newWorkingMode);
-        if (newWorkingMode == NetworkPanel.WorkingMode.INFERENCE) {
+        if (newWorkingMode == NetworkEditorPanel.WorkingMode.INFERENCE) {
             this.editionMode = this.editionModeManager.getDefaultEditionMode();
             this.setCursor(this.editionModeManager.getDefaultCursor());
         }
@@ -677,7 +644,7 @@ public final class NetworkEditorPanel extends JPanel {
      */
     private void setZoomToFitNetwork() {
         double[] networkBounds = this.visualNetwork.getNetworkBounds((Graphics2D) this.getGraphics());
-        Dimension panelBounds = this.networkPanel.getMainPanel().getNetworksTabPanel().getSize();
+        Dimension panelBounds = this.getMainPanel().getNetworksTabPanel().getSize();
         double zoom = 1;
         
         while (((networkBounds[1] * zoom) > panelBounds.getWidth())
@@ -718,4 +685,373 @@ public final class NetworkEditorPanel extends JPanel {
     public void updateName(String baseName) {
         setName("NetworkEditorOf"+baseName);
     }
+    
+    /**
+     * Application main
+     */
+    private final MainPanel mainPanel;
+    /**
+     * Name of the file where the network is saved (updated or not).
+     */
+    private String networkFile = null;
+    
+    /**
+     * Indicates if the network has been modified.
+     */
+    private boolean modified = false;
+    /**
+     * This variable indicates in which mode is the network currently working It
+     * is initially set to Edition Mode
+     */
+    private WorkingMode workingMode = WorkingMode.EDITION;
+    
+    private final ArrayList<DecisionTreeWindow> decisionTreeWindows;
+    
+    public enum WorkingMode {
+        EDITION, INFERENCE
+    }
+    
+    private final List<Consumer<NetworkEditorPanel>> onModificationListener;
+    
+    /**
+     * This method initializes this.
+     *
+     * @return a new editor panel.
+     */
+    public NetworkEditorPanel getEditorPanel() {
+        return this;
+    }
+    
+    /**
+     * Returns the network which is edited.
+     *
+     * @return network which is edited.
+     */
+    public ProbNet getProbNet() {
+        return visualNetwork.getProbNet();
+    }
+    
+    /**
+     * Returns the application main panel.
+     *
+     * @return the application main panel.
+     */
+    public MainPanel getMainPanel() {
+        return mainPanel;
+    }
+    
+    /**
+     * Returns the modification state of the network.
+     *
+     * @return true if the network has been modified; otherwise, false.
+     */
+    public boolean getModified() {
+        return modified;
+    }
+    
+    public void addOnModification(Consumer<NetworkEditorPanel> action) {
+        this.onModificationListener.add(action);
+    }
+    
+    /**
+     * Sets the modification state of the network to a new value.
+     *
+     * @param value new value of the modification state of the network.
+     */
+    public void setModified(boolean value) {
+        modified = value;
+        for (Consumer<NetworkEditorPanel> onModification : this.onModificationListener) {
+            onModification.accept(this);
+        }
+    }
+    
+    /**
+     * Returns the name of the file where the network is saved.
+     *
+     * @return a string that contains the name of the file.
+     */
+    public String getNetworkFile() {
+        return networkFile;
+    }
+    
+    
+    /**
+     * Sets the name of the file where the network is saved.
+     *
+     * @param name name of the file.
+     */
+    public void setNetworkFile(String name) {
+        networkFile = name;
+    }
+    
+    /**
+     * Returns the current working mode.
+     *
+     * @return the value of the current working mode (Edition or Inference).
+     */
+    public WorkingMode getWorkingMode() {
+        return workingMode;
+    }
+    
+    /**
+     * This method absorbs a node into the rest of the net arc-reversal style. This means updating the only utility
+     * child it might have and removing it next.
+     */
+    public void absorbNode() throws DoEditException {
+        Node node = this.getSelectedNode();
+        new AbsorbNodeEdit(this.getVisualNetwork().getProbNet(), node.getVariable()).executeEdit();
+    }
+    
+    /**
+     * This method absorbs intermediate utility nodes.
+     */
+    public void absorbParents() throws DoEditException {
+        Node node = this.getSelectedNode();
+        new AbsorbParentsEdit(this.getVisualNetwork().getProbNet(), node).executeEdit();
+    }
+    
+    /**
+     * This method has been created for testing.
+     */
+    public void changePotential() throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, ConstraintViolatedException, CannotNormalizePotentialException {
+        this.showPotentialDialog(workingMode != WorkingMode.EDITION);
+    }
+    
+    /**
+     * This method adds a finding in a node.
+     */
+    public void addFinding() {
+        this.getEvidenceManager().addFinding();
+    }
+    
+    /**
+     * This method removes findings from selected nodes.
+     */
+    public void removeFinding() throws PreResolutionNodeInInferenceException, DoEditException {
+        this.getEvidenceManager().removeFinding();
+    }
+    
+    /**
+     * This method updates the value of each state for each node in the network
+     * with the current individual probabilities.
+     */
+    public void updateIndividualProbabilitiesAndUtilities() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
+        this.getEvidenceManager().updateIndividualProbabilitiesAndUtilities();
+    }
+    
+    /**
+     * This method removes all the findings established in the current evidence
+     * case.
+     */
+    public void removeAllFindings() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
+        this.getEvidenceManager().removeAllFindings();
+    }
+    
+    /**
+     * This method returns true if there are any finding in the current evidence
+     * case.
+     *
+     * @return true if the current evidence case has at least one finding.
+     */
+    public boolean areThereFindingsInCase() {
+        return this.getEvidenceManager().areThereFindingsInCase();
+    }
+    
+    /**
+     * This method copies the selected nodes to the clipboard.
+     *
+     * @param cut if true, the nodes copied to the clipboard are also removed.
+     */
+    public void exportToClipboard(boolean cut) {
+        this.getVisualNetwork().exportToClipboard(cut);
+    }
+    
+    /**
+     * This method imports various nodes from the clipboard and creates them in
+     * the network.
+     */
+    public void pasteFromClipboard() throws DoEditException {
+        this.getVisualNetwork().pasteFromClipboard();
+    }
+    
+    /**
+     * This method says if there is data stored in the clipboard.
+     *
+     * @return true if there is data stored in the clipboard; otherwise, false.
+     */
+    public boolean isThereDataStored() {
+        return this.getVisualNetwork().getClipboardAssistant().isThereDataStored();
+    }
+    
+    /**
+     * This method removes the selected objects. First removes the selected
+     * links and then removes the selected nodes. Also notifies that there
+     * aren't selected elements and creates a new undo point.
+     */
+    public void removeSelectedObjects() {
+        this.getVisualNetwork().removeSelectedObjects();
+    }
+    
+    /**
+     * Returns the presentation mode of the foreground of the nodes.
+     *
+     * @return true if the title of the nodes is the name or false if it is the
+     * name.
+     */
+    public boolean getByTitle() {
+        return this.getVisualNetwork().getByTitle();
+    }
+    
+    /**
+     * Selects or deselects all nodes of the network.
+     *
+     * @param selected new selection state.
+     */
+    public void setSelectedAllNodes(boolean selected) {
+        this.getVisualNetwork().setSelectedAllNodes(selected);
+    }
+    
+    /**
+     * Selects or deselects all objects of the network.
+     *
+     * @param selected new selection state.
+     */
+    public void setSelectedAllObjects(boolean selected) {
+        this.getVisualNetwork().setSelectedAllObjects(selected);
+    }
+    
+    @Override public void afterEditExecutes(PNEdit arg0) {
+        setModified(true);
+    }
+    
+    @Override public void beforeEditExecutes(PNEdit edit) {
+        repaint();
+    }
+    
+    @Override public void afterUndoingEdit(PNEdit edit) {
+        setModified(edit.getProbNet().getPNESupport().getCanUndo());
+        repaint();
+    }
+    
+    @Override public void afterRedoingEdit(PNEdit edit) {
+        setModified(edit.getProbNet().getPNESupport().getCanUndo());
+        repaint();
+    }
+    
+    /**
+     * This method returns the number of the current Evidence Case.
+     *
+     * @return the number of the current Evidence Case.
+     */
+    public int getCurrentCase() {
+        return this.getEvidenceManager().getCurrentCase();
+    }
+    
+    /**
+     * This method returns the number of Evidence Cases that the ArrayList is
+     * currently holding .
+     *
+     * @return the number of Evidence Cases in the ArrayList.
+     */
+    public int getNumberOfCases() {
+        return this.getEvidenceManager().getNumberOfCases();
+    }
+    
+    /**
+     * This method creates a new evidence case
+     */
+    public void createNewEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
+        this.getEvidenceManager().createNewEvidenceCase();
+    }
+    
+    /**
+     * This method makes the first evidence case to be the current
+     */
+    public void goToFirstEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
+        this.getEvidenceManager().goToFirstEvidenceCase();
+    }
+    
+    /**
+     * This method makes the previous evidence case to be the current
+     */
+    public void goToPreviousEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
+        this.getEvidenceManager().goToPreviousEvidenceCase();
+    }
+    
+    /**
+     * This method makes the next evidence case to be the current
+     */
+    public void goToNextEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
+        this.getEvidenceManager().goToNextEvidenceCase();
+    }
+    
+    /**
+     * This method makes the last evidence case to be the current
+     */
+    public void goToLastEvidenceCase() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
+        this.getEvidenceManager().goToLastEvidenceCase();
+    }
+    
+    /**
+     * This method clears out all the evidence cases. It returns to an 'initial
+     * state' in which there is only an initial evidence case with no findings
+     * (corresponding to prior probabilities)
+     */
+    public void clearOutAllEvidenceCases() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
+        this.getEvidenceManager().clearOutAllEvidenceCases();
+    }
+    
+    /**
+     * This method does the propagation of the evidence for all the evidence
+     * cases in memory.
+     *
+     * @param mainPanelMenuAssistant the menu assistant associated to the main
+     *                               panel.
+     */
+    public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
+        this.getEvidenceManager().propagateEvidence(mainPanelMenuAssistant);
+    }
+    
+    /**
+     * This method returns the propagation status: true if propagation should be
+     * done right now; false otherwise.
+     *
+     * @return true if propagation should be done right now.
+     */
+    public boolean isPropagationActive() {
+        return this.propagationActive;
+    }
+    
+    private final ArrayList<Consumer<NetworkEditorPanel>> onNetworkClose = new ArrayList<>();
+    
+    public void onNetworkClose(Consumer<NetworkEditorPanel> onNetworkClose) {
+        this.onNetworkClose.add(onNetworkClose);
+    }
+    
+    @Override public boolean close() {
+        try {
+            if (!MainGUI.INSTANCE.mainPanel.getMainPanelListenerAssistant().networkCanBeClosed(this)) {
+                return false;
+            }
+        } catch (WriterException e) {
+            throw new UnrecoverableException(e);
+        }
+        boolean close = super.close();
+        if (close) {
+            new ArrayList<>(this.decisionTreeWindows).forEach(DecisionTreeWindow::close);
+            this.onNetworkClose.forEach(action -> action.accept(this));
+        }
+        return close;
+    }
+    
+    // TODO OOPN end
+    
+    public void addDecisionTreeWindows(DecisionTreeWindow decisionTreeWindows) {
+        this.decisionTreeWindows.add(decisionTreeWindows);
+    }
+    
+    public void removeDecisionTreeWindows(DecisionTreeWindow decisionTreeWindows) {
+        this.decisionTreeWindows.remove(decisionTreeWindows);
+    }
+    
 }

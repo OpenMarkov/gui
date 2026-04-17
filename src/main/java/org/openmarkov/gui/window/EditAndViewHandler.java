@@ -12,7 +12,7 @@ import org.openmarkov.gui.dialog.LanguageDialog;
 import org.openmarkov.gui.dialog.ShortcutsBox;
 import org.openmarkov.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.core.exception.UnrecoverableException;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -54,7 +54,7 @@ class EditAndViewHandler {
     }
 
     private void undoRedo(boolean undoOperation) throws CannotUndoException, CannotRedoException {
-        NetworkPanel networkPanel = getCurrentNetworkPanel();
+        NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
         networkPanel.getEditorPanel().getVisualNetwork().setSelectedAllObjects(false);
         if (undoOperation) {
             networkPanel.getEditorPanel().getVisualNetwork().getProbNet().getPNESupport().undo();
@@ -66,7 +66,7 @@ class EditAndViewHandler {
     // ── Edition mode ──────────────────────────────────────────────
 
     void activateEditionMode(String newEditionMode) {
-        NetworkPanel networkPanel = getCurrentNetworkPanel();
+        NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
         networkPanel.setEditionMode(newEditionMode);
         mainPanel.getMainPanelMenuAssistant().setEditionOption(newEditionMode, networkPanel.isThereDataStored());
     }
@@ -74,7 +74,7 @@ class EditAndViewHandler {
     // ── View: by title / by name ──────────────────────────────────
 
     void activateByTitle(boolean byTitle) {
-        NetworkPanel actualNetwork = getCurrentNetworkPanel();
+        NetworkEditorPanel actualNetwork = getCurrentNetworkEditorPanel();
         if (actualNetwork.getByTitle() != byTitle) {
             actualNetwork.setByTitle(byTitle);
             mainPanel.getMainPanelMenuAssistant().setByTitle(byTitle);
@@ -83,15 +83,15 @@ class EditAndViewHandler {
 
     // ── Zoom ──────────────────────────────────────────────────────
 
-    void incrementZoom(ZoomableContentPanel panel) {
+    void incrementZoom(EditorPanel panel) {
         setZoom(panel, panel.getZoom() + ZOOM_CHANGE_VALUE);
     }
 
-    void decrementZoom(ZoomableContentPanel panel) {
+    void decrementZoom(EditorPanel panel) {
         setZoom(panel, panel.getZoom() - ZOOM_CHANGE_VALUE);
     }
 
-    void setZoom(ZoomableContentPanel panel, double value) {
+    void setZoom(EditorPanel panel, double value) {
         panel.setZoom(value);
         double newZoom = panel.getZoom();
         mainPanel.getMainPanelMenuAssistant().setZoom(newZoom);
@@ -117,7 +117,7 @@ class EditAndViewHandler {
 
     // ── Helpers ───────────────────────────────────────────────────
 
-    private NetworkPanel getCurrentNetworkPanel() {
-        return mainPanel.getMainPanelMenuAssistant().getCurrentNetworkPanel();
+    private NetworkEditorPanel getCurrentNetworkEditorPanel() {
+        return mainPanel.getMainPanelMenuAssistant().getCurrentNetworkEditorPanel();
     }
 }

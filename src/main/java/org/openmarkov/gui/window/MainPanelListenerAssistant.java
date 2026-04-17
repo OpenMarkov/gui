@@ -27,7 +27,7 @@ import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.util.PropertyNames;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -58,7 +58,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         implements ActionListener, PropertyNames, ComponentListener {
 
     private final MainPanel mainPanel;
-    private final List<NetworkPanel> networkPanels;
+    private final List<NetworkEditorPanel> networkPanels;
 
     private final NetworkFileHandler fileHandler;
     private final InferenceHandler inferenceHandler;
@@ -93,39 +93,39 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.NEW_NETWORK -> fileHandler.createNewNetwork();
             case ActionCommands.OPEN_NETWORK -> executeUIAction(() -> fileHandler.openNetwork());
             case ActionCommands.OPEN_NETWORK_URL -> executeUIAction(() -> fileHandler.openNetworkURL());
-            case ActionCommands.SAVE_NETWORK -> executeUIAction(() -> fileHandler.saveNetwork(getCurrentNetworkPanel()));
-            case ActionCommands.SAVE_OPEN_NETWORK -> executeUIAction(() -> fileHandler.saveOpenNetwork(getCurrentNetworkPanel()));
-            case ActionCommands.SAVEAS_NETWORK -> executeUIAction(() -> fileHandler.saveNetworkAs(getCurrentNetworkPanel()));
+            case ActionCommands.SAVE_NETWORK -> executeUIAction(() -> fileHandler.saveNetwork(getCurrentNetworkEditorPanel()));
+            case ActionCommands.SAVE_OPEN_NETWORK -> executeUIAction(() -> fileHandler.saveOpenNetwork(getCurrentNetworkEditorPanel()));
+            case ActionCommands.SAVEAS_NETWORK -> executeUIAction(() -> fileHandler.saveNetworkAs(getCurrentNetworkEditorPanel()));
             case ActionCommands.CLOSE_TAB -> executeUIAction(() -> fileHandler.closeCurrentTab());
-            case ActionCommands.LOAD_EVIDENCE -> executeUIAction(() -> fileHandler.loadEvidence(getCurrentNetworkPanel()));
-            case ActionCommands.SAVE_EVIDENCE -> fileHandler.saveEvidence(getCurrentNetworkPanel());
-            case ActionCommands.NETWORK_PROPERTIES -> getCurrentNetworkPanel().changeNetworkProperties();
+            case ActionCommands.LOAD_EVIDENCE -> executeUIAction(() -> fileHandler.loadEvidence(getCurrentNetworkEditorPanel()));
+            case ActionCommands.SAVE_EVIDENCE -> fileHandler.saveEvidence(getCurrentNetworkEditorPanel());
+            case ActionCommands.NETWORK_PROPERTIES -> getCurrentNetworkEditorPanel().changeNetworkProperties();
             case ActionCommands.EXIT_APPLICATION -> executeUIAction(() -> fileHandler.closeApplication());
 
             // ── Edit ──────────────────────────────────────────
             case ActionCommands.CLIPBOARD_COPY -> {
-                getCurrentNetworkPanel().exportToClipboard(false);
+                getCurrentNetworkEditorPanel().exportToClipboard(false);
                 mainPanel.getMainPanelMenuAssistant()
                          .setOptionEnabled(ActionCommands.CLIPBOARD_PASTE.getCommandName(), true);
             }
             case ActionCommands.CLIPBOARD_CUT -> {
-                getCurrentNetworkPanel().exportToClipboard(true);
+                getCurrentNetworkEditorPanel().exportToClipboard(true);
                 mainPanel.getMainPanelMenuAssistant()
                          .setOptionEnabled(ActionCommands.CLIPBOARD_PASTE.getCommandName(), true);
             }
-            case ActionCommands.CLIPBOARD_PASTE -> executeUIAction(() -> getCurrentNetworkPanel().pasteFromClipboard());
+            case ActionCommands.CLIPBOARD_PASTE -> executeUIAction(() -> getCurrentNetworkEditorPanel().pasteFromClipboard());
             case ActionCommands.UNDO -> editAndViewHandler.undo();
             case ActionCommands.REDO -> editAndViewHandler.redo();
-            case ActionCommands.SELECT_ALL -> getCurrentNetworkPanel().selectAllObjects();
-            case ActionCommands.OBJECT_REMOVAL -> getCurrentNetworkPanel().removeSelectedObjects();
+            case ActionCommands.SELECT_ALL -> getCurrentNetworkEditorPanel().selectAllObjects();
+            case ActionCommands.OBJECT_REMOVAL -> getCurrentNetworkEditorPanel().removeSelectedObjects();
             case ActionCommands.EDITION_MODE_PREFIX -> editAndViewHandler.activateEditionMode(actionCommand);
-            case ActionCommands.NODE_PROPERTIES -> executeUIAction(() -> getCurrentNetworkPanel().changeNodeProperties());
-            case ActionCommands.EDIT_POTENTIAL -> executeUIAction(() -> getCurrentNetworkPanel().changePotential());
+            case ActionCommands.NODE_PROPERTIES -> executeUIAction(() -> getCurrentNetworkEditorPanel().changeNodeProperties());
+            case ActionCommands.EDIT_POTENTIAL -> executeUIAction(() -> getCurrentNetworkEditorPanel().changePotential());
 
             // ── Inference / working mode ──────────────────────
             case ActionCommands.CHANGE_WORKING_MODE, ActionCommands.CHANGE_TO_INFERENCE_MODE,
                  ActionCommands.CHANGE_TO_EDITION_MODE -> {
-                NetworkPanel.WorkingMode initialWorkingMode = getCurrentNetworkPanel().getWorkingMode();
+                NetworkEditorPanel.WorkingMode initialWorkingMode = getCurrentNetworkEditorPanel().getWorkingMode();
                 try {
                     inferenceHandler.toggleWorkingMode();
                 } catch (NotEnoughMemoryException | IncompatibleEvidenceException | ConstraintViolatedException |
@@ -156,14 +156,14 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES ->
                     executeUIAction(() -> inferenceHandler.evidenceCasesNavigationOption("CLEAR_OUT_ALL_EVIDENCE_CASES"));
             case ActionCommands.PROPAGATE_EVIDENCE ->
-                    executeUIAction(() -> getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant()));
+                    executeUIAction(() -> getCurrentNetworkEditorPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant()));
             case ActionCommands.PROPAGATION_OPTIONS -> inferenceHandler.setPropagationOptions();
-            case ActionCommands.INFERENCE_OPTIONS -> inferenceHandler.setInferenceOptions(getCurrentNetworkPanel());
+            case ActionCommands.INFERENCE_OPTIONS -> inferenceHandler.setInferenceOptions(getCurrentNetworkEditorPanel());
             case ActionCommands.EXPAND_NETWORK -> executeUIAction(() ->
-                    inferenceHandler.expandNetwork(getCurrentNetworkPanel().getProbNet(),
-                            getCurrentNetworkPanel().getEditorPanel().getEvidenceManager().getPreResolutionEvidence()));
+                    inferenceHandler.expandNetwork(getCurrentNetworkEditorPanel().getProbNet(),
+                            getCurrentNetworkEditorPanel().getEditorPanel().getEvidenceManager().getPreResolutionEvidence()));
             case ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION, ActionCommands.TEMPORAL_EVOLUTION_ACTION ->
-                    getCurrentNetworkPanel().temporalEvolution();
+                    getCurrentNetworkEditorPanel().temporalEvolution();
 
             // ── View ──────────────────────────────────────────
             case ActionCommands.BYTITLE_NODES -> editAndViewHandler.activateByTitle(true);
@@ -173,7 +173,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
             // ── Node expansion/contraction ────────────────────
             case ActionCommands.NODE_EXPANSION -> {
-                NetworkPanel networkPanel = getCurrentNetworkPanel();
+                NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
                 List<VisualNode> selectedNodes = networkPanel.getEditorPanel().getVisualNetwork().getSelectedNodes();
                 for (VisualNode visualNode : selectedNodes) {
                     if (!visualNode.isExpanded()) {
@@ -184,7 +184,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 networkPanel.getEditorPanel().repaint();
             }
             case ActionCommands.NODE_CONTRACTION -> {
-                NetworkPanel networkPanel = getCurrentNetworkPanel();
+                NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
                 List<VisualNode> selectedNodes = networkPanel.getEditorPanel().getVisualNetwork().getSelectedNodes();
                 for (VisualNode visualNode : selectedNodes) {
                     if (visualNode.isExpanded()) {
@@ -194,16 +194,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 }
                 networkPanel.getEditorPanel().repaint();
             }
-            case ActionCommands.NODE_ADD_FINDING -> getCurrentNetworkPanel().addFinding();
-            case ActionCommands.NODE_REMOVE_FINDING -> executeUIAction(() -> getCurrentNetworkPanel().removeFinding());
+            case ActionCommands.NODE_ADD_FINDING -> getCurrentNetworkEditorPanel().addFinding();
+            case ActionCommands.NODE_REMOVE_FINDING -> executeUIAction(() -> getCurrentNetworkEditorPanel().removeFinding());
             case ActionCommands.NODE_REMOVE_ALL_FINDINGS ->
-                    executeUIAction(() -> getCurrentNetworkPanel().removeAllFindings());
-            case ActionCommands.ABSORB_NODE -> executeUIAction(() -> getCurrentNetworkPanel().absorbNode());
-            case ActionCommands.ABSORB_PARENTS -> executeUIAction(() -> getCurrentNetworkPanel().absorbParents());
+                    executeUIAction(() -> getCurrentNetworkEditorPanel().removeAllFindings());
+            case ActionCommands.ABSORB_NODE -> executeUIAction(() -> getCurrentNetworkEditorPanel().absorbNode());
+            case ActionCommands.ABSORB_PARENTS -> executeUIAction(() -> getCurrentNetworkEditorPanel().absorbParents());
 
             // ── Link operations ───────────────────────────────
             case ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS -> executeUIAction(() -> {
-                NetworkPanel networkPanel = getCurrentNetworkPanel();
+                NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
                 List<VisualLink> links = networkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks();
                 if (!links.isEmpty()) {
                     Link<Node> link = links.getFirst().getLink();
@@ -214,7 +214,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 }
             });
             case ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES, ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES -> {
-                NetworkPanel networkPanel = getCurrentNetworkPanel();
+                NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
                 List<VisualLink> links = networkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks();
                 if (!links.isEmpty()) {
                     Link<Node> link = links.getFirst().getLink();
@@ -227,9 +227,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 }
             }
             case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES -> executeUIAction(() ->
-                    new RemoveLinkRestrictionEdit(getCurrentNetworkPanel().getEditorPanel().getVisualNetwork()).executeEdit());
+                    new RemoveLinkRestrictionEdit(getCurrentNetworkEditorPanel().getEditorPanel().getVisualNetwork()).executeEdit());
             case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> {
-                NetworkPanel networkPanel = getCurrentNetworkPanel();
+                NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
                 List<VisualLink> links = networkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks();
                 if (!links.isEmpty()) {
                     Link<Node> link = links.getFirst().getLink();
@@ -240,22 +240,22 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
             // ── Decision operations ───────────────────────────
             case ActionCommands.DECISION_IMPOSE_POLICY ->
-                    executeUIAction(() -> getCurrentNetworkPanel().imposePolicyInNode());
+                    executeUIAction(() -> getCurrentNetworkEditorPanel().imposePolicyInNode());
             case ActionCommands.DECISION_EDIT_POLICY ->
-                    executeUIAction(() -> getCurrentNetworkPanel().editNodePolicy());
+                    executeUIAction(() -> getCurrentNetworkEditorPanel().editNodePolicy());
             case ActionCommands.DECISION_REMOVE_POLICY ->
-                    executeUIAction(() -> getCurrentNetworkPanel().removePolicyFromNode());
+                    executeUIAction(() -> getCurrentNetworkEditorPanel().removePolicyFromNode());
             case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY ->
-                    executeUIAction(() -> getCurrentNetworkPanel().showExpectedUtilityOfNode());
+                    executeUIAction(() -> getCurrentNetworkEditorPanel().showExpectedUtilityOfNode());
             case ActionCommands.DECISION_SHOW_OPTIMAL_POLICY ->
-                    executeUIAction(() -> getCurrentNetworkPanel().showOptimalPolicyOfNode());
-            case ActionCommands.DECISION_TREE -> executeUIAction(() -> inferenceHandler.showDecisionTree(getCurrentNetworkPanel()));
+                    executeUIAction(() -> getCurrentNetworkEditorPanel().showOptimalPolicyOfNode());
+            case ActionCommands.DECISION_TREE -> executeUIAction(() -> inferenceHandler.showDecisionTree(getCurrentNetworkEditorPanel()));
             case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY ->
-                    executeUIAction(() -> inferenceHandler.showOptimalStrategy(getCurrentNetworkPanel()));
+                    executeUIAction(() -> inferenceHandler.showOptimalStrategy(getCurrentNetworkEditorPanel()));
 
             // ── Misc ──────────────────────────────────────────
             case ActionCommands.NEXT_SLICE_NODE -> executeUIAction(() -> {
-                NetworkPanel networkPanel = getCurrentNetworkPanel();
+                NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
                 Node selectedNode = networkPanel.getEditorPanel()
                                                 .getVisualNetwork()
                                                 .getSelectedNodes()
@@ -350,12 +350,12 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
     // ── Public API (delegates) ────────────────────────────────────
 
-    public NetworkPanel getCurrentNetworkPanel() {
-        return mainPanel.getMainPanelMenuAssistant().getCurrentNetworkPanel();
+    public NetworkEditorPanel getCurrentNetworkEditorPanel() {
+        return mainPanel.getMainPanelMenuAssistant().getCurrentNetworkEditorPanel();
     }
 
-    public ZoomableContentPanel getCurrentPanel() {
-        return (ZoomableContentPanel) mainPanel.getNetworksTabPanel().getSelectedComponent();
+    public EditorPanel getCurrentPanel() {
+        return (EditorPanel) mainPanel.getNetworksTabPanel().getSelectedComponent();
     }
 
     public void openNetwork(String fileName) throws ParserException, java.io.IOException, org.openmarkov.core.io.format.annotation.NoReaderForFileException, org.openmarkov.gui.exception.CorruptNetworkFile {
@@ -366,27 +366,27 @@ public class MainPanelListenerAssistant extends WindowAdapter
         fileHandler.openNetwork(probNet);
     }
 
-    public boolean saveNetwork(NetworkPanel networkPanel) throws WriterException {
+    public boolean saveNetwork(NetworkEditorPanel networkPanel) throws WriterException {
         return fileHandler.saveNetwork(networkPanel);
     }
 
-    public boolean saveNetworkAs(NetworkPanel networkPanel) throws WriterException {
+    public boolean saveNetworkAs(NetworkEditorPanel networkPanel) throws WriterException {
         return fileHandler.saveNetworkAs(networkPanel);
     }
 
-    public boolean networkCanBeClosed(NetworkPanel networkPanel) throws WriterException {
+    public boolean networkCanBeClosed(NetworkEditorPanel networkPanel) throws WriterException {
         return fileHandler.networkCanBeClosed(networkPanel);
     }
 
-    public NetworkPanel createNewFrame(ProbNet probNet) {
+    public NetworkEditorPanel createNewFrame(ProbNet probNet) {
         return fileHandler.createNewFrame(probNet);
     }
 
-    public List<NetworkPanel> getNetworkPanels() {
+    public List<NetworkEditorPanel> getNetworkEditorPanels() {
         return networkPanels;
     }
 
-    public boolean closePanel(ZoomableContentPanel panel) {
+    public boolean closePanel(EditorPanel panel) {
         return panel.close();
     }
 

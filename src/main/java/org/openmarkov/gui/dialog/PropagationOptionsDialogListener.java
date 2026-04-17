@@ -12,7 +12,7 @@ import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,7 +60,7 @@ public class PropagationOptionsDialogListener implements ActionListener {
             if (inferenceType.equals(stringDatabase.getString("OptionsInferenceDialog.optionAuto"))) {
 				networkEditorPanel.setAutomaticPropagation(true);
 				networkEditorPanel.setPropagationActive(true);
-                if (networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
+                if (networkEditorPanel.getNetworkEditorPanel().getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE) {
 					for (int caseIndex = 0; caseIndex < networkEditorPanel.getEvidenceManager().getNumberOfCases(); caseIndex++) {
                         if (!networkEditorPanel.getEvidenceManager().getEvidenceCasesCompilationState(caseIndex)) {
                             try {
@@ -79,7 +79,7 @@ public class PropagationOptionsDialogListener implements ActionListener {
 				}
             } else if (inferenceType.equals(stringDatabase.getString("OptionsInferenceDialog.optionManual"))) {
 				networkEditorPanel.setAutomaticPropagation(false);
-                if (networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE) {
+                if (networkEditorPanel.getNetworkEditorPanel().getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE) {
 					inferenceToolBar.setCurrentEvidenceCaseName(networkEditorPanel.getEvidenceManager().getCurrentCase());
 				}
 			}

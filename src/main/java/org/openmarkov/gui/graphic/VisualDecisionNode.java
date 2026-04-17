@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.gui.configuration.GUIColors;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -192,7 +192,7 @@ public class VisualDecisionNode extends VisualNode{
 
 		if (preResolutionFinding) {
             g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_PRE_RESOLUTION_FINDING.getColor());
-        } else if (postResolutionFinding && (visualNetwork.getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE)) {
+        } else if (postResolutionFinding && (visualNetwork.getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE)) {
             g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_POST_RESOLUTION_FINDING.getColor());
 		} else {
 			if (hasPolicy) {

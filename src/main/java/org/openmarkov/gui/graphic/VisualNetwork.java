@@ -25,7 +25,6 @@ import org.openmarkov.gui.util.MovedNodeInfo;
 import org.openmarkov.gui.window.edition.EditorPanelClipboardAssistant;
 import org.openmarkov.gui.window.edition.SelectedContent;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
-import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -47,6 +46,7 @@ public class VisualNetwork implements PNEditListener {
      * Network whose visual representation is managed by this object.
      */
     private final ProbNet probNet;
+    private final NetworkEditorPanel networkEditorPanel;
     
     /**
      * This variable indicates if nodes must be drawn by title.
@@ -93,14 +93,13 @@ public class VisualNetwork implements PNEditListener {
     
     private boolean isPropagationActive = true;
     
-    private NetworkPanel.WorkingMode workingMode = NetworkPanel.WorkingMode.EDITION;
+    private NetworkEditorPanel.WorkingMode workingMode = NetworkEditorPanel.WorkingMode.EDITION;
     
     /**
      * Listener to the selection.
      */
     private final Set<SelectionListener> selectionListeners = new HashSet<SelectionListener>();
     
-    protected Graphics2D g2;
     
     /**
      * Object that assists this panel in the operations with the clipboard.
@@ -115,10 +114,12 @@ public class VisualNetwork implements PNEditListener {
     /**
      * Creates a new visual network.
      *
-     * @param probNet object that has the information of the network.
+     * @param probNet            object that has the information of the network.
+     * @param networkEditorPanel
      */
-    public VisualNetwork(ProbNet probNet) {
+    public VisualNetwork(ProbNet probNet, NetworkEditorPanel networkEditorPanel) {
         this.probNet = probNet;
+        this.networkEditorPanel = networkEditorPanel;
         this.probNet.getPNESupport().addListener(this);
         this.clipboardAssistant = new EditorPanelClipboardAssistant();
         
@@ -343,45 +344,20 @@ public class VisualNetwork implements PNEditListener {
     }
     
     /**
-     * Paints the nodes. The nodes are painted in reverse order of its
-     * position in the array. It means that the selected nodes are
-     * always shown at first plane; and the nodes with higher relevance
-     * are shown ahead of those with lower if they have the same selection
-     * state
+     * Overwrited 'paint' method to avoid to call it explicitly.
      *
      * @param g the graphics context in which to paint.
      */
-    private void paintNodes(Graphics2D g) {
+    public void paint(Graphics2D g) {
+        for (VisualLink visualLink : visualLinks) {
+            visualLink.paint(g);
+        }
         visualNodes = reorderVisualNodes();
         for (int i = (visualNodes.size() - 1); i >= 0; i--) {
             if (visualNodes.get(i).isVisible()) {
                 visualNodes.get(i).paint(g);
             }
         }
-    }
-    
-    /**
-     * Paints the links.
-     *
-     * @param g the graphics context in which to paint.
-     */
-    private void paintLinks(Graphics2D g) {
-        
-        for (VisualLink visualLink : visualLinks) {
-            visualLink.paint(g);
-        }
-        
-    }
-    
-    /**
-     * Overwrited 'paint' method to avoid to call it explicitly.
-     *
-     * @param g the graphics context in which to paint.
-     */
-    public void paint(Graphics2D g) {
-        this.g2 = g;
-        paintLinks(g);
-        paintNodes(g);
         if (newLink != null) {
             newLink.paint(g);
         }
@@ -674,9 +650,7 @@ public class VisualNetwork implements PNEditListener {
                 boolean isValidPlace = newPosX >= 0 && newPosY >= 0;
                 if (isValidPlace) {
                     node.setTemporalPosition(new Point2D.Double(newPosX, newPosY));
-                    if (g2 != null) {
-                        node.paint(g2);
-                    }
+                    this.networkEditorPanel.repaint();
                 }
             }
         }
@@ -924,7 +898,7 @@ public class VisualNetwork implements PNEditListener {
     
     @Override public void afterEditExecutes(PNEdit edit) {
         constructVisualInfo();
-        if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
+        if (getWorkingMode() != NetworkEditorPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();
         }
     }
@@ -962,7 +936,7 @@ public class VisualNetwork implements PNEditListener {
     
     private void refreshUI() {
         constructVisualInfo();
-        if (getWorkingMode() != NetworkPanel.WorkingMode.INFERENCE) {
+        if (getWorkingMode() != NetworkEditorPanel.WorkingMode.INFERENCE) {
             visualDecisionNodeRefresh();
         }
     }
@@ -1098,11 +1072,11 @@ public class VisualNetwork implements PNEditListener {
         this.isPropagationActive = isPropagationActive;
     }
     
-    public NetworkPanel.WorkingMode getWorkingMode() {
+    public NetworkEditorPanel.WorkingMode getWorkingMode() {
         return workingMode;
     }
     
-    public void setWorkingMode(NetworkPanel.WorkingMode workingMode) {
+    public void setWorkingMode(NetworkEditorPanel.WorkingMode workingMode) {
         this.workingMode = workingMode;
     }
     

@@ -129,7 +129,7 @@ public class NodeContextualMenu extends ContextualMenu {
         setOptionEnabled(ActionCommands.ABSORB_PARENTS.getCommandName(), AbsorbParentsValidator.validate(node));
         
         if (selectedNode.getNode().getNodeType() == NodeType.DECISION) {
-            switch (panel.getNetworkPanel().getWorkingMode()) {
+            switch (panel.getNetworkEditorPanel().getWorkingMode()) {
                 case EDITION -> setDecisionNodeContextualMenuInEditionMode();
                 case INFERENCE -> {
                     if (panel.getEvidenceManager().getEvidenceCasesCompilationState(panel.getEvidenceManager().getCurrentCase())) {

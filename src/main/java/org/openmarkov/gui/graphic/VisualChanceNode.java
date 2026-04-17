@@ -10,7 +10,7 @@ package org.openmarkov.gui.graphic;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.gui.configuration.GUIColors;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
@@ -248,7 +248,7 @@ public class VisualChanceNode extends VisualNode{
 		if (preResolutionFinding) {
             g.setPaint(GUIColors.Network.ChanceNode.BACKGROUND_ON_PRE_RESOLUTION_FINDING.getColor());
 		} else if (postResolutionFinding && (
-                visualNetwork.getWorkingMode() == NetworkPanel.WorkingMode.INFERENCE
+                visualNetwork.getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE
 		)) {
             g.setPaint(GUIColors.Network.ChanceNode.BACKGROUND_ON_POST_RESOLUTION_FINDING.getColor());
 		} else {

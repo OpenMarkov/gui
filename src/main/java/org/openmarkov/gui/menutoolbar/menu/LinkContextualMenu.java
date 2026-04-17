@@ -91,7 +91,7 @@ class LinkContextualMenu extends ContextualMenu {
         
         boolean linkRestrictionEnabled = LinkRestrictionValidator.validate(link);
         
-        switch (panel.getNetworkPanel().getWorkingMode()) {
+        switch (panel.getNetworkEditorPanel().getWorkingMode()) {
             case EDITION -> {
                 setOptionEnabled(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
                                  (linkRestrictionEnabled && !link.hasRestrictions()));

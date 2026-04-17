@@ -25,7 +25,7 @@ import org.openmarkov.gui.menutoolbar.toolbar.EditionToolBar;
 import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
 import org.openmarkov.gui.menutoolbar.toolbar.StandardToolBar;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -92,7 +92,7 @@ public class MainPanel extends JPanel {
     
     public final MainGUI mainGUI;
     
-    public JTabbedPane getNetworksTabPanel() {
+    public AutoScrollableTabbedPane getNetworksTabPanel() {
         return this.networksTabPanel;
     }
     
@@ -100,7 +100,7 @@ public class MainPanel extends JPanel {
     /**
      * Networks tabs come from here.
      */
-    private final JTabbedPane networksTabPanel;
+    private final AutoScrollableTabbedPane networksTabPanel;
     
     private final ToolbarManager toolbarManager;
     
@@ -115,10 +115,10 @@ public class MainPanel extends JPanel {
         mainFrame = mainGUI;
         mainFrame.setName(mainGUI.getName());
         toolbarManager = new ToolbarManager(this);
-        this.networksTabPanel = new JTabbedPane();
+        this.networksTabPanel = new AutoScrollableTabbedPane(new JTabbedPane());
         
         //Movement for right and left.
-        InputMap inputMap = this.networksTabPanel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        InputMap inputMap = this.networksTabPanel.getjTabbedPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         inputMap.put(KeyStroke.getKeyStroke(
                 KeyEvent.VK_RIGHT,
                 InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK
@@ -131,10 +131,10 @@ public class MainPanel extends JPanel {
         this.mainPanelListenerAssistant = new MainPanelListenerAssistant(this);
         this.mainMenu = new MainMenu(this, mainPanelListenerAssistant);
         
-        this.networksTabPanel.addChangeListener(e -> {
+        this.networksTabPanel.getjTabbedPane().addChangeListener(e -> {
             var selectedComponent = this.networksTabPanel.getSelectedComponent();
             switch (selectedComponent) {
-                case NetworkPanel networkPanel -> {
+                case NetworkEditorPanel networkPanel -> {
                     this.getMainPanelMenuAssistant().updateOptionsNetworkDependent(networkPanel);
                     this.getInferenceToolBar().setCurrentEvidenceCaseName(networkPanel.getCurrentCase());
                     this.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);
@@ -155,29 +155,29 @@ public class MainPanel extends JPanel {
     
     /**
      * Convenience method to avoid writing
-     * {@code MainPanel.getUniqueInstance().getMainPanelListenerAssistant().getCurrentNetworkPanel().getProbNet()}.
+     * {@code MainPanel.getUniqueInstance().getMainPanelListenerAssistant().getCurrentNetworkEditorPanel().getProbNet()}.
      * <p>
      * This method cannot throw NullPointerException.
      *
      * @return The current ProbNet opened in the Main Panel.
      */
     public static @Nullable ProbNet getCurrentProbNet() {
-        NetworkPanel currentNetworkPanel = MainPanel.getCurrentNetworkPanel();
-        if (currentNetworkPanel == null) {
+        NetworkEditorPanel currentNetworkEditorPanel = MainPanel.getCurrentNetworkEditorPanel();
+        if (currentNetworkEditorPanel == null) {
             return null;
         }
-        return currentNetworkPanel.getProbNet();
+        return currentNetworkEditorPanel.getProbNet();
     }
     
     /**
      * Convenience method to avoid writing
-     * {@code MainPanel.getUniqueInstance().getMainPanelListenerAssistant().getCurrentNetworkPanel()}.
+     * {@code MainPanel.getUniqueInstance().getMainPanelListenerAssistant().getCurrentNetworkEditorPanel()}.
      * <p>
      * This method cannot throw NullPointerException.
      *
-     * @return The current NetworkPanel opened in the Main Panel.
+     * @return The current NetworkEditorPanel opened in the Main Panel.
      */
-    public static @Nullable NetworkPanel getCurrentNetworkPanel() {
+    public static @Nullable NetworkEditorPanel getCurrentNetworkEditorPanel() {
         if (MainGUI.INSTANCE == null) {
             return null;
         }
@@ -189,7 +189,7 @@ public class MainPanel extends JPanel {
         if (listenerAssistant == null) {
             return null;
         }
-        return listenerAssistant.getCurrentNetworkPanel();
+        return listenerAssistant.getCurrentNetworkEditorPanel();
     }
     
     /**
@@ -208,7 +208,7 @@ public class MainPanel extends JPanel {
         this.setSize(new Dimension(Math.max(600, previousWidth), Math.max(500, previousHeight)));
         this.add(this.getToolBarPanel(), BorderLayout.NORTH);
         this.getMainPanelMenuAssistant();
-        this.add(networksTabPanel, BorderLayout.CENTER);
+        this.add(networksTabPanel.getjTabbedPane(), BorderLayout.CENTER);
     }
     
     /**
@@ -288,7 +288,7 @@ public class MainPanel extends JPanel {
      *
      * @param barType new type of tool bar to be set in the panel
      */
-    protected void setToolBarPanel(NetworkPanel.WorkingMode barType) {
+    protected void setToolBarPanel(NetworkEditorPanel.WorkingMode barType) {
         switch (barType) {
             case EDITION -> {
                 getToolBarPanel().remove(getInferenceToolBar());
@@ -297,7 +297,7 @@ public class MainPanel extends JPanel {
             case INFERENCE -> {
                 getToolBarPanel().remove(getEditionToolBar());
                 getInferenceToolBar().setExpansionThreshold(this.getMainPanelListenerAssistant().
-                                                                getCurrentNetworkPanel()
+                                                                getCurrentNetworkEditorPanel()
                                                                 .getExpansionThreshold());
                 getToolBarPanel().add(getInferenceToolBar(), 1);
             }
@@ -310,10 +310,10 @@ public class MainPanel extends JPanel {
      * This method sets the button for switching between Edition/inference to
      * the pertinent value (pressed or not)
      *
-     * @param workingMode the working mode of the currently selected NetworkPanel.
+     * @param workingMode the working mode of the currently selected NetworkEditorPanel.
      *                    Depending on this value, the button will be set pressed or not.
      */
-    public void changeWorkingModeButton(NetworkPanel.WorkingMode workingMode) {
+    public void changeWorkingModeButton(NetworkEditorPanel.WorkingMode workingMode) {
         this.getStandardToolBar().changeWorkingModeButton(workingMode);
     }
     
@@ -419,14 +419,14 @@ public class MainPanel extends JPanel {
         // Variables to store different measures
         int toolBarComponentsWidth = 0;
         int toolBarComponentsHeight = 0;
-        int currentNetworkPanelMaxWidth = 600;
+        int currentNetworkEditorPanelMaxWidth = 600;
         // Variables to adapt the size of the toolbar
         int safetyWidth = 11;
         int safetyHeight = 15;
         // When changing the working mode, sometimes the values of the size of the window are not accurate
-        int currentNetworkPanelWidth = Integer.MAX_VALUE;
-        if (this.getMainPanelListenerAssistant().getCurrentNetworkPanel() != null) {
-            currentNetworkPanelWidth = this.getMainPanelListenerAssistant().getCurrentNetworkPanel().getWidth();
+        int currentNetworkEditorPanelWidth = Integer.MAX_VALUE;
+        if (this.getMainPanelListenerAssistant().getCurrentNetworkEditorPanel() != null) {
+            currentNetworkEditorPanelWidth = this.getMainPanelListenerAssistant().getCurrentNetworkEditorPanel().getWidth();
         }
         // We sum the width and height of every component present in the toolbar
         for (Component toolBarComponent : this.getToolBarPanel().getComponents()) {
@@ -436,7 +436,7 @@ public class MainPanel extends JPanel {
         
         // If the toolbar cannot show them in one single line
         if ((this.getToolBarPanel().getWidth() < toolBarComponentsWidth + safetyWidth) || (
-                currentNetworkPanelWidth < currentNetworkPanelMaxWidth
+                currentNetworkEditorPanelWidth < currentNetworkEditorPanelMaxWidth
         )) {
             // we increase the height of the toolbar accordingly
             this.getToolBarPanel()
@@ -469,23 +469,23 @@ public class MainPanel extends JPanel {
         }
     }
     
-    public void addCloseableTab(String title, ZoomableContentPanel component) {
+    public void addCloseableTab(String title, EditorPanel component) {
         var uniqueTitle = getUniqueTitle(title, null);
-        this.networksTabPanel.addTab(uniqueTitle, component);
+        this.networksTabPanel.addTab(uniqueTitle, component.getScrollPanel());
         
         TabHeader header = new TabHeader(uniqueTitle);
         header.closeButton.addActionListener(e -> component.close());
         this.networksTabPanel.setTabComponentAt(this.networksTabPanel.getTabCount() - 1, header);
         Component tabComponent = this.networksTabPanel.getTabComponentAt(this.networksTabPanel.getTabCount() - 1);
         
-        if (component instanceof NetworkPanel networkPanel) {
-            Consumer<NetworkPanel> reloadNamesAndColor = networkP -> {
+        if (component instanceof NetworkEditorPanel networkPanel) {
+            Consumer<NetworkEditorPanel> reloadNamesAndColor = networkP -> {
                 if (networkP.getModified()) {
                     header.titleLabel.setForeground(GUIColors.General.ATTENTION.getColor());
                 } else {
                     header.titleLabel.setForeground(null);
                 }
-                String uniqueTitleOnChange = this.getUniqueTitle(networkPanel.probNet.getName(), Set.of(this.networksTabPanel.indexOfTabComponent(tabComponent)));
+                String uniqueTitleOnChange = this.getUniqueTitle(networkPanel.getProbNet().getName(), Set.of(this.networksTabPanel.indexOfTabComponent(tabComponent)));
                 header.titleLabel.setText(uniqueTitleOnChange);
                 networkP.getEditorPanel().updateName(uniqueTitleOnChange);
             };
@@ -510,7 +510,7 @@ public class MainPanel extends JPanel {
                     case 3 -> {
                         JPopupMenu tabContextMenu = new JPopupMenu();
                         
-                        if (component instanceof NetworkPanel networkPanel) {
+                        if (component instanceof NetworkEditorPanel networkPanel) {
                             JMenuItem saveButton = new JMenuItem("Save");
                             saveButton.addActionListener(e1 -> {
                                 try {
@@ -573,7 +573,7 @@ public class MainPanel extends JPanel {
                 boolean initialTabClosed = false;
                 for (int tabIndexToClose : tabIndexesToClose) {
                     MainPanel.this.networksTabPanel.setSelectedIndex(tabIndexToClose);
-                    if (!((ZoomableContentPanel) MainPanel.this.networksTabPanel.getSelectedComponent()).close()) {
+                    if (!((EditorPanel) MainPanel.this.networksTabPanel.getSelectedComponent()).close()) {
                         return;
                     }
                     initialTabClosed = initialTabClosed || initialTab == tabIndexToClose;

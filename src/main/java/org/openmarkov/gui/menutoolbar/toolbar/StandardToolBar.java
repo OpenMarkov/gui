@@ -10,7 +10,7 @@ package org.openmarkov.gui.menutoolbar.toolbar;
 import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -324,11 +324,11 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
      * the pertinent value (pressed or not)
      *
      * @param workingMode the working mode of the currently selected
-     *                    NetworkPanel. Depending on this value, the button will be set
+     *                    NetworkEditorPanel. Depending on this value, the button will be set
      *                    pressed or not.
      */
-    public void changeWorkingModeButton(NetworkPanel.WorkingMode workingMode) {
-        workingModeButton.setSelected(workingMode == NetworkPanel.WorkingMode.INFERENCE);
+    public void changeWorkingModeButton(NetworkEditorPanel.WorkingMode workingMode) {
+        workingModeButton.setSelected(workingMode == NetworkEditorPanel.WorkingMode.INFERENCE);
     }
     
     /**

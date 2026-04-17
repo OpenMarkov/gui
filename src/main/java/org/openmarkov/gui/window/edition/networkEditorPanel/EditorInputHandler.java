@@ -14,7 +14,7 @@ import org.openmarkov.gui.graphic.VisualState;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.util.GUIUtils;
-import org.openmarkov.gui.window.edition.NetworkPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,14 +31,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
     
     private final NetworkEditorPanel networkEditorPanel;
     
-    private final List<Toast> toasts = new ArrayList<>();
-    
     EditorInputHandler(NetworkEditorPanel networkEditorPanel) {
         this.networkEditorPanel = networkEditorPanel;
-    }
-    
-    public List<Toast> getToasts() {
-        return this.toasts;
     }
     
     /**
@@ -54,14 +48,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
     private int lastClickCount = 0;
     private boolean lastLeftClickProducedANode = false;
     
-    static class Toast {
-        String text;
-        Rectangle rect;
-        
-        public Toast(String text) {
-            this.text = text;
-        }
-    }
+    
+    
     
     /**
      * Invoked when a mouse button has been pressed on the component.
@@ -70,13 +58,6 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
      */
     @Override public void mousePressed(MouseEvent e) {
         // requestFocusInWindow(); Activate if nodes can't be moved by arrows.
-        var selectedToast = this.toasts.stream().filter(toast -> toast.rect.getBounds().contains(e.getPoint())).findFirst();
-        if(selectedToast.isPresent()){
-            this.toasts.remove(selectedToast.get());
-            e.consume();
-            return;
-        }
-        
         if (e.getClickCount() <= (this.lastClickCount + 1)) {
             this.lastLeftClickProducedANode = false;
             this.lastClickCount = Math.max(e.getClickCount() - 1, 0);
@@ -90,10 +71,10 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
                                                                                                                 .screenToPanel(e.getY()));
         // Specific functionality depending on the edition mode;
         try {
-            var oldNodesCount = this.networkEditorPanel.getNetworkPanel().getProbNet().getNodes().size();
+            var oldNodesCount = this.networkEditorPanel.getNetworkEditorPanel().getProbNet().getNodes().size();
             this.networkEditorPanel.getEditionMode().mousePressed(e, this.cursorPosition, g);
             if (e.getClickCount() == 1) {
-                int newNodesCount = this.networkEditorPanel.getNetworkPanel().getProbNet().getNodes().size();
+                int newNodesCount = this.networkEditorPanel.getNetworkEditorPanel().getProbNet().getNodes().size();
                 this.lastLeftClickProducedANode = oldNodesCount < newNodesCount;
             }
         } catch (DoEditException ex) {
@@ -118,8 +99,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
                     this.networkEditorPanel.getVisualNetwork().setSelectedNode(node, true);
                 }
                 try {
-                    this.networkEditorPanel.showPotentialDialog(this.networkEditorPanel.getNetworkPanel()
-                                                                                       .getWorkingMode() != NetworkPanel.WorkingMode.EDITION);
+                    this.networkEditorPanel.showPotentialDialog(this.networkEditorPanel.getNetworkEditorPanel()
+                                                                                       .getWorkingMode() != NetworkEditorPanel.WorkingMode.EDITION);
                 } finally {
                     this.networkEditorPanel.repaint();
                     return;
@@ -130,7 +111,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
             this.networkEditorPanel.repaint();
             return;
         }
-        if (this.networkEditorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.WorkingMode.EDITION) {
+        if (this.networkEditorPanel.getNetworkEditorPanel().getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION) {
             // If we are in Edition Mode a double click must open
             // the corresponding properties dialog (for node, link
             // or network)
@@ -141,9 +122,9 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
                     if (!userAcceptedChanges && this.lastLeftClickProducedANode) {
                         ArrayList<PNEdit> undone;
                         do {
-                            undone = this.networkEditorPanel.getNetworkPanel().getProbNet().getPNESupport().undo();
+                            undone = this.networkEditorPanel.getNetworkEditorPanel().getProbNet().getPNESupport().undo();
                         } while (undone != null && undone.stream().noneMatch(AddNodeEdit.class::isInstance));
-                        this.networkEditorPanel.getNetworkPanel().getProbNet().getPNESupport().removeUndoneEdits();
+                        this.networkEditorPanel.getNetworkEditorPanel().getProbNet().getPNESupport().removeUndoneEdits();
                     }
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | ConstraintViolatedException | NotSupportedOperationException |
@@ -296,7 +277,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
             contextualMenu = this.getContextualMenu(selectedElement, this.networkEditorPanel);
             this.networkEditorPanel.getVisualNetwork().selectElement(selectedElement);
         } else {
-            boolean canBeExpanded = this.networkEditorPanel.getNetworkPanel().getProbNet().thereAreTemporalNodes();
+            boolean canBeExpanded = this.networkEditorPanel.getNetworkEditorPanel().getProbNet().thereAreTemporalNodes();
             contextualMenu = this.contextualMenuFactory.getNetworkContextualMenu(canBeExpanded);
         }
         contextualMenu.show(this.networkEditorPanel, e.getX(), e.getY());
