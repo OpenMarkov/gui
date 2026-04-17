@@ -40,8 +40,6 @@
                   value="Theta value must be in range 0..1, but it was {thetaValue}."/>
     <Localization class="org.openmarkov.gui.exception.CannotInvertUndirectedLinks"
                   value="Undirected links cannot be inverted, meaning it is not possible to invert {link}"/>
-    <Localization class="org.openmarkov.gui.exception.CannotSavePreferenceException"
-                  value="Cannot save preference {key} with value {valueAsString}."/>
     <Localization class="org.openmarkov.gui.exception.ChangeDomainOfTreeADDIsNotAllowedException"
                   value="You are trying to change the domain of a TreeADD, but that is not allowed."/>
     <Localization class="org.openmarkov.gui.exception.CorruptNetworkFile"
@@ -60,7 +58,6 @@
                   value="Link inversion is only possible for Chance nodes that have a potential, which is not the case for {wrongNode}"/>
     <Localization class="org.openmarkov.gui.exception.MismatchedValueException"
                   value="Wrong value found. it was expecting {expected}, but {foundAsString} was found instead."/>
-    <Localization class="org.openmarkov.gui.exception.MissingPreferenceException" value="There is no preference by key {key}."/>
     <Localization class="org.openmarkov.gui.exception.NoNetOpenedException" value="There is no network opened."/>
     <Localization class="org.openmarkov.gui.exception.NoRowSelectedException"
                   value="There is no row selected, and at least one it is required."/>
