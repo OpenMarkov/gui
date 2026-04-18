@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog;
 
+import org.openmarkov.gui.loader.element.ImageLoader;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
 
 import javax.swing.*;
@@ -31,7 +32,7 @@ public class SplashScreenLoader {
     public void splashScreenInit() {
         // TODO externalize to OpenMarkov Properties the string for the icon
         URL url = this.getClass().getResource(logoFile);
-        ImageIcon myImage = new ImageIcon(url);
+        ImageIcon myImage = ImageLoader.load(url);
         splash = new SplashScreen(myImage);
         splash.setLocationRelativeTo(null);
         splash.setProgressMax(100);

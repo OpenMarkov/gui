@@ -35,6 +35,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.dialog.io.OMFileChooser;
+import org.openmarkov.gui.loader.element.ImageLoader;
 import org.openmarkov.inference.algorithm.temporalevaluation.tasks.MIDTemporalEvolution;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VETemporalEvolution;
 
@@ -1729,7 +1730,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @return The legend label made
      */
     public static JLabel makeLegendLabel(String title, Image image) {
-        Icon icon = new ImageIcon(image);
+        Icon icon = ImageLoader.of(image);
         JLabel label = new JLabel(title);
         label.setIcon(icon);
         return label;

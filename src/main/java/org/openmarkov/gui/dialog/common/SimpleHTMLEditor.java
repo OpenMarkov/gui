@@ -2,6 +2,7 @@ package org.openmarkov.gui.dialog.common;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.gui.loader.element.ImageLoader;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -78,7 +79,7 @@ public final class SimpleHTMLEditor extends JPanel {
     @SuppressWarnings("OverlyLongMethod")
     private void addToolBarUIComponents(CommonComponents commonComponents) {
         URL copyIconImageURL = Objects.requireNonNull(SimpleHTMLEditor.class.getResource("/htmleditor/copybutton.png"));
-        JButton copyUI = new JButton(new ImageIcon(copyIconImageURL));
+        JButton copyUI = new JButton(ImageLoader.load(copyIconImageURL));
         copyUI.addActionListener(new DefaultEditorKit.CopyAction());
         
         JButton cutUI = SimpleHTMLEditor.createJButton("✂");
@@ -87,7 +88,7 @@ public final class SimpleHTMLEditor extends JPanel {
         pasteContentUI.addActionListener(new DefaultEditorKit.PasteAction());
         
         URL iconResource = Objects.requireNonNull(SimpleHTMLEditor.class.getResource("/htmleditor/hyperlink_add.png"));
-        JButton addHyperlinkUI = new JButton(new ImageIcon(iconResource));
+        JButton addHyperlinkUI = new JButton(ImageLoader.load(iconResource));
         addHyperlinkUI.addActionListener(new AddHyperlinkAction());
         
         JButton makeBoldUI = SimpleHTMLEditor.createMakeBoldUI(commonComponents);
@@ -200,7 +201,7 @@ public final class SimpleHTMLEditor extends JPanel {
      */
     private static JButton createAlignmentUI(CommonComponents commonComponents, int alignment, String actionName, String resourceImage) {
         URL iconResource = Objects.requireNonNull(SimpleHTMLEditor.class.getResource(resourceImage));
-        JButton setAlignmentUI = new JButton(new ImageIcon(iconResource));
+        JButton setAlignmentUI = new JButton(ImageLoader.load(iconResource));
         ActionListener alignmentAction = new StyledEditorKit.AlignmentAction(actionName, alignment);
         setAlignmentUI.addActionListener(e -> {
             alignmentAction.actionPerformed(e);
@@ -218,7 +219,7 @@ public final class SimpleHTMLEditor extends JPanel {
      */
     private static JButton createChangeForegroundColorUI(CommonComponents commonComponents) {
         JColorChooser colorChooser = new JColorChooser();
-        var foregroundColorButton = new JButton(new ImageIcon(Objects.requireNonNull(SimpleHTMLEditor.class.getResource("/htmleditor/changecolor.png"))));
+        var foregroundColorButton = new JButton(ImageLoader.load(Objects.requireNonNull(SimpleHTMLEditor.class.getResource("/htmleditor/changecolor.png"))));
         foregroundColorButton.addActionListener(e -> {
             var color = JColorChooser.showDialog(colorChooser, "Choose your foreground color",
                                                  colorChooser.getColor(), false);

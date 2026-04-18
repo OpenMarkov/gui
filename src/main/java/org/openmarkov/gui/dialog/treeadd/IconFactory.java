@@ -8,6 +8,7 @@
 package org.openmarkov.gui.dialog.treeadd;
 
 import org.openmarkov.gui.configuration.GUIColors;
+import org.openmarkov.gui.loader.element.ImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,8 +57,8 @@ abstract public class IconFactory {
 		g.drawLine(ovalWidth / 2, height - 1, width - ovalWidth / 2, height - 1);
 
 		t.draw(g, hMargin, height - vMargin - 1);
-
-		return new ImageIcon(image);
+		
+		return ImageLoader.of(image);
 	}
 
 	/**
@@ -86,8 +87,8 @@ abstract public class IconFactory {
 		g.drawRect(0, 1, width - 2, height - 2);
 
 		t.draw(g, hMargin, height - vMargin);
-
-		return new ImageIcon(image);
+		
+		return ImageLoader.of(image);
 	}
 
 	/**
@@ -129,8 +130,8 @@ abstract public class IconFactory {
         g.setColor(GUIColors.Network.UtilityNode.FOREGROUND.getColor());
 		g.drawPolygon(polygon);
 		t.draw(g, hMargin, height - vMargin);
-
-		return new ImageIcon(image);
+		
+		return ImageLoader.of(image);
 	}
 }
 

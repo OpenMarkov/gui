@@ -4,6 +4,7 @@ import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.gui.exception.ResourceNotFoundException;
 
 import javax.swing.*;
+import java.awt.*;
 import java.net.URL;
 
 /**
@@ -66,7 +67,7 @@ public enum IconBind {
         if (icon == null) {
             throw new UnreachableException(new ResourceNotFoundException(this.fileName));
         }
-        return new ImageIcon(icon);
+        return ImageLoader.load(icon);
     }
     
     
