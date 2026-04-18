@@ -14,13 +14,11 @@ import org.openmarkov.gui.graphic.VisualState;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.util.GUIUtils;
-import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -197,7 +195,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         double diffX = point.getX() - this.cursorPosition.getX();
         double diffY = point.getY() - this.cursorPosition.getY();
         this.cursorPosition.setLocation(point);
-        this.networkEditorPanel.getEditionMode().mouseDragged(e, point, diffX, diffY, g);
+        this.networkEditorPanel.getEditionMode().mouseMoved(e, point, diffX, diffY, g);
     }
     
     /**
@@ -240,6 +238,14 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
      * @param e mouse event information.
      */
     @Override public void mouseMoved(MouseEvent e) {
+        Graphics2D g = (Graphics2D) this.networkEditorPanel.getGraphics();
+        Point2D.Double point = new Point2D.Double(this.networkEditorPanel.getZoomManager()
+                                                                         .screenToPanel(e.getX()), this.networkEditorPanel.getZoomManager()
+                                                                                                                          .screenToPanel(e.getY()));
+        double diffX = point.getX() - this.cursorPosition.getX();
+        double diffY = point.getY() - this.cursorPosition.getY();
+        this.cursorPosition.setLocation(point);
+        this.networkEditorPanel.getEditionMode().mouseMoved(e, point, diffX, diffY, g);
     }
     
     @Override

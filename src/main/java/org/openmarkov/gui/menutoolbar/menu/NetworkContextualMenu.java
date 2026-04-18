@@ -7,21 +7,26 @@
 
 package org.openmarkov.gui.menutoolbar.menu;
 
+import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
+import org.openmarkov.gui.componentBuilder.JMenuItemBuilder;
 import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
-import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.MainPanel;
+import org.openmarkov.gui.window.edition.mode.NodeEditionMode;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
- * This class implements a contextual menu that shows when a user click on tha
+ * This class implements a contextual menu that shows when a user click on the
  * background of a network panel.
  *
  * @author jmendoza
@@ -64,6 +69,7 @@ class NetworkContextualMenu extends ContextualMenu {
      * This method initializes this instance.
      */
     private void initialize() {
+        add(getCreateElementsMenuItem());
         add(getPasteMenuItem());
         addSeparator();
         add(getNetworkPropertiesMenuItem());
@@ -73,6 +79,42 @@ class NetworkContextualMenu extends ContextualMenu {
             addSeparator();
             add(getExpandedNetworkMenuItem());
         }
+    }
+    
+    record NodeMenuGenerator(NodeType nodeType, String title, Icon icon, ActionCommands actionCommand,
+                             boolean enabled) {
+    }
+    
+    ;
+    
+    private JMenuItem getCreateElementsMenuItem() {
+        NetworkEditorPanel networkEditorPanel = Objects.requireNonNull(MainPanel.getCurrentNetworkEditorPanel());
+        var currentNetwork = networkEditorPanel.getProbNet();
+        boolean isEditionMode = networkEditorPanel
+                .getEditorPanel()
+                .getVisualNetwork()
+                .getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION;
+        
+        
+        return new JMenuItemBuilder("Add")
+                .withItems(
+                        Stream.of(
+                                new NodeMenuGenerator(NodeType.CHANCE, "Chance node", IconBind.CHANCE_ENABLED.icon(),
+                                                      ActionCommands.CHANCE_CREATION, true),
+                                new NodeMenuGenerator(NodeType.DECISION, "Decision node", IconBind.DECISION_ENABLED.icon(),
+                                                      ActionCommands.DECISION_CREATION, !currentNetwork.hasConstraintOfClass(OnlyChanceNodes.class)),
+                                new NodeMenuGenerator(NodeType.UTILITY, "Utility node", IconBind.UTILITY_ENABLED.icon(),
+                                                      ActionCommands.UTILITY_CREATION, !currentNetwork.hasConstraintOfClass(OnlyChanceNodes.class))
+                        ).map(nodeMenuGenerator -> new JMenuItemBuilder(nodeMenuGenerator.title)
+                                .withIcon(nodeMenuGenerator.icon)
+                                .withActionCommand(nodeMenuGenerator.actionCommand)
+                                .enabled(isEditionMode && nodeMenuGenerator.enabled)
+                                .onClick(e -> NodeEditionMode.createNode(currentNetwork, nodeMenuGenerator.nodeType,
+                                                                         new Point2D.Double(this.getRelativeShownLocationX(), this.getRelativeShownLocationY()), networkEditorPanel))
+                                .build())
+                
+                )
+                .build();
     }
     
     

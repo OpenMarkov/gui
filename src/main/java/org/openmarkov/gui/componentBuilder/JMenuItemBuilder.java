@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Stream;
 
 public class JMenuItemBuilder {
@@ -19,11 +21,14 @@ public class JMenuItemBuilder {
     private @Nullable Character mnemonic;
     private @Nullable KeyStroke accelerator;
     private @Nullable Boolean enabled;
+    private @Nullable Icon icon;
+    private @Nullable String actionCommand;
     private final @NotNull ArrayList<ThrowingConsumer<ActionEvent, ? extends Exception>> onClick;
     private final @NotNull ArrayList<ThrowingConsumer<ItemEvent, ? extends Exception>> onItemEvent;
     private final @NotNull ArrayList<Component> items;
     private @NotNull SpecificKind specificKind;
     private @Nullable Boolean selected;
+    
     
     enum SpecificKind {
         Radio, Checkbox, Unspecified
@@ -49,6 +54,21 @@ public class JMenuItemBuilder {
     
     public JMenuItemBuilder withAccelerator(KeyStroke accelerator) {
         this.accelerator = accelerator;
+        return this;
+    }
+    
+    public JMenuItemBuilder withActionCommand(String actionCommand) {
+        this.actionCommand = actionCommand;
+        return this;
+    }
+    
+    public JMenuItemBuilder withActionCommand(ActionCommands actionCommand) {
+        this.actionCommand = actionCommand.getCommandName();
+        return this;
+    }
+    
+    public JMenuItemBuilder withIcon(Icon icon) {
+        this.icon = icon;
         return this;
     }
     
@@ -79,6 +99,11 @@ public class JMenuItemBuilder {
     
     public JMenuItemBuilder withItems(@NotNull Collection<? extends @NotNull Component> items) {
         this.items.addAll(items);
+        return this;
+    }
+    
+    public JMenuItemBuilder withItems(@NotNull Component... items) {
+        Collections.addAll(this.items, items);
         return this;
     }
     
@@ -125,6 +150,12 @@ public class JMenuItemBuilder {
         }
         if (this.accelerator != null) {
             jMenuItem.setAccelerator(this.accelerator);
+        }
+        if (this.icon != null) {
+            jMenuItem.setIcon(this.icon);
+        }
+        if (this.actionCommand != null) {
+            jMenuItem.setActionCommand(this.actionCommand);
         }
         for (var onClick : this.onClick) {
             jMenuItem.addActionListener(e -> {

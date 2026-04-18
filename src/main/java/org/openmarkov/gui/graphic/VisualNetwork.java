@@ -1016,7 +1016,7 @@ public class VisualNetwork implements PNEditListener {
      *
      * @return The edit for the new link created
      */
-    public PNEdit finishLinkCreation(Point2D.Double point, Graphics2D g) {
+    public void finishLinkCreation(Point2D.Double point, Graphics2D g) throws DoEditException {
         PNEdit linkEdit = null;
         if (newLink != null) {
             newLink = null;
@@ -1031,7 +1031,9 @@ public class VisualNetwork implements PNEditListener {
                 newLinkSource = null;
             }
         }
-        return linkEdit;
+        if (linkEdit != null) {
+            linkEdit.executeEdit();
+        }
     }
     
     public void cancelLinkCreation(NetworkEditorPanel networkEditorPanel) {

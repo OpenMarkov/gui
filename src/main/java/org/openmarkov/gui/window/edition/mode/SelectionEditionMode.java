@@ -54,15 +54,16 @@ public class SelectionEditionMode extends EditionMode {
         }
     }
     
-    @Override public void mouseDragged(MouseEvent e, Point2D.Double position, double diffX, double diffY,
-                                       Graphics2D g) {
-        if (!SwingUtilities.isLeftMouseButton(e)) {
-            return;
-        }
+    @Override public void mouseMoved(MouseEvent e, Point2D.Double position, double diffX, double diffY,
+                                     Graphics2D g) {
         if (this.selectionState == SelectionState.SELECTING) {
             this.visualNetwork.updateSelectionRectangle(diffX, diffY);
+        } else if (this.selectionState == SelectionState.CREATING_LINK) {
+            visualNetwork.updateLinkCreation(position);
+            networkEditorPanel.repaint();
         } else if (this.selectionState == SelectionState.MOVING ||
-                (this.selectionState == SelectionState.NOTHING && !this.visualNetwork.getSelectedNodes().isEmpty())) {
+                (this.selectionState == SelectionState.NOTHING && SwingUtilities.isLeftMouseButton(e) && !this.visualNetwork.getSelectedNodes()
+                                                                                                                            .isEmpty())) {
             this.setSelectionState(SelectionState.MOVING);
             this.visualNetwork.moveSelectedElements(diffX, diffY);
         }
@@ -78,10 +79,18 @@ public class SelectionEditionMode extends EditionMode {
             case SelectionState.MOVING -> this.tryFinishNodesMovements();
             case SelectionState.SELECTING -> {
                 this.visualNetwork.finishSelectionRectangle(position);
-                this.setSelectionState(SelectionState.NOTHING);
+            }
+            case CREATING_LINK -> {
+                visualNetwork.finishLinkCreation(position, g);
             }
         }
+        this.setSelectionState(SelectionState.NOTHING);
         this.networkEditorPanel.repaint();
+    }
+    
+    public void startLinkCreation(Point2D.Double cursorPosition) {
+        visualNetwork.startLinkCreation(cursorPosition, (Graphics2D) networkEditorPanel.getGraphics());
+        this.setSelectionState(SelectionState.CREATING_LINK);
     }
     
     private void tryFinishNodesMovements() throws DoEditException {

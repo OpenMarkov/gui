@@ -36,18 +36,12 @@ import java.awt.event.MouseEvent;
         if (!SwingUtilities.isLeftMouseButton(e)) {
             return;
         }
-        PNEdit linkEdit = visualNetwork.finishLinkCreation(position, g);
-        if (linkEdit != null) {
-            linkEdit.executeEdit();
-        }
+        visualNetwork.finishLinkCreation(position, g);
         networkEditorPanel.repaint();
     }
     
-    @Override public void mouseDragged(MouseEvent e, Point2D.Double cursorPosition, double diffX, double diffY,
-                                       Graphics2D g) {
-        if (!SwingUtilities.isLeftMouseButton(e)) {
-            return;
-        }
+    @Override public void mouseMoved(MouseEvent e, Point2D.Double cursorPosition, double diffX, double diffY,
+                                     Graphics2D g) {
         visualNetwork.updateLinkCreation(cursorPosition);
         networkEditorPanel.repaint();
     }

@@ -32,6 +32,9 @@ public class CursorLoader {
      * Name of the cursor that represents the selection of varios nodes.
      */
     public static final Cursor CURSOR_MULTIPLE_SELECTION = new Cursor(Cursor.CROSSHAIR_CURSOR);
+    
+    public static final Cursor CURSOR_LINK = load("link.gif");
+    
     /**
      * Folder where cursors are saved.
      */
@@ -64,4 +67,5 @@ public class CursorLoader {
         }
         return tk.createCustomCursor(image, new Point(0, 0), "");
     }
+    
 }

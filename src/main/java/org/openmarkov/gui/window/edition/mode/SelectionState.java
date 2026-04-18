@@ -28,7 +28,9 @@ public enum SelectionState {
     /** Various nodes are moved. */
     MOVING,
     /** Various nodes can be selected using the selection rectangle. */
-    SELECTING;
+    SELECTING,
+    /** Creating a link from a node to another */
+    CREATING_LINK;
     
     /**
      * Cursor associated to the state.
@@ -41,6 +43,7 @@ public enum SelectionState {
                 case NOTHING -> CursorLoader.CURSOR_DEFAULT;
                 case MOVING -> CursorLoader.CURSOR_NODES_MOVEMENT;
                 case SELECTING -> CursorLoader.CURSOR_MULTIPLE_SELECTION;
+                case CREATING_LINK -> CursorLoader.CURSOR_LINK;
             };
         }
     }

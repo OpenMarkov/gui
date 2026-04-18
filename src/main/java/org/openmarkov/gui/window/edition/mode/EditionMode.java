@@ -15,7 +15,6 @@ import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 
@@ -41,8 +40,8 @@ public abstract class EditionMode implements KeyListener {
     public abstract void mousePressed(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException;
 
     public abstract void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException;
-    
-    public abstract void mouseDragged(MouseEvent e, Point2D.Double position, double diffX, double diffY, Graphics2D g);
+	
+	public abstract void mouseMoved(MouseEvent e, Point2D.Double position, double diffX, double diffY, Graphics2D g);
     
     
 }
