@@ -81,6 +81,10 @@ public class VisualNetwork implements PNEditListener {
      */
     private VisualArrow newLink = null;
     
+    public VisualArrow getNewLink() {
+        return this.newLink;
+    }
+    
     /**
      * This object represents the source node of a new link.
      */
@@ -90,6 +94,10 @@ public class VisualNetwork implements PNEditListener {
      * Rectangle used to select various nodes.
      */
     protected SelectionRectangle selection = null;
+    
+    public SelectionRectangle getSelection() {
+        return this.selection;
+    }
     
     private boolean isPropagationActive = true;
     
@@ -290,7 +298,7 @@ public class VisualNetwork implements PNEditListener {
      * non selected nodes; each group is ordered in
      * descending relevance criteria).
      */
-    private ArrayList<VisualNode> reorderVisualNodes() {
+    public void reorderVisualNodes() {
         ArrayList<VisualNode> nodesSelected = new ArrayList<VisualNode>();
         ArrayList<VisualNode> nodesUnselected = new ArrayList<VisualNode>();
         
@@ -339,31 +347,7 @@ public class VisualNetwork implements PNEditListener {
             nodesUnselected.remove(candidate);
             counter2++;
         }
-        
-        return newList;
-    }
-    
-    /**
-     * Overwrited 'paint' method to avoid to call it explicitly.
-     *
-     * @param g the graphics context in which to paint.
-     */
-    public void paint(Graphics2D g) {
-        for (VisualLink visualLink : visualLinks) {
-            visualLink.paint(g);
-        }
-        visualNodes = reorderVisualNodes();
-        for (int i = (visualNodes.size() - 1); i >= 0; i--) {
-            if (visualNodes.get(i).isVisible()) {
-                visualNodes.get(i).paint(g);
-            }
-        }
-        if (newLink != null) {
-            newLink.paint(g);
-        }
-        if (selection != null) {
-            selection.paint(g);
-        }
+        this.visualNodes = newList;
     }
     
     /**

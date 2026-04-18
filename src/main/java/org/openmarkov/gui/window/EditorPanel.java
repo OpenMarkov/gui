@@ -84,7 +84,8 @@ public abstract class EditorPanel extends JPanel {
             return;
         }
         this.avoidPaintRecursion = true;
-        Graphics2D graphics2D = (Graphics2D) g;
+        Graphics2D graphics2D = (Graphics2D) g.create();
+        graphics2D = (Graphics2D) graphics2D.create();
         super.paint(graphics2D.create());
         this.doPaint((Graphics2D) graphics2D.create());
         this.internalPaint((Graphics2D) graphics2D.create());
@@ -107,6 +108,7 @@ public abstract class EditorPanel extends JPanel {
     }
     
     private void internalPaint(Graphics2D graphics2D) {
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         var scroll = this.scrollPanel;
         var viewPosition = scroll.getViewport().getViewPosition();
         var y = scroll.getHeight() - 20 + viewPosition.y;

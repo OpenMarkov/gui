@@ -34,7 +34,6 @@ import org.openmarkov.gui.window.edition.mode.EditionModeManager;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEEvaluation;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEExpectedUtilityDecision;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.Serial;
 import java.util.ArrayList;
@@ -172,8 +171,23 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     }
     
     @Override protected void doPaint(Graphics2D graphics2D) {
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics2D.scale(this.zoomManager.getZoom(), this.zoomManager.getZoom());
-        this.visualNetwork.paint(graphics2D);
+        for (VisualLink visualLink : this.visualNetwork.getVisualLinks()) {
+            visualLink.paint(graphics2D);
+        }
+        this.visualNetwork.reorderVisualNodes();
+        for (int i = (this.visualNetwork.getAllNodes().size() - 1); i >= 0; i--) {
+            if (this.visualNetwork.getAllNodes().get(i).isVisible()) {
+                this.visualNetwork.getAllNodes().get(i).paint(graphics2D);
+            }
+        }
+        if (this.visualNetwork.getNewLink() != null) {
+            this.visualNetwork.getNewLink().paint(graphics2D);
+        }
+        if (this.visualNetwork.getSelection() != null) {
+            this.visualNetwork.getSelection().paint(graphics2D);
+        }
     }
     
     /**

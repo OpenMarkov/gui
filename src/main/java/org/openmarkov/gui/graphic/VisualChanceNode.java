@@ -238,7 +238,6 @@ public class VisualChanceNode extends VisualNode{
 	 * @param g graphics object where paint the node.
 	 */
 	@Override public void paint(Graphics2D g) {
-
 		String text = getNodeString();
 		double textHeight = getHeight(text, g);
 		double textWidth = getWidth(text, g);
