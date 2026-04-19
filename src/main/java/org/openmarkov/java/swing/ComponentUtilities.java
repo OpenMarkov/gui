@@ -13,6 +13,15 @@ import java.util.stream.Stream;
 
 public class ComponentUtilities {
     
+    public static ArrayList<Component> parents(Component component) {
+        var parents = new ArrayList<Component>();
+        while (component.getParent() != null) {
+            parents.add(component.getParent());
+            component = component.getParent();
+        }
+        return parents;
+    }
+    
     public static ArrayDeque<Component> flatComponents(Component component) {
         ArrayDeque<Component> toVisit = new ArrayDeque<Component>();
         ArrayDeque<Component> resultStack = new ArrayDeque<Component>();

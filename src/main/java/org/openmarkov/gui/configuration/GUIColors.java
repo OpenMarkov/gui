@@ -6,12 +6,16 @@ import java.util.List;
 
 public class GUIColors {
     
+    private GUIColors() {
+    }
+    
     public static final class General {
         public static final GUIColor CORRECT = new GUIColor(Color.GREEN);
         public static final GUIColor WRONG = new GUIColor(Color.RED);
         public static final GUIColor TEXT = new GUIColor(Color.BLACK);
         
         public static final GUIColor ATTENTION = new GUIColor(new Color(212, 56, 56));
+        public static final GUIColor TRANSPARENT = new GUIColor(new Color(0, 0, 0, 0));
     }
     
     public static final class Network {
@@ -156,6 +160,17 @@ public class GUIColors {
                                                                 new GUIColor(Color.LIGHT_GRAY),
                                                                 new GUIColor(Color.DARK_GRAY));
         
+    }
+    
+    public static final class FastMenu {
+        
+        public static final GUIColor OPTION_BACKGROUND = new GUIColor(new Color(255, 255, 255));
+        
+        public static final class Radial {
+            public static final GUIColor CIRCLE_BACKGROUND = new GUIColor(new Color(200, 219, 220, 50));
+            public static final GUIColor CIRCLE_OUTLINE = new GUIColor(new Color(130, 178, 180, 140));
+            public static final GUIColor CIRCLE_CENTER = new GUIColor(new Color(130, 176, 180, 160));
+        }
     }
     
 }
