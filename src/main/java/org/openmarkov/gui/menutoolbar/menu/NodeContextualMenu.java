@@ -241,6 +241,7 @@ public class NodeContextualMenu extends ContextualMenu {
     private JMenuItem getCutMenuItem() {
         if (cutMenuItem == null) {
             cutMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_CUT_MENUITEM, ActionCommands.CLIPBOARD_CUT.getCommandName());
+            cutMenuItem.setIcon(IconBind.CUT_ENABLED.icon());
             cutMenuItem.addActionListener(listener);
         }
         return cutMenuItem;
@@ -254,6 +255,7 @@ public class NodeContextualMenu extends ContextualMenu {
     private JMenuItem getCopyMenuItem() {
         if (copyMenuItem == null) {
             copyMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_COPY_MENUITEM, ActionCommands.CLIPBOARD_COPY.getCommandName());
+            copyMenuItem.setIcon(IconBind.COPY_ENABLED.icon());
             copyMenuItem.addActionListener(listener);
         }
         return copyMenuItem;
@@ -267,6 +269,7 @@ public class NodeContextualMenu extends ContextualMenu {
     private JMenuItem getRemoveMenuItem() {
         if (removeMenuItem == null) {
             removeMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REMOVE_MENUITEM, ActionCommands.OBJECT_REMOVAL.getCommandName());
+            removeMenuItem.setIcon(IconBind.REMOVE_ENABLED.icon());
             removeMenuItem.addActionListener(listener);
         }
         return removeMenuItem;

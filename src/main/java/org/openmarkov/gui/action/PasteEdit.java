@@ -22,8 +22,9 @@ import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.gui.window.edition.SelectedContent;
 
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * Compound edit that pastes previously copied nodes and links into a network.
@@ -33,6 +34,7 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 public class PasteEdit extends MultiStepEdit {
     private final SelectedContent clipboardContent;
+    private final Point2D.Double centerNodesTo;
     private @Nullable SelectedContent pastedContent;
 
 
@@ -41,36 +43,55 @@ public class PasteEdit extends MultiStepEdit {
      *
      * @param probNet          the target network to paste into
      * @param clipboardContent the nodes and links to paste
+     * @param centerNodesTo
      */
-    public PasteEdit(ProbNet probNet, SelectedContent clipboardContent) {
+    public PasteEdit(ProbNet probNet, SelectedContent clipboardContent, Point2D.Double centerNodesTo) {
         super(probNet);
         this.clipboardContent = clipboardContent;
+        this.centerNodesTo = centerNodesTo;
         this.pastedContent = null;
     }
     
     
     @Override protected void doMultiStepEdit(StepExecuter stepExecuter) throws DoEditException {
-        newVariables = new HashMap<>();
+        this.newVariables = new HashMap<>();
         // Gather new node creation edits
-        for (Node node : clipboardContent.nodes()) {
+        List<Node> nodes = this.clipboardContent.nodes();
+        double maxX = nodes.stream().mapToDouble(Node::getCoordinateX).max().getAsDouble();
+        double minX = nodes.stream().mapToDouble(Node::getCoordinateX).min().getAsDouble();
+        double maxY = nodes.stream().mapToDouble(Node::getCoordinateY).max().getAsDouble();
+        double minY = nodes.stream().mapToDouble(Node::getCoordinateY).min().getAsDouble();
+        Rectangle2D.Double nodesRect = new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
+        Point2D.Double diff = null;
+        if (this.centerNodesTo != null) {
+            diff = new Point2D.Double(this.centerNodesTo.getX() - nodesRect.getCenterX(), this.centerNodesTo.getY() - nodesRect.getCenterY());
+        }
+        
+        for (Node node : nodes) {
             String oldName = node.getName();
             String newName = oldName;
-            while (probNet.containsVariable(newName)) {
+            while (this.probNet.containsVariable(newName)) {
                 newName += "'";
             }
             Variable variable = new Variable(node.getVariable());
             variable.setName(newName);
-            newVariables.put(oldName, newName);
-            Point2D.Double position = new Point2D.Double(node.getCoordinateX() + 3.0, node.getCoordinateY());
-            AddNodeEdit addNodeEdit = new AddNodeEdit(probNet, variable, node.getNodeType(), position);
-            stepExecuter.execute(addNodeEdit);
+            this.newVariables.put(oldName, newName);
+            Point2D.Double position = new Point2D.Double(node.getCoordinateX() + 7.0, node.getCoordinateY());
+            if (diff != null) {
+                position = new Point2D.Double(node.getCoordinateX() + diff.getX(), node.getCoordinateY() + diff.getY());
+            } else {
+                position = new Point2D.Double(node.getCoordinateX() + 7.0, node.getCoordinateY());
+            }
+            stepExecuter.execute(new AddNodeEdit(this.probNet, variable, node.getNodeType(), position));
         }
+        
+        
         //Gather link creation edits
-        for (Link<Node> link : clipboardContent.links()) {
+        for (Link<Node> link : this.clipboardContent.links()) {
             String originalSourceNodeName = link.getFrom().getName();
             String originalDestinationNodeName = link.getTo().getName();
-            AddLinkEdit addLinkEdit = new AddLinkEdit(probNet, probNet.getVariable(newVariables.get(originalSourceNodeName)),
-                                                      probNet.getVariable(newVariables.get(originalDestinationNodeName)), link.isDirected());
+            AddLinkEdit addLinkEdit = new AddLinkEdit(this.probNet, this.probNet.getVariable(this.newVariables.get(originalSourceNodeName)),
+                                                      this.probNet.getVariable(this.newVariables.get(originalDestinationNodeName)), link.isDirected());
             stepExecuter.execute(addLinkEdit);
         }
         
@@ -88,18 +109,18 @@ public class PasteEdit extends MultiStepEdit {
                         }
                     }
                 }
-                pastedContent = new SelectedContent(pastedNodes, pastedLinks);
+                PasteEdit.this.pastedContent = new SelectedContent(pastedNodes, pastedLinks);
                 //Replace potentials to already created nodes with copies of copied nodes
-                for (Node originalNode : clipboardContent.nodes()) {
+                for (Node originalNode : nodes) {
                     ArrayList<Potential> newPotentials = new ArrayList<>();
-                    Node newNode = probNet.getNode(newVariables.get(originalNode.getName()));
+                    Node newNode = this.probNet.getNode(PasteEdit.this.newVariables.get(originalNode.getName()));
                     for (Potential originalPotential : originalNode.getPotentials()) {
                         Potential potential = originalPotential.copy();
                         List<Variable> externalVars = new ArrayList<>();
                         for (int i = 0; i < potential.getNumVariables(); ++i) {
                             String variableName = potential.getVariable(i).getName();
-                            if (newVariables.containsKey(variableName)) {
-                                Variable variable = probNet.getVariable(newVariables.get(variableName));
+                            if (PasteEdit.this.newVariables.containsKey(variableName)) {
+                                Variable variable = this.probNet.getVariable(PasteEdit.this.newVariables.get(variableName));
                                 potential.replaceVariable(i, variable);
                             } else {
                                 externalVars.add(potential.getVariable(i));
@@ -110,9 +131,9 @@ public class PasteEdit extends MultiStepEdit {
                         }
                         if (potential instanceof ExactDistrPotential) {
                             Variable child = ((ExactDistrPotential) potential).getChildVariable();
-                            if (newVariables.containsKey(child.getName())) {
+                            if (PasteEdit.this.newVariables.containsKey(child.getName())) {
                                 ((ExactDistrPotential) potential)
-                                        .setChildVariable(probNet.getVariable(newVariables.get(child.getName())));
+                                        .setChildVariable(this.probNet.getVariable(PasteEdit.this.newVariables.get(child.getName())));
                             }
                         }
                         newPotentials.add(potential);
@@ -136,7 +157,7 @@ public class PasteEdit extends MultiStepEdit {
      * @return the pastedContent.
      */
     public SelectedContent getPastedContent() {
-        return pastedContent;
+        return this.pastedContent;
     }
     
     private HashMap<String, String> newVariables;

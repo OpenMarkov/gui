@@ -113,7 +113,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 mainPanel.getMainPanelMenuAssistant()
                          .setOptionEnabled(ActionCommands.CLIPBOARD_PASTE.getCommandName(), true);
             }
-            case ActionCommands.CLIPBOARD_PASTE -> executeUIAction(() -> getCurrentNetworkEditorPanel().pasteFromClipboard());
+            case ActionCommands.CLIPBOARD_PASTE ->
+                    executeUIAction(() -> getCurrentNetworkEditorPanel().pasteFromClipboard(null));
             case ActionCommands.UNDO -> editAndViewHandler.undo();
             case ActionCommands.REDO -> editAndViewHandler.redo();
             case ActionCommands.SELECT_ALL -> getCurrentNetworkEditorPanel().selectAllObjects();

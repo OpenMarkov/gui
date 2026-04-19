@@ -14,10 +14,18 @@ import org.openmarkov.gui.localize.UpdateLocalizationInComponents;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasicImpl;
+import org.openmarkov.java.collectionsUtils.arrayUtils.CollectionsUtils;
+import org.openmarkov.java.swing.ComponentUtilities;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * This class is used to set the common features of all contextual menus of the
@@ -128,7 +136,117 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
         this.invoker = invoker;
         this.relativeShownLocationX = x;
         this.relativeShownLocationY = y;
-        super.show(invoker, x, y);
+        AtomicBoolean holdsRightClick = new AtomicBoolean(true);
+        MouseListener rightClickListener = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    holdsRightClick.set(true);
+                }
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    holdsRightClick.set(false);
+                }
+            }
+        };
+        invoker.addMouseListener(rightClickListener);
+        Timer delayedAction = new Timer(100, e -> {
+            invoker.removeMouseListener(rightClickListener);
+            if (!holdsRightClick.get() || !tryShowFastMenu(invoker, x, y)) {
+                super.show(invoker, x, y);
+            }
+        });
+        delayedAction.setRepeats(false);
+        delayedAction.start();
+    }
+    
+    private boolean tryShowFastMenu(Component invoker, int x, int y) {
+        var components = new ArrayList<>(ComponentUtilities.flatComponents(this));
+        CollectionsUtils.retainIf(components, component -> component instanceof JSeparator
+                || (component instanceof JMenuItem jMenuItem && jMenuItem.getIcon() != null));
+        int componentIndex = 0;
+        while ((componentIndex + 1) < components.size()) {
+            if (components.get(componentIndex) instanceof JSeparator && components.get(componentIndex + 1) instanceof JSeparator) {
+                components.remove(componentIndex);
+            } else {
+                componentIndex++;
+            }
+        }
+        if (components.getFirst() instanceof JSeparator) {
+            components.removeFirst();
+        }
+        if (components.getLast() instanceof JSeparator) {
+            components.removeLast();
+        }
+        if (components.isEmpty()) {
+            return false;
+        }
+        JPopupMenu horizontalMenu = new JPopupMenu();
+        horizontalMenu.setLayout(new BoxLayout(horizontalMenu, BoxLayout.X_AXIS));
+        
+        AtomicReference<JButton> selectedButton = new AtomicReference<>(null);
+        MouseAdapter trackSelectedItem = new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                selectedButton.set((JButton) e.getSource());
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                selectedButton.set(null);
+            }
+        };
+        
+        final int SPACING = 3;
+        
+        horizontalMenu.add(Box.createHorizontalStrut(SPACING));
+        components.stream().map(component -> switch (component) {
+            case JMenuItem menuItem -> {
+                var button = new JButton(menuItem.getIcon());
+                button.setMargin(new Insets(2, 2, 2, 2));
+                
+                button.setFocusable(false);
+                button.addActionListener((ev) -> menuItem.doClick());
+                button.setEnabled(menuItem.isEnabled());
+                button.setActionCommand(menuItem.getActionCommand());
+                button.setName(menuItem.getName());
+                button.addMouseListener(trackSelectedItem);
+                button.addMouseMotionListener(trackSelectedItem);
+                yield button;
+            }
+            case JSeparator separator -> new JSeparator(SwingConstants.VERTICAL);
+            case null, default -> component;
+        }).forEach(option -> {
+            horizontalMenu.add(option);
+            horizontalMenu.add(Box.createHorizontalStrut(SPACING));
+        });
+        
+        
+        horizontalMenu.show(invoker, x - (horizontalMenu.getPreferredSize().width / 2), y);
+        AtomicReference<MouseAdapter> action = new AtomicReference<>();
+        action.set(new MouseAdapter() {
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    if (selectedButton.get() != null) {
+                        selectedButton.get().doClick();
+                    }
+                    ;
+                    if (horizontalMenu.isVisible()) {
+                        horizontalMenu.setVisible(false);
+                    }
+                    invoker.removeMouseListener(action.get());
+                    invoker.removeMouseMotionListener(action.get());
+                }
+            }
+        });
+        invoker.addMouseListener(action.get());
+        invoker.addMouseMotionListener(action.get());
+        return true;
     }
     
     /**

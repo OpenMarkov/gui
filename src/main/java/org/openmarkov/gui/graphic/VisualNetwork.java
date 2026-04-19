@@ -107,12 +107,7 @@ public class VisualNetwork implements PNEditListener {
      * Listener to the selection.
      */
     private final Set<SelectionListener> selectionListeners = new HashSet<SelectionListener>();
-    
-    
-    /**
-     * Object that assists this panel in the operations with the clipboard.
-     */
-    private final EditorPanelClipboardAssistant clipboardAssistant;
+
     
     //private LinkWrapper linkWrapper;
     /**
@@ -129,7 +124,6 @@ public class VisualNetwork implements PNEditListener {
         this.probNet = probNet;
         this.networkEditorPanel = networkEditorPanel;
         this.probNet.getPNESupport().addListener(this);
-        this.clipboardAssistant = new EditorPanelClipboardAssistant();
         
         //network.addNetworkChangeListener(this);
         //changed by mpalacios
@@ -1078,14 +1072,14 @@ public class VisualNetwork implements PNEditListener {
      *
      * @param cut if true, the nodes copied to the clipboard are also removed.
      */
-    public void exportToClipboard(boolean cut) {
+    public void exportToClipboard(boolean cut, EditorPanelClipboardAssistant clipboardAssistant) {
         List<Node> selectedNodes = this
                 .getSelectedNodes().stream().map(VisualNode::getNode).toList();
         List<Link<Node>> selectedLinks = this
                 .getSelectedLinks().stream().map(VisualLink::getLink).toList();
         SelectedContent copiedContent = new SelectedContent(selectedNodes, selectedLinks);
         if (!copiedContent.isEmpty()) {
-            this.clipboardAssistant.copyToClipboard(copiedContent);
+            clipboardAssistant.copyToClipboard(copiedContent);
             if (cut) {
                 this.removeSelectedObjects();
             }
@@ -1104,18 +1098,4 @@ public class VisualNetwork implements PNEditListener {
         }
     }
     
-    /**
-     * This method imports the content from the clipboard and creates it in the
-     * network.
-     */
-    public void pasteFromClipboard() throws DoEditException {
-        if (!this.clipboardAssistant.isThereDataStored()) {
-            return;
-        }
-        new PasteEdit(this.getProbNet(), this.clipboardAssistant.paste()).executeEdit();
-    }
-    
-    public EditorPanelClipboardAssistant getClipboardAssistant() {
-        return this.clipboardAssistant;
-    }
 }

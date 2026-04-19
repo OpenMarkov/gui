@@ -14,6 +14,7 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
+import org.openmarkov.gui.action.PasteEdit;
 import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.inference.temporalevolution.TemporalEvolutionDialog;
@@ -28,6 +29,7 @@ import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.EditorPanel;
 import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
+import org.openmarkov.gui.window.edition.EditorPanelClipboardAssistant;
 import org.openmarkov.gui.window.edition.ZoomManager;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
@@ -111,7 +113,10 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * in Inference Mode).
      */
     private boolean propagationActive;
-    
+    /**
+     * Object that assists this panel in the operations with the clipboard.
+     */
+    private final EditorPanelClipboardAssistant clipboardAssistant;
     
     private final EditionModeManager editionModeManager;
     
@@ -126,6 +131,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         this.onModificationListener = new ArrayList<>();
         probNet.getPNESupport().addListener(this);
         this.zoomManager = new ZoomManager();
+        this.clipboardAssistant = new EditorPanelClipboardAssistant();
         this.visualNetwork = new VisualNetwork(probNet, this);
         this.evidenceManager = new EvidenceManager(this);
         this.visualNetwork.getProbNet().getPNESupport().addListener(new PNEditEventHandler(this));
@@ -877,15 +883,27 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * @param cut if true, the nodes copied to the clipboard are also removed.
      */
     public void exportToClipboard(boolean cut) {
-        this.getVisualNetwork().exportToClipboard(cut);
+        this.getVisualNetwork().exportToClipboard(cut, this.clipboardAssistant);
+    }
+    
+    
+    public EditorPanelClipboardAssistant getClipboardAssistant() {
+        return this.clipboardAssistant;
     }
     
     /**
-     * This method imports various nodes from the clipboard and creates them in
-     * the network.
+     * This method imports the content from the clipboard and creates it in the
+     * network.
      */
-    public void pasteFromClipboard() throws DoEditException {
-        this.getVisualNetwork().pasteFromClipboard();
+    public void pasteFromClipboard(Point2D.Double centerNodesTo) throws DoEditException {
+        if (!this.clipboardAssistant.isThereDataStored()) {
+            return;
+        }
+        new PasteEdit(this.getProbNet(), this.clipboardAssistant.paste(), centerNodesTo).executeEdit();
+    }
+    
+    public boolean hasPasteContents() {
+        return this.getClipboardAssistant().isThereDataStored();
     }
     
     /**
@@ -894,7 +912,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * @return true if there is data stored in the clipboard; otherwise, false.
      */
     public boolean isThereDataStored() {
-        return this.getVisualNetwork().getClipboardAssistant().isThereDataStored();
+        return this.clipboardAssistant.isThereDataStored();
     }
     
     /**

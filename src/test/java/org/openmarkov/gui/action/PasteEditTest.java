@@ -68,8 +68,8 @@ public class PasteEditTest {
     void pastedNodeWithExternalParents_shouldNotRetainExternalVariables() throws DoEditException {
         // Copy only node C (which has parents A and B)
         SelectedContent clipboard = new SelectedContent(List.of(nodeC), List.of());
-
-        PasteEdit pasteEdit = new PasteEdit(probNet, clipboard);
+        
+        PasteEdit pasteEdit = new PasteEdit(probNet, clipboard, null);
         pasteEdit.executeEdit();
 
         // Find the pasted node (C')
@@ -97,8 +97,8 @@ public class PasteEditTest {
         // Copy B and C together (C has parents A and B; only B is copied)
         var linkBC = probNet.getLink(nodeB, nodeC, true);
         SelectedContent clipboard = new SelectedContent(List.of(nodeB, nodeC), List.of(linkBC));
-
-        PasteEdit pasteEdit = new PasteEdit(probNet, clipboard);
+        
+        PasteEdit pasteEdit = new PasteEdit(probNet, clipboard, null);
         pasteEdit.executeEdit();
 
         Node pastedC = probNet.getNode("C'");
@@ -134,8 +134,8 @@ public class PasteEditTest {
         var linkBC = probNet.getLink(nodeB, nodeC, true);
         SelectedContent clipboard = new SelectedContent(
                 List.of(nodeA, nodeB, nodeC), List.of(linkAB, linkAC, linkBC));
-
-        PasteEdit pasteEdit = new PasteEdit(probNet, clipboard);
+        
+        PasteEdit pasteEdit = new PasteEdit(probNet, clipboard, null);
         pasteEdit.executeEdit();
 
         Node pastedC = probNet.getNode("C'");

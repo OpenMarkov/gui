@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.menutoolbar.menu;
 
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.gui.componentBuilder.JMenuItemBuilder;
@@ -170,8 +172,17 @@ class NetworkContextualMenu extends ContextualMenu {
         if (pasteMenuItem == null) {
             pasteMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_PASTE_MENUITEM, ActionCommands.CLIPBOARD_PASTE.getCommandName(),
                                                   IconBind.PASTE_ENABLED, KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
-            pasteMenuItem.addActionListener(listener);
-            pasteMenuItem.setEnabled(MainPanel.getCurrentNetworkEditorPanel()
+            NetworkEditorPanel networkEditorPanel = MainPanel.getCurrentNetworkEditorPanel();
+            
+            pasteMenuItem.addActionListener((ignored) -> {
+                try {
+                    networkEditorPanel.pasteFromClipboard(new Point2D.Double(this.getRelativeShownLocationX(), this.getRelativeShownLocationY()));
+                } catch (DoEditException e) {
+                    throw new UnrecoverableException(e);
+                }
+            });
+            ;
+            pasteMenuItem.setEnabled(networkEditorPanel.hasPasteContents() && networkEditorPanel
                                               .getEditorPanel()
                                               .getVisualNetwork()
                                               .getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
