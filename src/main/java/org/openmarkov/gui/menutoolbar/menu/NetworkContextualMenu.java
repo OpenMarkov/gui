@@ -83,7 +83,7 @@ class NetworkContextualMenu extends ContextualMenu {
         }
     }
     
-    record NodeMenuGenerator(NodeType nodeType, String title, Icon icon, ActionCommands actionCommand,
+    record NodeMenuGenerator(NodeType nodeType, String title, String tooltip, Icon icon, ActionCommands actionCommand,
                              boolean enabled) {
     }
     
@@ -101,15 +101,18 @@ class NetworkContextualMenu extends ContextualMenu {
         return new JMenuItemBuilder("Add")
                 .withItems(
                         Stream.of(
-                                new NodeMenuGenerator(NodeType.CHANCE, "Chance node", IconBind.CHANCE_ENABLED.icon(),
+                                new NodeMenuGenerator(NodeType.CHANCE, "Chance node", "Create a chance node", IconBind.CHANCE_ENABLED.icon(),
                                                       ActionCommands.CHANCE_CREATION, true),
-                                new NodeMenuGenerator(NodeType.DECISION, "Decision node", IconBind.DECISION_ENABLED.icon(),
+                                new NodeMenuGenerator(NodeType.DECISION, "Decision node", "Create a decision node",
+                                                      IconBind.DECISION_ENABLED.icon(),
                                                       ActionCommands.DECISION_CREATION, !currentNetwork.hasConstraintOfClass(OnlyChanceNodes.class)),
-                                new NodeMenuGenerator(NodeType.UTILITY, "Utility node", IconBind.UTILITY_ENABLED.icon(),
+                                new NodeMenuGenerator(NodeType.UTILITY, "Utility node", "Create an utility node",
+                                                      IconBind.UTILITY_ENABLED.icon(),
                                                       ActionCommands.UTILITY_CREATION, !currentNetwork.hasConstraintOfClass(OnlyChanceNodes.class))
                         ).map(nodeMenuGenerator -> new JMenuItemBuilder(nodeMenuGenerator.title)
                                 .withIcon(nodeMenuGenerator.icon)
                                 .withActionCommand(nodeMenuGenerator.actionCommand)
+                                .withTooltip(nodeMenuGenerator.tooltip)
                                 .enabled(isEditionMode && nodeMenuGenerator.enabled)
                                 .onClick(e -> NodeEditionMode.createNode(currentNetwork, nodeMenuGenerator.nodeType,
                                                                          new Point2D.Double(this.getRelativeShownLocationX(), this.getRelativeShownLocationY()), networkEditorPanel))

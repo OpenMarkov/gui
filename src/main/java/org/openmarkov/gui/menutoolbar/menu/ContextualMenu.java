@@ -189,15 +189,43 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
         radialPanel.setBackground(GUIColors.General.TRANSPARENT.getColor());
         
         AtomicReference<JButton> selectedButton = new AtomicReference<>(null);
+        AtomicReference<Popup> tipPopup = new AtomicReference<>(null);
+        AtomicReference<Timer> tipShower = new AtomicReference<>(null);
         MouseAdapter trackSelectedItem = new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                selectedButton.set((JButton) e.getSource());
+                JButton button = (JButton) e.getSource();
+                String tipText = button.getToolTipText(e);
+                if (tipText != null) {
+                    // 2. Create the actual tooltip component
+                    JToolTip tip = button.createToolTip();
+                    tip.setTipText(tipText);
+                    
+                    // 3. Calculate position (relative to screen)
+                    Point p = button.getLocationOnScreen();
+                    
+                    // 4. Manually create and show the popup
+                    PopupFactory factory = PopupFactory.getSharedInstance();
+                    tipShower.set(new Timer(500, timedEvent -> {
+                        tipPopup.set(factory.getPopup(button, tip, p.x + e.getX(), p.y + e.getY() + 20));
+                        tipPopup.get().show();
+                    }));
+                    tipShower.get().setRepeats(false);
+                    tipShower.get().start();
+                }
+                selectedButton.set(button);
             }
             
             @Override
             public void mouseExited(MouseEvent e) {
                 selectedButton.set(null);
+                if (tipShower.get() != null) {
+                    tipShower.get().stop();
+                    tipShower.set(null);
+                }
+                if (tipPopup.get() != null) {
+                    tipPopup.get().hide();
+                }
             }
         };
         
@@ -212,6 +240,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
             button.addMouseListener(trackSelectedItem);
             button.addMouseMotionListener(trackSelectedItem);
             button.setBackground(GUIColors.FastMenu.OPTION_BACKGROUND.getColor());
+            button.setToolTipText(menuItem.getToolTipText() != null ? menuItem.getToolTipText() : menuItem.getText());
             return button;
         }).forEach(radialPanel::add);
         
@@ -221,6 +250,13 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
+                    if (tipShower.get() != null) {
+                        tipShower.get().stop();
+                        tipShower.set(null);
+                    }
+                    if (tipPopup.get() != null) {
+                        tipPopup.get().hide();
+                    }
                     if (selectedButton.get() != null) {
                         selectedButton.get().doClick();
                     }
@@ -284,7 +320,6 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
             case JMenuItem menuItem -> {
                 var button = new JButton(menuItem.getIcon());
                 button.setMargin(new Insets(2, 2, 2, 2));
-                
                 button.setFocusable(false);
                 button.addActionListener((ev) -> menuItem.doClick());
                 button.setEnabled(menuItem.isEnabled());
@@ -293,6 +328,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
                 button.addMouseListener(trackSelectedItem);
                 button.addMouseMotionListener(trackSelectedItem);
                 button.setBackground(GUIColors.FastMenu.OPTION_BACKGROUND.getColor());
+                button.setToolTipText(menuItem.getToolTipText() != null ? menuItem.getToolTipText() : menuItem.getText());
                 yield button;
             }
             case JSeparator separator -> new JSeparator(SwingConstants.VERTICAL);

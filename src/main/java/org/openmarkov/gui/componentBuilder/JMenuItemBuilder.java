@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 public class JMenuItemBuilder {
     
     private @NotNull String title;
+    private @Nullable String tooltip;
     private @Nullable Character mnemonic;
     private @Nullable KeyStroke accelerator;
     private @Nullable Boolean enabled;
@@ -44,6 +45,11 @@ public class JMenuItemBuilder {
     
     public JMenuItemBuilder withTitle(@NotNull String title) {
         this.title = title;
+        return this;
+    }
+    
+    public JMenuItemBuilder withTooltip(String tooltip) {
+        this.tooltip = tooltip;
         return this;
     }
     
@@ -148,6 +154,9 @@ public class JMenuItemBuilder {
         if (this.mnemonic != null) {
             jMenuItem.setMnemonic(this.mnemonic);
         }
+        if (this.tooltip != null) {
+            jMenuItem.setToolTipText(this.tooltip);
+        }
         if (this.accelerator != null) {
             jMenuItem.setAccelerator(this.accelerator);
         }
@@ -200,6 +209,5 @@ public class JMenuItemBuilder {
     public interface ThrowingConsumer<T, E extends Exception> {
         void accept(T t) throws E;
     }
-    
     
 }
