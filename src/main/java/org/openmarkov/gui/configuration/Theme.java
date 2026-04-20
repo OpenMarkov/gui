@@ -12,9 +12,9 @@ public enum Theme {
     
     public String toUIString() {
         return switch (this) {
-            case SYSTEM -> "System";
+            case LIGHT -> "Light";
             case DARK -> "Dark (Beta)";
-            case LIGHT -> "Light (Beta)";
+            case SYSTEM -> "System (Might be unsupported)";
         };
     }
     

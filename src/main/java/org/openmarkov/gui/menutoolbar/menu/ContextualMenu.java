@@ -156,7 +156,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
             }
         };
         invoker.addMouseListener(rightClickListener);
-        Timer delayedAction = new Timer(100, e -> {
+        Timer delayedAction = new Timer(300, e -> {
             invoker.removeMouseListener(rightClickListener);
             if (!holdsRightClick.get() || !tryShowRadialFastMenu(invoker, x, y)) {
                 super.show(invoker, x, y);
