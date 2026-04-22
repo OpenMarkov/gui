@@ -32,6 +32,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -119,7 +120,8 @@ public class MainPanel extends JPanel {
         this.networksTabPanel = new AutoScrollableTabbedPane(new JTabbedPane());
         
         //Movement for right and left.
-        InputMap inputMap = this.networksTabPanel.getjTabbedPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        InputMap inputMap = this.networksTabPanel.getjTabbedPane()
+                                                 .getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         inputMap.put(KeyStroke.getKeyStroke(
                 KeyEvent.VK_RIGHT,
                 InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK
@@ -418,8 +420,7 @@ public class MainPanel extends JPanel {
      */
     public void adaptToolBarSize() {
         // Variables to store different measures
-        int toolBarComponentsWidth = 0;
-        int toolBarComponentsHeight = 0;
+        int toolBarComponentsWidth;
         int currentNetworkEditorPanelMaxWidth = 600;
         // Variables to adapt the size of the toolbar
         int safetyWidth = 11;
@@ -427,13 +428,18 @@ public class MainPanel extends JPanel {
         // When changing the working mode, sometimes the values of the size of the window are not accurate
         int currentNetworkEditorPanelWidth = Integer.MAX_VALUE;
         if (this.getMainPanelListenerAssistant().getCurrentNetworkEditorPanel() != null) {
-            currentNetworkEditorPanelWidth = this.getMainPanelListenerAssistant().getCurrentNetworkEditorPanel().getWidth();
+            currentNetworkEditorPanelWidth = this.getMainPanelListenerAssistant()
+                                                 .getCurrentNetworkEditorPanel()
+                                                 .getWidth();
         }
         // We sum the width and height of every component present in the toolbar
-        for (Component toolBarComponent : this.getToolBarPanel().getComponents()) {
-            toolBarComponentsWidth += toolBarComponent.getWidth();
-            toolBarComponentsHeight += toolBarComponent.getHeight();
-        }
+        toolBarComponentsWidth = Arrays.stream(this.getToolBarPanel().getComponents())
+                                       .mapToInt(Component::getWidth)
+                                       .sum();
+        
+        int maxToolbarComponentHeight = Arrays.stream(this.getToolBarPanel().getComponents())
+                                              .mapToInt(Component::getHeight).max()
+                                              .getAsInt();
         
         // If the toolbar cannot show them in one single line
         if ((this.getToolBarPanel().getWidth() < toolBarComponentsWidth + safetyWidth) || (
@@ -441,7 +447,7 @@ public class MainPanel extends JPanel {
         )) {
             // we increase the height of the toolbar accordingly
             this.getToolBarPanel()
-                .setPreferredSize(new Dimension(this.getWidth() + safetyWidth, toolBarComponentsHeight + safetyHeight));
+                .setPreferredSize(new Dimension(this.getWidth() + safetyWidth, maxToolbarComponentHeight + safetyHeight));
         }
         // and if the toolbar can show them in one line
         else {
@@ -486,7 +492,8 @@ public class MainPanel extends JPanel {
                 } else {
                     header.titleLabel.setForeground(null);
                 }
-                String uniqueTitleOnChange = this.getUniqueTitle(networkPanel.getProbNet().getName(), Set.of(this.networksTabPanel.indexOfTabComponent(tabComponent)));
+                String uniqueTitleOnChange = this.getUniqueTitle(networkPanel.getProbNet()
+                                                                             .getName(), Set.of(this.networksTabPanel.indexOfTabComponent(tabComponent)));
                 header.titleLabel.setText(uniqueTitleOnChange);
                 networkP.getEditorPanel().updateName(uniqueTitleOnChange);
             };

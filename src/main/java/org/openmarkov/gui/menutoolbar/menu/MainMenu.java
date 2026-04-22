@@ -24,6 +24,7 @@ import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasicImpl;
 import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.toolplugin.ToolPluginManager;
 import org.openmarkov.gui.window.MainPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -76,7 +77,10 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         removeAll();
         add(buildFileMenu());
         add(buildEditMenu());
-        add(buildInferenceMenu());
+        if (MainPanel.getCurrentNetworkEditorPanel() != null && MainPanel.getCurrentNetworkEditorPanel()
+                                                                         .getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE) {
+            add(buildInferenceMenu());
+        }
         add(buildViewMenu());
         add(buildToolsMenu());
         add(buildHelpMenu());
@@ -223,6 +227,10 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         editMenu.addSeparator();
         editMenu.add(items.get(ActionCommands.NODE_PROPERTIES));
         editMenu.add(items.get(ActionCommands.EDIT_POTENTIAL));
+        editMenu.addSeparator();
+        editMenu.add(items.get(ActionCommands.CHANGE_TO_EDITION_MODE));
+        editMenu.add(items.get(ActionCommands.PROPAGATION_OPTIONS));
+        editMenu.add(items.get(ActionCommands.INFERENCE_OPTIONS));
         return editMenu;
     }
 
@@ -234,11 +242,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
 
     private void rebuildInferenceMenu(boolean withPropagate) {
         inferenceMenu.removeAll();
-        inferenceMenu.add(items.get(ActionCommands.CHANGE_TO_EDITION_MODE));
-        inferenceMenu.addSeparator();
-        inferenceMenu.add(items.get(ActionCommands.PROPAGATION_OPTIONS));
-        inferenceMenu.add(items.get(ActionCommands.INFERENCE_OPTIONS));
-        inferenceMenu.addSeparator();
         inferenceMenu.add(items.get(ActionCommands.CREATE_NEW_EVIDENCE_CASE));
         inferenceMenu.add(items.get(ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES));
         inferenceMenu.addSeparator();

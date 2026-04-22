@@ -31,6 +31,7 @@ import org.openmarkov.inference.algorithm.decompositionIntoSymmetricDANs.evaluat
 import org.openmarkov.inference.algorithm.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEOptimalIntervention;
 
+import javax.swing.SwingUtilities;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -109,6 +110,11 @@ class InferenceHandler {
             mainPanel.adaptToolBarSize();
         }
         mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(newWorkingMode, getCurrentNetworkEditorPanel());
+        mainPanel.getMainMenu().reInitialize();
+        SwingUtilities.invokeLater(() -> {
+            MainGUI.INSTANCE.revalidate();
+            MainGUI.INSTANCE.mainPanel.adaptToolBarSize();
+        });
     }
 
     void setNewExpansionThreshold(Double newValue) {
