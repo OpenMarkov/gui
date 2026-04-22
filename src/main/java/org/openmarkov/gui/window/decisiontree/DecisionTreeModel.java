@@ -13,6 +13,9 @@ import javax.swing.tree.TreePath;
 import org.openmarkov.core.model.decisiontree.DecisionTreeBranch;
 import org.openmarkov.core.model.decisiontree.DecisionTreeElement;
 import org.openmarkov.core.model.decisiontree.DecisionTreeNode;
+import org.openmarkov.gui.window.decisiontree.elements.DecisionTreeBranchPanel;
+import org.openmarkov.gui.window.decisiontree.elements.DecisionTreeElementPanel;
+import org.openmarkov.gui.window.decisiontree.elements.DecisionTreeNodePanel;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -45,17 +48,13 @@ public class DecisionTreeModel implements TreeModel {
      * @return The corresponding panel (Node or Branch) with its children linked.
      */
 	private static DecisionTreeElementPanel buildPanelTree(DecisionTreeElement treeElement) {
-		DecisionTreeElementPanel treeElementPanel = null;
-		if (treeElement instanceof DecisionTreeNode) {
-			treeElementPanel = new DecisionTreeNodePanel((DecisionTreeNode) treeElement);
-		} else if (treeElement instanceof DecisionTreeBranch) {
-			treeElementPanel = new DecisionTreeBranchPanel((DecisionTreeBranch) treeElement);
-		}
-
+		DecisionTreeElementPanel treeElementPanel = switch (treeElement) {
+			case DecisionTreeBranch decisionTreeBranch -> new DecisionTreeBranchPanel(decisionTreeBranch);
+			case DecisionTreeNode decisionTreeNode -> new DecisionTreeNodePanel(decisionTreeNode);
+		};
 		for (DecisionTreeElement child : treeElement.getChildren()) {
 			treeElementPanel.addChild(buildPanelTree(child));
 		}
-
 		return treeElementPanel;
 	}
 
@@ -97,6 +96,5 @@ public class DecisionTreeModel implements TreeModel {
 	/** {@inheritDoc} */
 	@Override public void valueForPathChanged(TreePath path, Object newValue) {
 		// TODO Auto-generated method stub
-
 	}
 }

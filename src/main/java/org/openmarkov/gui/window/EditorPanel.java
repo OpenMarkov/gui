@@ -50,6 +50,7 @@ public abstract class EditorPanel extends JPanel {
                         .findFirst();
                 if (selectedToast.isPresent()) {
                     EditorPanel.this.toasts.remove(selectedToast.get());
+                    EditorPanel.this.repaint();
                     e.consume();
                     return;
                 }
@@ -95,6 +96,7 @@ public abstract class EditorPanel extends JPanel {
         this.avoidPaintRecursion = true;
         Graphics2D graphics2D = (Graphics2D) g.create();
         graphics2D = (Graphics2D) graphics2D.create();
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         super.paint(graphics2D.create());
         this.doPaint((Graphics2D) graphics2D.create());
         this.internalPaint((Graphics2D) graphics2D.create());

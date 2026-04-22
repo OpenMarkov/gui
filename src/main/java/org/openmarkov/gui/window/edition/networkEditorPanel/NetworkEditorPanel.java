@@ -28,7 +28,7 @@ import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.EditorPanel;
-import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
+import org.openmarkov.gui.window.decisiontree.DecisionTreeEditor;
 import org.openmarkov.gui.window.edition.EditorPanelClipboardAssistant;
 import org.openmarkov.gui.window.edition.ZoomManager;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
@@ -148,7 +148,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         setLayout(new BorderLayout());
         this.scrollPanel.setViewportView(this);
         this.scrollPanel.getVerticalScrollBar().setUnitIncrement(25);
-        decisionTreeWindows = new ArrayList<>();
+        decisionTreeEditors = new ArrayList<>();
     }
     
     
@@ -725,7 +725,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      */
     private WorkingMode workingMode = WorkingMode.EDITION;
     
-    private final ArrayList<DecisionTreeWindow> decisionTreeWindows;
+    private final ArrayList<DecisionTreeEditor> decisionTreeEditors;
     
     public enum WorkingMode {
         EDITION, INFERENCE
@@ -1070,7 +1070,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         }
         boolean close = super.close();
         if (close) {
-            new ArrayList<>(this.decisionTreeWindows).forEach(DecisionTreeWindow::close);
+            new ArrayList<>(this.decisionTreeEditors).forEach(DecisionTreeEditor::close);
             this.onNetworkClose.forEach(action -> action.accept(this));
         }
         return close;
@@ -1078,12 +1078,12 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     
     // TODO OOPN end
     
-    public void addDecisionTreeWindows(DecisionTreeWindow decisionTreeWindows) {
-        this.decisionTreeWindows.add(decisionTreeWindows);
+    public void addDecisionTreeWindows(DecisionTreeEditor decisionTreeWindows) {
+        this.decisionTreeEditors.add(decisionTreeWindows);
     }
     
-    public void removeDecisionTreeWindows(DecisionTreeWindow decisionTreeWindows) {
-        this.decisionTreeWindows.remove(decisionTreeWindows);
+    public void removeDecisionTreeWindows(DecisionTreeEditor decisionTreeWindows) {
+        this.decisionTreeEditors.remove(decisionTreeWindows);
     }
     
 }

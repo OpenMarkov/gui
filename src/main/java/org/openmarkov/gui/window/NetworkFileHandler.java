@@ -336,11 +336,7 @@ class NetworkFileHandler {
     }
 
     void closeApplication() throws WriterException {
-        boolean allClosed = true;
-        while (allClosed && !networkPanels.isEmpty()) {
-            allClosed = closeCurrentNetwork();
-        }
-        if (allClosed) {
+        if (this.mainPanel.closeAllTabs()) {
             System.exit(0);
         }
     }

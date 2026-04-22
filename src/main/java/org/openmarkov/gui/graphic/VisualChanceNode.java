@@ -70,7 +70,7 @@ public class VisualChanceNode extends VisualNode{
 	 * and 3) and the width and height of the rounded corner (elements 4
 	 * and 5).
 	 */
-	private double[] getNodeDimensions(Graphics2D g) {
+	public double[] getNodeDimensions(Graphics2D g) {
 
 		double[] dimensions = new double[6];
 		String text = getNodeString();

@@ -10,7 +10,6 @@ package org.openmarkov.gui.window;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.potential.StrategyCarrier;
@@ -21,12 +20,11 @@ import org.openmarkov.gui.dialog.inference.common.InferenceOptionsDialog;
 import org.openmarkov.gui.dialog.PropagationOptionsDialog;
 import org.openmarkov.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.util.GUIUtils;
-import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
+import org.openmarkov.gui.window.decisiontree.DecisionTreeEditor;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.inference.algorithm.decompositionIntoSymmetricDANs.evaluation.DANDecompositionIntoSymmetricDANsEvaluation;
@@ -186,8 +184,8 @@ class InferenceHandler {
         try {
             InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(networkPanel.getProbNet(),
                     GUIUtils.getOwner(mainPanel),null);
-
-            DecisionTreeWindow decisionTree = new DecisionTreeWindow(networkPanel);
+            
+            DecisionTreeEditor decisionTree = new DecisionTreeEditor(networkPanel);
             mainPanel.addCloseableTab("Decision tree for " + networkPanel.getProbNet().getName(), decisionTree);
             mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
             mainPanel.getNetworksTabPanel().setSelectedComponent(decisionTree);

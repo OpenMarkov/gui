@@ -24,13 +24,14 @@ import org.openmarkov.gui.menutoolbar.toolbar.plugin.ToolbarManager;
 import org.openmarkov.gui.menutoolbar.toolbar.EditionToolBar;
 import org.openmarkov.gui.menutoolbar.toolbar.InferenceToolBar;
 import org.openmarkov.gui.menutoolbar.toolbar.StandardToolBar;
-import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
+import org.openmarkov.gui.window.decisiontree.DecisionTreeEditor;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -140,9 +141,9 @@ public class MainPanel extends JPanel {
                     this.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);
                     this.getMainPanelMenuAssistant().setOptionEnabled(ActionCommands.CLOSE_TAB, true);
                 }
-                case DecisionTreeWindow decisionTreeWindow -> {
+                case DecisionTreeEditor decisionTreeEditor -> {
                     this.getMainPanelMenuAssistant().updateOptionsWindowSelected(false);
-                    this.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTreeWindow);
+                    this.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTreeEditor);
                     this.getMainPanelMenuAssistant().setOptionEnabled(ActionCommands.CLOSE_TAB, true);
                 }
                 case null, default -> {
@@ -539,9 +540,7 @@ public class MainPanel extends JPanel {
                         
                         tabContextMenu.add(new JSeparator());
                         JMenuItem closeAllTab = new JMenuItem("Close all tabs");
-                        closeAllTab.addActionListener(e2 -> multiClose(IntStream.range(0, MainPanel.this.networksTabPanel.getTabCount())
-                                                                                .boxed()
-                                                                                .toList()));
+                        closeAllTab.addActionListener(e2 -> closeAllTabs());
                         tabContextMenu.add(closeAllTab);
                         
                         JMenuItem closeAllTabsButThis = new JMenuItem("Close all tabs but this");
@@ -567,22 +566,6 @@ public class MainPanel extends JPanel {
                 }
             }
             
-            public void multiClose(List<Integer> tabIndexesToClose) {
-                tabIndexesToClose = tabIndexesToClose.stream().distinct().sorted(Comparator.reverseOrder()).toList();
-                int initialTab = MainPanel.this.networksTabPanel.getSelectedIndex();
-                boolean initialTabClosed = false;
-                for (int tabIndexToClose : tabIndexesToClose) {
-                    MainPanel.this.networksTabPanel.setSelectedIndex(tabIndexToClose);
-                    if (!((EditorPanel) MainPanel.this.networksTabPanel.getSelectedComponent()).close()) {
-                        return;
-                    }
-                    initialTabClosed = initialTabClosed || initialTab == tabIndexToClose;
-                }
-                if (!initialTabClosed) {
-                    MainPanel.this.networksTabPanel.setSelectedIndex(initialTab);
-                }
-            }
-            
             @Override public void mouseReleased(MouseEvent e) {
             
             }
@@ -595,6 +578,33 @@ public class MainPanel extends JPanel {
             
             }
         });
+    }
+    
+    public boolean closeAllTabs() {
+        List<Integer> tabsToClose = IntStream.range(0, MainPanel.this.networksTabPanel.getTabCount())
+                                             .boxed()
+                                             .toList();
+        var closedTabs = multiClose(tabsToClose);
+        return tabsToClose.size() == closedTabs.size();
+    }
+    
+    public ArrayList<Integer> multiClose(List<Integer> tabIndexesToClose) {
+        tabIndexesToClose = tabIndexesToClose.stream().distinct().sorted(Comparator.reverseOrder()).toList();
+        ArrayList<Integer> closedTabs = new ArrayList<>(tabIndexesToClose.size());
+        int initialTab = MainPanel.this.networksTabPanel.getSelectedIndex();
+        boolean initialTabClosed = false;
+        for (int tabIndexToClose : tabIndexesToClose) {
+            MainPanel.this.networksTabPanel.setSelectedIndex(tabIndexToClose);
+            if (!((EditorPanel) MainPanel.this.networksTabPanel.getSelectedComponent()).close()) {
+                return closedTabs;
+            }
+            closedTabs.add(tabIndexToClose);
+            initialTabClosed = initialTabClosed || initialTab == tabIndexToClose;
+        }
+        if (!initialTabClosed) {
+            MainPanel.this.networksTabPanel.setSelectedIndex(initialTab);
+        }
+        return closedTabs;
     }
     
     private String getUniqueTitle(String title, @Nullable Set<Integer> tabIndexesToSkip) {

@@ -894,14 +894,12 @@ public class VisualNetwork implements PNEditListener {
      * @return the visual representation of the node.
      */
     private VisualNode createVisualNode(Node node) {
-        
-        VisualNode visualNode = switch (node.getNodeType()) {
+        return switch (node.getNodeType()) {
             case CHANCE -> new VisualChanceNode(node, this);
             case DECISION -> new VisualDecisionNode(node, this);
             case UTILITY -> new VisualUtilityNode(node, this);
             default -> null;
         };
-        return visualNode;
     }
     
     @Override public void afterUndoingEdit(PNEdit edit) {

@@ -26,7 +26,7 @@ import org.openmarkov.gui.graphic.*;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.localize.MenuLocalizer;
 import org.openmarkov.gui.menutoolbar.common.*;
-import org.openmarkov.gui.window.decisiontree.DecisionTreeWindow;
+import org.openmarkov.gui.window.decisiontree.DecisionTreeEditor;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 import org.openmarkov.gui.window.edition.ZoomManager;
 
@@ -793,6 +793,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         return null;
     }
     
+    
     /**
      * Enables or disables options on 'File' menu depending on the type of
      * window selected.
@@ -824,7 +825,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         updateOptionsPropagationTypeDependent(getCurrentNetworkEditorPanel());
     }
     
-    public void updateOptionsDecisionTree(DecisionTreeWindow decisionTreeWindow) {
+    public void updateOptionsDecisionTree(DecisionTreeEditor decisionTreeEditor) {
         setOptionEnabled(EDITING_ACTION_COMMANDS, false);
         setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
         // setOptionEnabled(VIEWING_ACTION_COMMANDS, false);
@@ -850,7 +851,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         setOptionEnabled(ActionCommands.LINK_CREATION, false);
         
         //mainPanel.getStandardToolBar().getDecisionTreeButton().setSelected(true);
-        setZoom(decisionTreeWindow.getZoom());
+        setZoom(decisionTreeEditor.getZoom());
     }
     
     public void updateOptionsNetworkOpenedURL(boolean networkOpenedURL) {

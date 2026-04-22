@@ -5,18 +5,21 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.window.decisiontree;
+package org.openmarkov.gui.window.decisiontree.elements;
 
 import org.openmarkov.core.model.decisiontree.DecisionTreeBranch;
 import org.openmarkov.core.model.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.model.network.NodeType;
 
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
 /**
  * GUI representation of a logical decision tree branch.
  * It displays branch-specific information such as variable states and probabilities.
  */
-@SuppressWarnings("serial") 
-public class DecisionTreeBranchPanel extends DecisionTreeElementPanel {
+@SuppressWarnings("serial")
+public non-sealed class DecisionTreeBranchPanel extends DecisionTreeElementPanel {
 	
 	/** The underlying logical tree branch. */
 	private final DecisionTreeBranch treeBranch;
@@ -28,6 +31,7 @@ public class DecisionTreeBranchPanel extends DecisionTreeElementPanel {
 	public DecisionTreeBranchPanel(DecisionTreeBranch treeBranch) {
 		super();
 		this.treeBranch = treeBranch;
+		super.initialize();
 	}
 	
 	public DecisionTreeBranch getTreeBranch() {
@@ -58,9 +62,14 @@ public class DecisionTreeBranchPanel extends DecisionTreeElementPanel {
 		txtLeft += treeBranch.getChild().formatUtility(df, parent != null) + "</td></table></html>";
 		return txtLeft.toString();
 	}
-
+	
+	
+	@Override public JComponent makeSummary() {
+		return new JLabel();
+	}
+	
 	/** {@inheritDoc} */
 	@Override public void update(boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-		leftLabel.setText(getBranchDescriptiontHTML());
+		((JLabel) summaryLabel.get()).setText(getBranchDescriptiontHTML());
 	}
 }

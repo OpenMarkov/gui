@@ -7,6 +7,10 @@
 
 package org.openmarkov.gui.window.edition;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+
 /**
  * This class is used to translate the coordinates of the screen to the
  * coordinates of a panel, according to a zoomManager value.
@@ -60,4 +64,48 @@ public class ZoomManager {
 	public double panelToScreen(double value) {
 		return value * zoom;
 	}
+	
+	public MouseAdapter redelegatedMouseAdapter(MouseAdapter source) {
+		return new MouseAdapter() {
+			@Override public void mouseClicked(MouseEvent e) {
+				source.mouseClicked(mouseEventWithTranslatePos(e, ZoomManager.this.getZoom()));
+			}
+			
+			@Override public void mousePressed(MouseEvent e) {
+				source.mousePressed(mouseEventWithTranslatePos(e, ZoomManager.this.getZoom()));
+			}
+			
+			@Override public void mouseReleased(MouseEvent e) {
+				source.mouseReleased(mouseEventWithTranslatePos(e, ZoomManager.this.getZoom()));
+			}
+			
+			@Override public void mouseEntered(MouseEvent e) {
+				source.mouseEntered(mouseEventWithTranslatePos(e, ZoomManager.this.getZoom()));
+			}
+			
+			@Override public void mouseExited(MouseEvent e) {
+				source.mouseExited(mouseEventWithTranslatePos(e, ZoomManager.this.getZoom()));
+			}
+			
+			@Override public void mouseWheelMoved(MouseWheelEvent e) {
+				source.mouseWheelMoved(mouseEventWithTranslatePos(e, ZoomManager.this.getZoom()));
+			}
+			
+			@Override public void mouseDragged(MouseEvent e) {
+				source.mouseDragged(mouseEventWithTranslatePos(e, ZoomManager.this.getZoom()));
+			}
+			
+			@Override public void mouseMoved(MouseEvent e) {
+				source.mouseMoved(mouseEventWithTranslatePos(e, ZoomManager.this.getZoom()));
+			}
+			
+			private static <T extends MouseEvent> T mouseEventWithTranslatePos(T e, double zoom) {
+				int newX = (int) (e.getX() / zoom);
+				int newY = (int) (e.getY() / zoom);
+				e.translatePoint(newX - e.getX(), newY - e.getY());
+				return e;
+			}
+		};
+	}
+	
 }

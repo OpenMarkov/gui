@@ -8,6 +8,7 @@
 package org.openmarkov.gui.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.UnrecoverableException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,4 +72,35 @@ public final class GUIUtils {
     }
     
     
+    // ── Exception wrapper ─────────────────────────────────────────
+    
+    @FunctionalInterface public interface UIAction {
+        void execute() throws Exception;
+    }
+    
+    public static void executeUIAction(UIAction action) {
+        try {
+            action.execute();
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new UnrecoverableException(ex);
+        }
+    }
+    
+    // ── Exception wrapper ─────────────────────────────────────────
+    
+    @FunctionalInterface public interface UIRetAction<T> {
+        T execute() throws Exception;
+    }
+    
+    public static <T> T executeUIAction(UIRetAction<T> action) {
+        try {
+            return action.execute();
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new UnrecoverableException(ex);
+        }
+    }
 }

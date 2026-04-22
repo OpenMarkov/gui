@@ -50,6 +50,8 @@ open module org.openmarkov.gui {
     exports org.openmarkov.gui.commonComponents;
     exports org.openmarkov.gui.window.edition.networkEditorPanel;
     exports org.openmarkov.gui.dialog.node;
+    exports org.openmarkov.java.swing;
+    exports org.openmarkov.gui.window.decisiontree.elements;
     
     uses org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
     provides org.openmarkov.core.localize.spi.LocalizeResourcesProvider with GUIResourceBundleProvider;

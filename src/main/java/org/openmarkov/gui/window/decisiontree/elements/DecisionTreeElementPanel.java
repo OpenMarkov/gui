@@ -5,9 +5,11 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.gui.window.decisiontree;
+package org.openmarkov.gui.window.decisiontree.elements;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.gui.configuration.GUIColors;
+import org.openmarkov.java.initialization.Lazy;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,32 +23,38 @@ import java.util.Locale;
  * Abstract base panel for representing decision tree elements in the GUI.
  * Provides the basic layout and structure for nodes and branches.
  */
-@SuppressWarnings("serial") 
-public abstract class DecisionTreeElementPanel extends JPanel {
+@SuppressWarnings("serial")
+public abstract sealed class DecisionTreeElementPanel extends JPanel permits DecisionTreeBranchPanel, DecisionTreeNodePanel {
     
     /** Container of SummaryBox' foreground or the variable's icon. */
-	protected final JLabel leftLabel = new JLabel();
+	protected final Lazy<JComponent> summaryLabel;
 	
 	/**Container for leaf specific data, such as potential descriptions or values. */
-	protected final JLabel rightLabel = new JLabel();
+	protected final JLabel descriptionLabel = new JLabel();
 
     /** List of child panels in the tree hierarchy. */
 	protected final List<DecisionTreeElementPanel> children;
 	
     /** Formatter for displaying numerical values with four decimal places. */
     final DecimalFormat df = new DecimalFormat("0.0000", new DecimalFormatSymbols(Locale.US));
-
+	
+	public abstract JComponent makeSummary();
+	
     /**
      * Initializes the panel with a BorderLayout and default white background.
      */
 	public DecisionTreeElementPanel() {
 		super(new BorderLayout());
-		this.add(leftLabel, BorderLayout.WEST);
-		this.add(rightLabel, BorderLayout.CENTER);
-		children = new ArrayList<>();
+		this.summaryLabel = Lazy.of(this::makeSummary);
+		this.children = new ArrayList<>();
 	}
-    
-    @Override public void updateUI() {
+	
+	protected void initialize() {
+		this.add(summaryLabel.get(), BorderLayout.WEST);
+		this.add(descriptionLabel, BorderLayout.CENTER);
+	}
+	
+	@Override public void updateUI() {
         super.updateUI();
         this.setBackground(GUIColors.DecisionTree.BACKGROUND.getColor());
     }
