@@ -20,17 +20,23 @@ import javax.swing.*;
         super(firstEditableRow, uncertaintyInColumns);
     }
     
-    @Override protected void setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-                                           int column) {
-        super.setCellColors(table, value, isSelected, hasFocus, row, column);
-        
+    @Override
+    protected SetColor setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+                                     int column) {
+        var colors = super.setCellColors(table, value, isSelected, hasFocus, row, column);
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
             if (value.toString().equalsIgnoreCase(INCOMPATIBILITY_VALUE)) {
-                setBackground(GUIColors.Network.LinkRestriction.INCOMPATIBILITY_COLOR.getColor());
-            } else if (value.toString().equalsIgnoreCase(COMPATIBILITY_VALUE)) {
-                setBackground(GUIColors.Network.LinkRestriction.COMPATIBILITY_COLOR.getColor());
+                return new SetColor(GUIColors.Network.LinkRestriction.INCOMPATIBILITY_FOREGROUND.getColor(),
+                                    GUIColors.Network.LinkRestriction.INCOMPATIBILITY_BACKGROUND.getColor(),
+                                    true);
+            }
+            if (value.toString().equalsIgnoreCase(COMPATIBILITY_VALUE)) {
+                return new SetColor(GUIColors.Network.LinkRestriction.COMPATIBILITY_FOREGROUND.getColor(),
+                                    GUIColors.Network.LinkRestriction.COMPATIBILITY_BACKGROUND.getColor(),
+                                    true);
             }
         }
+        return colors;
     }
     
 }

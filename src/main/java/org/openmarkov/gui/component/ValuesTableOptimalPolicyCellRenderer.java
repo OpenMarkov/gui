@@ -17,10 +17,11 @@ import java.awt.*;
     public ValuesTableOptimalPolicyCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns) {
 		super(firstEditableRow, uncertaintyInColumns);
     }
-
-	@Override protected void setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-			int column) {
-		super.setCellColors(table, value, isSelected, hasFocus, row, column);
+	
+	@Override
+	protected SetColor setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+	                                 int column) {
+		var colors = super.setCellColors(table, value, isSelected, hasFocus, row, column);
         Color color = GUIColors.Tables.ValuesTable.OPTIMAL_POLICY.getColor(); //new java.awt.Color (255, 72, 72);
 		if (column >= ValuesTable.FIRST_EDITABLE_COLUMN && ValuesTable.FIRST_EDITABLE_COLUMN >= 0
 				&& row >= firstEditableRow && value instanceof Double) {
@@ -33,8 +34,9 @@ import java.awt.*;
 				}
 			}
 			if (isMax) {
-				setBackground(color);
+				colors.background = color;
 			}
 		}
+		return colors;
 	}
 }

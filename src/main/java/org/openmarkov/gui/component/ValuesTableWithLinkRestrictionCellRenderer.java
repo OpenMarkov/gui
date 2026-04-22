@@ -16,18 +16,20 @@ import javax.swing.*;
     public ValuesTableWithLinkRestrictionCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns) {
 		super(firstEditableRow, uncertaintyInColumns);
 	}
-
-	@Override protected void setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-			int column) {
-		super.setCellColors(table, value, isSelected, hasFocus, row, column);
+	
+	@Override
+	protected SetColor setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+	                                 int column) {
+		var colors = super.setCellColors(table, value, isSelected, hasFocus, row, column);
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
 			try {
 				if (!table.isCellEditable(row, column)) {
-                    setBackground(GUIColors.Network.LinkRestriction.INCOMPATIBILITY_COLOR.getColor());
+					colors.background = GUIColors.Network.LinkRestriction.INCOMPATIBILITY_BACKGROUND.getColor();
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
 			}
 		}
+		return colors;
 	}
 
 }

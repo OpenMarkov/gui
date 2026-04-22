@@ -53,8 +53,11 @@ public class GUIColors {
         }
         
         public static final class LinkRestriction {
-            public static final GUIColor INCOMPATIBILITY_COLOR = new GUIColor(new Color(255, 88, 88));
-            public static final GUIColor COMPATIBILITY_COLOR = new GUIColor(new Color(174, 255, 174));
+            public static final GUIColor INCOMPATIBILITY_BACKGROUND = new GUIColor(new Color(255, 88, 88));
+            public static final GUIColor COMPATIBILITY_BACKGROUND = new GUIColor(new Color(174, 255, 174));
+            
+            public static final GUIColor INCOMPATIBILITY_FOREGROUND = new GUIColor(new Color(255, 255, 255));
+            public static final GUIColor COMPATIBILITY_FOREGROUND = new GUIColor(new Color(0, 0, 0));
         }
     }
     

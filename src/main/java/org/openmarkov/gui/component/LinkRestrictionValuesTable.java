@@ -26,8 +26,7 @@ import java.util.ArrayList;
  * This table implementation is responsible for the graphical and data model
  * manipulation of the Link restriction potential.
  **/
-public class LinkRestrictionValuesTable extends ValuesTable
-        implements PNEditListener {
+public class LinkRestrictionValuesTable extends ValuesTable {
     /***
      * Constant value to describe compatibility of a position of the link
      * restriction potential.

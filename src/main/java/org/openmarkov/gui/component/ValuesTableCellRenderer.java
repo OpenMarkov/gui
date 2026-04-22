@@ -58,6 +58,18 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
         this(firstEditableRow, null);
     }
     
+    public static class SetColor {
+        public Color foreground;
+        public Color background;
+        public boolean forceOverride;
+        
+        public SetColor(Color foreground, Color background, boolean forceOverride) {
+            this.foreground = foreground;
+            this.background = background;
+            this.forceOverride = forceOverride;
+        }
+    }
+    
     /**
      * headers rows are displayed in a gray background color with red and blue
      * foreground alternatively non headers rows are displayed in an alternative
@@ -68,10 +80,17 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                                                    int row, int column) {
         setHorizontalAlignment(SwingConstants.CENTER);
-        setCellFonts(table, value, isSelected, hasFocus, row, column);
-        setCellColors(table, value, isSelected, hasFocus, row, column);
-        setCellBorders(table, value, isSelected, hasFocus, row, column);
         setMinimumSize(table, value, isSelected, hasFocus, row, column);
+        setCellFonts(table, value, isSelected, hasFocus, row, column);
+        setCellBorders(table, value, isSelected, hasFocus, row, column);
+        SetColor setColor = setCellColors(table, value, isSelected, hasFocus, row, column);
+        
+        if (setColor.background != null) {
+            this.setBackground(setColor.background);
+        }
+        if (setColor.foreground != null) {
+            this.setForeground(setColor.foreground);
+        }
         if (value instanceof Double) {
             value = formatter.format(value);
         }
@@ -79,9 +98,16 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
                 && uncertaintyInColumns[column - 1]) {
             getUncertaintyIcon().setText(value.toString());
             return getUncertaintyIcon();
-        } else {
-            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
+        Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        if (setColor.forceOverride && setColor.background != null) {
+            this.setBackground(setColor.background);
+        }
+        if (setColor.forceOverride && setColor.foreground != null) {
+            this.setForeground(setColor.foreground);
+        }
+        
+        return component;
     }
     
     private void setMinimumSize(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -128,23 +154,25 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
      * @param row        - row of the cell
      * @param column     - column of the cell
      */
-    protected void setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-                                 int column) {
+    protected SetColor setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        Color background = null;
+        Color foreground = null;
+        
         if ((column < ValuesTable.FIRST_EDITABLE_COLUMN) & (row < firstEditableRow)) {
             // PARENTS CELLS set alternate colors
-            setBackground(GUIColors.Tables.HEADER_BACKGROUND.getColor());
-            setForeground(GUIColors.Tables.FROZEN_CELL_FOREGROUND.getColor());
+            background = GUIColors.Tables.HEADER_BACKGROUND.getColor();
+            foreground = GUIColors.Tables.FROZEN_CELL_FOREGROUND.getColor();
         }
         if ((column < ValuesTable.FIRST_EDITABLE_COLUMN) & (row >= firstEditableRow)) {
             // NODE STATES CELLS
-            setBackground(GUIColors.Tables.FROZEN_CELL_BACKGROUND.getColor());
-            setForeground(GUIColors.Tables.FROZEN_CELL_FOREGROUND.getColor());
+            background = GUIColors.Tables.FROZEN_CELL_BACKGROUND.getColor();
+            foreground = GUIColors.Tables.FROZEN_CELL_FOREGROUND.getColor();
         }
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) & (row < firstEditableRow)) {
             // HEADER CELLS
             switch (row % 3) {
                 case 0, 1, 2:
-                    setBackground(GUIColors.Tables.HEADER_BACKGROUND.getColor());
+                    background = GUIColors.Tables.HEADER_BACKGROUND.getColor();
                     break;
                 default:
                     break;
@@ -152,13 +180,14 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
             var valuesOfRow = IntStream.range(0, table.getModel().getColumnCount())
                                        .mapToObj(columnIndex -> table.getModel().getValueAt(row, columnIndex))
                                        .distinct().toList();
-            setForeground(GUIColors.Tables.HEADER_FOREGROUND_COLORS.get(valuesOfRow.indexOf(value) % GUIColors.Tables.HEADER_FOREGROUND_COLORS.size())
-                                                                   .getColor());
+            foreground = GUIColors.Tables.HEADER_FOREGROUND_COLORS.get(valuesOfRow.indexOf(value) % GUIColors.Tables.HEADER_FOREGROUND_COLORS.size())
+                                                                  .getColor();
         }
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
-            setBackground(GUIColors.Tables.EDITABLE_CELL_BACKGROUND.getColor());
-            setForeground(GUIColors.Tables.EDITABLE_CELL_FOREGROUND.getColor());
+            background = GUIColors.Tables.EDITABLE_CELL_BACKGROUND.getColor();
+            foreground = GUIColors.Tables.EDITABLE_CELL_FOREGROUND.getColor();
         }
+        return new SetColor(foreground, background, false);
     }
     
     // ESCA-JAVA0173: not considering unused parameters for the method.
