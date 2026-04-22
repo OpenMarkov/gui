@@ -20,14 +20,14 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 
 /**
  * This class represents the content panel of a tab.
  *
  * @author jmendoza
- * @version 1.1 jrico - Removed most of the methods, as these were related to MDI. OpenMarkov now uses tabs.
- * this class has been reduced to a simple JPanel that can be zoomed in and out, and has a custom action for closing.
  * @version 1.2 jrico - Added a prototype for toasts.
  */
 public abstract class EditorPanel extends JPanel {
@@ -38,19 +38,28 @@ public abstract class EditorPanel extends JPanel {
     
     protected JScrollPane scrollPanel;
     
+    private static final double ZOOM_SPEED_ON_WHEEL = 0.2;
+    
     public EditorPanel() {
         this.scrollPanel = new JScrollPane(this);
         this.addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent e) {
-                var selectedToast = EditorPanel.this.toasts.stream()
-                                                           .filter(toast -> toast.rect.getBounds()
-                                                                                      .contains(e.getPoint()))
-                                                           .findFirst();
+                var selectedToast = EditorPanel.this.toasts
+                        .stream()
+                        .filter(toast -> toast.rect.getBounds().contains(e.getPoint()))
+                        .findFirst();
                 if (selectedToast.isPresent()) {
                     EditorPanel.this.toasts.remove(selectedToast.get());
                     e.consume();
                     return;
                 }
+            }
+        });
+        this.addMouseWheelListener(e -> {
+            if (e.isControlDown()) {
+                this.setZoom(this.getZoom() + EditorPanel.ZOOM_SPEED_ON_WHEEL * (-e.getWheelRotation()));
+            } else {
+                this.getParent().dispatchEvent(e);
             }
         });
         this.scrollPanel.getVerticalScrollBar().addAdjustmentListener(e -> this.repaint());
