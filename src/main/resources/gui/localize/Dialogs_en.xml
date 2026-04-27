@@ -220,10 +220,8 @@
             <Text value="Default states:"/>
         </jLabelDefaultStates>
         <ConstraintVariableType>
-            <items>
-                <discreteandcontinuous value="Discrete and continuous"/>
-            </items>
             <Items>
+                <discreteandcontinuous value="Discrete and continuous"/>
                 <onlydiscrete value="Only discrete"/>
                 <onlycontinuous value="Only continuous"/>
             </Items>

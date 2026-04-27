@@ -8,6 +8,7 @@
 package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.action.core.NetworkDefaultStatesEdit;
+import org.openmarkov.core.action.core.RemoveConstraintEdit;
 import org.openmarkov.core.action.core.VariableTypeConstraintEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
@@ -23,6 +24,7 @@ import org.openmarkov.gui.util.GUIDefaultStates;
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import java.util.List;
 
 /**
  * Panel to set the definition of the variables of a network. It will have a
@@ -186,7 +188,7 @@ public class NetworkVariablesPanel extends JPanel {
         String[] types = {
                 stringDatabase.getString("NetworkVariablesPanel.ConstraintVariableType.Items." + "onlydiscrete"),
                 stringDatabase.getString(
-                        "NetworkVariablesPanel.ConstraintVariableType." + "items.discreteandcontinuous")};
+                        "NetworkVariablesPanel.ConstraintVariableType." + "Items.discreteandcontinuous")};
         return types;
     }
     
@@ -231,13 +233,29 @@ public class NetworkVariablesPanel extends JPanel {
     
     private void variableTypeChanged() throws DoEditException {
         VariableTypeConstraintEdit variableTypeCE = null;
+        RemoveConstraintEdit removeCE;
         Object itemSelected = jComboBoxVariableType.getSelectedItem();
         if (itemSelected != null && itemSelected.equals(stringDatabase
                                                                 .getString("NetworkVariablesPanel.ConstraintVariableType." + "Items.onlydiscrete"))) {
+
             variableTypeCE = new VariableTypeConstraintEdit(probNet, new OnlyDiscreteVariables());
+
         } else if (itemSelected != null && itemSelected.equals(stringDatabase
                                                                        .getString("NetworkVariablesPanel.ConstraintVariableType." + "Items.onlycontinuous"))) {
+
             variableTypeCE = new VariableTypeConstraintEdit(probNet, new OnlyContinuousVariables());
+
+        } else if (itemSelected != null && itemSelected.equals(stringDatabase
+                                                                        .getString("NetworkVariablesPanel.ConstraintVariableType." + "Items.discreteandcontinuous"))) {
+
+            List<PNConstraint> constraints = probNet.getConstraints().stream()
+                    .filter(o -> o.equals(new OnlyDiscreteVariables()) || o.equals(new OnlyContinuousVariables()))
+                    .toList();
+            if(!constraints.isEmpty()){
+                removeCE = new RemoveConstraintEdit(probNet, constraints.getFirst());
+                removeCE.executeEdit();
+            }
+
         }
         if (variableTypeCE != null) {
             variableTypeCE.executeEdit();
