@@ -15,6 +15,7 @@ import org.openmarkov.core.action.core.SetPotentialEdit;
 import org.openmarkov.core.action.core.SetPotentialVariablesEdit;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.*;
+import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.*;
@@ -478,7 +479,7 @@ public class PotentialEditDialog extends OkCancelDialog
         }
         if (newPotential == null && potentialType == TablePotential.class) {
             try {
-                newPotential = this.node.getPotentials().getFirst().tableProject(null, null);
+                newPotential = this.node.getPotentials().getFirst().tableProject(new EvidenceCase(), new InferenceOptions());
             } catch (NonProjectablePotentialException e) {
             }
         }
