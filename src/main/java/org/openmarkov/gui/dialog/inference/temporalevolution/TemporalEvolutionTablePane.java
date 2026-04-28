@@ -12,6 +12,8 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.component.ValuesTable;
+import org.openmarkov.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
@@ -51,8 +53,13 @@ public class TemporalEvolutionTablePane extends JScrollPane {
                 setBackground(GUIColors.Tables.FROZEN_CELL_BACKGROUND.getColor());
                 setForeground(GUIColors.Tables.FROZEN_CELL_FOREGROUND.getColor());
             } else {
-                setBackground(GUIColors.Tables.EDITABLE_CELL_BACKGROUND.getColor());
-                setForeground(GUIColors.Tables.EDITABLE_CELL_FOREGROUND.getColor());
+                var colors = GUIColors.Tables.EDITABLE_CELL_COLOR.getEditableCellColor(isSelected, row, column-1);
+                if (colors.background != null) {
+                    setBackground(colors.background.getColor());
+                }
+                if (colors.foreground != null) {
+                    setForeground(colors.foreground.getColor());
+                }
             }
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }

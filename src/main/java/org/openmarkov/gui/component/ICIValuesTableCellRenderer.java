@@ -82,8 +82,16 @@ import java.util.List;
             }
         }
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
-            background = GUIColors.Tables.EDITABLE_CELL_BACKGROUND.getColor();
-            foreground = GUIColors.Tables.EDITABLE_CELL_FOREGROUND.getColor();
+            int editableRowIndex = row-firstEditableRow;
+            int editableColumnIndex = column-ValuesTable.FIRST_EDITABLE_COLUMN;
+            var colors = GUIColors.Tables.EDITABLE_CELL_COLOR.getEditableCellColor(isSelected, editableRowIndex, editableColumnIndex);
+            if (colors.background!=null){
+                background = colors.background.getColor();
+            }
+            if(colors.foreground!=null) {
+                foreground = colors.foreground.getColor();
+            }
+            return new SetColor(foreground, background, true);
         }
         return new SetColor(foreground, background, false);
     }

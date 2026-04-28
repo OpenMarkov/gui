@@ -10,6 +10,9 @@
 
 package org.openmarkov.gui.component;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.openmarkov.gui.configuration.GUIColor;
 import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.loader.element.IconBind;
 
@@ -22,6 +25,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.stream.IntStream;
+
+import static org.openmarkov.java.nullUtils.NullUtils.firstNotNull;
 
 /**
  * This class is used for painting and coloring the table and the headers
@@ -184,11 +189,31 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
                                                                   .getColor();
         }
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
-            background = GUIColors.Tables.EDITABLE_CELL_BACKGROUND.getColor();
-            foreground = GUIColors.Tables.EDITABLE_CELL_FOREGROUND.getColor();
+            int editableRowIndex = row-firstEditableRow;
+            int editableColumnIndex = column-ValuesTable.FIRST_EDITABLE_COLUMN;
+            var colors = GUIColors.Tables.EDITABLE_CELL_COLOR.getEditableCellColor(isSelected, editableRowIndex, editableColumnIndex);
+            if (colors.background!=null){
+                background = colors.background.getColor();
+            }
+            if(colors.foreground!=null) {
+                foreground = colors.foreground.getColor();
+            }
+            return new SetColor(foreground, background, true);
         }
         return new SetColor(foreground, background, false);
     }
+    
+    @FunctionalInterface
+    public interface EditableCellColor{
+        CellColor getEditableCellColor(boolean isSelected, int rowIndex, int columnIndex);
+    }
+    
+    public static class CellColor{
+        public @Nullable GUIColor foreground;
+        public @Nullable GUIColor background;
+    }
+    
+    
     
     // ESCA-JAVA0173: not considering unused parameters for the method.
     
