@@ -102,9 +102,8 @@ public class RadialLayout implements LayoutManager {
         int halfComponentDiagonal = (int) Math.ceil(componentDiagonal / 2.0);
         int maxRadiusToFit = Math.max(0, Math.min(availableWidth, availableHeight) / 2 - halfComponentDiagonal);
         
-        if (componentCount <= 1) return maxRadiusToFit;
         
-        double minRadiusToNotOverlap = (componentDiagonal + gap) / (2.0 * Math.sin(Math.PI / componentCount));
+        double minRadiusToNotOverlap = (componentDiagonal + gap) / (2.0 * Math.sin(Math.PI / Math.max(2, componentCount)));
         
         return (int) Math.min(maxRadiusToFit, Math.max(minRadiusToNotOverlap, halfComponentDiagonal));
     }

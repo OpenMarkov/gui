@@ -223,7 +223,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                             .executeEdit();
                 }
             });
-            case ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES, ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES -> {
+            case ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES -> {
                 NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
                 List<VisualLink> links = networkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks();
                 if (!links.isEmpty()) {

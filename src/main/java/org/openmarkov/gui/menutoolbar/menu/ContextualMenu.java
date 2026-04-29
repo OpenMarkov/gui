@@ -184,7 +184,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
         horizontalMenu.setBorder(BorderFactory.createEmptyBorder());
         horizontalMenu.putClientProperty("Popup.dropShadowPainted", false);
         
-        RadialPanel radialPanel = new RadialPanel(new RadialLayout(270, 10));
+        RadialPanel radialPanel = new RadialPanel(new RadialLayout(270, 8));
         radialPanel.setOpaque(false);
         radialPanel.setBackground(GUIColors.General.TRANSPARENT.getColor());
         

@@ -173,7 +173,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         if (currentNetworkEditorPanel != null) {
             workingMode = currentNetworkEditorPanel.getWorkingMode();
             boolean enable = currentNetworkEditorPanel.getProbNet().getNetworkType() instanceof InfluenceDiagramType
-                    || currentNetworkEditorPanel.getProbNet().getNetworkType() instanceof MIDType || currentNetworkEditorPanel
+                    || currentNetworkEditorPanel.getProbNet()
+                                                .getNetworkType() instanceof MIDType || currentNetworkEditorPanel
                     .getProbNet().getNetworkType() instanceof DecisionAnalysisNetworkType;
             setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, enable);
             setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, enable);
@@ -202,12 +203,12 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
             return;
         }
         if (currentNetworkEditorPanel.getProbNet()
-                               .hasConstraintOfClass(OnlyChanceNodes.class) && currentNetworkEditorPanel.getProbNet()
-                                                                                                  .hasConstraintOfClass(OnlyAtemporalVariables.class)) {
+                                     .hasConstraintOfClass(OnlyChanceNodes.class) && currentNetworkEditorPanel.getProbNet()
+                                                                                                              .hasConstraintOfClass(OnlyAtemporalVariables.class)) {
             setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, false);
         } else {
             setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, !currentNetworkEditorPanel.getProbNet()
-                                                                                   .hasConstraintOfClass(OnlyAtemporalVariables.class) || (
+                                                                                         .hasConstraintOfClass(OnlyAtemporalVariables.class) || (
                     currentNetworkEditorPanel.getProbNet().getDecisionCriteria() != null
                             && currentNetworkEditorPanel.getProbNet().getDecisionCriteria().size() > 1
             ));
@@ -634,9 +635,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                                                                                                .getVariable(), 1);
                         
                         if (!(
-                                visualNode.getNode().getNodeType() == NodeType.CHANCE && visualNode.getNode()
-                                                                                                   .getVariable()
-                                                                                                   .getVariableType() != VariableType.FINITE_STATES
+                                visualNode.getNode().getNodeType() == NodeType.CHANCE &&
+                                        visualNode.getNode()
+                                                  .getVariable()
+                                                  .getVariableType() != VariableType.FINITE_STATES
                         )) {
                             canLog = true;
                             canTemporalEvolution = true;
@@ -757,7 +759,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
             updateOptionsNetworkDependent(currentNetworkEditorPanel);
             // updateNetworkAgents(currentNetworkEditorPanel);
         }
-        NetworkEditorPanel.WorkingMode workingMode = currentNetworkEditorPanel.getEditorPanel().getVisualNetwork().getWorkingMode();
+        NetworkEditorPanel.WorkingMode workingMode = currentNetworkEditorPanel.getEditorPanel()
+                                                                              .getVisualNetwork()
+                                                                              .getWorkingMode();
         boolean workingModeIsNotInference = workingMode != NetworkEditorPanel.WorkingMode.INFERENCE;
         updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo() && workingModeIsNotInference,
                                      probNet.getPNESupport().getCanRedo() && workingModeIsNotInference);
@@ -766,8 +770,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     @Override public void afterUndoingEdit(PNEdit edit) {
         ProbNet probNet = getCurrentNetworkEditorPanel().getProbNet();
         NetworkEditorPanel.WorkingMode workingMode = getCurrentNetworkEditorPanel().getEditorPanel()
-                                                                       .getVisualNetwork()
-                                                                       .getWorkingMode();
+                                                                                   .getVisualNetwork()
+                                                                                   .getWorkingMode();
         boolean workingModeIsNotInference = workingMode != NetworkEditorPanel.WorkingMode.INFERENCE;
         updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo() && workingModeIsNotInference,
                                      probNet.getPNESupport().getCanRedo() && workingModeIsNotInference);
@@ -776,8 +780,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     @Override public void afterRedoingEdit(PNEdit edit) {
         ProbNet probNet = getCurrentNetworkEditorPanel().getProbNet();
         NetworkEditorPanel.WorkingMode workingMode = getCurrentNetworkEditorPanel().getEditorPanel()
-                                                                       .getVisualNetwork()
-                                                                       .getWorkingMode();
+                                                                                   .getVisualNetwork()
+                                                                                   .getWorkingMode();
         boolean workingModeIsNotInference = workingMode != NetworkEditorPanel.WorkingMode.INFERENCE;
         updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo() && workingModeIsNotInference,
                                      probNet.getPNESupport().getCanRedo() && workingModeIsNotInference);

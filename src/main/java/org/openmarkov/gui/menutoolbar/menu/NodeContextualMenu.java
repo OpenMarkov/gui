@@ -11,6 +11,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.gui.componentBuilder.JMenuItemBuilder;
+import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.validator.AbsorbParentsValidator;
 import org.openmarkov.gui.validator.AbsorbNodeValidator;
@@ -69,10 +70,7 @@ public class NodeContextualMenu extends ContextualMenu {
      * Object that represents the item 'ImposePolicy'.
      */
     private JMenuItem imposePolicyMenuItem = null;
-    /**
-     * Object that represents the item 'EditPolicy'.
-     */
-    private JMenuItem editPolicyMenuItem = null;
+    
     /**
      * Object that represents the item 'RemovePolicy'.
      */
@@ -128,8 +126,8 @@ public class NodeContextualMenu extends ContextualMenu {
         super(newListener);
         this.networkEditorPanel = networkEditorPanel;
         NetworkEditorPanel.WorkingMode workingMode = networkEditorPanel.getNetworkEditorPanel().getWorkingMode();
+        this.selectedNode = selectedNode;
         NodeType nodeType = selectedNode.getNode().getNodeType();
-        
         // Test if the node can be absorbed. Validate method returns true in that case
         Node node = selectedNode.getNode();
         setOptionEnabled(ActionCommands.ABSORB_NODE.getCommandName(), AbsorbNodeValidator.validate(node));
@@ -151,23 +149,30 @@ public class NodeContextualMenu extends ContextualMenu {
             add(getAbsorbParentsMenuItem());
             addSeparator();
         }
-        add(getTemporalEvolutionMenuItem());
-        if (workingMode == NetworkEditorPanel.WorkingMode.EDITION) {
-            add(getNextSliceNodeMenuItem());
+        
+        //visualNode.getNode().getVariable().isTemporal()
+        
+        if (node.getVariable().isTemporal()) {
+            add(getTemporalEvolutionMenuItem());
+            if (workingMode == NetworkEditorPanel.WorkingMode.EDITION) {
+                add(getNextSliceNodeMenuItem());
+            }
+            addSeparator();
         }
-        addSeparator();
         add(getPropertiesMenuItem());
         if (nodeType != NodeType.DECISION) {
             add(getEditPotentialMenuItem());
         }
         addSeparator();
-        add(getExpandMenuItem());
-        add(getContractMenuItem());
-        addSeparator();
-        if (nodeType == NodeType.DECISION) {
+        if (networkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE) {
+            add(getExpandMenuItem());
+            add(getContractMenuItem());
+            addSeparator();
+        }
+        
+        if (selectedNode instanceof VisualDecisionNode visualDecisionNode) {
             if (workingMode == NetworkEditorPanel.WorkingMode.EDITION) {
-                add(getImposePolicyMenuItem());
-                add(getEditPolicyMenuItem());
+                add(getImposePolicyMenuItem(visualDecisionNode));
                 add(getRemovePolicyMenuItem());
                 addSeparator();
             } else if (workingMode == NetworkEditorPanel.WorkingMode.INFERENCE
@@ -179,6 +184,7 @@ public class NodeContextualMenu extends ContextualMenu {
                 addSeparator();
             }
         }
+        
         add(getAddFindingMenuItem());
         add(getRemoveFindingMenuItem());
         
@@ -298,6 +304,7 @@ public class NodeContextualMenu extends ContextualMenu {
             propertiesMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_NODEPROPERTIES_MENUITEM,
                                                        ActionCommands.NODE_PROPERTIES.getCommandName());
             propertiesMenuItem.addActionListener(listener);
+            propertiesMenuItem.setIcon(IconBind.SETTINGS_ENABLED.icon());
         }
         return propertiesMenuItem;
     }
@@ -311,6 +318,7 @@ public class NodeContextualMenu extends ContextualMenu {
         if (relationMenuItem == null) {
             relationMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_NODERELATION_MENUITEM,
                                                      ActionCommands.EDIT_POTENTIAL.getCommandName());
+            relationMenuItem.setIcon(IconBind.EDIT_PROBABILITIES_ENABLED.icon());
             relationMenuItem.addActionListener(listener);
         }
         return relationMenuItem;
@@ -321,27 +329,20 @@ public class NodeContextualMenu extends ContextualMenu {
      *
      * @return a new 'ImposePolicy' menu item.
      */
-    private JMenuItem getImposePolicyMenuItem() {
+    private JMenuItem getImposePolicyMenuItem(VisualDecisionNode visualDecisionNode) {
+        
         if (imposePolicyMenuItem == null) {
-            imposePolicyMenuItem = new LocalizedMenuItem(MenuItemNames.DECISION_IMPOSE_POLICY_MENUITEM,
-                                                         ActionCommands.DECISION_IMPOSE_POLICY.getCommandName());
+            if (visualDecisionNode.isHasPolicy()) {
+                imposePolicyMenuItem = new LocalizedMenuItem(MenuItemNames.DECISION_EDIT_POLICY_MENUITEM,
+                                                             ActionCommands.DECISION_EDIT_POLICY.getCommandName());
+            } else {
+                imposePolicyMenuItem = new LocalizedMenuItem(MenuItemNames.DECISION_IMPOSE_POLICY_MENUITEM,
+                                                             ActionCommands.DECISION_IMPOSE_POLICY.getCommandName());
+            }
+            imposePolicyMenuItem.setIcon(IconBind.EDIT_PROBABILITIES_ENABLED.icon());
             imposePolicyMenuItem.addActionListener(listener);
         }
         return imposePolicyMenuItem;
-    }
-    
-    /**
-     * This method initialises editPolicyMenuItem.
-     *
-     * @return a new 'EditPolicy' menu item.
-     */
-    private JMenuItem getEditPolicyMenuItem() {
-        if (editPolicyMenuItem == null) {
-            editPolicyMenuItem = new LocalizedMenuItem(MenuItemNames.DECISION_EDIT_POLICY_MENUITEM,
-                                                       ActionCommands.DECISION_EDIT_POLICY.getCommandName());
-            editPolicyMenuItem.addActionListener(listener);
-        }
-        return editPolicyMenuItem;
     }
     
     /**
@@ -424,6 +425,7 @@ public class NodeContextualMenu extends ContextualMenu {
             addFindingMenuItem = new LocalizedMenuItem(MenuItemNames.INFERENCE_ADD_FINDING_MENUITEM,
                                                        ActionCommands.NODE_ADD_FINDING.getCommandName());
             addFindingMenuItem.addActionListener(listener);
+            addFindingMenuItem.setIcon(IconBind.CREATE_NEW_EVIDENCE_CASE_ENABLED.icon());
         }
         return addFindingMenuItem;
     }
@@ -438,6 +440,7 @@ public class NodeContextualMenu extends ContextualMenu {
             removeFindingMenuItem = new LocalizedMenuItem(MenuItemNames.INFERENCE_REMOVE_FINDING_MENUITEM,
                                                           ActionCommands.NODE_REMOVE_FINDING.getCommandName());
             removeFindingMenuItem.addActionListener(listener);
+            removeFindingMenuItem.setIcon(IconBind.CLEAR_OUT_ALL_EVIDENCE_CASES_ENABLED.icon());
         }
         return removeFindingMenuItem;
     }
@@ -476,8 +479,10 @@ public class NodeContextualMenu extends ContextualMenu {
             case ActionCommands.ABSORB_PARENTS -> absorbParentsMenuItem;
             case ActionCommands.NODE_PROPERTIES -> propertiesMenuItem;
             case ActionCommands.EDIT_POTENTIAL -> relationMenuItem;
-            case ActionCommands.DECISION_IMPOSE_POLICY -> imposePolicyMenuItem;
-            case ActionCommands.DECISION_EDIT_POLICY -> editPolicyMenuItem;
+            case ActionCommands.DECISION_EDIT_POLICY ->
+                    selectedNode instanceof VisualDecisionNode vs ? vs.isHasPolicy() ? imposePolicyMenuItem : null : null;
+            case ActionCommands.DECISION_IMPOSE_POLICY ->
+                    selectedNode instanceof VisualDecisionNode vs ? !vs.isHasPolicy() ? imposePolicyMenuItem : null : null;
             case ActionCommands.DECISION_REMOVE_POLICY -> removePolicyMenuItem;
             case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY -> showExpectedUtilityMenuItem;
             case ActionCommands.DECISION_SHOW_OPTIMAL_POLICY -> showOptimalPolicyMenuItem;
@@ -493,4 +498,5 @@ public class NodeContextualMenu extends ContextualMenu {
         return component;
     }
     
+    private final VisualNode selectedNode;
 }

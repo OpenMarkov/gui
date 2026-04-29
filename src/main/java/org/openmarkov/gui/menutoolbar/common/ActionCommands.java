@@ -170,8 +170,6 @@ public enum ActionCommands {
     NODE_REMOVE_ALL_FINDINGS("NodeRemoveAllFindings"),
     /** Action invoked when the user wants to show the additionalProperties of a link. */
     LINK_PROPERTIES("LinkProperties"),
-    /** Action invoked when the user wants to enable the linkRestrictions of a link. */
-    LINK_RESTRICTION_ENABLE_PROPERTIES("LinkRestrictionEnableProperties"),
     /** Action invoked when the user wants to disable the linkRestrictions of a link. */
     LINK_RESTRICTION_DISABLE_PROPERTIES("LinkRestrictionDisableProperties"),
     /** Action invoked when the user wants to disable the linkRestrictions of a link. */
