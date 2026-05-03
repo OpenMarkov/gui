@@ -52,6 +52,12 @@ open module org.openmarkov.gui {
     exports org.openmarkov.gui.dialog.node;
     exports org.openmarkov.java.swing;
     exports org.openmarkov.gui.window.decisiontree.elements;
+    exports org.openmarkov.gui.graphics;
+    exports org.openmarkov.gui.menutoolbar.toolbar;
+    exports org.openmarkov.gui.menutoolbar.menu;
+    exports org.openmarkov.gui.dialog.network;
+    exports org.openmarkov.gui.productTour.tour;
+    exports org.openmarkov.gui.productTour.tour.action;
     
     uses org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
     provides org.openmarkov.core.localize.spi.LocalizeResourcesProvider with GUIResourceBundleProvider;

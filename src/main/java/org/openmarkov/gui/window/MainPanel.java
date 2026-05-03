@@ -476,6 +476,10 @@ public class MainPanel extends JPanel {
         }
     }
     
+    public void forceClose(NetworkEditorPanel networkPanel){
+        this.networksTabPanel.remove(networkPanel);
+    }
+    
     public void addCloseableTab(String title, EditorPanel component) {
         var uniqueTitle = getUniqueTitle(title, null);
         this.networksTabPanel.addTab(uniqueTitle, component.getScrollPanel());

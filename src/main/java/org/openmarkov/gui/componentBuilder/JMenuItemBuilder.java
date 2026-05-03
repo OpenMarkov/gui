@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 public class JMenuItemBuilder {
     
     private @NotNull String title;
+    private @Nullable String name;
     private @Nullable String tooltip;
     private @Nullable Character mnemonic;
     private @Nullable KeyStroke accelerator;
@@ -45,6 +46,11 @@ public class JMenuItemBuilder {
     
     public JMenuItemBuilder withTitle(@NotNull String title) {
         this.title = title;
+        return this;
+    }
+    
+    public JMenuItemBuilder withName(String name) {
+        this.name=name;
         return this;
     }
     
@@ -145,6 +151,9 @@ public class JMenuItemBuilder {
                 yield new JMenu(this.title);
             }
         };
+        if (this.name != null) {
+            jMenuItem.setName(this.name);
+        }
         if (this.selected != null) {
             jMenuItem.setSelected(this.selected);
         }

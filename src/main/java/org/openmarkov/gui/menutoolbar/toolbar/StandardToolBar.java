@@ -117,6 +117,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
             newNetworkButton = new JButton();
             newNetworkButton.setIcon(IconBind.NEW_ENABLED.icon());
             newNetworkButton.setActionCommand(ActionCommands.NEW_NETWORK.getCommandName());
+            newNetworkButton.setName("ButtonOpenNewNetwork");
             newNetworkButton.setFocusable(false);
             newNetworkButton
                     .setToolTipText(stringDatabase.getString(ActionCommands.NEW_NETWORK + STRING_TOOLTIP_SUFFIX));
@@ -205,7 +206,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
      *
      * @return a new zoomManager combobox.
      */
-    private ZoomComboBox getZoomComboBox() {
+    public ZoomComboBox getZoomComboBox() {
         if (zoomComboBox == null) {
             zoomComboBox = new ZoomComboBox(listener);
             zoomComboBox.setFocusable(false);

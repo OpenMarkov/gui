@@ -104,10 +104,14 @@ public class VisualLink extends VisualArrow implements ClassLocalizable {
      * @return shape of the arrow.
      */
     @Override public Shape getShape(Graphics2D g) {
-        setStartPoint(new Point2D.Double(source.getTemporalPosition().getX(), source.getTemporalPosition().getY()));
-        setEndPoint(new Point2D.Double(destination.getTemporalPosition().getX(), destination.getTemporalPosition()
-                                                                                            .getY()));
+        Segment line = new Segment(
+                new Point2D.Double(source.getTemporalPosition().getX(), source.getTemporalPosition().getY()),
+                new Point2D.Double(destination.getTemporalPosition().getX(),
+                                   destination.getTemporalPosition().getY()));
+        setStartPoint(source.getCutPoint(line, g));
+        setEndPoint(destination.getCutPoint(line, g));
         return super.getShape(g);
+        
     }
     
     /**

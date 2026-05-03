@@ -31,6 +31,8 @@ public class TextBox implements Paintable {
     }
     
     public Rectangle paint(Graphics g, int x, int y) {
+        g=g.create();
+        g.setColor(Color.BLACK);
         if (this.lines.isEmpty()) {
             return new Rectangle(x,y, 0, 0);
         }
@@ -47,6 +49,7 @@ public class TextBox implements Paintable {
             g.drawString(line, lineX, lineY);
         }
         var dimensions = this.dimensions(g);
+        g.dispose();
         return new Rectangle(x,y, dimensions.width, dimensions.height);
     }
     

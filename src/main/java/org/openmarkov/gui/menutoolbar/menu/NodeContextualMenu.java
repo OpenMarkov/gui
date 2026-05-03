@@ -141,7 +141,7 @@ public class NodeContextualMenu extends ContextualMenu {
         add(getRemoveMenuItem());
         addSeparator();
         if (networkEditorPanel.getEditionMode() instanceof SelectionEditionMode selectionEditionMode) {
-            add(getLinkMenuItem(selectionEditionMode));
+            add(getCreateLinkMenuItem(selectionEditionMode));
             addSeparator();
         }
         if (workingMode == NetworkEditorPanel.WorkingMode.EDITION) {
@@ -190,16 +190,16 @@ public class NodeContextualMenu extends ContextualMenu {
         
     }
     
-    private JMenuItem getLinkMenuItem(SelectionEditionMode selectionEditionMode) {
+    private JMenuItem getCreateLinkMenuItem(SelectionEditionMode selectionEditionMode) {
         var isWorkingMode = networkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION;
         return new JMenuItemBuilder("Create link")
                 .withIcon(IconBind.LINK_ENABLED.icon())
+                .withName("NodeContextualMenuCreateLink")
                 .withActionCommand(ActionCommands.LINK_CREATION)
                 .enabled(isWorkingMode)
                 .onClick(e -> {
                     selectionEditionMode.startLinkCreation(
                             new Point2D.Double(this.getRelativeShownLocationX(), this.getRelativeShownLocationY()));
-                    
                 })
                 .build();
     }

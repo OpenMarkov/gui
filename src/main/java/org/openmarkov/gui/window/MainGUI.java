@@ -57,13 +57,10 @@ public class MainGUI extends JFrame {
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("OpenMarkov");
         setName("MainGUI");
-        setMinimumSize(new Dimension(700,250));
+        setMinimumSize(new Dimension(700, 250));
         this.frameMirror = new FrameMirror(this);
         if (LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.isSet()) {
-            var dimensions = LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get();
-            setLocation(dimensions.location());
-            setSize(dimensions.size());
-            setExtendedState(dimensions.extendedState());
+            LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get().set(this);
         }
         addComponentListener(new ComponentListener() {
             
@@ -102,6 +99,7 @@ public class MainGUI extends JFrame {
     }
     
     private void updatePreferenceDimensions() {
+        /*
         var isMaximized = getExtendedState() == Frame.MAXIMIZED_BOTH;
         var originalDimensions = LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get();
         Point location = isMaximized ? originalDimensions.location() : getLocation();
@@ -109,6 +107,12 @@ public class MainGUI extends JFrame {
         int extendedState = getExtendedState();
         WindowDimensions newDimensions = new WindowDimensions(location, size, extendedState);
         LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.set(newDimensions);
+        */
+        LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.set(
+                LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.isSet() ?
+                        WindowDimensions.of(this, LocalPreferences.LATEST_MAIN_GUI_DIMENSIONS.get()) :
+                        WindowDimensions.of(this)
+        );
     }
     
     //Conditionally disabled

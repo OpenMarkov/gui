@@ -10,6 +10,7 @@ package org.openmarkov.gui.menutoolbar.menu;
 import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.gui.component.LastRecentFilesMenuItem;
+import org.openmarkov.gui.componentBuilder.JMenuItemBuilder;
 import org.openmarkov.gui.configuration.LastOpenFiles;
 import org.openmarkov.gui.configuration.LocalPreferences;
 import org.openmarkov.gui.dialog.common.RequestDialogger;
@@ -21,8 +22,11 @@ import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasicImpl;
+import org.openmarkov.gui.productTour.tour.TourManager;
+import org.openmarkov.gui.productTour.tour.action.UserActionRequester;
 import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.toolplugin.ToolPluginManager;
+import org.openmarkov.gui.window.MainGUI;
 import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
@@ -41,20 +45,20 @@ import java.util.stream.Collectors;
  * the former pattern of 53 individual fields + 46 lazy-getter methods.
  */
 public class MainMenu extends JMenuBar implements MenuToolBarBasic {
-
+    
     private static final long serialVersionUID = 8267763502728836096L;
     private static final double UI_SCALE_MAX = 5.0;
     private static final double UI_SCALE_MIN = 0.5;
-
+    
     private final Map<ActionCommands, JComponent> items = new EnumMap<>(ActionCommands.class);
     final HashMap<JComponent, String> defaultText = new HashMap<>();
-
+    
     private final MainPanel mainPanel;
     private final ActionListener listener;
-
+    
     private final ButtonGroup groupEditOptions = new ButtonGroup();
     private final ButtonGroup groupByNameByTitle = new ButtonGroup();
-
+    
     private JMenu fileMenu;
     private JMenu editMenu;
     private JMenu viewMenu;
@@ -62,16 +66,16 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
     private @Nullable JMenu toolsMenu;
     private JMenu helpMenu;
     private JMenu viewNodesMenu;
-
+    
     public MainMenu(MainPanel mainPanel, ActionListener newListener) {
         this.mainPanel = mainPanel;
         this.listener = newListener;
         createAllItems();
         reInitialize();
     }
-
+    
     // ── Public API ──────────────────────────────────────────────────
-
+    
     public void reInitialize() {
         this.toolsMenu = null;
         removeAll();
@@ -85,7 +89,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         add(buildToolsMenu());
         add(buildHelpMenu());
     }
-
+    
     public void rechargeFileMenu() {
         fileMenu.removeAll();
         fileMenu.add(items.get(ActionCommands.NEW_NETWORK));
@@ -107,39 +111,39 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         fileMenu.add(items.get(ActionCommands.EXIT_APPLICATION));
         fileMenu.repaint();
     }
-
+    
     public void addPropagateNowItem() {
         if (inferenceMenu != null) rebuildInferenceMenu(true);
     }
-
+    
     public void removePropagateNowItem() {
         if (inferenceMenu != null) rebuildInferenceMenu(false);
     }
-
+    
     public JMenuItem getSwitchWorkingMode() {
         return (JMenuItem) items.get(ActionCommands.CHANGE_TO_EDITION_MODE);
     }
-
+    
     @Override public void setOptionEnabled(String actionCommand, boolean b) {
         MenuToolBarBasicImpl.setOptionEnabled(getJComponentActionCommand(actionCommand), b);
     }
-
+    
     @Override public void setOptionSelected(String actionCommand, boolean b) {
         MenuToolBarBasicImpl.setOptionSelected(getJComponentActionCommand(actionCommand), b);
     }
-
+    
     @Override public void addOptionText(String actionCommand, String text) {
         JComponent component = getJComponentActionCommand(actionCommand);
         MenuToolBarBasicImpl.addOptionText(component, defaultText.get(component), text);
     }
-
+    
     @Override public void setText(String actionCommand, String text) {
         JComponent component = getJComponentActionCommand(actionCommand);
         MenuToolBarBasicImpl.setText(component, text);
     }
-
+    
     // ── Item creation (called once) ────────────────────────────────
-
+    
     private void createAllItems() {
         // File
         createItem(MenuItemNames.FILE_NEW_MENUITEM, ActionCommands.NEW_NETWORK, IconBind.NEW_ENABLED, ctrl(KeyEvent.VK_N));
@@ -153,7 +157,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         createItem(MenuItemNames.FILE_LOAD_EVIDENCE_MENUITEM, ActionCommands.LOAD_EVIDENCE);
         createItem(MenuItemNames.FILE_SAVE_EVIDENCE_MENUITEM, ActionCommands.SAVE_EVIDENCE);
         createItem(MenuItemNames.FILE_EXIT_MENUITEM, ActionCommands.EXIT_APPLICATION, null, ctrl(KeyEvent.VK_Q));
-
+        
         // Edit
         createItem(MenuItemNames.EDIT_CUT_MENUITEM, ActionCommands.CLIPBOARD_CUT, IconBind.CUT_ENABLED, ctrl(KeyEvent.VK_X));
         createItem(MenuItemNames.EDIT_COPY_MENUITEM, ActionCommands.CLIPBOARD_COPY, IconBind.COPY_ENABLED, ctrl(KeyEvent.VK_C));
@@ -170,7 +174,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         createItem(MenuItemNames.EDIT_NODEPROPERTIES_MENUITEM, ActionCommands.NODE_PROPERTIES);
         createItem(MenuItemNames.EDIT_NODERELATION_MENUITEM, ActionCommands.EDIT_POTENTIAL);
         createItem(MenuItemNames.EDIT_LINKPROPERTIES_MENUITEM, ActionCommands.LINK_PROPERTIES);
-
+        
         // Inference
         createItem(MenuItemNames.INFERENCE_SWITCH_TO_EDITION_MODE_MENUITEM, ActionCommands.CHANGE_TO_EDITION_MODE, null, ctrl(KeyEvent.VK_I));
         createItem(MenuItemNames.PROPAGATION_OPTIONS_MENUITEM, ActionCommands.PROPAGATION_OPTIONS);
@@ -185,28 +189,28 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         createItem(MenuItemNames.INFERENCE_EXPAND_NODE_MENUITEM, ActionCommands.NODE_EXPANSION);
         createItem(MenuItemNames.INFERENCE_CONTRACT_NODE_MENUITEM, ActionCommands.NODE_CONTRACTION);
         createItem(MenuItemNames.INFERENCE_REMOVE_ALL_FINDINGS_MENUITEM, ActionCommands.NODE_REMOVE_ALL_FINDINGS);
-
+        
         // View
         createCheckBox(MenuItemNames.VIEW_NODES_BYNAME_MENUITEM, ActionCommands.BYNAME_NODES, null, groupByNameByTitle);
         createCheckBox(MenuItemNames.VIEW_NODES_BYTITLE_MENUITEM, ActionCommands.BYTITLE_NODES, null, groupByNameByTitle);
-
+        
         // Tools
         createItem(MenuItemNames.CONFIGURATION_MENUITEM, ActionCommands.CONFIGURATION);
-
+        
         // Help
         createItem(MenuItemNames.HELP_SHORTCUTS_MENUITEM, ActionCommands.HELP_SHORTCUTS);
         createItem(MenuItemNames.HELP_ABOUT_MENUITEM, ActionCommands.HELP_ABOUT);
         createItem(MenuItemNames.HELP_CHANGELANGUAGE_MENUITEM, ActionCommands.HELP_CHANGE_LANGUAGE);
     }
-
+    
     // ── Menu builders ──────────────────────────────────────────────
-
+    
     private JMenu buildFileMenu() {
         fileMenu = createMenu(MenuItemNames.FILE_MENU);
         rechargeFileMenu();
         return fileMenu;
     }
-
+    
     private JMenu buildEditMenu() {
         editMenu = createMenu(MenuItemNames.EDIT_MENU);
         editMenu.add(items.get(ActionCommands.CLIPBOARD_CUT));
@@ -233,13 +237,13 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         editMenu.add(items.get(ActionCommands.INFERENCE_OPTIONS));
         return editMenu;
     }
-
+    
     private JMenu buildInferenceMenu() {
         inferenceMenu = createMenu(MenuItemNames.INFERENCE_MENU);
         rebuildInferenceMenu(false);
         return inferenceMenu;
     }
-
+    
     private void rebuildInferenceMenu(boolean withPropagate) {
         inferenceMenu.removeAll();
         inferenceMenu.add(items.get(ActionCommands.CREATE_NEW_EVIDENCE_CASE));
@@ -259,16 +263,16 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         inferenceMenu.addSeparator();
         inferenceMenu.add(items.get(ActionCommands.NODE_REMOVE_ALL_FINDINGS));
     }
-
+    
     private JMenu buildViewMenu() {
         if (viewMenu == null) {
             viewMenu = new JMenu();
             viewMenu.setName(MenuItemNames.VIEW_MENU);
             viewMenu.setText(MenuLocalizer.getLabel(MenuItemNames.VIEW_MENU));
             viewMenu.setMnemonic(MenuLocalizer.getMnemonic(MenuItemNames.VIEW_MENU).charAt(0));
-
+            
             LocalizedMenuItem goNextTab = new LocalizedMenuItem(MenuItemNames.VIEW_GO_NEXT_TAB, null,
-                    null, ctrlShift(KeyEvent.VK_RIGHT));
+                                                                null, ctrlShift(KeyEvent.VK_RIGHT));
             viewMenu.add(goNextTab);
             goNextTab.addActionListener(e -> {
                 var networksTabPanel = this.mainPanel.getNetworksTabPanel();
@@ -277,9 +281,9 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
                 if (nextIndex >= networksTabPanel.getTabCount()) nextIndex = 0;
                 networksTabPanel.setSelectedIndex(nextIndex);
             });
-
+            
             LocalizedMenuItem goPreviousTab = new LocalizedMenuItem(MenuItemNames.VIEW_GO_PREVIOUS_TAB, null,
-                    null, ctrlShift(KeyEvent.VK_LEFT));
+                                                                    null, ctrlShift(KeyEvent.VK_LEFT));
             viewMenu.add(goPreviousTab);
             goPreviousTab.addActionListener(e -> {
                 var networksTabPanel = this.mainPanel.getNetworksTabPanel();
@@ -288,7 +292,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
                 if (previous == -1) previous = networksTabPanel.getTabCount() - 1;
                 networksTabPanel.setSelectedIndex(previous);
             });
-
+            
             LocalizedMenuItem changeScale = new LocalizedMenuItem(MenuItemNames.VIEW_CHANGE_SCALE, null);
             viewMenu.add(changeScale);
             changeScale.addActionListener(e -> RequestDialogger
@@ -305,20 +309,20 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
                     .onOk(num -> {
                         LocalPreferences.UI_SCALE.set(num);
                         JOptionPane.showMessageDialog(this.mainPanel.mainGUI, "Scale changed to " + num + "." + System.lineSeparator() + "Your changes will be applied in the next reset.",
-                                "Changes accepted", JOptionPane.INFORMATION_MESSAGE, IconBind.OPENMARKOV_LOGO_16.icon());
+                                                      "Changes accepted", JOptionPane.INFORMATION_MESSAGE, IconBind.OPENMARKOV_LOGO_16.icon());
                     })
                     .request());
         }
         return viewMenu;
     }
-
+    
     private JMenu buildToolsMenu() {
         if (toolsMenu == null) {
             toolsMenu = createMenu(MenuItemNames.TOOLS_MENU);
             ToolPluginManager toolsMenuManager = ToolPluginManager.getInstance();
             var pluginsByGroupIterator
                     = new TreeMap<>(toolsMenuManager.getAllToolPlugins().stream()
-                    .collect(Collectors.groupingBy(ToolPlugin::pluginGroup)))
+                                                    .collect(Collectors.groupingBy(ToolPlugin::pluginGroup)))
                     .entrySet().iterator();
             while (pluginsByGroupIterator.hasNext()) {
                 var plugins = pluginsByGroupIterator.next().getValue();
@@ -335,16 +339,36 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         }
         return toolsMenu;
     }
-
+    
     private JMenu buildHelpMenu() {
         helpMenu = createMenu(MenuItemNames.HELP_MENU);
         helpMenu.add(items.get(ActionCommands.HELP_SHORTCUTS));
         helpMenu.add(items.get(ActionCommands.HELP_ABOUT));
+        var tours = TourManager.availableProductTours();
+        if (!tours.isEmpty()) {
+            var productToursMenu = new JMenuItemBuilder("Product tours");
+            for (var tourProviderAndTours : tours.entrySet()) {
+                var tourProvider = tourProviderAndTours.getKey();
+                var providerMenu = new JMenuItemBuilder(tourProvider.name());
+                for (var productTour : tourProviderAndTours.getValue()) {
+                    providerMenu.withItem(
+                            new JMenuItemBuilder(productTour.getName())
+                                    .onClick(() -> {
+                                        new Thread(() -> {
+                                            productTour.launch(new UserActionRequester(productTour), MainGUI.INSTANCE);
+                                        }).start();
+                                    })
+                                    .build());
+                }
+                productToursMenu.withItem(providerMenu.build());
+            }
+            helpMenu.add(productToursMenu.build());
+        }
         return helpMenu;
     }
-
+    
     // ── Action command lookup ──────────────────────────────────────
-
+    
     private JComponent getJComponentActionCommand(String actionCommand) {
         ActionCommands cmd = ActionCommands.of(actionCommand);
         if (cmd == null) return null;
@@ -355,9 +379,9 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         if (cmd == ActionCommands.NODES) return viewNodesMenu;
         return items.get(cmd);
     }
-
+    
     // ── Recent files ───────────────────────────────────────────────
-
+    
     private List<LastRecentFilesMenuItem> getLastOpenFiles() {
         var lastOpenFilesItems = new ArrayList<LastRecentFilesMenuItem>();
         int index = 0;
@@ -375,19 +399,19 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         }
         return lastOpenFilesItems;
     }
-
+    
     // ── Factory methods ────────────────────────────────────────────
-
+    
     private void createItem(String name, ActionCommands action) {
         createItem(name, action, null, null);
     }
-
+    
     private void createItem(String name, ActionCommands action, IconBind icon, KeyStroke key) {
         var item = new LocalizedMenuItem(name, action.getCommandName(), icon, key);
         item.addActionListener(listener);
         items.put(action, item);
     }
-
+    
     private void createCheckBox(String name, ActionCommands action, IconBind icon, ButtonGroup group) {
         var item = icon != null
                 ? new LocalizedCheckBoxMenuItem(name, action.getCommandName(), icon)
@@ -396,7 +420,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         if (group != null) group.add(item);
         items.put(action, item);
     }
-
+    
     private static JMenu createMenu(String menuItemName) {
         var menu = new JMenu();
         menu.setName(menuItemName);
@@ -404,19 +428,19 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         menu.setMnemonic(MenuLocalizer.getMnemonic(menuItemName).charAt(0));
         return menu;
     }
-
+    
     private static KeyStroke ctrl(int key) {
         return KeyStroke.getKeyStroke(key, InputEvent.CTRL_DOWN_MASK);
     }
-
+    
     private static KeyStroke ctrlShift(int key) {
         return KeyStroke.getKeyStroke(key, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
     }
-
+    
     private static KeyStroke ctrlAlt(int key) {
         return KeyStroke.getKeyStroke(key, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK);
     }
-
+    
     private static boolean stringIsDouble(String string) {
         try {
             Double.parseDouble(string);
