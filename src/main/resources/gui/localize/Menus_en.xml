@@ -38,6 +38,9 @@
         <SelectAll value="Select all">
             <Mnemonic value="a"/>
         </SelectAll>
+        <AutoArrange value="Auto-arrange">
+            <Mnemonic value="r"/>
+        </AutoArrange>
         <ViewNodePotential value="View probability ..."/>
         <Log value="Log temporal evolution">
             <Mnemonic value="l"/>

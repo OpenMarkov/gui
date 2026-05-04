@@ -73,6 +73,10 @@ public enum ActionCommands {
     ZOOM("ZoomManager"),
     /** Action invoked when the user wants to select all the objects. */
     SELECT_ALL("SelectAll"),
+    /** Action invoked when the user wants to auto-arrange the nodes of
+     *  the current network using stress-majorization with directional
+     *  bias (parent-above-child for Bayesian DAGs). */
+    AUTO_ARRANGE("AutoArrange"),
     /** Prefix used for edition mode changes */
     EDITION_MODE_PREFIX("Edit.Mode"),
     /** Action invoked when the user wants to activate the selection option. */

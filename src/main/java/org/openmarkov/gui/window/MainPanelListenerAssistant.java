@@ -122,6 +122,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.UNDO -> editAndViewHandler.undo();
             case ActionCommands.REDO -> editAndViewHandler.redo();
             case ActionCommands.SELECT_ALL -> getCurrentNetworkEditorPanel().selectAllObjects();
+            case ActionCommands.AUTO_ARRANGE -> getCurrentNetworkEditorPanel().autoArrangeNodes();
             case ActionCommands.OBJECT_REMOVAL -> getCurrentNetworkEditorPanel().removeSelectedObjects();
             case ActionCommands.EDITION_MODE_PREFIX -> editAndViewHandler.activateEditionMode(actionCommand);
             case ActionCommands.NODE_PROPERTIES ->

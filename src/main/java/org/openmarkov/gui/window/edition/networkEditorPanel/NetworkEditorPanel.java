@@ -14,7 +14,9 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
+import org.openmarkov.gui.action.AutoArrangeEdit;
 import org.openmarkov.gui.action.PasteEdit;
+import org.openmarkov.gui.layout.bayesian.StressLayout;
 import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.inference.temporalevolution.TemporalEvolutionDialog;
@@ -217,6 +219,26 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      */
     public void selectAllObjects() {
         this.visualNetwork.setSelectedAllObjects(true);
+        this.repaint();
+    }
+
+    /**
+     * Re-positions every node of the current network using stress-
+     * majorization with a directional bias that keeps parents above
+     * children (geared towards Bayesian DAGs). Wrapped in a single
+     * undoable edit so Ctrl+Z restores the previous layout.
+     */
+    public void autoArrangeNodes() {
+        ProbNet probNet = this.visualNetwork.getProbNet();
+        if (probNet == null || probNet.getNodes().isEmpty()) return;
+        var positions = new StressLayout().compute(probNet);
+        if (positions.isEmpty()) return;
+        try {
+            new AutoArrangeEdit(probNet, positions).executeEdit();
+        } catch (DoEditException e) {
+            throw new RuntimeException(e);
+        }
+        this.setModified(true);
         this.repaint();
     }
     

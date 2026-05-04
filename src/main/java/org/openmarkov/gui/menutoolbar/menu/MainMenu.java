@@ -166,6 +166,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         createItem(MenuItemNames.EDIT_UNDO_MENUITEM, ActionCommands.UNDO, IconBind.UNDO_ENABLED, ctrl(KeyEvent.VK_Z));
         createItem(MenuItemNames.EDIT_REDO_MENUITEM, ActionCommands.REDO, IconBind.REDO_ENABLED, ctrl(KeyEvent.VK_Y));
         createItem(MenuItemNames.EDIT_SELECTALL_MENUITEM, ActionCommands.SELECT_ALL, null, ctrl(KeyEvent.VK_E));
+        createItem(MenuItemNames.EDIT_AUTOARRANGE_MENUITEM, ActionCommands.AUTO_ARRANGE, null, null);
         createCheckBox(MenuItemNames.EDIT_MODE_SELECTION_MENUITEM, ActionCommands.OBJECT_SELECTION, IconBind.SELECTION_ENABLED, groupEditOptions);
         createCheckBox(MenuItemNames.EDIT_MODE_CHANCE_MENUITEM, ActionCommands.CHANCE_CREATION, IconBind.CHANCE_ENABLED, groupEditOptions);
         createCheckBox(MenuItemNames.EDIT_MODE_DECISION_MENUITEM, ActionCommands.DECISION_CREATION, IconBind.DECISION_ENABLED, groupEditOptions);
@@ -222,6 +223,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         editMenu.add(items.get(ActionCommands.REDO));
         editMenu.addSeparator();
         editMenu.add(items.get(ActionCommands.SELECT_ALL));
+        editMenu.addSeparator();
+        editMenu.add(items.get(ActionCommands.AUTO_ARRANGE));
         editMenu.addSeparator();
         editMenu.add(items.get(ActionCommands.OBJECT_SELECTION));
         editMenu.add(items.get(ActionCommands.CHANCE_CREATION));

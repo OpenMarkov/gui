@@ -128,6 +128,11 @@ public class MenuItemNames {
 	public static final String EDIT_SELECTALL_MENUITEM = EDIT_MENU + ".SelectAll";
 
 	/**
+	 * String database token for the item 'Edit - Auto-arrange'.
+	 */
+	public static final String EDIT_AUTOARRANGE_MENUITEM = EDIT_MENU + ".AutoArrange";
+
+	/**
 	 * String database token for the item 'Edit - Object selection'.
 	 */
 	public static final String EDIT_MODE_SELECTION_MENUITEM = EDIT_MENU + ".Mode.Selection";

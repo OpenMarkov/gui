@@ -28,6 +28,7 @@ open module org.openmarkov.gui {
     requires com.google.errorprone.annotations;
     
     exports org.openmarkov.gui.action;
+    exports org.openmarkov.gui.layout.bayesian;
     exports org.openmarkov.gui.localize;
     exports org.openmarkov.gui.window;
     exports org.openmarkov.gui.dialog.inference.common;
