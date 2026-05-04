@@ -86,7 +86,6 @@ public class DecisionTreeEditor extends EditorPanel {
         this.zoomManager = new ZoomManager();
         this.decisionTreeManager = new DecisionTreeManagerImpl();
         
-        // DecisionTreeElement root = DecisionTreeBuilder.buildDecisionTree (probNet);
         DecisionTreeElement root = buildDecisionTree(networkPanel.getProbNet());
         
         this.jTree = new JTree(new DecisionTreeModel(root)) {
