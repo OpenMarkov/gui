@@ -320,9 +320,22 @@ class NetworkFileHandler {
                                          .getFormattedString("NetworkNotSaved.Title", networkPanel.getProbNet().getName());
             String message = StringDatabase.getUniqueInstance()
                                            .getFormattedString("NetworkNotSaved.Text", networkPanel.getProbNet().getName());
-            response = JOptionPane
-                    .showConfirmDialog(GUIUtils.getOwner(mainPanel), message, title, JOptionPane.YES_NO_CANCEL_OPTION,
-                                       JOptionPane.WARNING_MESSAGE);
+            // Use the main JFrame as parent and force a top-level modal
+            // dialog brought to front. The previous owner-from-mainPanel
+            // could resolve to null during close cascades, leaving the
+            // confirm dialog without a parent — on some window managers
+            // it ended up behind the main window and the app appeared
+            // frozen waiting for an invisible answer.
+            JOptionPane pane = new JOptionPane(message,
+                    JOptionPane.WARNING_MESSAGE,
+                    JOptionPane.YES_NO_CANCEL_OPTION);
+            JDialog dialog = pane.createDialog(MainGUI.INSTANCE, title);
+            dialog.setAlwaysOnTop(true);
+            MainGUI.INSTANCE.toFront();
+            dialog.setVisible(true);
+            dialog.dispose();
+            Object value = pane.getValue();
+            response = (value instanceof Integer iv) ? iv : JOptionPane.CLOSED_OPTION;
             canClose = switch (response) {
                 case JOptionPane.YES_OPTION -> saveNetwork(networkPanel);
                 case JOptionPane.NO_OPTION -> true;
