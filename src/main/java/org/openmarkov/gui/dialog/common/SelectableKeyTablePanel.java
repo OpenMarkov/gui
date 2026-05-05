@@ -42,9 +42,9 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
      */
     private final Node node;
     
-    public SelectableKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
+    public SelectableKeyTablePanel(String[] newColumns, String newKeyPrefix,
                                    boolean firstColumnHidden, Link<Node> link) {
-        super(newColumns, new Object[0][0], newKeyPrefix, true);
+        super(newColumns, new Object[0][0], newKeyPrefix, firstColumnHidden);
         this.link = link;
         this.node = link.getFrom();
         super.getAddValueButton().setVisible(false);
@@ -59,7 +59,6 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
      */
     public void adjustColumnSize() {
         
-        getValuesTable().getColumnModel().getColumn(0).setPreferredWidth(CHECKBOX_COLUMN_WIDTH);
         getValuesTable().getColumnModel().getColumn(1).setMaxWidth(CHECKBOX_COLUMN_WIDTH);
         getValuesTable().getColumnModel().getColumn(1).setPreferredWidth(STATENAME_COLUMN_WIDTH);
         

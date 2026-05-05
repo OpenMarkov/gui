@@ -125,9 +125,9 @@ import java.util.List;
             String[] columnNames = {
                     stringDatabase.getString("DiscreteValuesTablePanel.ValuesTable." + "Columns.Name.Text"), "",
                     stringDatabase.getString("DiscreteValuesTablePanel.ValuesTable." + "Columns.Value.Text")};
-            discreteNodeStatesTablePanel = new SelectableKeyTablePanel(columnNames, new Object[][]{},
-                                                                       stringDatabase.getString("DiscreteValuesTablePanel.ValuesTable." + "Columns.Id.Prefix"), true,
-                                                                       link);
+            discreteNodeStatesTablePanel = new SelectableKeyTablePanel(columnNames,
+                                    stringDatabase.getString("DiscreteValuesTablePanel.ValuesTable." + "Columns.Id.Prefix"),
+                     true,link);
         }
         discreteNodeStatesTablePanel.setBorder(new EmptyBorder(0, 0, 0, 0));
         return discreteNodeStatesTablePanel;
