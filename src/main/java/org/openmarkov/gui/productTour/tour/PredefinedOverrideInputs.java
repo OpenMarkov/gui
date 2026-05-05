@@ -11,6 +11,7 @@ public class PredefinedOverrideInputs {
                 .allowProcessMouseEventWhen((keyEvent, component) ->
                                                     component == target && (
                                                             keyEvent.getID() == MouseEvent.MOUSE_ENTERED || keyEvent.getID() == MouseEvent.MOUSE_EXITED
+                                                                    || keyEvent.getID() == MouseEvent.MOUSE_MOVED
                                                     )
                 );
         
