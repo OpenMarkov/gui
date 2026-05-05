@@ -14,6 +14,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.gui.graphic.VisualChanceNode;
 import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualUtilityNode;
+import org.openmarkov.gui.window.decisiontree.format.DecisionTreeUtilityFormatters;
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,7 +85,7 @@ public non-sealed class DecisionTreeNodePanel extends DecisionTreeElementPanel {
     @Override
     public void update(boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         if (treeNode.getNodeType() == NodeType.UTILITY) {
-            descriptionLabel.setText(treeNode.formatUtility(df, false));
+            descriptionLabel.setText(DecisionTreeUtilityFormatters.format(treeNode.getUtility(), df, false));
         }
     }
     
