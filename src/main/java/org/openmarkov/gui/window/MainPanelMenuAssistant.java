@@ -272,7 +272,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         updateUndoRedo(canUndo, canRedo);
         // If the network has been opened from a URL the save button has to remain disabled
         setOptionEnabled(ActionCommands.SAVE_NETWORK, !networkOpenedURL);
-        
     }
     
     /**

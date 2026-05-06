@@ -239,7 +239,7 @@ class NetworkFileHandler {
         NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel()
                                                                       .getEvidenceManager()
                                                                       .getEvidence(), fileName);
-        networkPanel.setModified(false);
+        networkPanel.onSave();
         networkPanel.setNetworkFile(fileName);
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
         LastOpenFiles.setLastFileName(fileName);

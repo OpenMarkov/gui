@@ -236,10 +236,8 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         try {
             new AutoArrangeEdit(probNet, positions).executeEdit();
         } catch (DoEditException e) {
-            throw new RuntimeException(e);
+            throw new UnreachableException(e);
         }
-        this.setModified(true);
-        this.repaint();
     }
     
     /**
@@ -807,6 +805,14 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         }
     }
     
+    public void onSave() {
+        this.getProbNet().getPNESupport().onSave();
+        modified = false;
+        for (Consumer<NetworkEditorPanel> onModification : this.onModificationListener) {
+            onModification.accept(this);
+        }
+    }
+    
     /**
      * Returns the name of the file where the network is saved.
      *
@@ -974,8 +980,9 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         this.getVisualNetwork().setSelectedAllObjects(selected);
     }
     
-    @Override public void afterEditExecutes(PNEdit arg0) {
-        setModified(true);
+    @Override public void afterEditExecutes(PNEdit edit) {
+        repaint();
+        setModified(this.getProbNet().getPNESupport().networkIsModified());
     }
     
     @Override public void beforeEditExecutes(PNEdit edit) {
@@ -983,13 +990,13 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     }
     
     @Override public void afterUndoingEdit(PNEdit edit) {
-        setModified(edit.getProbNet().getPNESupport().getCanUndo());
         repaint();
+        setModified(this.getProbNet().getPNESupport().networkIsModified());
     }
     
     @Override public void afterRedoingEdit(PNEdit edit) {
-        setModified(edit.getProbNet().getPNESupport().getCanUndo());
         repaint();
+        setModified(this.getProbNet().getPNESupport().networkIsModified());
     }
     
     /**
