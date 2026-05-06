@@ -96,7 +96,7 @@ public class NetsIO {
         String fileExtension = getFileExtension(fileName);
         ProbNetWriter probNetWriter = networkPanel.getWriter();
         try {
-            probNetWriter.writeProbNet(fileName, network, evidence);
+            probNetWriter.write(fileName, network, evidence);
         } catch (WriterException.UnknownNetworkType e) {
             if (fileExtension.equals("elv")) {
                 new File(fileName).delete();
@@ -176,7 +176,7 @@ public class NetsIO {
         FormatManager formatManager = FormatManager.getInstance();
         ProbNetReader probNetReader = formatManager.getProbNetReader(url);
         try {
-            ProbNetInfo probNetInfo = probNetReader.loadProbNetInfo(networkName, url.openStream());
+            ProbNetInfo probNetInfo = probNetReader.read(url);
             FormatType readerFormat = FormatManager.info(probNetReader);
             ProbNetWriter probNetWriter = FormatManager
                     .writersInstances()
