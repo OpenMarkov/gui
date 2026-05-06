@@ -6,12 +6,15 @@ package org.openmarkov.gui.window.edition.networkEditorPanel;/*
  */
 
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.action.core.*;
 import org.openmarkov.core.exception.*;
 
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
+import org.openmarkov.core.io.ProbNetReader;
+import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.gui.action.AutoArrangeEdit;
@@ -196,6 +199,32 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         if (this.visualNetwork.getSelection() != null) {
             this.visualNetwork.getSelection().paint(graphics2D);
         }
+    }
+    
+    /**
+     * Reader used to read this network.
+     */
+    private ProbNetReader reader;
+    
+    /**
+     * Writer used to save this network
+     */
+    private ProbNetWriter writer;
+    
+    public ProbNetReader getReader() {
+        return this.reader;
+    }
+    
+    public void setReader(@Nullable ProbNetReader reader) {
+        this.reader = reader;
+    }
+    
+    public ProbNetWriter getWriter() {
+        return this.writer;
+    }
+    
+    public void setWriter(@Nullable ProbNetWriter writer) {
+        this.writer = writer;
     }
     
     /**

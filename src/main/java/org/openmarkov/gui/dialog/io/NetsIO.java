@@ -21,10 +21,11 @@ import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -88,9 +89,12 @@ public class NetsIO {
      * @param evidence   - list of evidence cases
      * @param fileName   - file where the network is going to be saved
      */
-    public static void saveNetworkFile(ProbNet network, List<EvidenceCase> evidence, String fileName) throws WriterException {
+    public static void saveNetworkFile(NetworkEditorPanel networkPanel, String fileName) throws WriterException {
+        ProbNet network = networkPanel.getProbNet();
+        List<EvidenceCase> evidence = networkPanel.getEditorPanel().getEvidenceManager().getEvidence();
+        
         String fileExtension = getFileExtension(fileName);
-        ProbNetWriter probNetWriter = network.getWriter();
+        ProbNetWriter probNetWriter = networkPanel.getWriter();
         try {
             probNetWriter.writeProbNet(fileName, network, evidence);
         } catch (WriterException.UnknownNetworkType e) {
@@ -119,16 +123,6 @@ public class NetsIO {
     //
     //		saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName);
     //	}
-    
-    /**
-     * Saves a network in a file.
-     *
-     * @param network  - network to save in the file
-     * @param fileName - file where the network is going to be saved
-     */
-    public static void saveNetworkFile(ProbNet network, String fileName) throws WriterException {
-        saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName);
-    }
     
     private static String getFileExtension(String fileName) {
         
@@ -160,8 +154,12 @@ public class NetsIO {
                     " is likely we want it to receive an URL to the file instead of a String containing the filename. " +
                     "Duplicated methods should be avoided if doing this, as the current implementation duplicates some."
     )
-    public static ProbNetInfo openNetworkFile(String fileName) throws IOException, ParserException, NoReaderForFileException, CorruptNetworkFile {
+    public static ProbNetInfoWithReaders openNetworkFile(String fileName) throws IOException, ParserException, NoReaderForFileException, CorruptNetworkFile {
         return NetsIO.openNetworkURL(new File(fileName).toURI().toURL());
+    }
+    
+    public record ProbNetInfoWithReaders(ProbNetInfo probNetInfo, ProbNetWriter probNetWriter,
+                                         ProbNetReader probNetReader) {
     }
     
     /**
@@ -172,7 +170,7 @@ public class NetsIO {
      *
      * @return an ProbNetInfo object with the information of the network.
      */
-    public static ProbNetInfo openNetworkURL(URL url) throws IOException, org.openmarkov.core.exception.ParserException, NoReaderForFileException, CorruptNetworkFile {
+    public static ProbNetInfoWithReaders openNetworkURL(URL url) throws IOException, org.openmarkov.core.exception.ParserException, NoReaderForFileException, CorruptNetworkFile {
         String networkName = url.getPath();
         networkName = networkName.substring(networkName.lastIndexOf('/') + 1);
         FormatManager formatManager = FormatManager.getInstance();
@@ -184,9 +182,7 @@ public class NetsIO {
                     .writersInstances()
                     .filter(writer -> FormatManager.formatEquals(FormatManager.info(writer), readerFormat))
                     .findFirst().orElse(null);
-            probNetInfo.getProbNet().setReader(probNetReader);
-            probNetInfo.getProbNet().setWriter(probNetWriter);
-            return probNetInfo;
+            return new ProbNetInfoWithReaders(probNetInfo, probNetWriter, probNetReader);
         } catch (UnrecoverableException | UnreachableException e) {
             throw e;
         } catch (RuntimeException e) {

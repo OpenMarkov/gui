@@ -9,7 +9,7 @@ package org.openmarkov.gui.window;
 
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.io.ProbNetInfo;
-import org.openmarkov.core.io.database.CaseDatabase;
+import org.openmarkov.core.model.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.core.io.exception.NoWriterForExtensionException;
@@ -27,7 +27,6 @@ import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.exception.CorruptNetworkFile;
 import org.openmarkov.gui.exception.NotEnoughMemoryException;
-import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
@@ -110,7 +109,8 @@ class NetworkFileHandler {
         }
         if (fileName == null) return;
         System.out.println(stringDatabase.getString("LoadingNetwork.Text") + " " + fileName);
-        ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
+        NetsIO.ProbNetInfoWithReaders probNetInfoWithReaders = NetsIO.openNetworkFile(fileName);
+        ProbNetInfo probNetInfo = probNetInfoWithReaders.probNetInfo();
         ProbNet netReadFromFile = probNetInfo.getProbNet();
         netReadFromFile.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
         netReadFromFile.getPNESupport().setWithUndo(true);
@@ -119,6 +119,8 @@ class NetworkFileHandler {
         NetworkEditorPanel networkPanel = createNewFrame(netReadFromFile);
         System.out.println("Total: " + Duration.between(now, Instant.now()));
         networkPanel.setNetworkFile(fileName);
+        networkPanel.setWriter(probNetInfoWithReaders.probNetWriter());
+        networkPanel.setReader(probNetInfoWithReaders.probNetReader());
         List<EvidenceCase> evidence = probNetInfo.getEvidence();
         if (evidence != null && !evidence.isEmpty()) {
             EvidenceCase preResolutionEvidence = evidence.getFirst();
@@ -149,13 +151,16 @@ class NetworkFileHandler {
         }
         String urlFile = url.getFile();
         System.out.println(stringDatabase.getString("LoadingNetworkURL.Text") + " " + url);
-        ProbNetInfo probNetInfo = NetsIO.openNetworkURL(url);
+        NetsIO.ProbNetInfoWithReaders probNetInfoWithReaders = NetsIO.openNetworkURL(url);
+        ProbNetInfo probNetInfo = probNetInfoWithReaders.probNetInfo();
         ProbNet netReadFromURL = probNetInfo.getProbNet();
         netReadFromURL.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
         netReadFromURL.getPNESupport().setWithUndo(true);
         netReadFromURL.setName(new File(urlFile).getName());
         NetworkEditorPanel networkPanel = createNewFrame(netReadFromURL);
         networkPanel.setNetworkFile(urlFile);
+        networkPanel.setWriter(probNetInfoWithReaders.probNetWriter());
+        networkPanel.setReader(probNetInfoWithReaders.probNetReader());
         List<EvidenceCase> evidence = probNetInfo.getEvidence();
         if (evidence != null && !evidence.isEmpty()) {
             EvidenceCase preResolutionEvidence = evidence.getFirst();
@@ -193,7 +198,7 @@ class NetworkFileHandler {
         if (fileName != null) {
             createBackUpNetworkFile(fileName, toBakExtension(networkPanel.getNetworkFile()));
         }
-        return (fileName != null && networkPanel.getProbNet().getWriter() != null)
+        return (fileName != null && networkPanel.getWriter() != null)
                 ? saveNetworkActions(networkPanel, fileName)
                 : saveNetworkAs(networkPanel);
     }
@@ -210,12 +215,12 @@ class NetworkFileHandler {
         networkPanel.setNetworkFile(fileName);
         networkPanel.getProbNet().setName(new File(fileName).getName());
         var formatInfo = FormatManager.info((Class<?>) fileNameAndFormat.get(2));
-        networkPanel.getProbNet().setWriter(
+        networkPanel.setWriter(
                 FormatManager.writersInstances()
                              .filter(probNetWriter -> FormatManager.formatEquals(formatInfo, FormatManager.info(probNetWriter)))
                              .findFirst()
                              .orElse(null));
-        networkPanel.getProbNet().setReader(
+        networkPanel.setReader(
                 FormatManager.readersInstances()
                              .filter(probNetReader -> FormatManager.formatEquals(formatInfo, FormatManager.info(probNetReader)))
                              .findFirst()
@@ -236,9 +241,7 @@ class NetworkFileHandler {
 
     private boolean saveNetworkActions(NetworkEditorPanel networkPanel, String fileName, String fileFormat) throws WriterException {
         System.out.println(stringDatabase.getString("SavingNetwork.Text") + " " + fileName);
-        NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel()
-                                                                      .getEvidenceManager()
-                                                                      .getEvidence(), fileName);
+        NetsIO.saveNetworkFile(networkPanel, fileName);
         networkPanel.onSave();
         networkPanel.setNetworkFile(fileName);
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
