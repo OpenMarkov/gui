@@ -12,9 +12,6 @@ public class GsonAdapters {
     
     public static final class FileAdapter extends TypeAdapter<File> {
         
-        public FileAdapter() {
-        }
-        
         @Override public void write(JsonWriter out, File value) throws IOException {
             if (value == null) {
                 out.nullValue();
@@ -29,6 +26,26 @@ public class GsonAdapters {
                 return null;
             }
             return new File(in.nextString());
+        }
+    }
+    
+    public static class ClassTypeAdapter extends TypeAdapter<Class<?>> {
+        @Override
+        public void write(JsonWriter out, Class<?> value) throws IOException {
+            if (value == null) {
+                out.nullValue();
+            } else {
+                out.value(value.getName());
+            }
+        }
+        
+        @Override
+        public Class<?> read(JsonReader in) throws IOException {
+            try {
+                return Class.forName(in.nextString());
+            } catch (ClassNotFoundException e) {
+                throw new IOException(e);
+            }
         }
     }
     

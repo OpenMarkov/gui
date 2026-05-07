@@ -65,10 +65,13 @@ public class OMFileChooser extends JFileChooser {
     }
     
     private static @Nullable File applyFilter(File file, FileFilter fileFilter) {
-        if (fileFilter instanceof FileFilterAll fileFilterAll) {
-            String extension = "." + fileFilterAll.getFilterExtension();
-            if (!file.getName().endsWith(extension)) {
-                file = new File(file.getParentFile(), file.getName() + "." + fileFilterAll.getFilterExtension());
+        if (fileFilter instanceof FileFilterByExtension<?> fileFilterByExtension) {
+            var lowercasedName = file.getName().toLowerCase();
+            boolean properIsExtensionOnFile = fileFilterByExtension.getExtensions().stream()
+                                                                   .anyMatch(extension -> lowercasedName.endsWith("." + extension));
+            if (!properIsExtensionOnFile) {
+                file = new File(file.getParentFile(), file.getName() + "." + fileFilterByExtension.getExtensions()
+                                                                                                  .getFirst());
             }
         }
         return file;
@@ -136,7 +139,8 @@ public class OMFileChooser extends JFileChooser {
     public void setFileFilter(String description) {
         boolean isSet = false;
         for (FileFilter filter : getChoosableFileFilters()) {
-            if (filter instanceof FileFilterAll && ((FileFilterAll) filter).getFileDescription().equals(description)) {
+            if (filter instanceof FileFilterByExtension && ((FileFilterByExtension) filter).getFileDescription()
+                                                                                           .equals(description)) {
                 setFileFilter(filter);
                 isSet = true;
                 break;
@@ -147,8 +151,8 @@ public class OMFileChooser extends JFileChooser {
             LocalPreferences.LATEST_NETWORK_FORMAT.set(OMFileChooser.DEFAULT_FILE_FORMAT);
             description = OMFileChooser.DEFAULT_FILE_FORMAT;
             for (FileFilter filter : getChoosableFileFilters()) {
-                if (filter instanceof FileFilterAll && ((FileFilterAll) filter).getFileDescription()
-                                                                               .equals(description)) {
+                if (filter instanceof FileFilterByExtension && ((FileFilterByExtension) filter).getFileDescription()
+                                                                                               .equals(description)) {
                     setFileFilter(filter);
                     break;
                 }

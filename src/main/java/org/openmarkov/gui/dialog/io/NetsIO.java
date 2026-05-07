@@ -154,12 +154,8 @@ public class NetsIO {
                     " is likely we want it to receive an URL to the file instead of a String containing the filename. " +
                     "Duplicated methods should be avoided if doing this, as the current implementation duplicates some."
     )
-    public static ProbNetInfoWithReaders openNetworkFile(String fileName) throws IOException, ParserException, NoReaderForFileException, CorruptNetworkFile {
+    public static ProbNetInfo openNetworkFile(String fileName) throws IOException, ParserException, NoReaderForFileException, CorruptNetworkFile {
         return NetsIO.openNetworkURL(new File(fileName).toURI().toURL());
-    }
-    
-    public record ProbNetInfoWithReaders(ProbNetInfo probNetInfo, ProbNetWriter probNetWriter,
-                                         ProbNetReader probNetReader) {
     }
     
     /**
@@ -170,19 +166,13 @@ public class NetsIO {
      *
      * @return an ProbNetInfo object with the information of the network.
      */
-    public static ProbNetInfoWithReaders openNetworkURL(URL url) throws IOException, org.openmarkov.core.exception.ParserException, NoReaderForFileException, CorruptNetworkFile {
+    public static ProbNetInfo openNetworkURL(URL url) throws IOException, org.openmarkov.core.exception.ParserException, NoReaderForFileException, CorruptNetworkFile {
         String networkName = url.getPath();
         networkName = networkName.substring(networkName.lastIndexOf('/') + 1);
         FormatManager formatManager = FormatManager.getInstance();
         ProbNetReader probNetReader = formatManager.getProbNetReader(url);
         try {
-            ProbNetInfo probNetInfo = probNetReader.read(url);
-            FormatType readerFormat = FormatManager.info(probNetReader);
-            ProbNetWriter probNetWriter = FormatManager
-                    .writersInstances()
-                    .filter(writer -> FormatManager.formatEquals(FormatManager.info(writer), readerFormat))
-                    .findFirst().orElse(null);
-            return new ProbNetInfoWithReaders(probNetInfo, probNetWriter, probNetReader);
+            return probNetReader.read(url);
         } catch (UnrecoverableException | UnreachableException e) {
             throw e;
         } catch (RuntimeException e) {

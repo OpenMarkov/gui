@@ -36,7 +36,7 @@ import java.awt.*;
 		Node dummyNode = new Node(dummyProbNet, new Variable("Global utility"), NodeType.UTILITY);
         dummyNode.setPotential(optimalIntervention.getOptimalIntervention());
         
-        //VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidenceCase);
+        //VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidence);
 		//individualProbabilities = vePosteriorValues.getPosteriorValues();
 
 		TreeADDEditorPanel treeADDEditorPanel = new TreeADDEditorPanel(cellRenderer, dummyNode);
@@ -65,8 +65,8 @@ import java.awt.*;
 		ProbNet dummyProbNet = new ProbNet();
 		Node dummyNode = new Node(dummyProbNet, new Variable("Global utility"), NodeType.UTILITY);
 		dummyNode.setPotential(optimalStrategyTree);
-
-		//VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidenceCase);
+        
+        //VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidence);
 		//individualProbabilities = vePosteriorValues.getPosteriorValues();
 
 		TreeADDEditorPanel treeADDEditorPanel = new TreeADDEditorPanel(cellRenderer, dummyNode);

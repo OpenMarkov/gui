@@ -10,5 +10,6 @@ public class GsonCommon {
             .setStrictness(Strictness.STRICT)
             .registerTypeAdapterFactory(new MandatoryFieldFactory())
             .registerTypeAdapter(java.io.File.class, new GsonAdapters.FileAdapter())
+            .registerTypeHierarchyAdapter(java.lang.Class.class, new GsonAdapters.ClassTypeAdapter())
             .create();
 }

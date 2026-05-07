@@ -1,8 +1,13 @@
 package org.openmarkov.gui.configuration;
 
 import com.google.gson.reflect.TypeToken;
+import org.openmarkov.core.io.ProbNetReader;
+import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.gui.dialog.common.WindowDimensions;
 import org.openmarkov.gui.dialog.io.OMFileChooser;
+import org.openmarkov.io.probmodel.reader.PGMXReader;
+import org.openmarkov.io.probmodel.reader.PGMXReader_1_0;
+import org.openmarkov.io.probmodel.writer.PGMXWriter_1_0;
 
 import java.awt.*;
 import java.io.File;
@@ -64,8 +69,12 @@ public final class LocalPreferences {
             .of("formats/latest_network_format", () -> OMFileChooser.DEFAULT_FILE_FORMAT, new TypeToken<>() {
             });
     
-    public static final LocalPreference<String> LATEST_SAVED_NETWORK_FORMAT = LocalPreference
-            .of("formats/latest_saved_network_format", () -> OMFileChooser.DEFAULT_FILE_FORMAT, new TypeToken<>() {
+    public static final LocalPreference<Class<? extends ProbNetWriter>> LATEST_SAVED_NETWORK_WRITER_CLASS = LocalPreference
+            .of("formats/latest_saved_network_writer", () -> PGMXWriter_1_0.class, new TypeToken<>() {
+            });
+    
+    public static final LocalPreference<Class<? extends ProbNetReader>> LATEST_SAVED_NETWORK_READER_CLASS = LocalPreference
+            .of("formats/latest_saved_network_reader", () -> PGMXReader.class, new TypeToken<>() {
             });
     
     public static final LocalPreference<String> LATEST_LOADED_EVIDENCE_FORMAT = LocalPreference

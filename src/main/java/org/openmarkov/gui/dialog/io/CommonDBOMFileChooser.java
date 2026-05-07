@@ -81,19 +81,23 @@ public abstract class CommonDBOMFileChooser extends OMFileChooser {
         if (selectedFile != null) {
             var extension = FilenameUtils.getExtension(selectedFile.getName());
             for (var filter : getChoosableFileFilters()) {
-                if (filter instanceof FileFilterAll fileFilterAll) {
-                    if (fileFilterAll.getFilterExtension().equals(extension)) {
-                        setFileFilter(filter);
-                        return;
+                if (filter instanceof FileFilterByExtension<?> fileFilterByExtension) {
+                    for (var filterExtension : fileFilterByExtension.getExtensions()) {
+                        if (filterExtension.equals(extension)) {
+                            setFileFilter(filter);
+                            return;
+                        }
                     }
                 }
             }
         }
         for (var filter : getChoosableFileFilters()) {
-            if (filter instanceof FileFilterAll fileFilterAll) {
-                if (fileFilterAll.getFilterExtension().equals(LocalPreferences.LATEST_SAVED_DATASET_EXTENSION.get())) {
-                    setFileFilter(filter);
-                    return;
+            if (filter instanceof FileFilterByExtension<?> fileFilterByExtension) {
+                for (var filterExtension : fileFilterByExtension.getExtensions()) {
+                    if (filterExtension.equals(LocalPreferences.LATEST_SAVED_DATASET_EXTENSION.get())) {
+                        setFileFilter(filter);
+                        return;
+                    }
                 }
             }
         }

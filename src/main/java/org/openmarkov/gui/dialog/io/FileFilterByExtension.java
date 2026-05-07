@@ -9,7 +9,10 @@ package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.core.localize.StringDatabase;
 
+import javax.swing.filechooser.FileFilter;
 import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class implements the base code for all the file filters of the
@@ -19,17 +22,17 @@ import java.io.File;
  * @author jmendoza
  * @version 1.0
  */
-public class FileFilterAll<T> extends FileFilterBasic {
+public class FileFilterByExtension<T> extends FileFilter {
 
 	/**
 	 * Extension of the files that match this filter.
 	 */
-    private final String formatExtension;
+	private final List<String> formatExtensions;
 
 	/**
 	 * Description of the files that match this filter.
 	 */
-	private String fileDescription = "OpenMarkov";
+	private String fileDescription;
 
 	private final T formatInfo;
 	
@@ -40,10 +43,10 @@ public class FileFilterAll<T> extends FileFilterBasic {
 	/**
 	 * Create a new instance and create a new string resource.
 	 */
-	public FileFilterAll(T formatInfo, String extension, String description) {
+	public FileFilterByExtension(T formatInfo, List<String> extension, String description) {
 		this.formatInfo = formatInfo;
-		formatExtension = extension;
-		setFileDescription(description);
+		formatExtensions = extension;
+		fileDescription = description;
 	}
 
 	/**
@@ -53,17 +56,11 @@ public class FileFilterAll<T> extends FileFilterBasic {
 	 * @return true if the file is a directory; false otherwise
 	 */
 	@Override public boolean accept(File file) {
-
-		boolean result = super.accept(file);
-        String fileExtension;
-
-		if (!result) {
-			fileExtension = getExtension(file);
-			return (fileExtension.equals(formatExtension));
+		if (file.isDirectory()) {
+			return true;
 		}
-
-		return true;
-
+		String fileExtension = FileFilterByExtension.getExtension(file);
+		return formatExtensions.stream().anyMatch(formatExtensions -> formatExtensions.equals(fileExtension));
 	}
 
 	/**
@@ -72,9 +69,10 @@ public class FileFilterAll<T> extends FileFilterBasic {
 	 * @return a string representing the description of the files type
 	 */
 	@Override public String getDescription() {
-
 		return StringDatabase.getUniqueInstance().getString("FileExtension." + getFileDescription() + ".Description")
-				+ " (*." + formatExtension + ")";
+				+ " (" + formatExtensions.stream()
+				                         .map(extension -> "." + extension)
+				                         .collect(Collectors.joining(", ")) + ")";
 
 	}
 	//CMI
@@ -94,18 +92,23 @@ public class FileFilterAll<T> extends FileFilterBasic {
 	public void setFileDescription(String fileDescription) {
 		this.fileDescription = fileDescription;
 	}
-
-	//CMF
-
+	
 	/**
-	 * Returns the extension of the files that match this filter.
+	 * Returns the extension of the given file.
 	 *
-	 * @return accepted extension by the filter.
+	 * @param file file of which obtain the extension.
+	 * @return extension of the file.
 	 */
-	@Override public String getFilterExtension() {
-
-		return formatExtension;
-
+	protected static String getExtension(File file) {
+		String name = file.getName();
+		int i = name.lastIndexOf('.');
+		if ((i > 0) && (i < (name.length() - 1))) {
+			return name.substring(i + 1).toLowerCase();
+		}
+		return "";
 	}
-
+	
+	public List<String> getExtensions() {
+		return this.formatExtensions;
+	}
 }

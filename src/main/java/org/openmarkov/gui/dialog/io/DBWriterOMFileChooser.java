@@ -11,6 +11,7 @@ import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.gui.configuration.LocalPreferences;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * File chooser dialog pre-configured with filters for all registered
@@ -22,7 +23,7 @@ import java.io.File;
 		super(acceptAllFiles);
 		CaseDatabaseManager.listWriters().forEach(writerClass->{
             var info = CaseDatabaseManager.info(writerClass);
-            FileFilterAll<? extends Class<? extends CaseDatabaseWriter>> filter = new FileFilterAll<>(writerClass, info.extension(), info.name());
+			FileFilterByExtension<? extends Class<? extends CaseDatabaseWriter>> filter = new FileFilterByExtension<>(writerClass, List.of(info.extension()), info.name());
             addChoosableFileFilter(filter);
 		});
 		File currentDirectory = LocalPreferences.LATEST_SAVED_DATASET_DIRECTORY.get();

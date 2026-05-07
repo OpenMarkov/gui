@@ -116,7 +116,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     /**
      * ContextualMenu to assign/remove uncertainty.
      * <p>
-     * This method creates the evidenceCase object when the user do right click on the table.
+     * This method creates the evidence object when the user do right click on the table.
      */
     
     protected UncertaintyContextualMenu uncertaintyContextualMenu;
@@ -594,7 +594,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     }
     
     /**
-     * This method generates the evidenceCase based on the column selected on
+     * This method generates the evidence based on the column selected on
      * the {@code valuesTable} object.
      * The evidence case has a finding for every parent of the node and its state in column
      * <p>
@@ -652,7 +652,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * Creates and shows the UncertainValuesDialog object
      */
     public void showUncertaintyDialog() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException, NonProjectablePotentialException {
-        // Generates the evidenceCase based on the column
+        // Generates the evidence based on the column
         // selected on the JTable object
         evidenceCase = getEvidenceCaseFromSelectedColumn();
         UncertainValuesDialog uncertDialog;
@@ -898,7 +898,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     
     /**
      * Method to define the specific listeners in this table (not defined in the
-     * common KeyTable hierarchy. This method creates the evidenceCase object
+     * common KeyTable hierarchy. This method creates the evidence object
      * when the user do right click on the table.
      */
     protected void setTableSpecificListeners() {

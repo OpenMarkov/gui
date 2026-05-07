@@ -263,7 +263,7 @@ public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
     }
     
     /**
-     * This method generates the evidenceCase based on the column selected on
+     * This method generates the evidence based on the column selected on
      * the {@code valuesTable} object.
      * The evidence case has a finding for every parent of the node and its state in column
      * <p>

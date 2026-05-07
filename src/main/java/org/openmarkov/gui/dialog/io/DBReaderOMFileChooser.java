@@ -9,6 +9,8 @@ package org.openmarkov.gui.dialog.io;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 
+import java.util.List;
+
 /**
  * File chooser dialog pre-configured with filters for all registered
  * {@link CaseDatabaseReader} formats, used when opening a case database.
@@ -19,7 +21,7 @@ import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 		super(acceptAllFiles);
         CaseDatabaseManager.listReaders().forEach(readerClass->{
 			var info = CaseDatabaseManager.info(readerClass);
-            FileFilterAll<? extends Class<? extends CaseDatabaseReader>> filter = new FileFilterAll<>(readerClass, info.extension(), info.name());
+            FileFilterByExtension<? extends Class<? extends CaseDatabaseReader>> filter = new FileFilterByExtension<>(readerClass, List.of(info.extension()), info.name());
             addChoosableFileFilter(filter);
 		});
 	}

@@ -366,7 +366,7 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
     
     /**
      * Method to define the specific listeners in this table (not defined in the
-     * common KeyTable hierarchy. This method creates the evidenceCase object
+     * common KeyTable hierarchy. This method creates the evidence object
      * when the user do right click on the table.
      */
     @Override protected void setTableSpecificListeners() {

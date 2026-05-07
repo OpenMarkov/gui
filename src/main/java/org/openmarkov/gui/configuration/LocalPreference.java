@@ -97,6 +97,7 @@ public final class LocalPreference<T> {
                                      (value) -> GsonCommon.GSON.toJson(value, typeToken.getType()));
     }
     
+    
     LocalPreference(@NotNull String preferencePath, @NotNull Supplier<? extends T> defaultValue, @Nullable Class<T> tClass, @Nullable Predicate<Object> verifyIsInstance, Function<String, T> deserializeWith, Function<T, String> serializeWith) {
         deserializeWith = deserializeWith != null ? deserializeWith : JavaSerializationUtils::javaDeserialize;
         serializeWith = serializeWith != null ? serializeWith : JavaSerializationUtils::javaSerialize;

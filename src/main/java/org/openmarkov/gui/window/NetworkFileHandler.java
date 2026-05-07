@@ -109,9 +109,8 @@ class NetworkFileHandler {
         }
         if (fileName == null) return;
         System.out.println(stringDatabase.getString("LoadingNetwork.Text") + " " + fileName);
-        NetsIO.ProbNetInfoWithReaders probNetInfoWithReaders = NetsIO.openNetworkFile(fileName);
-        ProbNetInfo probNetInfo = probNetInfoWithReaders.probNetInfo();
-        ProbNet netReadFromFile = probNetInfo.getProbNet();
+        ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
+        ProbNet netReadFromFile = probNetInfo.probNet();
         netReadFromFile.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
         netReadFromFile.getPNESupport().setWithUndo(true);
         netReadFromFile.setName(new File(fileName).getName());
@@ -119,9 +118,9 @@ class NetworkFileHandler {
         NetworkEditorPanel networkPanel = createNewFrame(netReadFromFile);
         System.out.println("Total: " + Duration.between(now, Instant.now()));
         networkPanel.setNetworkFile(fileName);
-        networkPanel.setWriter(probNetInfoWithReaders.probNetWriter());
-        networkPanel.setReader(probNetInfoWithReaders.probNetReader());
-        List<EvidenceCase> evidence = probNetInfo.getEvidence();
+        networkPanel.setWriter(probNetInfo.writer());
+        networkPanel.setReader(probNetInfo.reader());
+        List<EvidenceCase> evidence = probNetInfo.evidence();
         if (evidence != null && !evidence.isEmpty()) {
             EvidenceCase preResolutionEvidence = evidence.getFirst();
             evidence.removeFirst();
@@ -151,17 +150,16 @@ class NetworkFileHandler {
         }
         String urlFile = url.getFile();
         System.out.println(stringDatabase.getString("LoadingNetworkURL.Text") + " " + url);
-        NetsIO.ProbNetInfoWithReaders probNetInfoWithReaders = NetsIO.openNetworkURL(url);
-        ProbNetInfo probNetInfo = probNetInfoWithReaders.probNetInfo();
-        ProbNet netReadFromURL = probNetInfo.getProbNet();
+        ProbNetInfo probNetInfo = NetsIO.openNetworkURL(url);
+        ProbNet netReadFromURL = probNetInfo.probNet();
         netReadFromURL.getPNESupport().addListener(mainPanel.getMainPanelMenuAssistant());
         netReadFromURL.getPNESupport().setWithUndo(true);
         netReadFromURL.setName(new File(urlFile).getName());
         NetworkEditorPanel networkPanel = createNewFrame(netReadFromURL);
         networkPanel.setNetworkFile(urlFile);
-        networkPanel.setWriter(probNetInfoWithReaders.probNetWriter());
-        networkPanel.setReader(probNetInfoWithReaders.probNetReader());
-        List<EvidenceCase> evidence = probNetInfo.getEvidence();
+        networkPanel.setWriter(probNetInfo.writer());
+        networkPanel.setReader(probNetInfo.reader());
+        List<EvidenceCase> evidence = probNetInfo.evidence();
         if (evidence != null && !evidence.isEmpty()) {
             EvidenceCase preResolutionEvidence = evidence.getFirst();
             evidence.removeFirst();
@@ -204,10 +202,8 @@ class NetworkFileHandler {
     }
 
     boolean saveNetworkAs(NetworkEditorPanel networkPanel) throws WriterException {
-        String fileName = networkPanel.getNetworkFile();
-        String suggestedName = (fileName != null) ? fileName : new File(networkPanel.getProbNet().getName()).getName();
-        ArrayList<Object> fileNameAndFormat = requestNetworkFileAndFormatToSave(suggestedName);
-        fileName = (String) fileNameAndFormat.get(0);
+        ArrayList<Object> fileNameAndFormat = requestNetworkFileAndFormatToSave(networkPanel);
+        String fileName = (String) fileNameAndFormat.get(0);
         if (fileName == null) {
             return false;
         }
@@ -392,7 +388,8 @@ class NetworkFileHandler {
                 }
                 currentNetworkEditorPanel.getEditorPanel().getEvidenceManager().addNewEvidenceCase(newEvidenceCase);
             }
-            LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.set(((FileFilterBasic) evidenceOMFileChooser.getFileFilter()).getFilterExtension());
+            LocalPreferences.LATEST_LOADED_EVIDENCE_FORMAT.set(((FileFilterByExtension<?>) evidenceOMFileChooser.getFileFilter()).getExtensions()
+                                                                                                                                 .getFirst());
             LocalPreferences.LATEST_OPEN_DIRECTORY.set(evidenceOMFileChooser.getSelectedFile());
         }
     }
@@ -430,19 +427,35 @@ class NetworkFileHandler {
         }
         return null;
     }
-
-    private ArrayList<Object> requestNetworkFileAndFormatToSave(String suggestedFileName) {
+    
+    private ArrayList<Object> requestNetworkFileAndFormatToSave(NetworkEditorPanel networkPanel) {
+        String fileName = networkPanel.getNetworkFile();
+        String suggestedFileName = (fileName != null) ? fileName : new File(networkPanel.getProbNet()
+                                                                                        .getName()).getName();
         NetworkOMFileChooser fileChooser = new NetworkOMFileChooser(false, false);
         String title = stringDatabase.getString("SaveNetwork.Title");
         fileChooser.setDialogTitle(title);
         fileChooser.setCurrentDirectory(LocalPreferences.LATEST_SAVED_DIRECTORY.get());
         fileChooser.setSelectedFile(new File(fileChooser.getCurrentDirectory(), new File(suggestedFileName).getName()));
+        if (networkPanel.getWriter() != null) {
+            for (var filter : fileChooser.getChoosableFileFilters()) {
+                if (filter instanceof FileFilterByExtension<?> fileFilterByExtension) {
+                    if (fileFilterByExtension.getFormatInfo() instanceof Class<?> formatClass && formatClass == networkPanel.getWriter()
+                                                                                                                            .getClass()) {
+                        fileChooser.setFileFilter(fileFilterByExtension);
+                        break;
+                    }
+                    ;
+                }
+            }
+        }
         ArrayList<Object> fileNameAndFormat = new ArrayList<>();
         String filename = null;
-        FileFilterAll<?> fileFormat = null;
+        FileFilterByExtension<?> fileFormat = null;
         if (fileChooser.showSaveDialog(GUIUtils.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
             filename = fileChooser.getSelectedFile().getAbsolutePath();
-            String chosenFilterExtension = ((FileFilterBasic) fileChooser.getFileFilter()).getFilterExtension();
+            String chosenFilterExtension = ((FileFilterByExtension<?>) fileChooser.getFileFilter()).getExtensions()
+                                                                                                   .getFirst();
             if (!filename.toLowerCase().endsWith("." + chosenFilterExtension.toLowerCase())) {
                 filename += "." + chosenFilterExtension.toLowerCase();
                 File selectedFile = new File(filename);
@@ -457,7 +470,7 @@ class NetworkFileHandler {
                                           .getAbsolutePath() + " (1)." + chosenFilterExtension.toLowerCase();
                 }
             }
-            fileFormat = (FileFilterAll<?>) fileChooser.getFileFilter();
+            fileFormat = (FileFilterByExtension<?>) fileChooser.getFileFilter();
         }
         fileNameAndFormat.add(filename);
         fileNameAndFormat.add(fileFormat == null ? null : fileFormat.getFileDescription());
