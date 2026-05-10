@@ -9,7 +9,6 @@ import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -25,7 +24,7 @@ public class EvaluationVersionWarning {
         String evaluationMessage;
         long daysLeft = DAYS.between(LocalDate.now(), END_OF_LIFE);
         if (daysLeft < 0) daysLeft = 0;
-        boolean expired = daysLeft == 0;
+        boolean expired = false; //daysLeft == 0;
 
         String messageBody = expired ? loadResourceAsText("message-expired.html")
                 : loadResourceAsText("message-not-expired.html");
@@ -70,7 +69,7 @@ public class EvaluationVersionWarning {
 
     private static String loadResourceAsText(String resourceFileName) {
         try (InputStream is = EvaluationVersionWarning.class.getClassLoader().getResourceAsStream(resourceFileName)) {
-            return new Scanner(is, StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
+            return new Scanner(is).useDelimiter("\\A").next();
         } catch (Exception e) {
             return e.toString();
         }

@@ -10,30 +10,13 @@ package org.openmarkov.gui.dialog.common;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.action.UncertainValuesRemoveEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.exception.*;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
-import org.openmarkov.gui.component.PotentialsTablePanelOperations;
-import org.openmarkov.gui.component.ValuesTable;
-import org.openmarkov.gui.component.ValuesTableCellRenderer;
-import org.openmarkov.gui.component.ValuesTableModel;
-import org.openmarkov.gui.component.ValuesTableOptimalPolicyCellRenderer;
-import org.openmarkov.gui.component.ValuesTableWithLinkRestrictionCellRenderer;
+import org.openmarkov.gui.component.*;
 import org.openmarkov.gui.dialog.node.UncertainValuesDialog;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.UncertaintyContextualMenu;
@@ -596,7 +579,7 @@ import java.util.List;
 	 * @param stateIndices - indexes of the states
 	 * @return an array containing the row at the first position and the column
 	 * at the second position.
-	 * revised--&gt; only changed the code between CMI, CMF
+	 * revised--&gt; only changed the code between , 
 	 */
 	protected int[] getRowAndColumnForStateCombination(int[] stateIndices, TablePotential potential) {
 		int numStates = node.getVariable().getNumStates();
@@ -637,10 +620,10 @@ import java.util.List;
 	 */
 	protected Object[][] getNotEditablePositions() {
 		Object[][] notEditablePositions = createEmptyTable();
-		//CMI Bug #162 Applying restriction to utility Nodes
+		// Bug #162 Applying restriction to utility Nodes
 		//if (!isTableDeltaPotential && hasLinkRestriction){
 		if (hasLinkRestriction) {
-			//CMF
+			//
 			List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations
 					.getStateCombinationsWithLinkRestriction(node);
 

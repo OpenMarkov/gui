@@ -1134,12 +1134,12 @@ public class VisualNetwork implements PNUndoableEditListener {
 				if ((newLinkDestination = whatNodeInPosition(point, g)) != null) {
 
 					if (  (!newLinkSource.equals(newLinkDestination))
-					//CMI 29/12/2019 - in DESNETS we can have loops for event nodes - or added
+					// 29/12/2019 - in DESNETS we can have loops for event nodes - or added
 					//05/04/2020 - loops for Chance nodes
 					|| ( newLinkDestination.getNode().getProbNet().getNetworkType().isApplicableConstraint((new OnlySelfLoopsWithEventAndChanceNodes()))
 							&& ( (newLinkDestination.getNode().getNodeType() == NodeType.EVENT  ) || (newLinkDestination.getNode().getNodeType() == NodeType.CHANCE  ) ))
 					)
-					//CMF
+					//
 					{
 						try {
 							linkEdit = new AddLinkEdit(probNet, probNet.getVariable(newLinkSource.getNode().getName()),

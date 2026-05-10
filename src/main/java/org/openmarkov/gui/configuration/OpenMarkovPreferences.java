@@ -367,7 +367,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 				// Color( 230, 230, 230 ), //one dark
 				// green color
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
-//CMI 03/2019 event node added, 11/11/2019 Utility with event added
+// 03/2019 event node added, 11/11/2019 Utility with event added
 		setColor(OpenMarkovPreferences.NODEEVENT_BACKGROUND_COLOR, // def
 				Color.ORANGE, //245-208-051 Saffron
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
@@ -387,7 +387,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 				new Color(93, 155, 49),
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
 
-//CMF
+//
 
 
 

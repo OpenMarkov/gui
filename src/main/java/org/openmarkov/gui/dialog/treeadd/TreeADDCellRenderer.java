@@ -8,11 +8,7 @@
 package org.openmarkov.gui.dialog.treeadd;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -188,12 +184,12 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 				break;
 			}
 
-			//CMI 18/04/2020 For TreeWithEventsPotential which has Event Nodes
+			// 18/04/2020 For TreeWithEventsPotential which has Event Nodes
 				case EVENT: {
 					icon = IconFactory.createEventIcon(variable.getName(), textIconFont);
 					break;
 			}
-			//CMF
+			//
 			}
 		} else {
 			icon = IconFactory.createDecisionIcon(variable.getName(), textIconFont);

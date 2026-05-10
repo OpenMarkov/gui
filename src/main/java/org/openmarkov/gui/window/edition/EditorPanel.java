@@ -8,22 +8,11 @@
 package org.openmarkov.gui.window.edition;
 
 import org.apache.logging.log4j.LogManager;
-import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.action.AbsorbParentsEdit;
 import org.openmarkov.core.action.AbsorbNodeEdit;
-
+import org.openmarkov.core.action.AbsorbParentsEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.InvertLinkAndUpdatePotentialsEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-
-import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
@@ -31,7 +20,10 @@ import org.openmarkov.core.inference.tasks.Propagation;
 import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.potential.*;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.gui.action.PasteEdit;
 import org.openmarkov.gui.action.RemoveSelectedEdit;
@@ -44,16 +36,7 @@ import org.openmarkov.gui.dialog.node.AddFindingDialog;
 import org.openmarkov.gui.dialog.node.CommonNodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
-import org.openmarkov.gui.graphic.FSVariableBox;
-import org.openmarkov.gui.graphic.InnerBox;
-import org.openmarkov.gui.graphic.NumericVariableBox;
-import org.openmarkov.gui.graphic.SelectionListener;
-import org.openmarkov.gui.graphic.VisualDecisionNode;
-import org.openmarkov.gui.graphic.VisualElement;
-import org.openmarkov.gui.graphic.VisualLink;
-import org.openmarkov.gui.graphic.VisualNetwork;
-import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.gui.graphic.VisualState;
+import org.openmarkov.gui.graphic.*;
 import org.openmarkov.gui.localize.LocalizedException;
 import org.openmarkov.gui.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
@@ -73,11 +56,8 @@ import javax.swing.undo.CannotUndoException;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class implements the behaviour of a panel where a network will be
@@ -2272,9 +2252,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-			//CMI 06/01/2020 for bug fixig
+			// 06/01/2020 for bug fixig
 			e.printStackTrace();
-			//CMF
+			//
 		}
 	}
 

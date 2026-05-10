@@ -42,7 +42,7 @@ public class PiecewiseExponentialPanel
 	JCheckBox ratesCheck;
 
 
-	private piecewiseExponentialTablePanel piecewiseExponentialTablePanel;
+	private PiecewiseExponentialTablePanel piecewiseExponentialTablePanel;
 
 	protected Node node;
 	protected PiecewiseExponentialPotential piecewiseExponentialPotential;
@@ -81,6 +81,7 @@ public class PiecewiseExponentialPanel
 		);
 		ratesCheck = new JCheckBox("Use rates");
 		ratesCheck.setSelected(piecewiseExponentialPotential.isUseRates());
+		ratesCheck.setEnabled(false);
 		JPanel checksPanel = new JPanel(new FlowLayout());
 		checksPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		checksPanel.add(initValueCheck);
@@ -88,7 +89,7 @@ public class PiecewiseExponentialPanel
 		upperPanel.add(checksPanel, BorderLayout.NORTH);
 		upperPanel.add(functionPanel, BorderLayout.SOUTH);
 		this.add(upperPanel, BorderLayout.NORTH);
-		piecewiseExponentialTablePanel = new piecewiseExponentialTablePanel(data);
+		piecewiseExponentialTablePanel = new PiecewiseExponentialTablePanel(data);
 		this.add(piecewiseExponentialTablePanel, BorderLayout.SOUTH);
 		repaint();
 	}

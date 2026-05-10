@@ -100,7 +100,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	}
 
 
-	//CMI 08/04/2020
+	// 08/04/2020
 	public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node, TreeADDPotential treeADDPotential, boolean readOnly) {
 		this.rootTreeADDPotential = treeADDPotential;
 		this.node = node;
@@ -114,7 +114,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	}
 
 
-	//CMF
+	//
 
 
 
@@ -800,9 +800,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 					for (Variable variable : parentTreeADD.getVariables()) {
 						if (variable.getName().equals(variableName)) {
 							newVariables.add(variable);
-							//CMI 18/03/2023 -- for self-loop in DESnets; avoiding self-loop variable added twice; normal behaviour not affected
+							// 18/03/2023 -- for self-loop in DESnets; avoiding self-loop variable added twice; normal behaviour not affected
 						break;
-						//CMF
+						//
 					}
 					}
 				}
@@ -1236,13 +1236,13 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 			dummyProbNet.addNode(var, probNet.getNode(var).getNodeType());
 		}
 		dummyProbNet.addPotential(potential);
-		//CMI 10/04/2020 - As dummyProbNet is a BayesianNetwork, dummyProbNet.addPotential(potential) sets every node of potential as a Chance node.
+		// 10/04/2020 - As dummyProbNet is a BayesianNetwork, dummyProbNet.addPotential(potential) sets every node of potential as a Chance node.
 		// I change the network type only in the case of DESNets because I don't know if other networks need it or not
 		if (probNet.getNetworkType().equals(DESNetworkType.getUniqueInstance())) {
 				dummyProbNet = new ProbNet(DESNetworkType.getUniqueInstance());
 				dummyProbNet.addPotential(potential, probNet);
 		}
-		//CMF
+		//
 
 
 		Node dummy = null;

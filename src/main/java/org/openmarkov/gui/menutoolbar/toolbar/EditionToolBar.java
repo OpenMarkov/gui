@@ -62,12 +62,12 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	 * Button to activate decision creation.
 	 */
 	private JToggleButton decisionCreationButton = null;
-	//CMI 03/2019
+	// 03/2019
 	/**
 	 * Button to activate chance creation.
 	 */
 	private JToggleButton eventCreationButton = null;
-	//CMF
+	//
 
 	/**
 	 * Button to activate utility creation.
@@ -111,9 +111,9 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 		addSeparator();
 		add(getObjectSelectionButton());
 		add(getChanceCreationButton());
-		//CMI -place changed 09/2019
+		// -place changed 09/2019
 		add(getEventCreationButton());
-		//CMF
+		//
 		add(getDecisionCreationButton());
 		add(getUtilityCreationButton());
 		add(getLinkCreationButton());
@@ -290,7 +290,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 		return decisionCreationButton;
 	}
 
-	//CMI 03/2019
+	// 03/2019
 	/**
 	 * This method initialises eventCreationButton.
 	 *
@@ -310,7 +310,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 		}
 		return eventCreationButton;
 	}
-	//CMF
+	//
 
 
 

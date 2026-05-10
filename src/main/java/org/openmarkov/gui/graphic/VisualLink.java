@@ -11,14 +11,9 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.constraint.OnlySelfLoopsWithEventAndChanceNodes;
-import org.openmarkov.core.model.network.type.DESNetworkType;
-import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
 /**
@@ -120,7 +115,7 @@ public class VisualLink extends VisualArrow {
 		setStartPoint(new Point2D.Double(source.getTemporalPosition().getX(), source.getTemporalPosition().getY()));
 		setEndPoint(
 				new Point2D.Double(destination.getTemporalPosition().getX(), destination.getTemporalPosition().getY()));
-		//CMI 29/12/2019 When having a loop in event nodes source = destination and startPoint and endPoint are the center of the arc
+		// 29/12/2019 When having a loop in event nodes source = destination and startPoint and endPoint are the center of the arc
 		//02/02/2020 loops also in Cnance nodes so I have put an abstract method in VisualNode and overriden it in ChanceVisualNode and EventVisualNode
 		if ( source.getNode().getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes()) &&
 				(destination.getNode().getName().equals(source.getNode().getName()))
@@ -129,7 +124,7 @@ public class VisualLink extends VisualArrow {
 			setStartPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
 			setEndPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
 		}
-		//CMF
+		//
 
 		return super.getShape(g);
 	}
@@ -151,7 +146,7 @@ public class VisualLink extends VisualArrow {
 					new Point2D.Double(destination.getTemporalPosition().getX(),
 							destination.getTemporalPosition().getY()));
 		} catch (IllegalArgumentException e) {
-			//CMI 28/12/2019 allowed self lopps for Event nodes- 02/04/2020 allowed self-loops for chance nodes
+			// 28/12/2019 allowed self lopps for Event nodes- 02/04/2020 allowed self-loops for chance nodes
 			//Before adding this block, this catch was empty only has a return.
 			//Now it checks if the link is a self-loop in an event node. If  it is the case the circular arrow is painted
 			if (  source.getNode().getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes()) &&
@@ -165,7 +160,7 @@ public class VisualLink extends VisualArrow {
 			} else {
 				e.printStackTrace();
 			}
-			//CMF
+			//
 			return;
 		}
 		if (link.hasRevealingConditions()) {

@@ -13,7 +13,9 @@ import org.openmarkov.core.action.TemporalOptionsEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.*;
+import org.openmarkov.core.inference.MulticriteriaOptions;
+import org.openmarkov.core.inference.TemporalOptions;
+import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.ProbNet;
@@ -128,13 +130,13 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	 * Boolean attribute that indicates if the probnet have multicriteria
 	 */
 	private boolean isMulticriteria;
-	//CMI 25/07/11019
+	// 25/07/11019
 	/**
 	 * Boolean attribute that indicates if the simulation will be done using Monte Carlo Simulation
 	 */
 	private boolean isMonteCarloSimulation;
 
-	//CMF
+	//
 	/**
 	 * Temporal copy of Multicriteria options
 	 */
@@ -191,12 +193,12 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	private JPanel multicriteriaPanel;
 
 	private JPanel temporalPanel;
-	// CMI 16/12/2019 Extracted Monte Carlo Panel to an independent class
+	//  16/12/2019 Extracted Monte Carlo Panel to an independent class
 	/**
 	 * Panel with Monte Carlo Options
 	 */
 	private MonteCarloOptionsPanel monteCarloOptionsPanel;
-	// CMF
+	// 
 
 
 	/**
@@ -223,13 +225,13 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			this.isMulticriteria = true;
 		}
 
-		//CMI 25/08/2019
+		// 25/08/2019
 		//isMCSimulation may be used with another networks but currently is used only with DesNet
 		isMonteCarloSimulation = false;
 		if (probNet.getNetworkType() instanceof DESNetworkType) {
 			isMonteCarloSimulation = true;
 		}
-		//CMF
+		//
 
 		// Center the dialog
 		setLocationRelativeTo(owner);
@@ -251,11 +253,11 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
 		boolean requiredInfereceOptions = false;
-		//CMI 25/08/2019 -- if we have a Monte Carlo simulation, the panel with the Monte Carlo options is added. Currently it is only for DESNets
+		// 25/08/2019 -- if we have a Monte Carlo simulation, the panel with the Monte Carlo options is added. Currently it is only for DESNets
 		if (isMonteCarloSimulation) {
 			mainPanel.add(getMonteCarloOptionsPanel());
 		}
-        //CMF
+        //
 		if (isTemporal) {
 			mainPanel.add(getTemporalPanel());
 			requiredInfereceOptions = true;
@@ -895,7 +897,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		return temporalPanel;
 	}
 
-	//CMI -16/12/2019 extracted Monte Carlo Options to an independent panel
+	// -16/12/2019 extracted Monte Carlo Options to an independent panel
 	/**
 	 * Returns a panel with the Monte Carlo Options
 	 *
@@ -908,7 +910,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		return monteCarloOptionsPanel;
 	}
 
-	//CMF
+	//
 
 	private JPanel getNumSlicesPanel() {
 		if (numSlicesPanel == null) {
@@ -994,7 +996,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			transitionsPanel.add(getBeginningOfCycleButton());
 			transitionsPanel.add(getHalfCycleButton());
 			transitionsPanel.add(getEndOfCycleButton());
-			//CMI 10/09/2019
+			// 10/09/2019
 			if (isMonteCarloSimulation){
 				getBeginningOfCycleButton().setEnabled(false);
 				getHalfCycleButton().setEnabled(false);
@@ -1002,7 +1004,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 				transitionsPanel.setEnabled(false);
 				transitionsPanel.setVisible(false);
 			}
-			//CMF
+			//
 		}
 		return transitionsPanel;
 	}
@@ -1057,7 +1059,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 
 		}
-        //CMI 25/08/2019 -- 28/09/2019 -- added DESNET log options --06/10/2019 encapsulated the translation from the gui to the monteCarloOptions
+        // 25/08/2019 -- 28/09/2019 -- added DESNET log options --06/10/2019 encapsulated the translation from the gui to the monteCarloOptions
 		if (isMonteCarloSimulation) {
 			MonteCarloOptionsEdit editMonteCarlo = new MonteCarloOptionsEdit(probNet, monteCarloOptionsPanel.getMonteCarloOptions());
 			try {
@@ -1066,7 +1068,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 				e.printStackTrace();
 			}
 		}
-		//CMF
+		//
 
 
 

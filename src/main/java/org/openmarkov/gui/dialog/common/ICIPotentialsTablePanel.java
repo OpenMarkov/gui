@@ -313,7 +313,7 @@ import java.util.List;
 		} catch (Exception ex) {
 			values = setBlankCanonicalTable(properties);
 		}
-		//CMF
+		//
 		return values;
 	}
 

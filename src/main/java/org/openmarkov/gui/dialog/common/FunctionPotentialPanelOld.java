@@ -79,10 +79,10 @@ import java.util.List;
 	protected JTextArea getFunctionTextArea() {
 		if (functionTextArea == null) {
 			functionTextArea = new JTextArea();
-			//CMI
+			//
 //			functionTextArea.setEditable(false);
 			functionTextArea.setEditable(true);
-			//CMF
+			//
 		}
 		return functionTextArea;
 	}

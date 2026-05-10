@@ -129,7 +129,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		return potentialIndex;
 	}
 
-	//CMI
+	//
 
 	/**
 	 * Created for univariateDistributions
@@ -196,7 +196,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		return row;
 	}
 
-	//CMF
+	//
 
 	/**
 	 * Given the number of column of a JTable,

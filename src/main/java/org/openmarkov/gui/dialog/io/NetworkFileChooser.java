@@ -39,16 +39,16 @@ import java.util.List;
 		HashMap<String, String> parsersListForFilters = isOpening ?
 				formatManager.getReaders() :
 				formatManager.getWriters();
-		//CMI List of extensions for opening a file
+		// List of extensions for opening a file
 		List<String> extensionList = new ArrayList<String>();
 		// for (String item : parsersListForFilters.keySet ())
 		List<String> descriptions = new ArrayList<>();
 		descriptions.addAll(parsersListForFilters.keySet());
 		Collections.sort(descriptions);
 		for (String item : descriptions)
-		//CMF
+		//
 		{
-			//CMI
+			//
         	/*
         	addChoosableFileFilter (new FileFilterAll (parsersListForFilters.get (item), item));
         	*/
@@ -56,17 +56,17 @@ import java.util.List;
 
 			addChoosableFileFilter(new FileFilterAll(itemExtension, item));
 
-			//CMF
+			//
 		}
 		File currentDirectory = new File(OpenMarkovPreferences
 				.get(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
 		setCurrentDirectory(currentDirectory);
-		//CMI
+		//
         /*
         setFileFilter (OpenMarkovPreferences.get (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                                   OpenMarkovPreferences.OPENMARKOV_FORMATS, "pgmx"));
         */
-		//CMI UNCLEAR Where is set pgmx? By default LAST_OPENED_FORMAT=pgmx
+		// UNCLEAR Where is set pgmx? By default LAST_OPENED_FORMAT=pgmx
 
 		if (isOpening) {
 			setFileFilter("OpenMarkov");
@@ -75,7 +75,7 @@ import java.util.List;
 					.get(OpenMarkovPreferences.LAST_OPENED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
 							FileChooser.DEFAULT_FILE_FORMAT));
 		}
-		//CMF
+		//
 	}
 
 	public NetworkFileChooser() {
@@ -87,7 +87,7 @@ import java.util.List;
 		if (result == JFileChooser.APPROVE_OPTION) {
 			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
 					OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-			// CMI
+			// 
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
@@ -105,7 +105,7 @@ import java.util.List;
 
 				e.printStackTrace();
 			}
-			//CMF
+			//
 		}
 		return result;
 	}
@@ -115,7 +115,7 @@ import java.util.List;
 		if (result == JFileChooser.APPROVE_OPTION) {
 			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
 					OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-			//CMI
+			//
             /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
@@ -125,7 +125,7 @@ import java.util.List;
 			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPENED_FORMAT,
 					((FileFilterAll) getFileFilter()).getFileDescription(), OpenMarkovPreferences.OPENMARKOV_FORMATS);
 
-			//CMF
+			//
 
 		}
 		return result;

@@ -70,7 +70,7 @@ public class FileFilterAll extends FileFilterBasic {
 				+ " (*." + formatExtension + ")";
 
 	}
-	//CMI
+	//
 
 	/**
 	 * @return the fileDescription used to match the filter with the proper Reader/Writer
@@ -90,7 +90,7 @@ public class FileFilterAll extends FileFilterBasic {
 		this.fileDescription = fileDescription;
 	}
 
-	//CMF
+	//
 
 	/**
 	 * Returns the extension of the files that match this filter.

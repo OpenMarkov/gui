@@ -152,12 +152,12 @@ public class IconLoader {
 	public static final String ICON_INFERENCE_MODE_ENABLED = "inference_mode.png";
 
 
-	//CMI 21/08/2918
+	// 21/08/2918
 	/**
 	 * Name of the 'Monte Carlo simulation for DESNETs' enabled icon.
 	 */
 	public static final String ICON_SIMULATION_ENABLED = "simulate.png";
-	//CMF
+	//
 
 	/**
 	 * Name of the 'Create New Evidence Case' enabled icon.

@@ -15,11 +15,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
+import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.gui.dialog.common.KeyTablePanel;
 
 import javax.swing.*;
@@ -64,7 +60,7 @@ import java.util.List;
 	private static Object[][] getData(Node node) {
 		Potential nodePotential = node.getPotentials().get(0);
 		List<Variable> variables;
-		//CMI
+		//
 		Potential potentialForTakingVariables;
 		if (nodePotential instanceof UnivariateDistrPotential) {
 			potentialForTakingVariables = ((UnivariateDistrPotential) nodePotential).getAugmentedTable();
@@ -77,7 +73,7 @@ import java.util.List;
 		}
 		variables = potentialForTakingVariables.getVariables();
 			
-		//CMF
+		//
 		// 26/11/2014
 		// Added node.hasPolicy() to the condition of the if clause when allowing to reorder variables
 		// when imposing a policy in a decision node

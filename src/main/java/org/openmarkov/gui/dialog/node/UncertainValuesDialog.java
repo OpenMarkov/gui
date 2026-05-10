@@ -14,22 +14,10 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.modelUncertainty.BetaFunction;
-import org.openmarkov.core.model.network.modelUncertainty.ComplementFamily;
-import org.openmarkov.core.model.network.modelUncertainty.ComplementFunction;
-import org.openmarkov.core.model.network.modelUncertainty.DirichletFamily;
-import org.openmarkov.core.model.network.modelUncertainty.DirichletFunction;
-import org.openmarkov.core.model.network.modelUncertainty.ExactFunction;
-import org.openmarkov.core.model.network.modelUncertainty.FamilyDistribution;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionType;
-import org.openmarkov.core.model.network.modelUncertainty.RangeFunction;
-import org.openmarkov.core.model.network.modelUncertainty.Tools;
-import org.openmarkov.core.model.network.modelUncertainty.TriangularFunction;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.modelUncertainty.*;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.loader.element.IconLoader;
 import org.openmarkov.gui.localize.StringDatabase;
@@ -38,11 +26,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -57,7 +41,8 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	private static final int PARAMETERS_COLUMN_INDEX = 2;
 	private static final int NAME_COLUMN_INDEX = 3;
 	private static final long serialVersionUID = 1L;
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+
+    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	// Components related to the distributions box
 	private DistributionTableModel distributionTableModel;
 	private JTable distributionTable;
@@ -72,6 +57,53 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	// Base position for storing the array of uncertain values in the table
 	// potential
 	private int posBase;
+
+	// 20/05/2025 Begin DES uncertainty
+    private boolean isDES = false;
+
+    /**
+	 * @param owner
+	 * @param configuration
+	 *
+	 * @throws WrongCriterionException
+	 */
+	public UncertainValuesDialog(Window owner, EvidenceCase configuration, TableWithEvents tableWithEvents)
+			throws WrongCriterionException {
+		super(owner);
+        isDES = true;
+		distributionTypes = new ArrayList<>();
+		posBase = getDESPositionBaseUncertainValue(tableWithEvents.getTablePotential(), configuration);
+
+		setResizable(true);
+		JPanel componentsPanel = getComponentsPanel();
+		// Panel of distributions
+		distributionsPanel = new JPanel();
+		fillDistributionsTableModel(tableWithEvents.getTablePotential().getConditionedVariable(), configuration, tableWithEvents.getTablePotential());
+		distributionTable.getModel().addTableModelListener(new DistributionsTableListener());
+		distributionTable.addMouseListener(new DistributionsTableMouseListener());
+		distributionsPanel.setBorder(new TitledBorder("Distributions"));
+		JScrollPane distributionsTablePane = new JScrollPane(distributionTable);
+		distributionsPanel.add(distributionsTablePane);
+		distributionsTablePane.setPreferredSize(new Dimension(300, 100));
+		distributionsPanel.setPreferredSize(new Dimension(350, 150));
+		componentsPanel.add(distributionsPanel);
+		try {
+			initialize();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
+					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+		}
+
+		Point parentLocation = owner.getLocation();
+		Dimension parentSize = owner.getSize();
+		int x = (int) (parentLocation.getX() + parentSize.getWidth() / 2 - getSize().getWidth() / 2);
+		int y = (int) (parentLocation.getY() + parentSize.getHeight() / 2 - getSize().getHeight() / 2);
+		setLocation(new Point(x, y));
+	}
+	// End DES uncertainty
+
+
 
 	/**
 	 * @param owner
@@ -334,7 +366,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 		int pos;
 		int sizeEvi = configuration.getFindings().size();
 		sizeCoordinates = sizeEvi + (isChanceVariable ? 1 : 0);
-		coordinates = new int[sizeCoordinates];
+			coordinates = new int[sizeCoordinates];
 		List<Variable> varsTable = potential.getVariables();
 		int startLoop;
 		if (isChanceVariable) {
@@ -350,9 +382,31 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 		return pos;
 	}
 
+	// 20/05/2025 Begin DES uncertainty
+	private int getDESPositionBaseUncertainValue(TablePotential potential, EvidenceCase configuration) {
+		int[] coordinates;
+		int sizeCoordinates;
+		int pos;
+		int sizeEvi = configuration.getFindings().size();
+		//If there is only one state; then it is multiplied by 1
+		sizeCoordinates = 1+ sizeEvi;
+		coordinates = new int[sizeCoordinates];
+		List<Variable> varsTable = potential.getVariables();
+		for (int i = 1; i < sizeCoordinates; i++) {
+			coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
+		}
+		pos = potential.getPosition(coordinates);
+		return pos;
+	}
+	// End DES uncertainty
+
+
 	private String getColumnString(String column) {
 		return stringDatabase.getString("UncertainValuesDialog.DistributionsTable.Columns." + column + ".Label");
 	}
+
+
+
 
 	private void fillDistributionsTableModel(Variable variable, EvidenceCase configuration, TablePotential potential)
 			throws WrongCriterionException {
@@ -379,7 +433,15 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 
 		List<String> allowedDistributionTypes = ProbDensFunctionManager.getUniqueInstance()
 				.getValidProbDensFunctions(isChanceVariable);
-		State[] states = variable.getStates();
+
+        // 20/05/2024 DES PSA
+        if (isDES) {
+            allowedDistributionTypes = ProbDensFunctionManager.getUniqueInstance()
+                    .getDESValidProbDensFunctions();
+        }
+        //
+
+        State[] states = variable.getStates();
 		int numStates = states.length;
 		Object[][] initialData = new Object[numStates][columnNames.length];
 		JComboBox<String> distributionTypesCombo = new JComboBox<String>();

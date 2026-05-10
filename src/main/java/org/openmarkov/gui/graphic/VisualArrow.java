@@ -80,12 +80,12 @@ public class VisualArrow extends VisualElement {
 
 	private Color linkColor = FOREGROUND_COLOR;
 
-	//CMI 08/04/2020 -  constants for circular arrow
+	// 08/04/2020 -  constants for circular arrow
 	private final double CIRCULAR_ARROW_RADIOUS = 15;
 	private final double CIRCULAR_ARROW_START_ANGLE = 5;
 	private final double CIRCULAR_ARROW_END_ANGLE = -355;
 	private final double CIRCULAR_ARROW_HEAD_ORIENTATION = Math.toRadians(45);
-	//CMF
+	//
 
 	/**
 	 * Creates a new visual link from the two points that define the start and
@@ -264,14 +264,14 @@ public class VisualArrow extends VisualElement {
 
 		pStart = startPoint;
 		pEnd = endPoint;
-		//CMI 29/12/2019 - this is for a loop arrow
+		// 29/12/2019 - this is for a loop arrow
 
 		if (startPoint.distance(endPoint) <0.1) {
 			Area area = getLoopShape(startPoint, CIRCULAR_ARROW_RADIOUS);
 			area.add(getLoopArrowHeadShape(startPoint, CIRCULAR_ARROW_RADIOUS));
 			return  area ;
 		}
-		//CMF
+		//
 
 		if ((pStart != null) && (pEnd != null)) {
 			allPoints = calculatePointsOfArrow(pStart, pEnd);
@@ -376,7 +376,7 @@ public class VisualArrow extends VisualElement {
 		}
 	}
 
-//CMI 26/12/2019 -Methods to draw a circular arrow for self-loops; 06/04/2020: changed orientation of the arrow and circle made bigger
+// 26/12/2019 -Methods to draw a circular arrow for self-loops; 06/04/2020: changed orientation of the arrow and circle made bigger
 	/**
 	 * This method creates the arrowhead in a circular arrow for a self-loop.
 	 * @param start - the center of the circumference which contains the arc
@@ -420,7 +420,7 @@ public class VisualArrow extends VisualElement {
 		g.draw(getLoopShape(start, CIRCULAR_ARROW_RADIOUS));
 
 	}
-//CMF
+//
 
 
 	/****
@@ -558,11 +558,11 @@ public class VisualArrow extends VisualElement {
 		} else {
 			paintLine(g, startPoint, endPoint, stroke);
 		}
-		//CMI 01/01/2020 Paints a circular arrow when there is a self-loop in an event node
+		// 01/01/2020 Paints a circular arrow when there is a self-loop in an event node
 		if (startPoint.distance(endPoint)==0){
 			paintLoopArrow(g, startPoint, stroke);
 		}
-		//CMF
+		//
 
 
 

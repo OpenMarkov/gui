@@ -1,16 +1,31 @@
 package org.openmarkov.gui.dialog.common;
 
 
+import org.openmarkov.gui.loader.element.IconLoader;
+
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class piecewiseExponentialTablePanel extends KeyTablePanel {
+public class PiecewiseExponentialTablePanel extends KeyTablePanel {
 
+    protected JFileChooser chooser = new JFileChooser();
+//    protected Pattern dataPattern = Pattern.compile(".*(\\d+)\\s*;\\s*(\\d+\\.?\\d*).*");
+    protected Pattern dataPattern = Pattern.compile("(\\d+\\.?\\d*)\\s*[;,]\\s*(\\d+\\.?\\d*)");
+    protected JButton loadButton = null;
 
-    public piecewiseExponentialTablePanel(Object[][] data) {
+    public PiecewiseExponentialTablePanel(Object[][] data) {
         //KeyTablePanel always consider that the first column of Key Table is hidden.
         //The method can be overridden but KeyTable always considers the first column as not editable
-        super(new String[] {"Hidden","Time","Probability"}, data, true, true,true);
+        super(new String[]{"Hidden", "Time", "Probability"}, data, true, true, true);
         Object[][] newData = new Object[data.length][3];
 //        for (int i = 0;  i< data.length ; i++) {
 //            Object[] dataRow= data[i];
@@ -20,6 +35,103 @@ public class piecewiseExponentialTablePanel extends KeyTablePanel {
         this.setBorder(new TitledBorder("Life Table"));
         setEnabledRemoveValue(true);
 
+        chooser.setDialogTitle("Choose a CSV data file");
+        chooser.setApproveButtonText("Load data");
+    }
+
+    protected JButton getLoadButton() {
+        if (loadButton == null) {
+            loadButton = new JButton();
+            loadButton.setName("KeyTablePanel.loadButton");
+            loadButton.setText("Load data file");
+//			loadButton.setMnemonic(stringDatabase.getString("Up.Text.Mnemonic").charAt(0));
+            loadButton.setIcon(iconLoader.load(IconLoader.ICON_OPEN_ENABLED));
+            loadButton.setVisible(reorderable);
+            loadButton.setEnabled(true);
+            loadButton.addActionListener(this);
+        }
+        return loadButton;
+    }
+
+    /**
+     * This method initializes buttonPanel.
+     *
+     * @return a new button panel.
+     */
+    @Override
+    protected JPanel getButtonPanel() {
+
+        if (buttonPanel == null) {
+            buttonPanel = new JPanel();
+            buttonPanel.setName("KeyTablePanel.buttonPanel");
+            final GroupLayout groupLayout = new GroupLayout((JComponent) buttonPanel);
+            groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING).addGroup(
+                    groupLayout.createSequentialGroup().addGroup(
+                            groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                    .addComponent(getLoadButton(), GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                                    .addComponent(getAddValueButton(), GroupLayout.Alignment.LEADING,
+                                            GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                                    .addComponent(getDownValueButton(), GroupLayout.Alignment.LEADING,
+                                            GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                                    .addComponent(getUpValueButton(), GroupLayout.Alignment.LEADING,
+                                            GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                                    .addComponent(getRemoveValueButton(), GroupLayout.Alignment.LEADING,
+                                            GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)).addContainerGap()));
+            groupLayout.setVerticalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
+                    groupLayout.createSequentialGroup()
+                            .addComponent(getLoadButton()).addGap(5, 5, 5)
+                            .addComponent(getAddValueButton()).addGap(5, 5, 5)
+                            .addComponent(getRemoveValueButton()).addGap(5, 5, 5).addComponent(getUpValueButton())
+                            .addGap(5, 5, 5).addComponent(getDownValueButton()).addGap(88, 88, 88)));
+            buttonPanel.setLayout(groupLayout);
+        }
+        return buttonPanel;
+    }
+
+    /**
+     * Invoked when an action occurs.
+     *
+     * @param e event information.
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals(loadButton)) {
+            actionPerformedLoadValues();
+        } else super.actionPerformed(e);
+    }
+
+    protected void actionPerformedLoadValues() {
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                Path dataFile = chooser.getSelectedFile().toPath();
+                List<Double[]> data = new ArrayList<>();
+                for (String line : Files.readAllLines(dataFile)) {
+                    final Matcher matcher = dataPattern.matcher(line);
+                    if (matcher.matches()) {
+                        try {
+                            data.add(new Double[]{
+                                    0.0,
+                                    Double.valueOf(matcher.group(1)),
+                                    Double.valueOf(matcher.group(2))
+                            });
+                        } catch (NumberFormatException ignored) {
+                            // Line matches dataPattern, but has an invalid number.
+                            // This should not happen, but here we silently ignore that, just in case.
+                        }
+                    }
+                }
+                if (!data.isEmpty()) {
+                    // Any better way to replace all rows?
+                    while (tableModel.getRowCount() > 0) {
+                        tableModel.removeRow(0);
+                    }
+                    for (Object[] row : data)
+                        tableModel.addRow(row);
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Could not load data: " + e.getMessage(), "Error loading data", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     /**
@@ -27,7 +139,7 @@ public class piecewiseExponentialTablePanel extends KeyTablePanel {
      */
     @Override
     protected void actionPerformedAddValue() {
-        tableModel.addRow(new Object[]{0,0,0});
+        tableModel.addRow(new Object[]{0, 0, 0});
     }
 
     /**
@@ -35,8 +147,9 @@ public class piecewiseExponentialTablePanel extends KeyTablePanel {
      */
     protected void actionPerformedRemoveValue() {
         int selectedRowIndex = valuesTable.getSelectedRow();
-        if (selectedRowIndex > -1)  tableModel.removeRow(selectedRowIndex);
+        if (selectedRowIndex > -1) tableModel.removeRow(selectedRowIndex);
     }
+
     /**
      * Invoked when the row selection changes.
      *
@@ -78,8 +191,6 @@ public class piecewiseExponentialTablePanel extends KeyTablePanel {
             removeValueButton.setEnabled(true);
         }
     }
-
-
 
 
 }

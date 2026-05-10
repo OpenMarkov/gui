@@ -75,12 +75,12 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	 */
 	private String networkFile = null;
 
-	//CMI
+	//
 	/**
 	 * Format of the file where the network is saved (updated or not).
 	 */
 	private String networkFileFormat = null;
-	//CMF
+	//
 	/**
 	 * Indicates if the network has been modified.
 	 */
@@ -235,7 +235,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 		return networkFile;
 	}
 
-	//CMI
+	//
 
 	/**
 	 * Sets the name of the file where the network is saved.
@@ -254,7 +254,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	public String getNetworkFileFormat() {
 		return networkFileFormat;
 	}
-	//CMF
+	//
 
 	/**
 	 * Sets the format of the file where the network is saved.

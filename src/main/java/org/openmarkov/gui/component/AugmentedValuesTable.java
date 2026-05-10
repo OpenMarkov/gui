@@ -89,10 +89,10 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 	 */
 	@Override protected void defaultConfiguration() {
 		super.defaultConfiguration();
-		//CMI
+		//
 		//CHANGED
 		setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		//CMF
+		//
 	}
 
 	/**

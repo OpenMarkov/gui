@@ -52,7 +52,7 @@ abstract public class IconFactory {
 		return new ImageIcon(image);
 	}
 
-	//CMI 08/04/2020 -create EventIcon
+	// 08/04/2020 -create EventIcon
 
 	/* *
 	 * Returns the icon for Events in trees. It is the same as createChanceIcon but with another color.
@@ -91,7 +91,7 @@ abstract public class IconFactory {
 
 		return new ImageIcon(image);
 	}
-	//CMF
+	//
 
 	/**
 	 * @param text

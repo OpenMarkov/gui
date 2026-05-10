@@ -21,7 +21,7 @@ import java.awt.geom.RoundRectangle2D;
  * @author jmendoza
  * @version 1.2 asaez - add expanded representation
  */
-public class VisualChanceNode extends VisualNode implements SelfLoopableNode{ //CMI implements SelfLoopableNode 05/04/2020 - CMF
+public class VisualChanceNode extends VisualNode implements SelfLoopableNode{ // implements SelfLoopableNode 05/04/2020 - 
 
 	protected static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(6.0f);
 	protected static final BasicStroke OBSERVED_NORMAL_STROKE = new BasicStroke(3.0f);
@@ -279,7 +279,7 @@ public class VisualChanceNode extends VisualNode implements SelfLoopableNode{ //
 
 
 
-	//CMI -05/04/2020
+	// -05/04/2020
 	/**
 	 * TODO This method is repeated in VisualEventNode. Both classes are similar and there is  a lot  repeated code. It is done this way in order to introduce as few changes as possible in previous code and prevent regressions but when having a stable representation and algotithm there should be extracted to superclass descendant of VisualNode
 	 * Returns the point which will be the center for a circular arrow
@@ -295,7 +295,7 @@ public class VisualChanceNode extends VisualNode implements SelfLoopableNode{ //
 		centreArcPoint.setLocation(centreNodePoint.getX()+ dims[2]/2,centreNodePoint.getY()+ dims[3]/2);
 		return centreArcPoint;
 	}
-	//CMF
+	//
 
 
 

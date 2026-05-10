@@ -25,6 +25,7 @@ import java.nio.file.Path;
  * @version 1.0 cyago - 04/01/2019 - In this version Monte Carlo options is only used for DESNets
  * @version 1.1 cyago - 24/04/2021 - Added support for an input file
  * @version 1.2 cyago - 16/08/2023 - Keeping data from previous simulation
+ * @version 1.3 cyago - 23/05/2024 - PSA
  */
 public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 
@@ -63,6 +64,16 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 */
 	private JTextField numSimulationsTextField;
 
+	/**
+	 * JCheckBox for PSA; when checked, the series are the number of simulations for the PSA
+	 */
+	private JCheckBox psaCheckBox;
+
+//	/**
+//	 * JCheckBox for PSA; when checked, the series are the number of simulations for the PSA
+//	 */
+//	private JLabel psaLabel;
+//
 	/**
 	 * Panel for log options
 	 */
@@ -144,6 +155,7 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		numSeriesPanel.add(getJLabelNumSeries());
 		numSeriesPanel.add(getNumSeriesTextField());
 		JPanel numSimulationsPanel = new JPanel();
+		numSimulationsPanel.add(getPsaCheckBox());
 		numSimulationsPanel.add(getJLabelNumSimulations());
 		numSimulationsPanel.add(getNumSimulationsTextField());
 		JPanel firstLinePanel = new JPanel();
@@ -151,6 +163,13 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		firstLinePanel.add(numSimulationsPanel,BorderLayout.WEST);
 		firstLinePanel.add(numSeriesPanel,BorderLayout.EAST);
 		this.add(firstLinePanel);
+
+		JPanel psaPanel = new JPanel();
+		psaPanel.setBorder(new TitledBorder("Probabilistic Sensitivity Analysis (PSA)"));
+		psaPanel.add(getPsaCheckBox());
+		this.add(psaPanel);
+
+
 		this.add(Box.createRigidArea(new Dimension()));
 		this.add(getDesNetLogOptionsPanel());
 		this.add(Box.createRigidArea(new Dimension(0,10)));
@@ -170,6 +189,8 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		this.monteCarloOptions.setNumSimulations(Integer.parseInt(numSimulationsTextField.getText()));
 		this.monteCarloOptions.setResultsToExcel(resultsPerSeriesCheckBox.isSelected());
 		this.monteCarloOptions.setTextualLog(textualLogCheckBox.isSelected());
+		//23/05/ PSA
+		this.monteCarloOptions.setPSA(psaCheckBox.isSelected());
 		this.monteCarloOptions.setMean(meanCheckBox.isSelected());
 		this.monteCarloOptions.setTrimmedMean(trimmedMeanCheckBox.isSelected());
 		this.monteCarloOptions.setMedian(medianCheckBox.isSelected());
@@ -188,7 +209,7 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	private JLabel getJLabelNumSimulations() {
 		if (numSimulationsLabel == null) {
 			//TODO use stringDatabase
-			numSimulationsLabel = new JLabel("Number of simulations");
+			numSimulationsLabel = new JLabel("Number of individuals");
 		}
 		return numSimulationsLabel;
 
@@ -212,6 +233,13 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 
 
 	/**
+	 * This method returns the JTextField for number of simulations
+	 * @return the JTextField for number of simulations
+	 */
+
+
+
+	/**
 	 * This method returns the JLabel for number of series
 	 * @return the label for number of series
 	 */
@@ -223,6 +251,28 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		return numSeriesLabel;
 
 	}
+
+
+	private JCheckBox getPsaCheckBox() {
+
+		if (psaCheckBox == null) {
+			psaCheckBox = new JCheckBox("Perfom PSA");
+			psaCheckBox.setEnabled(false);
+			psaCheckBox.setSelected(monteCarloOptions.isPsa());
+//			psaCheckBox.setSelected(true);
+
+		}
+		return psaCheckBox;
+	}
+
+//	private JLabel getPsaLabel(){
+//		if (psaLabel == null) {
+//			//TODO use stringDatabase
+//			psaLabel = new JLabel("Perform PSA");
+//		}
+//		return psaLabel;
+//	}
+//
 
 	/**
 	 * This method returns the JTextField for number of series

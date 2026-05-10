@@ -71,16 +71,16 @@ public class ICIOptionsPanelTest {
 
 		ArrayList<Variable> aVariables;
 		ArrayList<Variable> abVariables;
-		//CMI Now the list is U, A, D
+		// Now the list is U, A, D
 		//ArrayList<Variable> adVariables;
 		ArrayList<Variable> uadVariables;
-		//CMF
+		//
 		TablePotential pA;
 		TablePotential pBA;
-		// CMI-->Now it is ExactDistrPotential
+		// -->Now it is ExactDistrPotential
 		// TablePotential pU;
 		ExactDistrPotential pU;
-		// CMF
+		// 
 		ProbNet simpleProbNet;
 
 		// create simpleProbNet
@@ -96,7 +96,7 @@ public class ICIOptionsPanelTest {
 		abVariables = new ArrayList<Variable>(2);
 		abVariables.add(B);
 		abVariables.add(A);
-		//CMI Filling the list for the node U
+		// Filling the list for the node U
 		/*
 		adVariables = new ArrayList<Variable>(2);
 		adVariables.add(A);
@@ -106,7 +106,7 @@ public class ICIOptionsPanelTest {
 		uadVariables.add(U);
 		uadVariables.add(A);
 		uadVariables.add(D);
-		//CMF
+		//
 		// create potentials
 		pA = new TablePotential(aVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		pA.values[0] = 0.9;
@@ -116,7 +116,7 @@ public class ICIOptionsPanelTest {
 		pBA.values[1] = 0.8;
 		pBA.values[2] = 0.9;
 		pBA.values[3] = 0.1;
-		//CMI Creating the ExactDistrPotential for Utility nodes
+		// Creating the ExactDistrPotential for Utility nodes
 		/*
 		pU = new TablePotential(adVariables, 
 				PotentialRole.CONDITIONAL_PROBABILITY);
@@ -124,8 +124,8 @@ public class ICIOptionsPanelTest {
 		*/
 
 		pU = new ExactDistrPotential(uadVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-		//CMF
-		//CMI adding values to pU.getTablePotential
+		//
+		// adding values to pU.getTablePotential
 		/*
 		pU.values[0] = 1;
 		pU.values[1] = 2;
@@ -136,7 +136,7 @@ public class ICIOptionsPanelTest {
 		pU.getTablePotential().values[1] = 2;
 		pU.getTablePotential().values[2] = 3;
 		pU.getTablePotential().values[3] = 4;
-		//CMF
+		//
 		simpleProbNet = new ProbNet();
 		simpleProbNet.addConstraint(new NoCycle(), true);
 		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);

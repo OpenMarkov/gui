@@ -569,7 +569,7 @@ public class TableWithEventsPanel
 	 * @param stateIndices - indexes of the states
 	 * @return an array containing the row at the first position and the column
 	 * at the second position.
-	 * revised--> only changed the code between CMI, CMF
+	 * revised--> only changed the code between , 
 	 */
 	protected int[] getRowAndColumnForStateCombination(int[] stateIndices, TablePotential potential) {
 		int numStates = node.getVariable().getNumStates();

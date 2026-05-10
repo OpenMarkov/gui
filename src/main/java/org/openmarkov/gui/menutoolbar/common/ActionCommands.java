@@ -195,14 +195,14 @@ public class ActionCommands {
 	public static final String CHANGE_WORKING_MODE = "ChangeWorkingMode";
 
 
-	//CMI 21/08/2019
+	// 21/08/2019
 	/**
 	 * Action invoked when the user wants to change the working mode by
 	 * pressing the button in the standard tool bar
 	 * (switching from Edition to Inference mode or vice versa).
 	 */
 	public static final String MC_SIMULATE_NETWORK = "MCSimulateNetwork";
-	//CMF
+	//
 
 
 
@@ -499,7 +499,7 @@ public class ActionCommands {
 	 */
 	public static final String UNCERTAINTY_REMOVE = "Uncertainty.Remove";
 
-	//CMI 25/08/2019 impossible configuration; 14/12/2019 add function for a Table With Events
+	// 25/08/2019 impossible configuration; 14/12/2019 add function for a Table With Events
 	/*
 	* Action invoked when the user wants to establish a configuration as impossible in a TTE potential
 	 */
@@ -514,7 +514,7 @@ public class ActionCommands {
 	 * Action invoked when the user wants add a function in a Table With Events
 	 */
 	public static final String ADD_FUNCTION = "AddFunction";
-	//CMF
+	//
 
 
 	/**

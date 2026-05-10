@@ -154,10 +154,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
 		setOptionEnabled(ActionCommands.SELECT_ALL, false);
 		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, false);
-		//CMI 21/08/2019 Simulate button  -- 07/01/2022 changed for disabling DESnet menu options
+		// 21/08/2019 Simulate button  -- 07/01/2022 changed for disabling DESnet menu options
 //		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, false);
 		disableMenuOptionsforDESnets();
-		//CMF
+		//
 		setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
 		setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
 
@@ -201,7 +201,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	 * Disables the menu items and toolbar buttons when any network is opened.
 	 */
 	public void updateOptionsNewNetworkOpen() {
-		//CMI For DESnets
+		// For DESnets
 		if (currentNetworkPanel.getProbNet().getNetworkType() instanceof DESNetworkType){
 			updateOptionsAllNetworkClosed();
 			enableMenuOptionsforDESnets();
@@ -209,7 +209,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		} else{
 			disableMenuOptionsforDESnets();
 		}
-		//CMF
+		//
 		int workingMode = NetworkPanel.EDITION_WORKING_MODE;
 		if (!(currentNetworkPanel == null)) {
 			workingMode = currentNetworkPanel.getWorkingMode();
@@ -227,9 +227,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(VIEWING_ACTION_COMMANDS, true);
 		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
 
-		// CMI 21/08/2019 - simulating button -- 07/01/2022 commented. Changed for setting the complete options for DESnets
+		//  21/08/2019 - simulating button -- 07/01/2022 commented. Changed for setting the complete options for DESnets
 //		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, enableSimulationButton());
-		// CMF
+		// 
 		setOptionEnabled(ActionCommands.PROPAGATION_OPTIONS, true);
 
 		checkInferenceOptions();
@@ -264,7 +264,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 				;
 	}
 
-	//CMI 21/08/2019 -- 07/01/2022 - commented enableSimulationButton and added method to enable/disable DESnets Options
+	// 21/08/2019 -- 07/01/2022 - commented enableSimulationButton and added method to enable/disable DESnets Options
 
 //	/**
 //	 * This method is used to enabling/disabling the simulation button according to the network loaded
@@ -298,7 +298,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.EVENT_CREATION, false);
 		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, false);
 	}
-	//CMF
+	//
 
 
 
@@ -350,17 +350,17 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	public void updateOptionsNetworkModified(boolean canUndo, boolean canRedo) {
 		// updateUndoRedo(undoManager);
 		// changed by mpalacios
-		//CMI 10/01/2023 setting options for DESnets FIXME provisional
+		// 10/01/2023 setting options for DESnets FIXME provisional
 		if (!(currentNetworkPanel.getProbNet().getNetworkType() instanceof DESNetworkType)) {
-		//CMF
+		//
 			updateInferenceButtons();
 			checkInferenceOptions();
 			updateUndoRedo(canUndo, canRedo);
-		//CMI 10/01/2023 setting options for DESnets
+		// 10/01/2023 setting options for DESnets
 		} else{
 			enableMenuOptionsforDESnets();
 		}
-		//CMF
+		//
 		// If the network has been opened from a URL the save button has to remain disabled
 		setOptionEnabled(ActionCommands.SAVE_NETWORK, !networkOpenedURL);
 
@@ -515,14 +515,14 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		checkInferenceOptions();
 
 
-		//CMI 10/01/2023 - provisional options in toolbar
+		// 10/01/2023 - provisional options in toolbar
  		if (currentProbNet.getNetworkType() instanceof DESNetworkType){
 			updateOptionsAllNetworkClosed();
 			enableMenuOptionsforDESnets();
 		} else{
 			disableMenuOptionsforDESnets();
 		}
-		//CMF
+		//
 	}
 
 	/**

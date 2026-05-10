@@ -61,12 +61,12 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	 * Button to switch to Inference mode.
 	 */
 	private JToggleButton workingModeButton = null;
-	//CMI 25/08/2019
+	// 25/08/2019
 	/**
 	 * Button perform a Monte Carlo simulation. Currently only it works with DESNet
 	 */
 	private JToggleButton monteCarloSimulationButton = null;
-	//CMF
+	//
 
     //
 	/**
@@ -114,9 +114,9 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		add(getZoomComboBox());
 		add(getZoomInButton());
 		addSeparator();
-		//CMI 21/08/2019
+		// 21/08/2019
 		add(getWorkingModeButton());
-		//CMF
+		//
 		add(getMonteCarloSimulationButton());
 		add(getShowOptimalStrategyButton());
 		add(getDecisionTreeButton());
@@ -279,7 +279,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 
 
 
-	//CMI 21/08/2019
+	// 21/08/2019
 	/**
 	 * This method initialises simulateDESNetBUtton.
 	 *
@@ -298,7 +298,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		}
 		return monteCarloSimulationButton;
 	}
-	//CMF
+	//
 	
 	
 	
@@ -395,7 +395,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		workingModeButton.setSelected(workingMode == NetworkPanel.INFERENCE_WORKING_MODE);
 	}
 
-	//CMI 2019/09/09
+	// 2019/09/09
 	/**
 	 * Select/unselect MonteCarloButon
 	 * @param select - true if moteCarloButton will be selected0
@@ -405,7 +405,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	}
 
 
-	//CMF
+	//
 
 
 
@@ -439,11 +439,11 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 			case ActionCommands.CHANGE_WORKING_MODE:
 				component = workingModeButton;
 				break;
-			//	CMI 21/08/2019
+			//	 21/08/2019
 			case ActionCommands.MC_SIMULATE_NETWORK:
 				component = monteCarloSimulationButton;
 				break;
-			// CMF
+			// 
 			case ActionCommands.DECISION_TREE:
 				component = decisionTreeButton;
 				break;

@@ -203,10 +203,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			activateEditionMode(actionCommand);
 		} else if (actionCommand.equals(ActionCommands.CHANGE_WORKING_MODE)) {
 			setNewWorkingMode();
-		//CMI 21/08/2019
+		// 21/08/2019
 		} else if (actionCommand.equals(ActionCommands.MC_SIMULATE_NETWORK)) {
 			monteCarloSimulation();
-		//CMF
+		//
 		} else if (actionCommand.equals(ActionCommands.CHANGE_TO_INFERENCE_MODE)) {
 			setNewWorkingMode();
 		} else if (actionCommand.equals(ActionCommands.CHANGE_TO_EDITION_MODE)) {
@@ -241,10 +241,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			getCurrentNetworkPanel().editNodePolicy();
 		} else if (actionCommand.equals(ActionCommands.DECISION_REMOVE_POLICY)) {
 			getCurrentNetworkPanel().removePolicyFromNode();
-			//CMI 08/10/2020 - used the same method for changing probabilities
+			// 08/10/2020 - used the same method for changing probabilities
 		} else if (actionCommand.equals(ActionCommands.EVENT_EDIT_TIME_TO_EVENT)) {
 			getCurrentNetworkPanel().changePotential();
-			//CMF
+			//
 		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY)) {
 			getCurrentNetworkPanel().showExpectedUtilityOfNode();
 		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY)) {
@@ -558,7 +558,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 					.getProbNet() instanceof OOPNet) {
 				((OOPNet) networkPanel.getProbNet()).fillClassList();
 			}
-			//CMI
+			//
 /*
             NetsIO.saveNetworkFile(networkPanel.getProbNet(),
                     networkPanel.getEditorPanel().getEvidence(),
@@ -567,13 +567,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidence(), fileName,
 					fileFormat);
 
-			//CMF
+			//
 			// networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
 			networkPanel.setModified(false);
 			networkPanel.setNetworkFile(fileName);
-			//CMI
+			//
 			networkPanel.setNetworkFileFormat(fileFormat);
-			//CMF
+			//
 			mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
 			lastOpenFiles.setLastFileName(fileName);
 			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
@@ -693,7 +693,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 */
 	private boolean saveNetworkAs(NetworkPanel networkPanel) {
 		String fileName = networkPanel.getNetworkFile();
-		//CMI
+		//
         /*
         fileName = requestNetworkFileToSave((fileName != null) ? fileName
                 : networkPanel.getProbNet().getName());
@@ -703,7 +703,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				(fileName != null) ? fileName : networkPanel.getProbNet().getName());
 		fileName = fileNameAndFormat.get(0);
 		fileFormat = fileNameAndFormat.get(1);
-		//CMF
+		//
 		SaveOptions saveOptions = null;
 		if (fileName != null) {
 			networkPanel.setNetworkFile(fileName);
@@ -717,15 +717,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				saveOptions.setVisible(true);
 			}
 		}
-		//CMI
+		//
         /*
         return (fileName != null) ? saveNetworkActions(networkPanel, fileName, saveOptions) : false;
         */
 		return (fileName != null) ? saveNetworkActions(networkPanel, fileName, fileFormat, saveOptions) : false;
-		//CMF
+		//
 	}
 
-	//CMI
+	//
 
 	/**
 	 * It asks the user to choose a file by means of a save-file dialog box.
@@ -748,7 +748,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 		return filename;
 	}
-	//CMF
+	//
 
 	/**
 	 * @param suggestedFileName
@@ -1378,7 +1378,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		mainPanel.adaptToolBarSize();
 	}
 
-	//CMI 21/08/2019 22/04/2021 DESInference
+	// 21/08/2019 22/04/2021 DESInference
 	/**
 	 * This method performs N Monte Carlo simulations
 	 *
@@ -1403,7 +1403,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
 					try {
 						new DESInference(probNet, simulationProgressMonitor);
 					//26/08/2023 added IOException, InvalidStateException for data files
-					} catch (NotEvaluableNetworkException | IOException | InvalidStateException e) {
+//					} catch (NotEvaluableNetworkException | IOException | InvalidStateException e) {
+					} catch (Exception e) {
 						//FIXME - change behaviour?
 						e.printStackTrace();
 						throw new RuntimeException(e);
@@ -1411,7 +1412,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				}).start();
 		}
 	}
-    //CMF
+    //
 
 
 

@@ -29,13 +29,7 @@ import org.openmarkov.gui.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
+import javax.swing.table.*;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoableEdit;
 import java.awt.*;
@@ -553,7 +547,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		if (showingAllParameters) {
 			// I suppose variable is != null and has a name
 
-			//CMI Bug #280
+			// Bug #280
 			/*
 			 * The commented code creates a RowFilter that filters the rows containing the name of the variable.
 			 * Is it necessary in some case?
@@ -598,7 +592,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 			//                this.setRowSorter (null);
 			//         }
 			this.setRowSorter(null);
-			//CMF
+			//
 		} else {
 			int lastRow = getModel().getRowCount() - 1 - 1;
 			lastRow = (lastRow < 0 ? 0 : lastRow);

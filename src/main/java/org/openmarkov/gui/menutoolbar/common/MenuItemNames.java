@@ -520,7 +520,7 @@ public class MenuItemNames {
 
 	public static final String EDIT_LOG_MENUITEM = EDIT_MENU + ".Log";
 
-	//CMI 26/08/2019 Contextual Menu Item for setting in the TTE potential impossible configurations
+	// 26/08/2019 Contextual Menu Item for setting in the TTE potential impossible configurations
 	// 14/12/2019 Added contextual menu item for adding a function to a TableWithEvents
 	/**
 	 * String database token for the TTE contextual menu item Set impossible configuration.
@@ -537,7 +537,7 @@ public class MenuItemNames {
 	 */
 	public static final String ADD_FUNCTION = "AddFunction";
 
-	//CMF
+	//
 
 	/**
 	 * String database token for the item 'Impose Policy' in decision node's contextual menu

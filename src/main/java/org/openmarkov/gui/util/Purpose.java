@@ -33,14 +33,14 @@ public class Purpose {
 	 * This method adds all the purposes.
 	 */
 	private static void fillList() {
-	//CMI 26/01/2020 Types of purposes moved to org.openmarkov.core.network
+	// 26/01/2020 Types of purposes moved to org.openmarkov.core.network
 		//		if (list == null) {
 //			list = new ArrayList<String>();
 //			list.add("");
-//			//CMI 03/2019, 25/01/2020
+//			// 03/2019, 25/01/2020
 //			list.add("terminalEvent");
 //			list.add("initialEvent");
-//			//CMF
+//			//
 //			list.add("cost");
 //			list.add("effectiveness");
 //			list.add("treatment");
@@ -54,7 +54,7 @@ public class Purpose {
 //		}
 		list = PurposeType.purposeList();
 		list.add(0,"");
-	//CMF
+	//
 	}
 
 	/**
