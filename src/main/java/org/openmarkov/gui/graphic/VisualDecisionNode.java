@@ -9,7 +9,6 @@ package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
@@ -24,12 +23,7 @@ import java.awt.geom.Rectangle2D;
  * @version 1.2 asaez - add expanded representation
  */
 public class VisualDecisionNode extends VisualNode{
-    
-    /**
-	 * This attribute indicates if the node has an imposed policy
-	 */
-	private boolean hasPolicy = false;
-
+	
 	private Object oldValue = new Object();
 
 	/**
@@ -41,14 +35,10 @@ public class VisualDecisionNode extends VisualNode{
 	public VisualDecisionNode(Node node, VisualNetwork visualNetwork) {
 		super(node, visualNetwork);
 		expanded = false;
-		if (node.getPolicyType() != PolicyType.OPTIMAL) {
-			hasPolicy = true;
-		}
 		preResolutionFinding = false;
 		postResolutionFinding = false;
 		setTemporalPosition(new Point2D.Double(node.getCoordinateX(), node.getCoordinateY()));
 		innerBox = new FSVariableBox(this);
-        setHasPolicy(!node.getPotentials().isEmpty());
 	}
 
 	/**
@@ -57,18 +47,9 @@ public class VisualDecisionNode extends VisualNode{
 	 * @return true if the node has imposed policy; false otherwise.
 	 */
 	public boolean isHasPolicy() {
-		return hasPolicy;
+		return !node.getPotentials().isEmpty();
 	}
-
-	/**
-	 * Sets if the node has an imposed policy or not.
-	 *
-	 * @param hasPolicy new value for the hasPolicy attribute.
-	 */
-	private void setHasPolicy(boolean hasPolicy) {
-		this.hasPolicy = hasPolicy;
-	}
-
+	
 	/**
 	 * Returns the X-coordinate of the upper-left corner of the visual node.
 	 *
@@ -195,7 +176,7 @@ public class VisualDecisionNode extends VisualNode{
         } else if (postResolutionFinding && (visualNetwork.getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE)) {
             g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_POST_RESOLUTION_FINDING.getColor());
 		} else {
-			if (hasPolicy) {
+			if (this.isHasPolicy()) {
                 g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_POLICY.getColor());
 			} else {
                 g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND.getColor());
@@ -231,7 +212,6 @@ public class VisualDecisionNode extends VisualNode{
      */
     public void setPolicy(Potential policy){
         node.setPotential(policy);
-        setHasPolicy(true);
     }
 
     /**
@@ -239,7 +219,6 @@ public class VisualDecisionNode extends VisualNode{
      */
     public void removePolicy(){
         node.clearPotentials();
-        setHasPolicy(false);
     }
 
 

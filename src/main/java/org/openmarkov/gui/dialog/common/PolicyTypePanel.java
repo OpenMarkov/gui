@@ -172,7 +172,7 @@ import java.awt.event.ItemListener;
             // optionDeselected = comboBox.getSelectedIndex();
             previousPolicy = PolicyType.OPTIMAL;
         } else if (e.getStateChange() == ItemEvent.SELECTED) {
-            parent.setEnabledPotentialTypeCombobox(true);
+            parent.getPotentialEditPanel().setEnabledPotentialTypeCombobox(true);
             if (previousPolicy == PolicyType.PROBABILISTIC) {
                 RemovePolicyEdit removePolicyEdit = new RemovePolicyEdit(node);
                 ProbNet probNet = node.getProbNet();
@@ -187,7 +187,7 @@ import java.awt.event.ItemListener;
             // optionDeselected = comboBox.getSelectedIndex();
             previousPolicy = PolicyType.PROBABILISTIC;
         } else if (e.getStateChange() == ItemEvent.SELECTED) {
-            parent.setEnabledPotentialTypeCombobox(true);
+            parent.getPotentialEditPanel().setEnabledPotentialTypeCombobox(true);
             if (previousPolicy == PolicyType.OPTIMAL) {
                 SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node
                 );

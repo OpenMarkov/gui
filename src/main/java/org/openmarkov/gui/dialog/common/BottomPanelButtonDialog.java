@@ -74,6 +74,15 @@ public class BottomPanelButtonDialog extends DialogBase {
         this.buttonsPanel.add(button);
     }
     
+    protected final void addButtonToButtonsPanel(JButton button, int index) {
+        this.buttonsPanel.remove(button);
+        this.buttonsPanel.add(button, index);
+    }
+    
+    protected final void removeButtonFromButtonsPanel(JButton button) {
+        this.buttonsPanel.remove(button);
+    }
+    
     @Override public void setCancelButton(JButton cancelButton) {
         JButton oldCancelButton = getCancelButton();
         super.setCancelButton(cancelButton);

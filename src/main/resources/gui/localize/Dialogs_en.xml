@@ -395,6 +395,22 @@
         <DiscreteValuesTab>
             <Title value="Domain"/>
         </DiscreteValuesTab>
+        <EditPotentialTab>
+            <EditPotentialTitle value="Edit probability"/>
+            <ImposePolicyTitle value="Impose policy"/>
+            <EditPolicyTitle value="Edit policy"/>
+            <Goal>
+                <Probability value="Probability"/>
+                <Policy value="Policy"/>
+            </Goal>
+            <Action>
+                <View value="View"/>
+                <Impose value="Impose"/>
+                <Edit value="Edit"/>
+                <Reset value="Reset"/>
+                <Remove value="Remove"/>
+            </Action>
+        </EditPotentialTab>
         <OtherPropsTab>
             <Title value="Other properties"/>
         </OtherPropsTab>

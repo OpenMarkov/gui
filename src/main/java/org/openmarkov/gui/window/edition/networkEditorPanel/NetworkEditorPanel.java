@@ -121,7 +121,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     /**
      * Object that assists this panel in the operations with the clipboard.
      */
-    private final EditorPanelClipboardAssistant clipboardAssistant;
+    private static final EditorPanelClipboardAssistant CLIPBOARD_ASSISTANT = new EditorPanelClipboardAssistant();
     
     private final EditionModeManager editionModeManager;
     
@@ -136,7 +136,6 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         this.onModificationListener = new ArrayList<>();
         probNet.getPNESupport().addListener(this);
         this.zoomManager = new ZoomManager();
-        this.clipboardAssistant = new EditorPanelClipboardAssistant();
         this.visualNetwork = new VisualNetwork(probNet, this);
         this.evidenceManager = new EvidenceManager(this);
         this.visualNetwork.getProbNet().getPNESupport().addListener(new PNEditEventHandler(this));
@@ -340,7 +339,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * @return the result
      */
     boolean changeNodeProperties(VisualNode selectedNode, boolean newNode) throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
-        boolean userAcceptedChanges = NetworkEditorPanel.requestNodePropertiesToUser2(GUIUtils.getOwner(this), selectedNode.getNode(), newNode);
+        boolean userAcceptedChanges = NetworkEditorPanel.requestNodePropertiesToUser2(GUIUtils.getOwner(this), this, selectedNode, newNode);
         if (userAcceptedChanges) {
             this.adjustPanelDimension();
             selectedNode.update(this.evidenceManager.getPostResolutionEvidence().size());
@@ -370,16 +369,17 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     /**
      * This method requests to the user the additionalProperties of a node.
      *
-     * @param owner   owner window that shows the dialog box.
-     * @param node    object that contains the additionalProperties of the node
-     *                and where changes will be saved.
-     * @param newNode specifies if the node whose additionalProperties are going
-     *                to be edited is new.
+     * @param owner              owner window that shows the dialog box.
+     * @param networkEditorPanel
+     * @param node               object that contains the additionalProperties of the node
+     *                           and where changes will be saved.
+     * @param newNode            specifies if the node whose additionalProperties are going
+     *                           to be edited is new.
      *
      * @return true, if the user save the changes on node; otherwise, false.
      */
-    private static boolean requestNodePropertiesToUser2(Window owner, Node node, boolean newNode) {
-        NodePropertiesDialog nodePropertiesDialog = new CommonNodePropertiesDialog(owner, node, newNode);
+    private static boolean requestNodePropertiesToUser2(Window owner, NetworkEditorPanel networkEditorPanel, VisualNode node, boolean newNode) {
+        NodePropertiesDialog nodePropertiesDialog = new NodePropertiesDialog(owner, networkEditorPanel, node, newNode, networkEditorPanel.workingMode != WorkingMode.EDITION);
         if (owner instanceof MainGUI gui) {
             gui.freeze();
         }
@@ -426,7 +426,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     public void changeNetworkProperties() {
         // TODO be careful with local pNESupport and extern pNESupport
         Window owner = GUIUtils.getOwner(this);
-        NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(owner, this.visualNetwork.getProbNet());
+        NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(owner, this.visualNetwork.getProbNet(), this.workingMode != WorkingMode.EDITION);
         dialogProperties.showProperties();
     }
     
@@ -451,7 +451,6 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         if (selectedNode.size() == 1) {
             VisualDecisionNode visualNode = (VisualDecisionNode) selectedNode.getFirst();
             if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
-                // TODO manage other kind of policy types from the interface
                 NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
             }
         }
@@ -480,7 +479,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     }
     
     private static void requestImposePolicyValues(Window owner, VisualDecisionNode visualNode) {
-        PotentialEditDialog imposePolicyDialog = new ImposePolicyDialog(owner, visualNode);
+        PotentialEditDialog imposePolicyDialog = new ImposePolicyDialog(owner, false, visualNode);
         imposePolicyDialog.setTitle("ImposePolicydialog.Title");
         imposePolicyDialog.requestValues();
     }
@@ -694,6 +693,9 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         }
     }
     
+    private static final int EXTRA_PIXELS_SPACE_ON_RIGHT_SIDE = 300;
+    private static final int EXTRA_PIXELS_SPACE_ON_BOTTOM_SIDE = 140;
+    
     /**
      * If the dimensions of the network are greater than the dimensions of the
      * panel, changes the dimensions of the panel in order to accommodate the
@@ -703,7 +705,11 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         double[] bounds = this.visualNetwork.getNetworkBounds((Graphics2D) this.getGraphics());
         this.currentWidth = Math.min(NetworkEditorPanel.MAX_WIDTH, bounds[1]);
         this.currentHeight = Math.min(NetworkEditorPanel.MAX_HEIGHT, bounds[3]);
-        Dimension newDimension = new Dimension((int) Math.round(this.getNewWidth()), (int) Math.round(this.getNewHeight()));
+        Dimension newDimension = new Dimension(
+                (int) Math.round(this.getNewWidth()) + NetworkEditorPanel.EXTRA_PIXELS_SPACE_ON_RIGHT_SIDE,
+                (int) Math.round(this.getNewHeight()) + NetworkEditorPanel.EXTRA_PIXELS_SPACE_ON_BOTTOM_SIDE
+        );
+        
         this.setPreferredSize(newDimension);
         this.setSize(newDimension);
     }
@@ -940,12 +946,12 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * @param cut if true, the nodes copied to the clipboard are also removed.
      */
     public void exportToClipboard(boolean cut) {
-        this.getVisualNetwork().exportToClipboard(cut, this.clipboardAssistant);
+        this.getVisualNetwork().exportToClipboard(cut, NetworkEditorPanel.CLIPBOARD_ASSISTANT);
     }
     
     
     public EditorPanelClipboardAssistant getClipboardAssistant() {
-        return this.clipboardAssistant;
+        return NetworkEditorPanel.CLIPBOARD_ASSISTANT;
     }
     
     /**
@@ -953,10 +959,10 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * network.
      */
     public void pasteFromClipboard(Point2D.Double centerNodesTo) throws DoEditException {
-        if (!this.clipboardAssistant.isThereDataStored()) {
+        if (!NetworkEditorPanel.CLIPBOARD_ASSISTANT.isThereDataStored() || this.getWorkingMode() != WorkingMode.EDITION) {
             return;
         }
-        new PasteEdit(this.getProbNet(), this.clipboardAssistant.paste(), centerNodesTo).executeEdit();
+        new PasteEdit(this.getProbNet(), NetworkEditorPanel.CLIPBOARD_ASSISTANT.paste(), centerNodesTo).executeEdit();
     }
     
     public boolean hasPasteContents() {
@@ -969,7 +975,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * @return true if there is data stored in the clipboard; otherwise, false.
      */
     public boolean isThereDataStored() {
-        return this.clipboardAssistant.isThereDataStored();
+        return NetworkEditorPanel.CLIPBOARD_ASSISTANT.isThereDataStored();
     }
     
     /**

@@ -129,4 +129,16 @@ public class ComponentUtilities {
         }
     }
     
+    public static void removeInputsFor(Component component) {
+        component.setEnabled(false);
+        while (component.getMouseListeners().length > 0) {
+            component.removeMouseListener(component.getMouseListeners()[0]);
+        }
+        while (component.getFocusListeners().length > 0) {
+            component.removeFocusListener(component.getFocusListeners()[0]);
+        }
+        while (component.getKeyListeners().length > 0) {
+            component.removeKeyListener(component.getKeyListeners()[0]);
+        }
+    }
 }

@@ -8,6 +8,7 @@
 package org.openmarkov.gui.action;
 
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.MultiStepEdit;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
@@ -22,7 +23,6 @@ import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.gui.window.edition.SelectedContent;
 
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 
@@ -148,6 +148,18 @@ public class PasteEdit extends MultiStepEdit {
             }
         };
         stepExecuter.execute(finalizer);
+        PNEdit verifier = new PNEdit(probNet) {
+            
+            @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
+                probNet.checkConstraintsIn(constraintChecker);
+            }
+            
+            @Override protected void doEdit() {
+            
+            }
+        };
+        stepExecuter.execute(verifier);
+        
     }
     
     

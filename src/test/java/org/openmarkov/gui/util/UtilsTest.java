@@ -16,7 +16,7 @@ import org.openmarkov.core.model.network.Util;
 
 
 /**
- * This class tests the CommonNodePropertiesDialog class (not the visual
+ * This class tests the NodePropertiesDialog class (not the visual
  * behaviour).
  *
  * @author jlgozalo

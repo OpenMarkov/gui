@@ -12,6 +12,7 @@ import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.PropertyNames;
+import org.openmarkov.java.swing.ComponentUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,24 +73,13 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
     /**
      * This method initialises this instance.
      *
-     * @param owner window that owns the dialog.
-     */
-    public NetworkPropertiesDialog(Window owner) {
-        super(owner);
-        newNetwork = true;
-        initialize();
-        setName("NetworkPropertiesDialog");
-        setLocationRelativeTo(owner);
-    }
-    
-    /**
-     * This method initialises this instance.
-     *
      * @param owner   window that owns the dialog.
      * @param probNet network
+     * @param readOnly
      */
-    public NetworkPropertiesDialog(Window owner, ProbNet probNet) {
+    public NetworkPropertiesDialog(Window owner, ProbNet probNet, boolean readOnly) {
         super(owner);
+        newNetwork = probNet == null;
         if (probNet != null) {
             probNet.getPNESupport().setWithUndo(true);
             probNet.getPNESupport().openNewSubEditHistory();
@@ -99,7 +89,16 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
             setName("NetworkPropertiesDialog");
             setLocationRelativeTo(owner);
         }
-        // SsetOnlineHelp("Network Properties Dialog");
+        initialize();
+        this.readOnly = readOnly;
+        if (this.readOnly) {
+            for (var tab : this.getTabbedPane().getComponents()) {
+                ComponentUtilities.findComponents(tab, Component.class, ignored -> true)
+                                  .forEach(ComponentUtilities::removeInputsFor);
+            }
+        }
+        setName("NetworkPropertiesDialog");
+        setLocationRelativeTo(owner);
     }
     
     /**
@@ -295,4 +294,5 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
         getNetworkTemporalOptionsPanel().update(probNet);
     }
     
+    private final boolean readOnly;
 }
