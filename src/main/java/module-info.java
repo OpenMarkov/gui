@@ -13,7 +13,6 @@ open module org.openmarkov.gui {
     requires org.jfree.jfreechart;
     requires com.google.gson;
     requires org.slf4j;
-    requires org.slf4j.nop;
     
     //requires com.hexidec.ekit;
     requires org.openmarkov.annotation_processing;
