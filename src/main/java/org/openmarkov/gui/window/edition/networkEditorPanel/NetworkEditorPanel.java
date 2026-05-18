@@ -249,7 +249,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         this.visualNetwork.setSelectedAllObjects(true);
         this.repaint();
     }
-
+    
     /**
      * Re-positions every node of the current network using stress-
      * majorization with a directional bias that keeps parents above
@@ -321,11 +321,11 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     
     
     public Node getSelectedNode() {
-        List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
-        if (selectedNodes.size() != 1) { // This never happens
+        VisualNode selectedNode = this.visualNetwork.getLastSelectedNode();
+        if (selectedNode == null) { // This never happens
             throw new UnreachableException(new NoSelectedNodeException(this.visualNetwork));
         }
-        return selectedNodes.getFirst().getNode();
+        return selectedNode.getNode();
     }
     
     /**
@@ -334,7 +334,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * undo manager.
      *
      * @param selectedNode the selected node
-     * @param newNode the new node
+     * @param newNode      the new node
      *
      * @return the result
      */
@@ -350,15 +350,15 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     }
     
     public void changeNodeProperties() throws NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException {
-        List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
-        if (selectedNodes.size() == 1) {
-            this.changeNodeProperties(selectedNodes.getFirst(), false);
+        var selectedNode = this.visualNetwork.getLastSelectedNode();
+        if (selectedNode == null) {
+            return;
         }
+        this.changeNodeProperties(selectedNode, false);
     }
     
     public void showPotentialDialog(boolean readOnly) throws IncompatibleEvidenceException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, ConstraintViolatedException, CannotNormalizePotentialException {
-        List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
-        Node node = selectedNodes.getFirst().getNode();
+        Node node = this.visualNetwork.getLastSelectedNode().getNode();
         if (this.requestPotentialValues(GUIUtils.getOwner(this), node, readOnly)) {
             // if the user has selected the ok button when closing the dialog
             readjustAndRepaint();
@@ -434,11 +434,8 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * This method imposes a policy in a decision node.
      */
     public void imposePolicyInNode() {
-        List<VisualNode> selectedNode = this.visualNetwork.getSelectedNodes();
-        if (selectedNode.size() == 1) {
-            VisualDecisionNode visualNode = (VisualDecisionNode) selectedNode.getFirst();
-            NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
-        }
+        VisualDecisionNode visualNode = (VisualDecisionNode) this.visualNetwork.getLastSelectedNode();
+        NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
         this.visualNetwork.setSelectedAllNodes(false);
         this.repaint();
     }
@@ -447,13 +444,8 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * This method edits an imposed policy of a decision node.
      */
     public void editNodePolicy() {
-        List<VisualNode> selectedNode = this.visualNetwork.getSelectedNodes();
-        if (selectedNode.size() == 1) {
-            VisualDecisionNode visualNode = (VisualDecisionNode) selectedNode.getFirst();
-            if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
-                NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
-            }
-        }
+        VisualDecisionNode visualNode = (VisualDecisionNode) this.visualNetwork.getLastSelectedNode();
+        NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
         this.visualNetwork.setSelectedAllNodes(false);
         this.repaint();
     }
@@ -462,16 +454,11 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * This method removes an imposed policy from a decision node.
      */
     public void removePolicyFromNode() throws DoEditException {
-        List<VisualNode> selectedNode = this.visualNetwork.getSelectedNodes();
-        if (selectedNode.size() == 1) {
-            VisualNode visualNode = selectedNode.getFirst();
-            if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
-                try {
-                    new RemovePolicyEdit(visualNode.getNode()).executeEdit();
-                } catch (ConstraintViolatedException e) {
-                    throw new UnreachableException(e);
-                }
-            }
+        VisualNode visualNode = this.visualNetwork.getLastSelectedNode();
+        try {
+            new RemovePolicyEdit(visualNode.getNode()).executeEdit();
+        } catch (ConstraintViolatedException e) {
+            throw new UnreachableException(e);
         }
         //setNetworkChangedWithOutEdit(true);
         this.visualNetwork.setSelectedAllNodes(false);
@@ -489,19 +476,16 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * This method shows the expected utility of a decision node.
      */
     public void showExpectedUtilityOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, ConstraintViolatedException {
-        List<VisualNode> selectedNode = this.visualNetwork.getSelectedNodes();
-        if (selectedNode.size() == 1) {
-            VisualNode visualNode = selectedNode.getFirst();
-            Node node = visualNode.getNode();
-            VEExpectedUtilityDecision veExpectedUtilityDecision
-                    = new VEExpectedUtilityDecision(this.visualNetwork.getProbNet(), node.getVariable());
-            Potential expectedUtility = veExpectedUtilityDecision.getExpectedUtility();
-            Node dummyNode = new Node(new ProbNet(), node.getVariable(), node.getNodeType());
-            dummyNode.setPotential(expectedUtility);
-            PotentialEditDialog expectedUtilityDialog = new PotentialEditDialog(GUIUtils.getOwner(this), dummyNode, true);
-            expectedUtilityDialog.setTitle("ExpectedUtilityDialog.Title");
-            expectedUtilityDialog.requestValues();
-        }
+        VisualNode visualNode = this.visualNetwork.getLastSelectedNode();
+        Node node = visualNode.getNode();
+        VEExpectedUtilityDecision veExpectedUtilityDecision
+                = new VEExpectedUtilityDecision(this.visualNetwork.getProbNet(), node.getVariable());
+        Potential expectedUtility = veExpectedUtilityDecision.getExpectedUtility();
+        Node dummyNode = new Node(new ProbNet(), node.getVariable(), node.getNodeType());
+        dummyNode.setPotential(expectedUtility);
+        PotentialEditDialog expectedUtilityDialog = new PotentialEditDialog(GUIUtils.getOwner(this), dummyNode, true);
+        expectedUtilityDialog.setTitle("ExpectedUtilityDialog.Title");
+        expectedUtilityDialog.requestValues();
         this.visualNetwork.setSelectedAllNodes(false);
         this.repaint();
     }
@@ -510,28 +494,25 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * This method shows the optimal policy for a decision node.
      */
     public void showOptimalPolicyOfNode() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork, ConstraintViolatedException {
-        List<VisualNode> selectedNodes = this.visualNetwork.getSelectedNodes();
-        if (selectedNodes.size() == 1) {
-            VisualNode visualNode = selectedNodes.getFirst();
-            ProbNet dummyProbNet = new ProbNet();
-            OptimalPolicies veOptimalPolicy = new VEEvaluation(this.visualNetwork.getProbNet());
-            Potential optimalPolicy = veOptimalPolicy.getOptimalPolicy(visualNode.getNode().getVariable());
-            dummyProbNet.addPotential(optimalPolicy);
-            Variable conditionedVariable = optimalPolicy.getVariable(0);
-            Node dummyNode = dummyProbNet.getNode(conditionedVariable);
-            dummyNode.setNodeType(NodeType.DECISION);
-            dummyNode.setPolicyType(PolicyType.OPTIMAL);
-            for (Variable variable : optimalPolicy.getVariables()) {
-                if (variable.equals(conditionedVariable)) {
-                    continue;
-                }
-                dummyProbNet.addLink(variable, conditionedVariable, true);
+        VisualNode visualNode = this.visualNetwork.getLastSelectedNode();
+        ProbNet dummyProbNet = new ProbNet();
+        OptimalPolicies veOptimalPolicy = new VEEvaluation(this.visualNetwork.getProbNet());
+        Potential optimalPolicy = veOptimalPolicy.getOptimalPolicy(visualNode.getNode().getVariable());
+        dummyProbNet.addPotential(optimalPolicy);
+        Variable conditionedVariable = optimalPolicy.getVariable(0);
+        Node dummyNode = dummyProbNet.getNode(conditionedVariable);
+        dummyNode.setNodeType(NodeType.DECISION);
+        dummyNode.setPolicyType(PolicyType.OPTIMAL);
+        for (Variable variable : optimalPolicy.getVariables()) {
+            if (variable.equals(conditionedVariable)) {
+                continue;
             }
-            PotentialEditDialog optimalPolicyDialog =
-                    new PotentialEditDialog(GUIUtils.getOwner(this), dummyNode, true);
-            optimalPolicyDialog.setTitle("OptimalPolicyDialog.Title");
-            optimalPolicyDialog.requestValues();
+            dummyProbNet.addLink(variable, conditionedVariable, true);
         }
+        PotentialEditDialog optimalPolicyDialog =
+                new PotentialEditDialog(GUIUtils.getOwner(this), dummyNode, true);
+        optimalPolicyDialog.setTitle("OptimalPolicyDialog.Title");
+        optimalPolicyDialog.requestValues();
         this.visualNetwork.setSelectedAllNodes(false);
         this.repaint();
     }
@@ -629,7 +610,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     public void temporalEvolution() {
         List<VisualNode> selectedNode = this.visualNetwork.getSelectedNodes();
         if (selectedNode.size() == 1) {
-            VisualNode node = selectedNode.getFirst();
+            VisualNode node = this.visualNetwork.getLastSelectedNode();
             new TemporalEvolutionDialog(GUIUtils.getOwner(this), node.getNode(), this.evidenceManager.getPreResolutionEvidence());
             this.visualNetwork.setSelectedAllNodes(false);
             this.repaint();
@@ -758,7 +739,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     }
     
     public void updateName(String baseName) {
-        setName("NetworkEditorOf"+baseName);
+        setName("NetworkEditorOf" + baseName);
     }
     
     /**

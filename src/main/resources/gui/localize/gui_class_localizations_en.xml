@@ -9,7 +9,7 @@
                   value="Impose policy {newPolicy} on {visualDecisionNode}. Last policy was {lastPolicy}"/>
     <Localization class="org.openmarkov.gui.action.LinkRestrictionPotentialValueEdit" value="Restrict link {link}"/>
     <Localization class="org.openmarkov.gui.action.MoveNodeEdit"
-                  value="Move nodes {namesNode} from {lastPositions} to {newPositions}"/>
+                  value="Movements: {movements}"/>
     <Localization class="org.openmarkov.gui.action.NetworkAgentEdit"
                   value="Edit agent {agentName} with action {stateAction}"/>
     <Localization class="org.openmarkov.gui.action.NodeAgentEdit"

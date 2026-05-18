@@ -32,6 +32,7 @@ import org.openmarkov.gui.window.edition.ZoomManager;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -406,8 +407,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
          * break; } } }
          */
         setOptionEnabled(ActionCommands.SAVE_NETWORK, currentNetworkEditorPanel.getModified());
-        objectsSelected(currentNetworkEditorPanel.getEditorPanel().getVisualNetwork().getSelectedNodes(),
-                        currentNetworkEditorPanel.getEditorPanel().getVisualNetwork().getSelectedLinks());
+        objectsSelected();
         setZoom(currentNetworkEditorPanel.getZoom());
         /*
          * updateUndoRedo(networkPanel.getUndoManager().canUndo(),
@@ -464,11 +464,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                 setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, !networkPanel.isPropagationActive());
             }
         }
-        objectsSelected(networkPanel.getEditorPanel()
-                                    .getVisualNetwork()
-                                    .getSelectedNodes(), networkPanel.getEditorPanel()
-                                                                     .getVisualNetwork()
-                                                                     .getSelectedLinks());
+        objectsSelected();
     }
     
     /**
@@ -551,75 +547,72 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
      * This method activates o desactivates some options depending on the
      * numbers of nodes or links selected or the expanded state of the specific
      * nodes selected
-     *
-     * @param selectedNodes list of selected nodes.
-     * @param selectedLinks list of selected links.
      */
-    @Override public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks) {
-        boolean canCut = false;
-        boolean canCopy = false;
-        boolean canRemove = false;
-        boolean canNodeProperties = false;
-        boolean canNodeTable = false;
-        boolean canLinkProperties = false;
-        boolean canExpand = false;
-        boolean canContract = false;
-        boolean canAddFinding = false;
-        boolean canRemoveFinding = false;
-        boolean canLog = false;
-        boolean canImposePolicy = false;
-        boolean canEditPolicy = false;
-        boolean canRemovePolicy = false;
-        boolean canShowExpectedUtility = false;
-        boolean canShowOptimalPolicy = false;
-        boolean canTemporalEvolution = false;
-        boolean canCreateNextSliceNode = false;
+    @Override public void objectsSelected() {
         NetworkEditorPanel.WorkingMode workingMode = NetworkEditorPanel.WorkingMode.EDITION;
         NetworkEditorPanel currentNetworkEditorPanel = getCurrentNetworkEditorPanel();
         if (currentNetworkEditorPanel != null) {
             workingMode = currentNetworkEditorPanel.getWorkingMode();
         }
-        if (selectedNodes.isEmpty()) {
-            if (!selectedLinks.isEmpty()) {
+        List<VisualNode> selectedNodes = currentNetworkEditorPanel == null ? Collections.emptyList()
+                : currentNetworkEditorPanel.getVisualNetwork().getSelectedNodes();
+        List<VisualLink> selectedLinks = currentNetworkEditorPanel == null ? Collections.emptyList()
+                : currentNetworkEditorPanel.getVisualNetwork().getSelectedLinks();
+        boolean thereAreSelectedElements = !selectedNodes.isEmpty() || !selectedLinks.isEmpty();
+        boolean onlyLinksAreSelected = selectedNodes.isEmpty() && !selectedLinks.isEmpty();
+        boolean canCreateNextSliceNode = false;
+        boolean canTemporalEvolution = false;
+        boolean canShowOptimalPolicy = false;
+        boolean canShowExpectedUtility = false;
+        boolean canRemovePolicy = false;
+        boolean canEditPolicy = false;
+        boolean canImposePolicy = false;
+        boolean canLog = false;
+        boolean canRemoveFinding = false;
+        boolean canAddFinding = false;
+        boolean canContract = false;
+        boolean canExpand = false;
+        boolean canLinkProperties = false;
+        boolean canNodeTable = false;
+        boolean canNodeProperties = false;
+        boolean canRemove = false;
+        boolean canCopy = false;
+        boolean canCut = false;
+        if (onlyLinksAreSelected) {
+            if (workingMode == NetworkEditorPanel.WorkingMode.EDITION) {
+                canRemove = thereAreSelectedElements;
+            }
+            if (selectedLinks.size() == 1) {
                 if (workingMode == NetworkEditorPanel.WorkingMode.EDITION) {
-                    canRemove = true;
-                }
-                if (selectedLinks.size() == 1) {
-                    if (workingMode == NetworkEditorPanel.WorkingMode.EDITION) {
-                        canLinkProperties = true;
-                    }
+                    canLinkProperties = thereAreSelectedElements;
                 }
             }
         } else {
-            canCopy = true;
+            canCopy = thereAreSelectedElements;
             if (workingMode == NetworkEditorPanel.WorkingMode.EDITION) {
-                canRemove = true;
-                canCut = true;
+                canRemove = thereAreSelectedElements;
+                canCut = thereAreSelectedElements;
             }
             if (selectedLinks.isEmpty()) {
                 // if we are in Inference Mode, options about expansion and
                 // contraction must be activated
                 if (workingMode == NetworkEditorPanel.WorkingMode.INFERENCE) {
-                    VisualNode visualNode;
-                    for (int i = 0; i < selectedNodes.size(); i++) {
-                        visualNode = selectedNodes.get(i);
+                    for (VisualNode selectedNode : selectedNodes) {
                         // if at least one selected node is expanded,
                         // 'contract node(s)' option must be active
-                        if (visualNode.isExpanded()) {
+                        if (selectedNode.isExpanded()) {
                             canContract = true;
                         }
                         // if at least one selected node is contracted,
                         // 'expand node(s)' option must be active
-                        if (!(visualNode.isExpanded())) {
+                        if (!(selectedNode.isExpanded())) {
                             canExpand = true;
                         }
                     }
                 }
                 // if at least one selected node has a post-Resolution finding,
                 // 'remove finding' option must be active
-                VisualNode vNode;
-                for (int i = 0; i < selectedNodes.size(); i++) {
-                    vNode = selectedNodes.get(i);
+                for (VisualNode vNode : selectedNodes) {
                     switch (workingMode) {
                         case EDITION -> canRemoveFinding = vNode.isPreResolutionFinding();
                         case INFERENCE -> canRemoveFinding = vNode.isPostResolutionFinding();
@@ -627,7 +620,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                 }
                 if (selectedNodes.size() == 1) {
                     canNodeProperties = true;
-                    VisualNode visualNode = selectedNodes.get(0);
+                    VisualNode visualNode = selectedNodes.getFirst();
                     if (visualNode.getNode().getVariable().isTemporal()) {
                         canCreateNextSliceNode = !visualNode.getNode().getProbNet()
                                                             .containsShiftedVariable(visualNode.getNode()
@@ -708,6 +701,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                 }
             }
         }
+        
+        
         setOptionEnabled(ActionCommands.CLIPBOARD_CUT, canCut);
         setOptionEnabled(ActionCommands.CLIPBOARD_COPY, canCopy);
         setOptionEnabled(ActionCommands.OBJECT_REMOVAL, canRemove);

@@ -25,7 +25,7 @@ import java.util.Locale;
  * @author asaez
  * @version 1.0
  */
-public class VisualState extends VisualElement {
+public final class VisualState extends VisualElement {
     /**
      * Number of decimals
      */
@@ -84,14 +84,14 @@ public class VisualState extends VisualElement {
         this.visualNode = visualNode;
         this.stateIndex = number;
         this.stateName = name;
-        stateValues = new ArrayList<Double>(numValues);
+        this.stateValues = new ArrayList<Double>(numValues);
         for (int i = 0; i < numValues; i++) {
-            stateValues.add(0.0);
+            this.stateValues.add(0.0);
         }
-        evidence = new ArrayList<>();
-        evidence.add(false);
-        currentStateValue = 0;
-        formattingString = formattingString + "0".repeat(VisualState.NUMBER_OF_DECIMALS);
+        this.evidence = new ArrayList<>();
+        this.evidence.add(false);
+        this.currentStateValue = 0;
+        this.formattingString = this.formattingString + "0".repeat(VisualState.NUMBER_OF_DECIMALS);
     }
     
     /**
@@ -112,7 +112,7 @@ public class VisualState extends VisualElement {
      * @return visualNode to which this sate is associated.
      */
     public VisualNode getVisualNode() {
-        return visualNode;
+        return this.visualNode;
     }
     
     /**
@@ -130,7 +130,7 @@ public class VisualState extends VisualElement {
      * @return order number assigned to this state.
      */
     public int getStateIndex() {
-        return stateIndex;
+        return this.stateIndex;
     }
     
     /**
@@ -148,7 +148,7 @@ public class VisualState extends VisualElement {
      * @return name assigned to this state.
      */
     public String getStateName() {
-        return stateName;
+        return this.stateName;
     }
     
     /**
@@ -174,8 +174,8 @@ public class VisualState extends VisualElement {
      * initially assigned 0.0 to this new position
      */
     public void createNewStateValue() {
-        stateValues.add(0.0);
-        evidence.add(false);
+        this.stateValues.add(0.0);
+        this.evidence.add(false);
     }
     
     /**
@@ -183,10 +183,10 @@ public class VisualState extends VisualElement {
      * creates again the initial position assigning 0.0 to it
      */
     public void clearAllStateValues() {
-        stateValues.clear();
-        stateValues.add(0, 0.0);
-        evidence.clear();
-        evidence.add(false);
+        this.stateValues.clear();
+        this.stateValues.add(0, 0.0);
+        this.evidence.clear();
+        this.evidence.add(false);
     }
     
     /**
@@ -201,7 +201,7 @@ public class VisualState extends VisualElement {
         // Value is currently formatted fixely with 4 decimals
         double truncatedValue = (Math.rint(value * Math.pow(10, NUMBER_OF_DECIMALS))) / Math
                 .pow(10, NUMBER_OF_DECIMALS);
-        stateValues.set(caseNumber, truncatedValue);
+        this.stateValues.set(caseNumber, truncatedValue);
     }
     
     /**
@@ -212,7 +212,7 @@ public class VisualState extends VisualElement {
      * @return the number of bars to be painted for that state.
      */
     public int getNumberOfValues() {
-        return stateValues.size();
+        return this.stateValues.size();
     }
     
     /**
@@ -222,9 +222,9 @@ public class VisualState extends VisualElement {
      * @return the position that this state occupies inside the inner box
      */
     private int getStatePosition() {
-        InnerBox innerBox = visualNode.getInnerBox();
+        InnerBox innerBox = this.visualNode.getInnerBox();
         if (innerBox instanceof FSVariableBox) {
-            return (innerBox.getNumStates() - stateIndex);
+            return (innerBox.getNumStates() - this.stateIndex);
         }
         return 1;
     }
@@ -269,22 +269,37 @@ public class VisualState extends VisualElement {
      *
      * @return shape of the State.
      */
-    @Override public Shape getShape(Graphics2D g) {
-        double x = visualNode.getUpperLeftCornerX(g) + InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT - 1;
+    @Override public Shape getCenteredShape(Graphics2D g) {
+        double x = this.visualNode.getUpperLeftCornerX(g) + InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT - 1;
         double w = InnerBox.BOX_WIDTH - (InnerBox.STATES_INDENT * 2) + 1;
         double y;
         double h;
-        if (visualNode.getVisualNetwork().isPropagationActive()) {
-            y = visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
+        if (this.visualNode.getVisualNetwork().isPropagationActive()) {
+            y = this.visualNode.getUpperLeftCornerY(g) + this.visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
                     InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
-            ) + ((stateValues.size() - 1) * InnerBox.BAR_HEIGHT * (getStatePosition() - 1)) - InnerBox.BAR_HEIGHT - 4;
-            h = (InnerBox.BAR_HEIGHT * stateValues.size()) + 4;
-        } else {
-            y = visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
-                    InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
-            ) - InnerBox.BAR_HEIGHT - 4;
-            h = InnerBox.BAR_HEIGHT + 4;
+            ) + ((this.stateValues.size() - 1) * InnerBox.BAR_HEIGHT * (getStatePosition() - 1)) - InnerBox.BAR_HEIGHT - 4;
+            h = (InnerBox.BAR_HEIGHT * this.stateValues.size()) + 4;
+            return new Rectangle2D.Double(x, y, w, h);
         }
+        y = this.visualNode.getUpperLeftCornerY(g) + this.visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
+                InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
+        ) - InnerBox.BAR_HEIGHT - 4;
+        h = InnerBox.BAR_HEIGHT + 4;
+        return new Rectangle2D.Double(x, y, w, h);
+    }
+    
+    @Override public Shape getShape(Graphics2D g) {
+        double x = this.visualNode.getUpperLeftCornerX(g);
+        double w = InnerBox.BOX_WIDTH - (InnerBox.STATES_INDENT * 2) + 1;
+        double y;
+        double h;
+        if (this.visualNode.getVisualNetwork().isPropagationActive()) {
+            y = this.visualNode.getUpperLeftCornerY(g);
+            h = (InnerBox.BAR_HEIGHT * this.stateValues.size()) + 4;
+            return new Rectangle2D.Double(x, y, w, h);
+        }
+        y = this.visualNode.getUpperLeftCornerY(g);
+        h = InnerBox.BAR_HEIGHT + 4;
         return new Rectangle2D.Double(x, y, w, h);
     }
     
@@ -299,10 +314,8 @@ public class VisualState extends VisualElement {
     @Override public void paint(Graphics2D g) {
         double xBar;
         double xValue;
-        double yText;
-        double yFirstBar;
-        double xName = visualNode.getUpperLeftCornerX(g) + InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT;
-        boolean isNumeric = visualNode.getNode().getVariable().getVariableType() == VariableType.NUMERIC;
+        double xName = InnerBox.STATES_INDENT;
+        boolean isNumeric = this.visualNode.getNode().getVariable().getVariableType() == VariableType.NUMERIC;
         if (isNumeric) {
             xBar = xName + InnerBox.BAR_HORIZONTAL_POSITION_UTILITY;
             xValue = xName + InnerBox.VALUE_HORIZONTAL_POSITION_UTILITY;
@@ -310,29 +323,31 @@ public class VisualState extends VisualElement {
             xBar = xName + InnerBox.BAR_HORIZONTAL_POSITION;
             xValue = xName + InnerBox.VALUE_HORIZONTAL_POSITION;
         }
-        if (visualNode.getVisualNetwork().isPropagationActive()) {
-            yText = visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
+        double yFirstBar;
+        double yText;
+        if (this.visualNode.getVisualNetwork().isPropagationActive()) {
+            yText =   (
                     InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
-            ) + ((stateValues.size() - 1) * InnerBox.BAR_HEIGHT * (getStatePosition() - 1)) + (
-                    ((stateValues.size() - 1) * InnerBox.BAR_HEIGHT) / 2
+            ) + ((this.stateValues.size() - 1) * InnerBox.BAR_HEIGHT * (getStatePosition() - 1)) + (
+                    ((this.stateValues.size() - 1) * InnerBox.BAR_HEIGHT) / 2
             );
-            yFirstBar = visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
+            yFirstBar =  (
                     InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
-            ) + ((stateValues.size() - 1) * InnerBox.BAR_HEIGHT * (getStatePosition() - 1)) - InnerBox.BAR_HEIGHT - 1;
+            ) + ((this.stateValues.size() - 1) * InnerBox.BAR_HEIGHT * (getStatePosition() - 1)) - InnerBox.BAR_HEIGHT - 1;
         } else {
-            yText = visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
+            yText =  (
                     InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
             );
-            yFirstBar = visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
+            yFirstBar =  (
                     InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
             ) - InnerBox.BAR_HEIGHT - 1;
         }
         g.setColor(GUIColors.Inference.BOX_TEXT.getColor());
         g.setFont(STATES_FONT);
-        stateName = adjustText(stateName, InnerBox.BAR_HORIZONTAL_POSITION, 2, STATES_FONT, g);
-        g.drawString(stateName, (int) xName, (int) yText);
+        this.stateName = adjustText(this.stateName, InnerBox.BAR_HORIZONTAL_POSITION, 2, STATES_FONT, g);
+        g.drawString(this.stateName, (int) xName, (int) yText);
         if (getVisualNode().getVisualNetwork().isPropagationActive()) {
-            for (int i = 0; i < stateValues.size(); i++) {
+            for (int i = 0; i < this.stateValues.size(); i++) {
                 g.setPaint(GUIColors.Inference.STATE_BAR_BORDER.getColor());
                 g.drawLine(Double.valueOf(xBar - 1).intValue(),
                            Double.valueOf(yFirstBar + (i * InnerBox.BAR_HEIGHT) - 1).intValue(),
@@ -345,24 +360,24 @@ public class VisualState extends VisualElement {
                 setColorCaseDependent(i, g);
                 double barLength;
                 if (isNumeric) {
-                    InnerBox innerBox = visualNode.getInnerBox();
+                    InnerBox innerBox = this.visualNode.getInnerBox();
                     Double minRange = ((NumericVariableBox) innerBox).getMinValue();
                     Double maxRange = ((NumericVariableBox) innerBox).getMaxValue();
                     double range = maxRange - minRange;
-                    double value = stateValues.get(i) - minRange;
+                    double value = this.stateValues.get(i) - minRange;
                     barLength = ((value * lengthRelationInBars) / range) / InnerBox.BAR_FULL_LENGTH;
                 } else {
-                    barLength = (stateValues.get(i) * lengthRelationInBars) / InnerBox.BAR_FULL_LENGTH;
+                    barLength = (this.stateValues.get(i) * lengthRelationInBars) / InnerBox.BAR_FULL_LENGTH;
                 }
                 g.fill(new Rectangle2D.Double(xBar, yFirstBar + (i * InnerBox.BAR_HEIGHT), barLength,
                                               InnerBox.BAR_HEIGHT));
-                setColorCaseDependent(currentStateValue, g);
+                setColorCaseDependent(this.currentStateValue, g);
                 
-                if (!Double.isNaN(stateValues.get(currentStateValue))) {
+                if (!Double.isNaN(this.stateValues.get(this.currentStateValue))) {
                     // Value is currently formatted fixely with 4 decimals
-                    DecimalFormat decimalFormat = new DecimalFormat(formattingString,
+                    DecimalFormat decimalFormat = new DecimalFormat(this.formattingString,
                                                                     new DecimalFormatSymbols(Locale.US));
-                    String formattedValue = String.valueOf(decimalFormat.format(stateValues.get(currentStateValue)));
+                    String formattedValue = String.valueOf(decimalFormat.format(this.stateValues.get(this.currentStateValue)));
                     g.drawString(formattedValue, ((int) xValue), (int) yText);
                 }
             }
@@ -375,8 +390,8 @@ public class VisualState extends VisualElement {
                        Double.valueOf(xBar + InnerBox.BAR_FULL_LENGTH).intValue(),
                        Double.valueOf(yFirstBar + InnerBox.BAR_HEIGHT).intValue());
             if (getVisualNode().hasAnyFinding()) {
-                if (evidence.get(currentStateValue)) {
-                    setColorCaseDependent(currentStateValue, g);
+                if (this.evidence.get(this.currentStateValue)) {
+                    setColorCaseDependent(this.currentStateValue, g);
                     g.fill(new Rectangle2D.Double(xBar, yFirstBar, InnerBox.BAR_FULL_LENGTH, InnerBox.BAR_HEIGHT));
                     g.setPaint(GUIColors.Inference.STATE_BAR_BORDER.getColor());
                 } else {
@@ -390,10 +405,10 @@ public class VisualState extends VisualElement {
     }
     
     public void removeFinding() {
-        evidence.set(currentStateValue, false);
+        this.evidence.set(this.currentStateValue, false);
     }
     
     public void addFinding() {
-        evidence.set(currentStateValue, true);
+        this.evidence.set(this.currentStateValue, true);
     }
 }

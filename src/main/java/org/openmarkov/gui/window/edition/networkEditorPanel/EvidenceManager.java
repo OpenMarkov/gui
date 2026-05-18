@@ -109,8 +109,7 @@ public class EvidenceManager {
      * This method adds a finding in a node.
      */
     public void addFinding() {
-        List<VisualNode> selectedNodes = this.networkEditorPanel.getVisualNetwork().getSelectedNodes();
-        VisualNode node = selectedNodes.getFirst();
+        VisualNode node = this.networkEditorPanel.getVisualNetwork().getLastSelectedNode();
         EvidenceCase currentEvidence = (this.networkEditorPanel.getNetworkEditorPanel().getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE) ?
                 this.getCurrentEvidenceCase() : this.preResolutionEvidence;
         Finding finding = currentEvidence.getFinding(node.getNode().getVariable());

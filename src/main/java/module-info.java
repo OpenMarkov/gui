@@ -12,7 +12,6 @@ open module org.openmarkov.gui {
     requires org.apache.poi.ooxml;
     requires org.jfree.jfreechart;
     requires com.google.gson;
-    requires org.slf4j;
     
     //requires com.hexidec.ekit;
     requires org.openmarkov.annotation_processing;
@@ -27,8 +26,6 @@ open module org.openmarkov.gui {
     requires java.xml;
     requires colt;
     requires com.google.errorprone.annotations;
-    requires javers.core;
-    requires java.sql;
     
     exports org.openmarkov.gui.action;
     exports org.openmarkov.gui.layout.bayesian;

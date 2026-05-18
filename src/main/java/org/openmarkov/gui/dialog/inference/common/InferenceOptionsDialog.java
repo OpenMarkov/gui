@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.java.reflectionUtils.ReflectionEquality;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -247,6 +248,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                     costEffectiveness.setEnabled(false);
                 }
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setUnicriterionOptionsShowed(true);
+                multicriteriaOptions.setUnicriterionOptionsShowed(true);
             } else if (onlyShowThisType == MulticriteriaOptions.Type.COST_EFFECTIVENESS) {
                 if (costEffectiveness != null) {
                     costEffectiveness.doClick();
@@ -257,6 +259,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                 }
                 
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
+                multicriteriaOptions.setCeOptionsShowed(true);
             }
         }
         else {
@@ -264,10 +267,12 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                        .getMultiCriteriaOptions()
                        .getMulticriteriaType() == MulticriteriaOptions.Type.UNICRITERION) {
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setUnicriterionOptionsShowed(true);
+                multicriteriaOptions.setUnicriterionOptionsShowed(true);
             } else if (probNet.getInferenceOptions()
                               .getMultiCriteriaOptions()
                               .getMulticriteriaType() == MulticriteriaOptions.Type.COST_EFFECTIVENESS) {
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
+                multicriteriaOptions.setCeOptionsShowed(true);
             }
         }
 
@@ -984,8 +989,13 @@ public class InferenceOptionsDialog extends OkCancelDialog {
         }
         probNet.getPNESupport().openNewSubEditHistory();
         if (isMulticriteria) {
-            MulticriteriaEdit editMulticriteria = new MulticriteriaEdit(probNet, decisionCriteria, multicriteriaOptions);
-            editMulticriteria.executeEdit();
+            boolean decisionCriteriaIsTheSame = ReflectionEquality.areEquals(probNet.getDecisionCriteria(), decisionCriteria);
+            boolean multiCriteriaOptionsIsTheSame = ReflectionEquality.areEquals(probNet.getInferenceOptions().getMultiCriteriaOptions(), multicriteriaOptions);
+            
+            if(!decisionCriteriaIsTheSame || !multiCriteriaOptionsIsTheSame) {
+                MulticriteriaEdit editMulticriteria = new MulticriteriaEdit(probNet, decisionCriteria, multicriteriaOptions);
+                editMulticriteria.executeEdit();
+            }
         }
         if (isTemporal) {
             int numSlices;

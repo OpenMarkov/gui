@@ -21,6 +21,7 @@ import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.gui.window.edition.mode.SelectionEditionMode;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NodesAlignment;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -139,6 +140,10 @@ public class NodeContextualMenu extends ContextualMenu {
         add(getCutMenuItem());
         add(getCopyMenuItem());
         add(getRemoveMenuItem());
+        if (networkEditorPanel.getVisualNetwork().getSelectedNodes().size() > 1 && networkEditorPanel.getWorkingMode()== NetworkEditorPanel.WorkingMode.EDITION) {
+            add(getAlignmentMenuItem());
+        }
+        
         addSeparator();
         if (networkEditorPanel.getEditionMode() instanceof SelectionEditionMode selectionEditionMode) {
             add(getCreateLinkMenuItem(selectionEditionMode));
@@ -188,6 +193,25 @@ public class NodeContextualMenu extends ContextualMenu {
         add(getAddFindingMenuItem());
         add(getRemoveFindingMenuItem());
         
+    }
+    
+    private JMenuItem getAlignmentMenuItem() {
+        if (this.alignmentMenuItem == null) {
+            this.alignmentMenuItem = new JMenuItemBuilder("Alignment")
+                    .enabled(this.networkEditorPanel.getWorkingMode()== NetworkEditorPanel.WorkingMode.EDITION)
+                    .withItems(
+                            new JMenuItemBuilder("Center vertically")
+                                    .onClick(() -> NodesAlignment.verticalAlign(this.networkEditorPanel))
+                                    .enabled(NodesAlignment.canVerticalAlign(this.networkEditorPanel))
+                                    .build(),
+                            new JMenuItemBuilder("Center horizontally")
+                                    .onClick(() -> NodesAlignment.horizontalAlign(this.networkEditorPanel))
+                                    .enabled(NodesAlignment.canHorizontalAlign(this.networkEditorPanel))
+                                    .build()
+                    )
+                    .build();
+        }
+        return this.alignmentMenuItem;
     }
     
     private JMenuItem getCreateLinkMenuItem(SelectionEditionMode selectionEditionMode) {
@@ -248,6 +272,7 @@ public class NodeContextualMenu extends ContextualMenu {
         if (cutMenuItem == null) {
             cutMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_CUT_MENUITEM, ActionCommands.CLIPBOARD_CUT.getCommandName());
             cutMenuItem.setIcon(IconBind.CUT_ENABLED.icon());
+            cutMenuItem.setEnabled(networkEditorPanel.getWorkingMode()== NetworkEditorPanel.WorkingMode.EDITION);
             cutMenuItem.addActionListener(listener);
         }
         return cutMenuItem;
@@ -276,6 +301,7 @@ public class NodeContextualMenu extends ContextualMenu {
         if (removeMenuItem == null) {
             removeMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REMOVE_MENUITEM, ActionCommands.OBJECT_REMOVAL.getCommandName());
             removeMenuItem.setIcon(IconBind.REMOVE_ENABLED.icon());
+            removeMenuItem.setEnabled(networkEditorPanel.getWorkingMode()== NetworkEditorPanel.WorkingMode.EDITION);
             removeMenuItem.addActionListener(listener);
         }
         return removeMenuItem;
@@ -499,4 +525,5 @@ public class NodeContextualMenu extends ContextualMenu {
     }
     
     private final VisualNode selectedNode;
+    private JMenuItem alignmentMenuItem;
 }

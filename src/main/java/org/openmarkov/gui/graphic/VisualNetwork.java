@@ -19,7 +19,6 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.action.PasteEdit;
 import org.openmarkov.gui.action.RemoveSelectedEdit;
 import org.openmarkov.gui.util.MovedNodeInfo;
 import org.openmarkov.gui.window.edition.EditorPanelClipboardAssistant;
@@ -31,6 +30,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class implements the visual representation of a network.
@@ -68,12 +68,8 @@ public class VisualNetwork implements PNEditListener {
     /**
      * Set of selected nodes.
      */
-    private final Set<VisualNode> selectedNodes = new HashSet<VisualNode>();
+    private final LinkedHashSet<VisualElement> selectedElements = new LinkedHashSet<>();
     
-    /**
-     * Set of selected links.
-     */
-    private final Set<VisualLink> selectedLinks = new HashSet<VisualLink>();
     
     /**
      * This object represents the arrow that is painted when a new link is being
@@ -107,7 +103,7 @@ public class VisualNetwork implements PNEditListener {
      * Listener to the selection.
      */
     private final Set<SelectionListener> selectionListeners = new HashSet<SelectionListener>();
-
+    
     
     //private LinkWrapper linkWrapper;
     /**
@@ -473,27 +469,15 @@ public class VisualNetwork implements PNEditListener {
      * @param element  element to be selected/deselected.
      * @param selected new selection state.
      */
-    private void setSelectedElement(VisualElement element, boolean selected) {
-        if (selected == element.isSelected()) {
-            return;
+    public void setSelectionOfElement(VisualElement element, boolean selected) {
+        boolean selectionWasAlreadyDone = selected == element.isSelected();
+        if (selected) {
+            this.selectedElements.addLast(element);
+        } else {
+            this.selectedElements.remove(element);
         }
-        switch (element) {
-            case VisualNode selectedNode -> {
-                if (selected) {
-                    selectedNodes.add(selectedNode);
-                } else {
-                    selectedNodes.remove(element);
-                }
-            }
-            case VisualLink selectedLink -> {
-                if (selected) {
-                    selectedLinks.add(selectedLink);
-                } else {
-                    selectedLinks.remove(element);
-                }
-            }
-            default -> {
-            }
+        if (selectionWasAlreadyDone) {
+            return;
         }
         notifyObjectsSelected();
         element.setSelected(selected);
@@ -507,7 +491,7 @@ public class VisualNetwork implements PNEditListener {
      */
     public void setSelectedNode(VisualNode node, boolean selected) {
         
-        setSelectedElement(node, selected);
+        setSelectionOfElement(node, selected);
         
     }
     
@@ -524,7 +508,7 @@ public class VisualNetwork implements PNEditListener {
         
         while (!found && (i < l)) {
             if (visualNodes.get(i).getNode().getName().equals(name)) {
-                setSelectedElement(visualNodes.get(i), selected);
+                setSelectionOfElement(visualNodes.get(i), selected);
                 found = true;
             } else {
                 i++;
@@ -541,7 +525,7 @@ public class VisualNetwork implements PNEditListener {
      */
     private void setSelectedLink(VisualLink link, boolean selected) {
         
-        setSelectedElement(link, selected);
+        setSelectionOfElement(link, selected);
         
     }
     
@@ -561,7 +545,7 @@ public class VisualNetwork implements PNEditListener {
             ++i;
         }
         if (visualLink != null) {
-            setSelectedElement(visualLink, selected);
+            setSelectionOfElement(visualLink, selected);
         }
     }
     
@@ -571,13 +555,11 @@ public class VisualNetwork implements PNEditListener {
      * @param selected new selection state.
      */
     public void setSelectedAllNodes(boolean selected) {
-        
         for (VisualNode node : visualNodes) {
-            setSelectedElement(node, selected);
+            setSelectionOfElement(node, selected);
         }
-        
         if (!selected) {
-            selectedNodes.clear();
+            this.selectedElements.removeIf(VisualNode.class::isInstance);
         }
         
     }
@@ -588,15 +570,12 @@ public class VisualNetwork implements PNEditListener {
      * @param selected new selection state.
      */
     private void setSelectedAllLinks(boolean selected) {
-        
         for (VisualLink link : visualLinks) {
-            setSelectedElement(link, selected);
+            setSelectionOfElement(link, selected);
         }
-        
         if (!selected) {
-            selectedLinks.clear();
+            this.selectedElements.removeIf(VisualLink.class::isInstance);
         }
-        
     }
     
     /**
@@ -605,7 +584,6 @@ public class VisualNetwork implements PNEditListener {
      * @param selected new selection state.
      */
     public void setSelectedAllObjects(boolean selected) {
-        
         setSelectedAllNodes(selected);
         setSelectedAllLinks(selected);
     }
@@ -683,13 +661,13 @@ public class VisualNetwork implements PNEditListener {
         ArrayList<VisualNode> selectedVisualNodes = new ArrayList<VisualNode>();
         for (VisualNode node : visualNodes) {
             if (selection.containsNode(node)) {
-                setSelectedElement(node, true);
+                setSelectionOfElement(node, true);
                 selectedVisualNodes.add(node);
             }
         }
         // Select links
         for (VisualLink selectedLink : getLinksOfNodes(selectedVisualNodes, true)) {
-            setSelectedElement(selectedLink, true);
+            setSelectionOfElement(selectedLink, true);
         }
     }
     
@@ -813,7 +791,25 @@ public class VisualNetwork implements PNEditListener {
      * @return a list containing the selected nodes.
      */
     public List<VisualNode> getSelectedNodes() {
-        return new ArrayList<VisualNode>(selectedNodes);
+        return new ArrayList<>(getSelectedElementsOf(VisualNode.class).toList());
+    }
+    
+    public VisualNode getLastSelectedNode(){
+        return getSelectedElementOf(VisualNode.class);
+    }
+    
+    private <T extends VisualElement> Stream<T> getSelectedElementsOf(Class<? extends T> type) {
+        return this.selectedElements.stream()
+                                    .filter(type::isInstance)
+                                    .map(type::cast);
+    }
+    
+    private <T extends VisualElement> @Nullable T getSelectedElementOf(Class<T> type) {
+        var selectedElements = this.getSelectedElementsOf(type).toList();
+        if (selectedElements.isEmpty()) {
+            return null;
+        }
+        return selectedElements.getLast();
     }
     
     /**
@@ -822,29 +818,11 @@ public class VisualNetwork implements PNEditListener {
      * @return a list containing the selected links.
      */
     public List<VisualLink> getSelectedLinks() {
-        return new ArrayList<VisualLink>(selectedLinks);
+        return new ArrayList<VisualLink>(getSelectedElementsOf(VisualLink.class).toList());
     }
     
-    /**
-     * Returns the number of selected nodes.
-     *
-     * @return number of selected nodes.
-     */
-    public int getSelectedNodesNumber() {
-        
-        return selectedNodes.size();
-        
-    }
-    
-    /**
-     * Returns the number of selected links.
-     *
-     * @return number of selected links.
-     */
-    public int getSelectedLinksNumber() {
-        
-        return selectedLinks.size();
-        
+    public VisualLink getLastSelectedLink(){
+        return getSelectedElementOf(VisualLink.class);
     }
     
     /**
@@ -855,7 +833,7 @@ public class VisualNetwork implements PNEditListener {
     private void notifyObjectsSelected() {
         
         for (SelectionListener listener : selectionListeners) {
-            listener.objectsSelected(getSelectedNodes(), getSelectedLinks());
+            listener.objectsSelected();
         }
     }
     
@@ -973,7 +951,7 @@ public class VisualNetwork implements PNEditListener {
         VisualNode node;
         
         if ((node = whatNodeInPosition(cursorPosition, g)) != null) {
-            newLink = new VisualArrow(node.getPosition(), cursorPosition);
+            newLink = new VisualArrow(cursorPosition.clone(), cursorPosition);
             newLinkSource = node;
         }
     }
@@ -1060,9 +1038,8 @@ public class VisualNetwork implements PNEditListener {
     
     //TODO OOPN end
     
-    public void selectElement(VisualElement selectedElement) {
-        setSelectedAllObjects(false);
-        setSelectedElement(selectedElement, true);
+    public boolean isSelected(VisualElement element) {
+        return this.selectedElements.contains(element);
     }
     
     /**

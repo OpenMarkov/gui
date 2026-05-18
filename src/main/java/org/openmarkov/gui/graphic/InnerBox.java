@@ -17,7 +17,7 @@ import java.awt.*;
  * @author asaez
  * @version 1.0
  */
-public abstract class InnerBox extends VisualElement {
+public abstract sealed class InnerBox extends VisualElement permits FSVariableBox, NumericVariableBox {
 
 	/**
 	 * Font type Helvetica, plain, size 11.

@@ -23,7 +23,7 @@ import java.awt.*;
  * @version 1.2 asaez - The class is defined as abstract
  * Some new constants, attributes and methods are defined
  */
-public abstract class VisualNode extends VisualElement implements ClassLocalizable {
+public abstract sealed class VisualNode extends VisualElement implements ClassLocalizable permits VisualChanceNode, VisualDecisionNode, VisualUtilityNode {
     
     /**
      * Font type Helvetica, bold, size 15.
@@ -184,6 +184,14 @@ public abstract class VisualNode extends VisualElement implements ClassLocalizab
     public void setTemporalPosition(Point2D.Double value) {
         temporalCoordinateX = value.getX();
         temporalCoordinateY = value.getY();
+    }
+    
+    public void setTemporalCoordinateX(double temporalCoordinateX) {
+        this.temporalCoordinateX = temporalCoordinateX;
+    }
+    
+    public void setTemporalCoordinateY(double temporalCoordinateY) {
+        this.temporalCoordinateY = temporalCoordinateY;
     }
     
     /**

@@ -9,6 +9,7 @@ import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.exception.PreResolutionNodeInInferenceException;
 import org.openmarkov.gui.graphic.VisualElement;
 import org.openmarkov.gui.graphic.VisualLink;
+import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.graphic.VisualState;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
@@ -276,12 +277,16 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
      * @param g Graphics2D
      */
     private void showContextualMenu(MouseEvent e, Graphics2D g) {
-        VisualElement selectedElement = this.networkEditorPanel.getVisualNetwork()
+        VisualNetwork visualNetwork = this.networkEditorPanel.getVisualNetwork();
+        VisualElement selectedElement = visualNetwork
                                                                .getElementInPosition(this.cursorPosition, g);
         ContextualMenu contextualMenu;
         if (selectedElement != null) {
             contextualMenu = this.getContextualMenu(selectedElement, this.networkEditorPanel);
-            this.networkEditorPanel.getVisualNetwork().selectElement(selectedElement);
+            if(!visualNetwork.isSelected(selectedElement)) {
+                visualNetwork.setSelectedAllObjects(false);
+            }
+            visualNetwork.setSelectionOfElement(selectedElement, true);
         } else {
             boolean canBeExpanded = this.networkEditorPanel.getNetworkEditorPanel().getProbNet().thereAreTemporalNodes();
             contextualMenu = this.contextualMenuFactory.getNetworkContextualMenu(canBeExpanded);

@@ -25,9 +25,12 @@ public class MoveNodeEdit extends PNEdit {
     
     private static final long serialVersionUID = 7578733825996342882L;
     
-    private final List<Point2D.Double> lastPositions = new ArrayList<Point2D.Double>();
-    private final List<Point2D.Double> newPositions = new ArrayList<Point2D.Double>();
-    private final List<String> namesNode = new ArrayList<String>();
+    private final List<Movement> movements;
+    
+    record Movement(VisualNode visualNode, String nodeName, Point2D.Double previousPosition,
+                    Point2D.Double newPosition) {
+        
+    }
     
     /**
      * Creates a new {@code MoveNodeEdit} with the nodes, and new X, Y
@@ -37,20 +40,30 @@ public class MoveNodeEdit extends PNEdit {
      *                   positions.
      */
     public MoveNodeEdit(List<VisualNode> movedNodes) {
-        super(movedNodes.get(0).getNode().getProbNet());
-        for (VisualNode visualNode : movedNodes) {
-            lastPositions.add(visualNode.getPosition().clone());
-            newPositions.add(visualNode.getTemporalPosition().clone());
-            namesNode.add(visualNode.getNode().getName());
-        }
+        super(movedNodes.getFirst().getNode().getProbNet());
+        this.movements = movedNodes.stream()
+                                   .map(visualNode -> new Movement(visualNode,
+                                                                   visualNode.getNode().getName(),
+                                                                   visualNode.getPosition().clone(),
+                                                                   visualNode.getTemporalPosition().clone()))
+                                   .toList();
     }
     
     @Override protected void doEdit() {
-        probNet.moveNode(namesNode,newPositions);
+        probNet.moveNode(this.movements.stream().map(Movement::nodeName).toList()
+                , this.movements.stream().map(Movement::newPosition).toList());
+        for (Movement movement : this.movements) {
+            movement.visualNode.setTemporalPosition(movement.newPosition);
+        }
     }
     
     @Override public void undo() {
         super.undo();
-        probNet.moveNode(namesNode,lastPositions);
+        probNet.moveNode(this.movements.stream().map(Movement::nodeName).toList()
+                , this.movements.stream().map(Movement::previousPosition).toList());
+        for (Movement movement : this.movements) {
+            movement.visualNode.setTemporalPosition(movement.previousPosition);
+        }
+        
     }
 }

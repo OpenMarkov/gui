@@ -11,7 +11,6 @@ import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.gui.configuration.GUIColor;
 import org.openmarkov.gui.configuration.GUIColors;
 
 import java.awt.*;
@@ -22,7 +21,7 @@ import java.awt.*;
  * @author jmendoza
  * @version 1.0
  */
-public class VisualLink extends VisualArrow implements ClassLocalizable {
+public non-sealed class VisualLink extends VisualArrow implements ClassLocalizable {
     
     /**
      * Object that has the information (included visual information) of the
@@ -103,15 +102,26 @@ public class VisualLink extends VisualArrow implements ClassLocalizable {
      *
      * @return shape of the arrow.
      */
-    @Override public Shape getShape(Graphics2D g) {
+    @Override public Shape getCenteredShape(Graphics2D g) {
         Segment line = new Segment(
                 new Point2D.Double(source.getTemporalPosition().getX(), source.getTemporalPosition().getY()),
                 new Point2D.Double(destination.getTemporalPosition().getX(),
                                    destination.getTemporalPosition().getY()));
         setStartPoint(source.getCutPoint(line, g));
         setEndPoint(destination.getCutPoint(line, g));
-        return super.getShape(g);
+        return super.getCenteredShape(g);
+    }
+    
+    @Override public Shape getShape(Graphics2D g) {
+        Shape sourceShape = source.getShape(g);
+        Shape destinationShape = destination.getShape(g);
         
+        Segment line = new Segment(
+                new Point2D.Double(sourceShape.getBounds2D().getCenterX(), sourceShape.getBounds2D().getCenterY()),
+                new Point2D.Double(destinationShape.getBounds2D().getCenterX(), destinationShape.getBounds2D().getCenterY()));
+        setStartPoint(source.getCutPoint(line, g));
+        setEndPoint(destination.getCutPoint(line, g));
+        return super.getShape(g);
     }
     
     /**
@@ -120,18 +130,18 @@ public class VisualLink extends VisualArrow implements ClassLocalizable {
      * @param g graphics object where paint the link.
      */
     @Override public void paint(Graphics2D g) {
+        Shape sourceShape = source.getShape(g);
+        Shape destinationShape = destination.getShape(g);
         
         // Paint the final arrow when the user releases the button of the
         // mouse
         Segment line;
-        
         try {
             line = new Segment(
-                    new Point2D.Double(source.getTemporalPosition().getX(), source.getTemporalPosition().getY()),
-                    new Point2D.Double(destination.getTemporalPosition().getX(),
-                                       destination.getTemporalPosition().getY()));
+                    new Point2D.Double(sourceShape.getBounds2D().getCenterX(), sourceShape.getBounds2D().getCenterY()),
+                    new Point2D.Double(destinationShape.getBounds2D().getCenterX(), destinationShape.getBounds2D().getCenterY()));
+
         } catch (IllegalArgumentException e) {
-            
             return;
         }
         if (link.hasRevealingConditions()) {
@@ -143,8 +153,10 @@ public class VisualLink extends VisualArrow implements ClassLocalizable {
         boolean hasAbsoluteLinkRestriction = link.hasTotalRestriction();
         setDoubleStriped(hasAbsoluteLinkRestriction);
         setSingleStriped(link.hasRestrictions() && !hasAbsoluteLinkRestriction);
-        setStartPoint(source.getCutPoint(line, g));
-        setEndPoint(destination.getCutPoint(line, g));
+        Point2D.Double sourceCutPoint = source.getCutPoint(line, g);
+        Point2D.Double cutPoint = destination.getCutPoint(line, g);
+        setStartPoint(sourceCutPoint);
+        setEndPoint(cutPoint);
         
         super.paint(g);
     }

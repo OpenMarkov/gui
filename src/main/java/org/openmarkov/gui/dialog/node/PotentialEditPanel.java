@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.javers.core.JaversBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.CloseEditStackOptions;
@@ -21,6 +19,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.core.logging.OpenMarkovLogger;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -45,6 +44,7 @@ import org.openmarkov.gui.dialog.common.TablePotentialPanel;
 import org.openmarkov.gui.dialog.common.UnivariateDistrPotentialPanel;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 import org.openmarkov.java.classUtils.ClassUtils;
+import org.openmarkov.java.reflectionUtils.ReflectionEquality;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -547,11 +547,8 @@ public class PotentialEditPanel extends JPanel {
     
     boolean potentialHasChanged() {
         Potential newPotential = this.node.getPotential();
-        Potential oldPotential = this.originalPotential;
-        boolean potentialsAreDifferent = JaversBuilder.javers()
-                                                      .build()
-                                                      .compare(newPotential, oldPotential)
-                                                      .hasChanges();
+        boolean potentialsAreDifferent = !ReflectionEquality.areEquals(this.originalPotential, newPotential);
+        OpenMarkovLogger.debug("Potentials are different "+potentialsAreDifferent);
         return potentialsAreDifferent;
     }
     

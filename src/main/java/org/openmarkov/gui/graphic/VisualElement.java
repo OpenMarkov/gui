@@ -21,7 +21,7 @@ import java.awt.*;
  * @version 1.2 asaez - add method for adjusting the foreground that should be
  * shown in a limited space
  */
-public abstract class VisualElement {
+public abstract sealed class VisualElement permits InnerBox, VisualArrow, VisualNode, VisualState {
 
 	/**
 	 * Used to paint normal lines.
@@ -130,7 +130,15 @@ public abstract class VisualElement {
 		}
 		return text;
 	}
-
+	
+	/**
+	 * Returns the shape of the node.
+	 *
+	 * @param g graphic object where the shape can be painted.
+	 * @return shape of the node.
+	 */
+	public abstract Shape getCenteredShape(Graphics2D g);
+	
 	/**
 	 * Returns the shape of the node.
 	 *

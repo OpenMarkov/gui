@@ -215,14 +215,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
             // ── Link operations ───────────────────────────────
             case ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS -> GUIUtils.executeUIAction(() -> {
                 NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
-                List<VisualLink> links = networkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks();
-                if (!links.isEmpty()) {
-                    Link<Node> link = links.getFirst().getLink();
-                    new InvertLinkAndUpdatePotentialsEdit(networkPanel.getEditorPanel()
-                                                                      .getVisualNetwork()
-                                                                      .getProbNet(), link.getFrom().getVariable(), link.getTo().getVariable())
-                            .executeEdit();
-                }
+                Link<Node> link = networkPanel.getEditorPanel().getVisualNetwork().getLastSelectedLink().getLink();
+                new InvertLinkAndUpdatePotentialsEdit(networkPanel.getEditorPanel()
+                                                                  .getVisualNetwork()
+                                                                  .getProbNet(), link.getFrom().getVariable(), link.getTo().getVariable())
+                        .executeEdit();
             });
             case ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES -> {
                 NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
@@ -241,12 +238,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     new RemoveLinkRestrictionEdit(getCurrentNetworkEditorPanel().getEditorPanel().getVisualNetwork()).executeEdit());
             case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> {
                 NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
-                List<VisualLink> links = networkPanel.getEditorPanel().getVisualNetwork().getSelectedLinks();
-                if (!links.isEmpty()) {
-                    Link<Node> link = links.getFirst().getLink();
-                    Window owner = GUIUtils.getOwner(networkPanel.getEditorPanel());
-                    new RevelationArcEditDialog(owner, link).requestValues();
-                }
+                Link<Node> link = networkPanel.getEditorPanel().getVisualNetwork().getLastSelectedLink().getLink();
+                Window owner = GUIUtils.getOwner(networkPanel.getEditorPanel());
+                new RevelationArcEditDialog(owner, link).requestValues();
             }
 
             // ── Decision operations ───────────────────────────
@@ -270,8 +264,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
                 Node selectedNode = networkPanel.getEditorPanel()
                                                 .getVisualNetwork()
-                                                .getSelectedNodes()
-                                                .getFirst()
+                                                .getLastSelectedNode()
                                                 .getNode();
                 Variable selectedVariable = selectedNode.getVariable();
                 Variable newVariable = new Variable(selectedVariable);

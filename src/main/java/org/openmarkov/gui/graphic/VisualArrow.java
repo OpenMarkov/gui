@@ -22,7 +22,7 @@ import org.openmarkov.gui.configuration.GUIColors;
  * @author jmendoza
  * @version 1.0
  */
-public class VisualArrow extends VisualElement {
+public sealed class VisualArrow extends VisualElement permits VisualLink {
 
 	/**
 	 * Width of the top of arrow.
@@ -99,7 +99,7 @@ public class VisualArrow extends VisualElement {
 	 * the nine points of the line with top of arrow.
 	 * <p>
 	 * <pre>
-	 * 0
+	 *          0
 	 * </pre>
 	 * <p>
 	 * <pre>
@@ -180,13 +180,11 @@ public class VisualArrow extends VisualElement {
         double tx = start.getX();
 		double ty = start.getY();
 		double angle = Math.atan((end.getY() - ty) / (end.getX() - tx));
-        java.awt.geom.Point2D.Double[] points = new java.awt.geom.Point2D.Double[9];
-        double halfWidth = WIDTH_TOP_ARROW / 2;
-        int index;
         AffineTransform transformation2D = new AffineTransform();
 
 		transformation2D.rotate(-angle);
 		transformation2D.translate(-tx, -ty);
+        java.awt.geom.Point2D.Double[] points = new java.awt.geom.Point2D.Double[9];
         points[0] = new java.awt.geom.Point2D.Double();
         
         java.awt.geom.Point2D.Double swingEnd = new java.awt.geom.Point2D.Double(end.x, end.y);
@@ -194,6 +192,7 @@ public class VisualArrow extends VisualElement {
         end.setLocation(swingEnd.getX(), swingEnd.getY());
         
         double incrHeight = (points[0].getX() >= 0) ? HEIGHT_TOP_ARROW : -HEIGHT_TOP_ARROW;
+        double halfWidth = WIDTH_TOP_ARROW / 2;
         points[1] = new java.awt.geom.Point2D.Double(points[0].getX() - incrHeight, points[0].getY() - halfWidth);
         points[3] = new java.awt.geom.Point2D.Double(points[1].getX(), points[0].getY());
         points[2] = new java.awt.geom.Point2D.Double(points[3].getX(), points[3].getY() - WIDTH_LINE_TO_SELECT);
@@ -208,7 +207,8 @@ public class VisualArrow extends VisualElement {
             throw new UnreachableException(e);
 		}
         int length = points.length;
-		for (index = 0; index < length; index++) {
+        int index;
+        for (index = 0; index < length; index++) {
 			transformation2D.transform(points[index], points[index]);
 		}
         
@@ -244,43 +244,56 @@ public class VisualArrow extends VisualElement {
 	 *
 	 * @return shape of the arrow.
 	 */
-	@Override public Shape getShape(Graphics2D g) {
-        
+	@Override public Shape getCenteredShape(Graphics2D g) {
         GeneralPath polygon;
-        int index;
-        int length;
-        Point2D.Double[] allPoints;
-        Point2D.Double[] points;
-        
-        Point2D.Double pStart = startPoint;
-        Point2D.Double pEnd = endPoint;
-
-		if ((pStart != null) && (pEnd != null)) {
-			allPoints = calculatePointsOfArrow(pStart, pEnd);
-			points = new Point2D.Double[8];
-			points[0] = allPoints[0];
-			points[1] = allPoints[1];
-			points[2] = allPoints[2];
-			points[3] = allPoints[6];
-			points[4] = allPoints[8];
-			points[5] = allPoints[4];
-			points[6] = allPoints[5];
-			points[7] = allPoints[0];
-            polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, points.length);
-			polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
-			length = points.length;
-			for (index = 1; index < length; index++) {
-				polygon.lineTo((float) points[index].getX(), (float) points[index].getY());
-			}
-			polygon.closePath();
-		} else {
-            polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, 0);
+        if(startPoint ==null || endPoint ==null) {
+			return new GeneralPath(Path2D.WIND_EVEN_ODD, 0);
 		}
-
-		return polygon;
-
+        Point2D.Double[] allPoints = calculatePointsOfArrow(startPoint, endPoint);
+        Point2D.Double[] points = new Point2D.Double[8];
+        points[0] = allPoints[0];
+        points[1] = allPoints[1];
+        points[2] = allPoints[2];
+        points[3] = allPoints[6];
+        points[4] = allPoints[8];
+        points[5] = allPoints[4];
+        points[6] = allPoints[5];
+        points[7] = allPoints[0];
+        polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, points.length);
+        polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
+        int length = points.length;
+        for (int index = 1; index < length; index++) {
+            polygon.lineTo((float) points[index].getX(), (float) points[index].getY());
+        }
+        polygon.closePath();
+        return polygon;
 	}
-
+	
+	@Override public Shape getShape(Graphics2D g) {
+		GeneralPath polygon;
+		if(startPoint ==null || endPoint ==null) {
+			return new GeneralPath(Path2D.WIND_EVEN_ODD, 0);
+		}
+		Point2D.Double[] allPoints = calculatePointsOfArrow(startPoint, endPoint);
+		Point2D.Double[] points = new Point2D.Double[8];
+		points[0] = allPoints[0];
+		points[1] = allPoints[1];
+		points[2] = allPoints[2];
+		points[3] = allPoints[6];
+		points[4] = allPoints[8];
+		points[5] = allPoints[4];
+		points[6] = allPoints[5];
+		points[7] = allPoints[0];
+		polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, points.length);
+		polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
+		int length = points.length;
+		for (int index = 1; index < length; index++) {
+			polygon.lineTo((float) points[index].getX(), (float) points[index].getY());
+		}
+		polygon.closePath();
+		return polygon;
+	}
+	
 	/**
 	 * Returns the shape of the arrow as it must be painted.
 	 *
@@ -288,7 +301,6 @@ public class VisualArrow extends VisualElement {
 	 */
     private static Shape getShapeToPaint(Point2D.Double start, Point2D.Double end) {
         
-        int index;
         Point2D.Double[] allPoints = calculatePointsOfArrow(start, end);
 		Point2D.Double[] points = new Point2D.Double[7];
 
@@ -302,7 +314,7 @@ public class VisualArrow extends VisualElement {
         GeneralPath polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, points.length);
 		polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
         int length = points.length;
-		for (index = 1; index < length; index++) {
+		for (int index = 1; index < length; index++) {
 			polygon.lineTo((float) points[index].getX(), (float) points[index].getY());
 		}
 		polygon.closePath();
@@ -318,8 +330,6 @@ public class VisualArrow extends VisualElement {
 	 */
     private static Shape getLineToPaint(Point2D.Double start, Point2D.Double end) {
         
-        int index;
-        
         Point2D.Double[] points = new Point2D.Double[2];
 
 		points[0] = start;
@@ -328,7 +338,7 @@ public class VisualArrow extends VisualElement {
         GeneralPath polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, points.length);
 		polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
         int length = points.length;
-		for (index = 1; index < length; index++) {
+		for (int index = 1; index < length; index++) {
 			polygon.lineTo((float) points[index].getX(), (float) points[index].getY());
 		}
 		polygon.closePath();
@@ -343,12 +353,11 @@ public class VisualArrow extends VisualElement {
 	 */
     
     public static void paintArrow(Graphics2D g, Point2D.Double start, Point2D.Double end, Stroke stroke) {
-        Shape shape;
-		if ((start != null) && (end != null)) {
+        if ((start != null) && (end != null)) {
 			if ((Math.abs(start.getX() - end.getX()) > 0.01) || (Math.abs(start.getY() - end.getY()) > 0.01)) {
 				g.setStroke(stroke);
-				shape = getShapeToPaint(start, end);
-				g.fill(shape);
+                Shape shape = getShapeToPaint(start, end);
+                g.fill(shape);
 				g.draw(shape);
 			}
 		}
@@ -365,12 +374,11 @@ public class VisualArrow extends VisualElement {
 	 */
     public static void paintDoubleStripe(Graphics2D g, Point2D.Double start, Point2D.Double end, Stroke stroke) {
         
-        Shape shape;
-		if ((start != null) && (end != null)) {
+        if ((start != null) && (end != null)) {
 			if ((Math.abs(start.getX() - end.getX()) > 0.01) || (Math.abs(start.getY() - end.getY()) > 0.01)) {
 				g.setStroke(stroke);
-				shape = getStripeShape(start, end, STRIPE_DISTANCE);
-				g.fill(shape);
+                Shape shape = getStripeShape(start, end, STRIPE_DISTANCE);
+                g.fill(shape);
 				g.draw(shape);
 				shape = getStripeShape(start, end, -STRIPE_DISTANCE);
 				g.fill(shape);
@@ -391,12 +399,11 @@ public class VisualArrow extends VisualElement {
 	 */
     public static void paintSingleStripe(Graphics2D g, Point2D.Double start, Point2D.Double end, Stroke stroke) {
         
-        Shape shape;
-		if ((start != null) && (end != null)) {
+        if ((start != null) && (end != null)) {
 			if ((Math.abs(start.getX() - end.getX()) > 0.01) || (Math.abs(start.getY() - end.getY()) > 0.01)) {
 				g.setStroke(stroke);
-				shape = getStripeShape(start, end, 0);
-				g.fill(shape);
+                Shape shape = getStripeShape(start, end, 0);
+                g.fill(shape);
 				g.draw(shape);
 			}
 		}
@@ -449,12 +456,11 @@ public class VisualArrow extends VisualElement {
 	 */
     
     public static void paintLine(Graphics2D g, Point2D.Double start, Point2D.Double end, Stroke stroke) {
-        Shape shape;
-		if ((start != null) && (end != null)) {
+        if ((start != null) && (end != null)) {
 			if ((Math.abs(start.getX() - end.getX()) > 0.01) || (Math.abs(start.getY() - end.getY()) > 0.01)) {
 				g.setStroke(stroke);
-				shape = getLineToPaint(start, end);
-				g.draw(shape);
+                Shape shape = getLineToPaint(start, end);
+                g.draw(shape);
 			}
 		}
 	}
@@ -465,6 +471,7 @@ public class VisualArrow extends VisualElement {
 	 * @param g graphics object where paint the link.
 	 */
 	@Override public void paint(Graphics2D g) {
+		System.out.println("Painting line from "+startPoint+" to "+endPoint);
         g.setPaint(linkColor.getColor());
 		Stroke stroke = getStroke();
 		if (isDoubleStriped) {

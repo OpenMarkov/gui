@@ -23,7 +23,7 @@ import java.util.HashMap;
  * @author asaez
  * @version 1.0
  */
-public class FSVariableBox extends InnerBox {
+public non-sealed class FSVariableBox extends InnerBox {
 
 	/**
 	 * This variable contains a list of all the visual states that are part
@@ -122,13 +122,18 @@ public class FSVariableBox extends InnerBox {
 	 * @param g graphics object.
 	 * @return shape of the innerBox.
 	 */
-	@Override public Shape getShape(Graphics2D g) {
+	@Override public Shape getCenteredShape(Graphics2D g) {
 		double innerNodeHeight = getInnerBoxHeight(g);
 		return new Rectangle2D.Double(visualNode.getUpperLeftCornerX(g) + INTERNAL_MARGIN,
 				visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + INTERNAL_MARGIN, BOX_WIDTH,
 				innerNodeHeight);
 	}
-
+	
+	@Override public Shape getShape(Graphics2D g) {
+		double innerNodeHeight = getInnerBoxHeight(g);
+		return new Rectangle2D.Double(0, 0, BOX_WIDTH, innerNodeHeight);
+	}
+	
 	/**
 	 * Paints the inner part of the visual node into the graphics object.
 	 *

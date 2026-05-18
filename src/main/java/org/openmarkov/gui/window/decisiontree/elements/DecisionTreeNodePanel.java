@@ -61,7 +61,8 @@ public non-sealed class DecisionTreeNodePanel extends DecisionTreeElementPanel {
         Shape nodeDimensions = visualNode.getShape((Graphics2D) panel.getGraphics());
         double width = nodeDimensions.getBounds2D().getWidth();
         double height = nodeDimensions.getBounds2D().getHeight();
-        visualNode.setTemporalPosition(new org.openmarkov.core.model.network.Point2D.Double(2 + (width / 2), height / 2));
+        //TODO: Fix missalignments
+        visualNode.setTemporalPosition(new org.openmarkov.core.model.network.Point2D.Double(2, 0));
         panel.setSize(new Dimension((int) width + 2 + 2, (int) height + 2));
         panel.setMinimumSize(new Dimension((int) width + 2 + 2, (int) height + 2));
         panel.setPreferredSize(new Dimension((int) width + 2 + 2, (int) height + 2));
