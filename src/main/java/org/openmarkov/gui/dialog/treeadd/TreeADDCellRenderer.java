@@ -110,9 +110,6 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
         // be a TreeADD or a Potential
         Object child = tree.getModel().getChild(branch, 0);
         boolean isLeaf = tree.getModel().isLeaf(child);
-        if (!leaf && child instanceof TreeADDPotential && !expanded) {
-            rightLabel.setText(" " + ((Potential) child).treeADDString());
-        }
         if (isLeaf && !expanded) {
             getTreeCellRendererComponent(tree, child, selected, expanded, leaf, row, hasFocus);
         }
