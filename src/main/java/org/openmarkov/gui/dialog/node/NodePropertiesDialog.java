@@ -369,7 +369,7 @@ public class NodePropertiesDialog extends OkCancelDialog {
     
     
     private void acceptPotentialEditChanges(boolean canIgnoreException) {
-        if (this.panelForPotentialEdit.getComponents().length == 0) {
+        if (this.panelForPotentialEdit==null||this.panelForPotentialEdit.getComponents().length == 0) {
             return;
         }
         PotentialEditPanel panel = (PotentialEditPanel) this.panelForPotentialEdit.getComponent(0);
