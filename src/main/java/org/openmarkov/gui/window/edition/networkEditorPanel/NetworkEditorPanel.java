@@ -40,8 +40,21 @@ import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEEvaluation;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEExpectedUtilityDecision;
+import org.openmarkov.java.swing.PointUtils;
 
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.JToolTip;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,7 +162,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         this.editionModeManager = new EditionModeManager(this, this.visualNetwork.getProbNet());
         this.editionMode = this.editionModeManager.getDefaultEditionMode();
         this.inferencePresenter = new InferencePresenter(this);
-        setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());
         this.scrollPanel.setViewportView(this);
         this.scrollPanel.getVerticalScrollBar().setUnitIncrement(25);
         decisionTreeEditors = new ArrayList<>();
@@ -177,7 +190,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      */
     public void setByTitle(boolean value) {
         this.visualNetwork.setByTitle(value);
-        readjustAndRepaint();
+        this.readjustAndRepaint();
     }
     
     @Override protected void doPaint(Graphics2D graphics2D) {
@@ -306,7 +319,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
             Dimension newDimension = new Dimension((int) Math.round(this.getNewWidth()), (int) Math.round(this.getNewHeight()));
             this.setPreferredSize(newDimension);
             this.setSize(newDimension);
-            readjustAndRepaint();
+            this.readjustAndRepaint();
         }
     }
     
@@ -361,7 +374,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         Node node = this.visualNetwork.getLastSelectedNode().getNode();
         if (this.requestPotentialValues(GUIUtils.getOwner(this), node, readOnly)) {
             // if the user has selected the ok button when closing the dialog
-            readjustAndRepaint();
+            this.readjustAndRepaint();
             this.evidenceManager.removeNodeEvidenceInAllCases(node);
         }
     }
@@ -739,7 +752,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     }
     
     public void updateName(String baseName) {
-        setName("NetworkEditorOf" + baseName);
+        this.setName("NetworkEditorOf" + baseName);
     }
     
     /**
@@ -855,6 +868,74 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      */
     public WorkingMode getWorkingMode() {
         return workingMode;
+    }
+    
+    @Override
+    public JToolTip createToolTip() {
+        JToolTip customTip = new JToolTip();
+        if(this.getToolTipText()==null || this.getToolTipText().isBlank()){
+            return customTip;
+        }
+        customTip.addAncestorListener(new AncestorListener() {
+            private int originalDismissDelay;
+            
+            @Override
+            public void ancestorAdded(AncestorEvent event) {
+                originalDismissDelay = ToolTipManager.sharedInstance().getDismissDelay();
+                ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
+            }
+            
+            @Override
+            public void ancestorRemoved(AncestorEvent event) {
+                ToolTipManager.sharedInstance().setDismissDelay(originalDismissDelay);
+            }
+            
+            @Override
+            public void ancestorMoved(AncestorEvent event) {
+            }
+        });
+        
+        JEditorPane htmlPane = new JEditorPane();
+        htmlPane.setContentType("text/html");
+        htmlPane.setText(this.getToolTipText());
+        htmlPane.setEditable(false);
+        htmlPane.setBackground(customTip.getBackground());
+        
+        JScrollPane scrollPane = new JScrollPane(htmlPane);
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(0));
+        
+        customTip.setLayout(new BorderLayout());
+        customTip.add(scrollPane, BorderLayout.CENTER);
+        customTip.setPreferredSize(new Dimension(
+                (int) Math.min(500, htmlPane.getPreferredSize().getWidth()+22),
+                (int) Math.min(250, htmlPane.getPreferredSize().getHeight()+12)
+        ));
+        return customTip;
+
+    }
+    
+    @Override public Point getToolTipLocation(MouseEvent event) {
+        if (this.editorInputHandler.getVisualNodeOfToolTip() instanceof VisualNode visualNodeOfToolTip) {
+            JToolTip tempTip = this.createToolTip();
+            tempTip.setTipText(this.getToolTipText(event));
+            Dimension size = tempTip.getPreferredSize();
+            Rectangle2D nodeBounds = visualNodeOfToolTip.getShape((Graphics2D) this.getGraphics()).getBounds2D();
+            Point thisLocation = this.getLocationOnScreen();
+            Point nodeLocation = new Point(
+                    (int) ((nodeBounds.getX() / 2 + nodeBounds.getWidth() / 3.4) * this.getZoomManager().getZoom()),
+                    (int) ((nodeBounds.getY() / 2 + nodeBounds.getHeight() / 2) * this.getZoomManager().getZoom())
+            );
+            return PointUtils.sumPoints(
+                    thisLocation,
+                    nodeLocation,
+                    new Point((int) (-size.width / 3.65), 0)
+            );
+        }
+        
+        return super.getToolTipLocation(event);
     }
     
     /**
@@ -997,22 +1078,22 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     }
     
     @Override public void afterEditExecutes(PNEdit edit) {
-        repaint();
-        setModified(this.getProbNet().getPNESupport().networkIsModified());
+        this.repaint();
+        this.setModified(this.getProbNet().getPNESupport().networkIsModified());
     }
     
     @Override public void beforeEditExecutes(PNEdit edit) {
-        repaint();
+        this.repaint();
     }
     
     @Override public void afterUndoingEdit(PNEdit edit) {
-        repaint();
-        setModified(this.getProbNet().getPNESupport().networkIsModified());
+        this.repaint();
+        this.setModified(this.getProbNet().getPNESupport().networkIsModified());
     }
     
     @Override public void afterRedoingEdit(PNEdit edit) {
-        repaint();
-        setModified(this.getProbNet().getPNESupport().networkIsModified());
+        this.repaint();
+        this.setModified(this.getProbNet().getPNESupport().networkIsModified());
     }
     
     /**

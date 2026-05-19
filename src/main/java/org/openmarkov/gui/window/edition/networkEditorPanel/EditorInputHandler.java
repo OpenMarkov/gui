@@ -19,6 +19,7 @@ import org.openmarkov.gui.util.GUIUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -46,8 +47,6 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
     
     private int lastClickCount = 0;
     private boolean lastLeftClickProducedANode = false;
-    
-    
     
     
     /**
@@ -110,7 +109,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
             this.networkEditorPanel.repaint();
             return;
         }
-        if (this.networkEditorPanel.getNetworkEditorPanel().getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION) {
+        if (this.networkEditorPanel.getNetworkEditorPanel()
+                                   .getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION) {
             // If we are in Edition Mode a double click must open
             // the corresponding properties dialog (for node, link
             // or network)
@@ -121,9 +121,15 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
                     if (!userAcceptedChanges && this.lastLeftClickProducedANode) {
                         ArrayList<PNEdit> undone;
                         do {
-                            undone = this.networkEditorPanel.getNetworkEditorPanel().getProbNet().getPNESupport().undo();
+                            undone = this.networkEditorPanel.getNetworkEditorPanel()
+                                                            .getProbNet()
+                                                            .getPNESupport()
+                                                            .undo();
                         } while (undone != null && undone.stream().noneMatch(AddNodeEdit.class::isInstance));
-                        this.networkEditorPanel.getNetworkEditorPanel().getProbNet().getPNESupport().removeUndoneEdits();
+                        this.networkEditorPanel.getNetworkEditorPanel()
+                                               .getProbNet()
+                                               .getPNESupport()
+                                               .removeUndoneEdits();
                     }
                 } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
                          IncompatibleEvidenceException | ConstraintViolatedException | NotSupportedOperationException |
@@ -172,7 +178,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         if (visualNode.isPreResolutionFinding()) {
             throw new UnrecoverableException(new PreResolutionNodeInInferenceException(visualNode));
         }
-        VisualState visualState = this.networkEditorPanel.getVisualNetwork().whatStateInPosition(this.cursorPosition, g);
+        VisualState visualState = this.networkEditorPanel.getVisualNetwork()
+                                                         .whatStateInPosition(this.cursorPosition, g);
         try {
             this.networkEditorPanel.getEvidenceManager().toggleFinding(visualNode, visualState);
         } catch (IncompatibleEvidenceException | NotEvaluableNetworkException | NonProjectablePotentialException |
@@ -232,6 +239,12 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
     @Override public void mouseExited(MouseEvent e) {
     }
     
+    private VisualNode visualNodeOfToolTip;
+    
+    public VisualNode getVisualNodeOfToolTip() {
+        return this.visualNodeOfToolTip;
+    }
+    
     /**
      * Invoked when the mouse cursor has been moved onto a component but no
      * buttons have been pushed.
@@ -247,7 +260,28 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         double diffY = point.getY() - this.cursorPosition.getY();
         this.cursorPosition.setLocation(point);
         this.networkEditorPanel.getEditionMode().mouseMoved(e, point, diffX, diffY, g);
+        if (this.visualNodeOfToolTip != this.networkEditorPanel.getVisualNetwork()
+                                                               .whatNodeInPosition(this.cursorPosition, g)) {
+
+            this.networkEditorPanel.setToolTipText(null);
+            //This forces to reset the tooltip "enter" timer when moving between visual elements.
+            ToolTipManager.sharedInstance().mousePressed(new MouseEvent(
+                    this.networkEditorPanel,
+                    MouseEvent.MOUSE_EXITED,
+                    System.currentTimeMillis(),
+                    0,
+                    0, 0,
+                    0, false
+            ));
+            
+        }
+        this.visualNodeOfToolTip = this.networkEditorPanel.getVisualNetwork()
+                                                          .whatNodeInPosition(this.cursorPosition, g);
+        if (this.visualNodeOfToolTip instanceof VisualNode visualNode) {
+            this.networkEditorPanel.setToolTipText(visualNode.getNode().getComment());
+        }
     }
+    
     
     @Override
     public void keyPressed(KeyEvent keyEvent) {
@@ -279,16 +313,18 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
     private void showContextualMenu(MouseEvent e, Graphics2D g) {
         VisualNetwork visualNetwork = this.networkEditorPanel.getVisualNetwork();
         VisualElement selectedElement = visualNetwork
-                                                               .getElementInPosition(this.cursorPosition, g);
+                .getElementInPosition(this.cursorPosition, g);
         ContextualMenu contextualMenu;
         if (selectedElement != null) {
             contextualMenu = this.getContextualMenu(selectedElement, this.networkEditorPanel);
-            if(!visualNetwork.isSelected(selectedElement)) {
+            if (!visualNetwork.isSelected(selectedElement)) {
                 visualNetwork.setSelectedAllObjects(false);
             }
             visualNetwork.setSelectionOfElement(selectedElement, true);
         } else {
-            boolean canBeExpanded = this.networkEditorPanel.getNetworkEditorPanel().getProbNet().thereAreTemporalNodes();
+            boolean canBeExpanded = this.networkEditorPanel.getNetworkEditorPanel()
+                                                           .getProbNet()
+                                                           .thereAreTemporalNodes();
             contextualMenu = this.contextualMenuFactory.getNetworkContextualMenu(canBeExpanded);
         }
         contextualMenu.show(this.networkEditorPanel, e.getX(), e.getY());

@@ -471,7 +471,6 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 	 * @param g graphics object where paint the link.
 	 */
 	@Override public void paint(Graphics2D g) {
-		System.out.println("Painting line from "+startPoint+" to "+endPoint);
         g.setPaint(linkColor.getColor());
 		Stroke stroke = getStroke();
 		if (isDoubleStriped) {
