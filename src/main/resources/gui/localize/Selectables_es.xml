@@ -150,6 +150,12 @@
     </defaultCriteria>
 
     <purpose>
+        <terminalEvent>
+            <Text value="Evento final"/>
+        </terminalEvent>
+        <initialEvent>
+            <Text value="Evento inicial"/>
+        </initialEvent>
         <effectiveness>
             <Text value="Efectividad"/>
         </effectiveness>

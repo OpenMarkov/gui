@@ -179,6 +179,7 @@
     <NetworkDefinitionPanel>
         <NetworkTypes>
             <Items>
+                <DESNet value="Red DES"/>
                 <InfluenceDiagram value="Diagrama de influencia"/>
                 <POMDP value="POMDP"/>
                 <TuningNetwork value="Red de ajustes"/>
@@ -414,7 +415,7 @@
         </DefinitionTab>
     </NodePropertiesDialog>
     <MulticriteriaDialog>
-        <Title value="Selección de criterios"/>
+        <Title value="Selección de multi criterio"/>
         <Type>
             <Title value="Análisis"/>
             <Unicriterion value="Unicriterio"/>
@@ -542,6 +543,7 @@
                 <Continuous value="Numérica"/>
                 <Discrete value="Finitos estados"/>
                 <Discretized value="Discretizada"/>
+                <Event value="Evento"/>
             </Items>
         </jComboBoxNodeVariableType>
         <jLabelUnit>
@@ -887,7 +889,7 @@
         <Title value="Seleccionar zoomManager"/>
     </SelectZoom>
     <SelectNetworkURL>
-        <Title value="Abrir archivo desde URL"/>
+        <Title value="Abrir red desde URL"/>
     </SelectNetworkURL>
     <OtherProperties>
         <Title value="Otras propiedades"/>

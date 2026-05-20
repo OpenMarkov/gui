@@ -7,10 +7,9 @@
 
 package org.openmarkov.gui.util;
 
-import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.core.model.network.PurposeType;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.MissingResourceException;
 
@@ -25,9 +24,7 @@ public class Purpose {
     /**
      * Internal names of the different purposes.
      */
-    private static final List<String> LIST = Arrays.asList("", "cost", "effectiveness", "treatment", "riskfactor",
-                                                           "symptom", "sign", "test", "diseaseanomaly",
-                                                           "auxiliary", "other");
+    private static final List<String> LIST = PurposeType.purposeList();
     
     /**
      * It retrieves the dependent-language string of the desired purpose. If the
@@ -63,23 +60,6 @@ public class Purpose {
         String[] strings = new String[Purpose.LIST.size()];
         Purpose.LIST.toArray(strings);
         return strings;
-    }
-    
-    /**
-     * This method returns the purpose sited in the specified index in the list.
-     * If the index is out of range (index &lt; 0 || index &gt; list size) the null is
-     * returned.
-     *
-     * @param index element of the list of purposes.
-     *
-     * @return a string that contains the name of the specified purpose.
-     */
-    public static @Nullable String getByIndex(int index) {
-        try {
-            return Purpose.LIST.get(index);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
-        }
     }
     
     /**

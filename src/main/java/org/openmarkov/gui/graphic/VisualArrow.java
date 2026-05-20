@@ -49,7 +49,13 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 	 * Distance between stripes
 	 */
 	private static final double STRIPE_DISTANCE = 3;
-    
+	
+	// 08/04/2020 -  constants for circular arrow
+	private final double CIRCULAR_ARROW_RADIOUS = 15;
+	private final double CIRCULAR_ARROW_START_ANGLE = 5;
+	private final double CIRCULAR_ARROW_END_ANGLE = -355;
+	private final double CIRCULAR_ARROW_HEAD_ORIENTATION = Math.toRadians(45);
+	
     /**
 	 * Start point.
 	 */
@@ -249,6 +255,11 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
         if(startPoint ==null || endPoint ==null) {
 			return new GeneralPath(Path2D.WIND_EVEN_ODD, 0);
 		}
+		if (startPoint.distance(endPoint) <0.1) {
+			Area area = getLoopShape(startPoint, CIRCULAR_ARROW_RADIOUS);
+			area.add(getLoopArrowHeadShape(startPoint, CIRCULAR_ARROW_RADIOUS));
+			return  area ;
+		}
         Point2D.Double[] allPoints = calculatePointsOfArrow(startPoint, endPoint);
         Point2D.Double[] points = new Point2D.Double[8];
         points[0] = allPoints[0];
@@ -273,6 +284,11 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 		GeneralPath polygon;
 		if(startPoint ==null || endPoint ==null) {
 			return new GeneralPath(Path2D.WIND_EVEN_ODD, 0);
+		}
+		if (startPoint.distance(endPoint) <0.1) {
+			Area area = getLoopShape(startPoint, CIRCULAR_ARROW_RADIOUS);
+			area.add(getLoopArrowHeadShape(startPoint, CIRCULAR_ARROW_RADIOUS));
+			return  area ;
 		}
 		Point2D.Double[] allPoints = calculatePointsOfArrow(startPoint, endPoint);
 		Point2D.Double[] points = new Point2D.Double[8];
@@ -362,7 +378,53 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 			}
 		}
 	}
-
+	
+	// 26/12/2019 -Methods to draw a circular arrow for self-loops; 06/04/2020: changed orientation of the arrow and circle made bigger
+	/**
+	 * This method creates the arrowhead in a circular arrow for a self-loop.
+	 * @param start - the center of the circumference which contains the arc
+	 * @param radious - the radious of the circumference
+	 * @return the Area with the arrowhead of the circular arrow from self-loops
+	 */
+	private Area getLoopShape(Point2D.Double start, double radious){
+		Arc2D.Float arc = new Arc2D.Float(Arc2D.OPEN);
+		arc.setFrame(start.getX() -radious, start.getY() -radious, radious*2, radious*2);
+		arc.setAngleStart(CIRCULAR_ARROW_START_ANGLE);
+		arc.setAngleExtent(CIRCULAR_ARROW_END_ANGLE);
+		return new  Area(arc);
+	}
+	
+	/**
+	 * This method creates the arrowhead in a circular arrow for a self-loop.
+	 * @param start - the center of the circumference which contains the arc
+	 * @param radious - the radious of the circumference
+	 * @return the Area with the arrowhead of the circular arrow from self-loops
+	 */
+	private Area getLoopArrowHeadShape(Point2D.Double start, double radious){
+		Shape arrowHead = null;
+		// Draw arrohead. Arrowhead rotates ~45 degrees
+		Point2D.Double startArrow = new Point2D.Double(start.getX() -radious ,start.getY()  );
+		Point2D.Double endArrow = new Point2D.Double(start.getX() -radious*Math.cos(CIRCULAR_ARROW_HEAD_ORIENTATION)  ,start.getY() +radious*Math.sin(CIRCULAR_ARROW_HEAD_ORIENTATION));
+		arrowHead = getShapeToPaint( endArrow, startArrow);
+		return new Area(arrowHead);
+	}
+	
+	
+	/**
+	 * This method draws  a self-loop arrow into de graphics object
+	 *
+	 * @param g  - graphics object where paint the link.
+	 * @param start - the center of the circumference which contains the arc.
+	 * @param stroke - the stroke used to draw the self-loop circular arrow
+	 */
+	public void paintLoopArrow(Graphics2D g, Point2D.Double start, Stroke stroke) {
+		g.setStroke(stroke);
+		g.fill(getLoopArrowHeadShape(start, CIRCULAR_ARROW_RADIOUS));
+		g.draw(getLoopShape(start, CIRCULAR_ARROW_RADIOUS));
+		
+	}
+//
+	
 	/**
 	 * Paints a double stripe (two perpendicular marks) at the midpoint of the link,
 	 * indicating a total link restriction.
@@ -485,6 +547,10 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 			paintArrow(g, startPoint, endPoint, stroke);
 		} else {
 			paintLine(g, startPoint, endPoint, stroke);
+		}
+		// 01/01/2020 Paints a circular arrow when there is a self-loop in an event node
+		if (startPoint!=null && endPoint!=null && startPoint.distance(endPoint)==0){
+			paintLoopArrow(g, startPoint, stroke);
 		}
 	}
 

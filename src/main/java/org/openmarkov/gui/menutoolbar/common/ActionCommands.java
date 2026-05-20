@@ -85,6 +85,8 @@ public enum ActionCommands {
     CHANCE_CREATION("Edit.Mode.Chance"),
     /** Action invoked when the user wants to activate the decision node creation option. */
     DECISION_CREATION("Edit.Mode.Decision"),
+    /** Action invoked when the user wants to activate the chance node creation option. */
+    EVENT_CREATION("Edit.Mode.Event"),
     /** Action invoked when the user wants to activate the utility node creation option. */
     UTILITY_CREATION("Edit.Mode.Utility"),
     /** Action invoked when the user wants to activate the link creation option. */
@@ -105,6 +107,12 @@ public enum ActionCommands {
      * using the option in the Inference menu
      */
     CHANGE_TO_EDITION_MODE("ChangeToEditionMode"),
+    /**
+     * Action invoked when the user wants to change the working mode by
+     * pressing the button in the standard tool bar
+     * (switching from Edition to Inference mode or vice versa).
+     */
+    MC_SIMULATE_NETWORK("MCSimulateNetwork"),
     /** Action invoked when the user wants to change the Expansion Threshold. */
     SET_NEW_EXPANSION_THRESHOLD("SetNewExpansionThreshold"),
     /** Action invoked when the user wants to create a new evidence case. */
@@ -136,6 +144,8 @@ public enum ActionCommands {
     NODE_PROPERTIES("NodeProperties"),
     /** Action invoked when the user wants to show the table of a node. */
     EDIT_POTENTIAL("NodePotential"),
+    /** Action invoked when the user wants to impose a policy in a decision node. */
+    EVENT_EDIT_TIME_TO_EVENT("EditTimeToEvent"),
     /** Action invoked when the user wants to impose a policy in a decision node. */
     DECISION_IMPOSE_POLICY("ImposePolicy"),
     /** Action invoked when the user wants to modify the policy of a decision node. */
@@ -239,6 +249,13 @@ public enum ActionCommands {
     UNCERTAINTY_EDIT("Uncertainty.Edit"),
     /** Action invoked when the user wants to remove uncertainty on potential */
     UNCERTAINTY_REMOVE("Uncertainty.Remove"),
+    // 25/08/2019 impossible configuration; 14/12/2019 add function for a Table With Events
+    /** Action invoked when the user wants to establish a configuration as impossible in a TTE potential */
+    SET_IMPOSSIBLE_CONFIGURATION("ImpossibleConfiguration.Set"),
+    /** Action invoked when the user wants to establish a configuration as possible in a TTE potential */
+    UNSET_IMPOSSIBLE_CONFIGURATION("ImpossibleConfiguration.UnSet"),
+    /** Action invoked when the user wants add a function in a Table With Events */
+    ADD_FUNCTION("AddFunction"),
     /** Action invoked when the user wants to log temporal evolution */
     LOG("Log"),
     /** Action invoked when the user selects another class to instantiate */

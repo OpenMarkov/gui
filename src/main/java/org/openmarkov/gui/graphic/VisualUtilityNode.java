@@ -8,6 +8,7 @@
 package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.gui.configuration.GUIColors;
 
@@ -189,7 +190,9 @@ public non-sealed class VisualUtilityNode extends VisualNode {
         Shape shape = getShape(g);
         Point2D.Double[] points = getPoints(g, true);
         
-        g.setPaint(GUIColors.Network.UtilityNode.BACKGROUND.getColor());
+        boolean isChildOfEvent = node.getParents().stream().filter(parent->parent.getNodeType()== NodeType.EVENT).count()>0;
+        
+        g.setPaint((isChildOfEvent ? GUIColors.Network.UtilityNode.BACKGROUND_WITH_EVENT : GUIColors.Network.UtilityNode.BACKGROUND).getColor());
         g.fill(shape);
         g.setPaint(GUIColors.Network.UtilityNode.FOREGROUND.getColor());
         g.setStroke(getContourStroke());

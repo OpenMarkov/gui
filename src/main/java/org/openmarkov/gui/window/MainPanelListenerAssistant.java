@@ -10,12 +10,15 @@ package org.openmarkov.gui.window;
 import org.openmarkov.core.action.base.linkEdits.InvertLinkAndUpdatePotentialsEdit;
 import org.openmarkov.core.action.core.AddNodeEdit;
 import org.openmarkov.core.exception.*;
+import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.gui.action.RemoveLinkRestrictionEdit;
 import org.openmarkov.gui.configuration.LastOpenFiles;
+import org.openmarkov.gui.dialog.common.OkCancelDialog;
+import org.openmarkov.gui.dialog.inference.common.InferenceOptionsDialog;
 import org.openmarkov.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.core.localize.StringDatabase;
@@ -37,6 +40,8 @@ import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import org.openmarkov.core.model.network.Point2D;
+
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -149,6 +154,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     throw new UnrecoverableException(ex);
                 }
             }
+            case ActionCommands.MC_SIMULATE_NETWORK->monteCarloSimulation();
             case ActionCommands.SET_NEW_EXPANSION_THRESHOLD ->
                     inferenceHandler.setNewExpansionThreshold((Double) e.getSource());
             case ActionCommands.CREATE_NEW_EVIDENCE_CASE ->
@@ -250,6 +256,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().editNodePolicy());
             case ActionCommands.DECISION_REMOVE_POLICY ->
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().removePolicyFromNode());
+            case ActionCommands.EVENT_EDIT_TIME_TO_EVENT->GUIUtils.executeUIAction(() ->getCurrentNetworkEditorPanel().changePotential());
             case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY ->
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().showExpectedUtilityOfNode());
             case ActionCommands.DECISION_SHOW_OPTIMAL_POLICY ->
@@ -307,14 +314,20 @@ public class MainPanelListenerAssistant extends WindowAdapter
                  ActionCommands.TREE_SAVE_GRAPHVIZ, ActionCommands.TREE_SHOW_CEP, ActionCommands.TREE_OPEN_NETWORK,
                  ActionCommands.TREE_EXPAND_ALL, ActionCommands.TREE_EXPAND_NEXT,
                  ActionCommands.LINK_CREATION, ActionCommands.UTILITY_CREATION,
-                 ActionCommands.DECISION_CREATION, ActionCommands.LOG, ActionCommands.CHANGE_ACTIVE_CLASS,
+                 ActionCommands.DECISION_CREATION, ActionCommands.EVENT_CREATION, ActionCommands.LOG,
+                 ActionCommands.CHANGE_ACTIVE_CLASS,
                  ActionCommands.ZOOM_PREFIX, ActionCommands.NODES, ActionCommands.ZOOM,
                  ActionCommands.OBJECT_SELECTION,
                  ActionCommands.OPEN_LAST_1_FILE, ActionCommands.OPEN_LAST_2_FILE,
                  ActionCommands.OPEN_LAST_3_FILE, ActionCommands.OPEN_LAST_4_FILE,
                  ActionCommands.OPEN_LAST_5_FILE, ActionCommands.OPEN_LAST_6_FILE,
                  ActionCommands.OPEN_LAST_7_FILE, ActionCommands.OPEN_LAST_8_FILE,
-                 ActionCommands.OPEN_LAST_9_FILE -> defaultActionOnCommand(e, actionCommand, actionCommandConstant);
+                 ActionCommands.OPEN_LAST_9_FILE,
+                 ActionCommands.SET_IMPOSSIBLE_CONFIGURATION, ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION,
+                 ActionCommands.ADD_FUNCTION
+                    
+                    
+                    -> defaultActionOnCommand(e, actionCommand, actionCommandConstant);
             case null -> defaultActionOnCommand(e, actionCommand, actionCommandConstant);
         }
     }
@@ -378,7 +391,41 @@ public class MainPanelListenerAssistant extends WindowAdapter
     public boolean closePanel(EditorPanel panel) {
         return panel.close();
     }
-
+    
+    
+    // 21/08/2019 22/04/2021 DESInference
+    /**
+     * This method performs N Monte Carlo simulations
+     *
+     */
+    protected void monteCarloSimulation(){
+        boolean performInference = true;
+        mainPanel.selecMonteCarloButton(false);
+        
+        InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkEditorPanel().getProbNet(), SwingUtilities.getWindowAncestor(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
+        ProbNet probNet =getCurrentNetworkEditorPanel().getProbNet();
+        // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
+        if (dialog.getSelectedOption() == OkCancelDialog.ChosenOption.Cancel) {
+            performInference = false;
+        }
+        
+        if (performInference) {
+            
+            
+            javax.swing.ProgressMonitor simulationProgressMonitor = new javax.swing.ProgressMonitor(SwingUtilities.getWindowAncestor(mainPanel), "Running simulation",null, 0, 0);
+            
+            new Thread(() -> {
+                try {
+                    new org.openmarkov.inference.DES.DESInference(probNet, simulationProgressMonitor);
+                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther | IOException e) {
+                    throw new UnrecoverableException(e);
+                }
+            }).start();
+        }
+    }
+    //
+    
+    
     // ── ComponentListener ─────────────────────────────────────────
 
     @Override public void componentResized(ComponentEvent e) {

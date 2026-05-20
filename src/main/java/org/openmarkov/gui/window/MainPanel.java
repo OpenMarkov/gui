@@ -320,6 +320,14 @@ public class MainPanel extends JPanel {
         this.getStandardToolBar().changeWorkingModeButton(workingMode);
     }
     
+    // 09/09/2019
+    /**
+     *
+     */
+    public void selecMonteCarloButton(boolean select){
+        this.getStandardToolBar().selectMonteCarloButton(select);
+    }
+    
     /**
      * This method initialises standardToolBar.
      *

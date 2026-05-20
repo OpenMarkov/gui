@@ -127,4 +127,7 @@ public class FunctionPotentialPanel extends PotentialPanel {
         }
     }
     
+    public void setFunction(String string) {
+        this.function=new VariableExpression(this.variables, string);
+    }
 }

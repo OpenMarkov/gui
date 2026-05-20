@@ -40,7 +40,8 @@ public class EditionModeManager {
     private static final List<NodeModeDescriptor> NODE_MODE_DESCRIPTORS = List.of(
             new NodeModeDescriptor("Edit.Mode.Chance",   "chance.gif",   "chance.gif",   NodeType.CHANCE),
             new NodeModeDescriptor("Edit.Mode.Decision", "decision.gif", "decision.gif", NodeType.DECISION),
-            new NodeModeDescriptor("Edit.Mode.Utility",  "utility.gif",  "utility.gif",  NodeType.UTILITY)
+            new NodeModeDescriptor("Edit.Mode.Utility",  "utility.gif",  "utility.gif",  NodeType.UTILITY),
+            new NodeModeDescriptor("Edit.Mode.Event",  "event.gif",  "event.gif",  NodeType.EVENT)
     );
 
     private final Map<String, EditionState> editionStates;

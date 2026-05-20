@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.node;
 
+import org.openmarkov.core.action.core.EventNodeAlwaysAppendEdit;
 import org.openmarkov.core.action.core.NodeAlwaysObservedEdit;
 import org.openmarkov.core.action.core.NodeCommentEdit;
 import org.openmarkov.core.action.core.NodeBaseNameEdit;
@@ -51,7 +52,7 @@ public final class NodeDefinitionPanel extends JPanel
     /**
      * String database
      */
-    protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     private JComboBox<String> jComboBoxNetworkAgents;
     private JLabel jLabelTimeSlice;
     private JComboBox<String> jComboBoxTimeSlice;
@@ -117,6 +118,8 @@ public final class NodeDefinitionPanel extends JPanel
      * Specifies if the node whose additionalProperties are edited is new.
      */
     private boolean newNode;
+    
+    private JCheckBox jCheckboxAlwaysAppend;
     
     /**
      * constructor without construction parameters
@@ -647,6 +650,9 @@ public final class NodeDefinitionPanel extends JPanel
         }
         if (node.getNodeType() == NodeType.CHANCE) {
             return getJCheckBoxAlwaysObserved();
+        }		// 25/10/2020 Event behaviour
+        else if (node.getNodeType() == NodeType.EVENT) {
+            return getJCheckboxAlwaysAppend();
         }
         // default
         return getJComboBoxNetworkAgents();
@@ -684,6 +690,25 @@ public final class NodeDefinitionPanel extends JPanel
         return jLabelDecisionCriteria;
     }
     
+    // 22/04/2021 -recoded AlwaysAppend
+    
+    /**
+     * Initialises jCheckBoxOverrideTimeStamp
+     *
+     * @return a new checkbox
+     */
+    public JCheckBox getJCheckboxAlwaysAppend() {
+        if (jCheckboxAlwaysAppend == null) {
+            jCheckboxAlwaysAppend = new JCheckBox(" Always append", false );
+            jCheckboxAlwaysAppend.setVisible(true);
+            jCheckboxAlwaysAppend.setName("jCheckboxOverrideTimeStamp");
+            jCheckboxAlwaysAppend.setVerticalAlignment(SwingConstants.CENTER);
+            jCheckboxAlwaysAppend.addActionListener(this);
+            jCheckboxAlwaysAppend.addFocusListener(this);
+        }
+        return jCheckboxAlwaysAppend;
+    }
+    
     private JComboBox<Criterion> getJComboBoxDecisionCriteria() {
         if (jComboBoxDecisionCriteria == null) {
             List<Criterion> decisionCriteria = node.getProbNet().getDecisionCriteria();
@@ -710,7 +735,7 @@ public final class NodeDefinitionPanel extends JPanel
      *
      * @return a new label for the comment
      */
-    protected JTextArea getJTextAreaLabelNodeDefinitionComment() {
+    private JTextArea getJTextAreaLabelNodeDefinitionComment() {
         if (jTextAreaLabelNodeDefinitionComment == null) {
             jTextAreaLabelNodeDefinitionComment = new JTextArea();
             jTextAreaLabelNodeDefinitionComment.setLineWrap(true);
@@ -766,19 +791,17 @@ public final class NodeDefinitionPanel extends JPanel
         }
         if (comboBox.equals(jComboBoxNodePurpose)) {
             if (itemSelected != null && e.getStateChange() == ItemEvent.SELECTED) {
-                PurposeEdit purposeEdit = null;
                 for (String purposeString : Purpose.getListStrings(true)) {
                     if (itemSelected.equals(Purpose.getString(purposeString))) {
-                        purposeEdit = new PurposeEdit(node, purposeString);
+                        try {
+                            new PurposeEdit(node, purposeString).executeEdit();
+                        } catch (DoEditException ex) {
+                            throw new UnrecoverableException(ex);
+                        }
                         break;
                     }
                 }
-                try {
-                    ProbNet probNet = node.getProbNet();
-                    purposeEdit.executeEdit();
-                } catch (DoEditException e1) {
-                    throw new UnrecoverableException(e1);
-                }
+
             }
         } else if (comboBox.equals(jComboBoxNodeRelevance)) {
             if (itemSelected != null && e.getStateChange() == ItemEvent.SELECTED) {
@@ -904,6 +927,10 @@ public final class NodeDefinitionPanel extends JPanel
         // node def comment
         commentHTMLScrollPaneNodeDefinitionComment.setCommentHTMLTextPaneText(node.getComment());
         jCheckboxAlwaysObserved.setSelected(node.isAlwaysObserved());
+        // 25/10/2020 - Event behaviour
+        if (node.getNodeType() == NodeType.EVENT) {
+            jCheckboxAlwaysAppend.setSelected(node.isAlwaysAppend());
+        }
     }
     
     /**
@@ -933,19 +960,24 @@ public final class NodeDefinitionPanel extends JPanel
      * Starts the edit event to change the alwaysObserved property
      */
     public void alwaysObservedPropertyHasChanged() throws DoEditException {
-        NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.node, this.jCheckboxAlwaysObserved.isSelected());
-        ProbNet probNet = node.getProbNet();
-        edit.executeEdit();
+        new NodeAlwaysObservedEdit(this.node, this.jCheckboxAlwaysObserved.isSelected()).executeEdit();
+    }
+    
+    private void alwaysAppendPropertyHasChanged() throws DoEditException {
+        new EventNodeAlwaysAppendEdit(this.node, jCheckboxAlwaysAppend.isSelected()).executeEdit();
     }
     
     @Override public void actionPerformed(ActionEvent e) {
-        if (!e.getSource().equals(this.jCheckboxAlwaysObserved)) {
-            return;
-        }
         try {
-            alwaysObservedPropertyHasChanged();
-        } catch (DoEditException ex) {
-            throw new UnrecoverableException(ex);
+            if (e.getSource().equals(this.jCheckboxAlwaysObserved)) {
+                alwaysObservedPropertyHasChanged();
+            }
+            // 25/10/2020 Event behaviour
+            if (e.getSource().equals(this.jCheckboxAlwaysAppend)) {
+                alwaysAppendPropertyHasChanged();
+            }
+        }catch (DoEditException e1) {
+            throw new UnrecoverableException(e1);
         }
     }
 }

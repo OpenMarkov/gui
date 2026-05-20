@@ -8,6 +8,11 @@
             <Selection>
                 <ToolTip value="Object selection"/>
             </Selection>
+            <Event>
+                <ToolTip>
+                    <Label value="Insert event nodes"/>
+                </ToolTip>
+            </Event>
             <Decision>
                 <ToolTip value="Insert decision nodes"/>
             </Decision>
@@ -31,6 +36,9 @@
     <ChangeWorkingMode>
         <ToolTip value="Inference/Edition mode"/>
     </ChangeWorkingMode>
+    <MCSimulateNetwork>
+        <ToolTip value="DES Simulation"/>
+    </MCSimulateNetwork>
     <Undo>
         <ToolTip value="Undo the last operation"/>
     </Undo>

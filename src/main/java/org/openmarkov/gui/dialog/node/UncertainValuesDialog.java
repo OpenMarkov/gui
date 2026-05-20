@@ -29,6 +29,7 @@ import org.openmarkov.core.model.network.modelUncertainty.TriangularFunction;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.exception.FamilyDistributionRuleBrokenException;
 import org.openmarkov.core.localize.StringDatabase;
@@ -62,9 +63,9 @@ public class UncertainValuesDialog extends OkCancelDialog {
     private DistributionTableModel distributionTableModel;
     private JTable distributionTable;
     private final JPanel distributionsPanel;
-    private final Variable variable;
+    private Variable variable;
     private final List<String> distributionTypes;
-    private final boolean isChanceVariable;
+    private boolean isChanceVariable;
     // List of uncertain values
     private List<UncertainValue> uncertainColumn;
     // List of doubles calculated from uncertainColum by taking the mean value
@@ -72,6 +73,65 @@ public class UncertainValuesDialog extends OkCancelDialog {
     // Base position for storing the array of uncertain values in the table
     // potential
     private final int posBase;
+    
+    // 20/05/2025 Begin DES uncertainty
+    private boolean isDES = false;
+    
+    /**
+     * @param owner
+     * @param configuration
+     */
+    public UncertainValuesDialog(Window owner, EvidenceCase configuration, TableWithEvents tableWithEvents) throws NonProjectablePotentialException {
+        super(owner);
+        isDES = true;
+        distributionTypes = new ArrayList<>();
+        posBase = getDESPositionBaseUncertainValue(tableWithEvents.getTablePotential(), configuration);
+        
+        setResizable(true);
+        JPanel componentsPanel = getComponentsPanel();
+        // Panel of distributions
+        distributionsPanel = new JPanel();
+        fillDistributionsTableModel(tableWithEvents.getTablePotential().getConditionedVariable(), configuration, tableWithEvents.getTablePotential());
+        distributionTable.getModel().addTableModelListener(new DistributionsTableListener());
+        distributionTable.addMouseListener(new DistributionsTableMouseListener());
+        distributionsPanel.setBorder(new TitledBorder("Distributions"));
+        JScrollPane distributionsTablePane = new JScrollPane(distributionTable);
+        distributionsPanel.add(distributionsTablePane);
+        distributionsTablePane.setPreferredSize(new Dimension(300, 100));
+        distributionsPanel.setPreferredSize(new Dimension(350, 150));
+        componentsPanel.add(distributionsPanel);
+        try {
+            initialize();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
+                                          stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+        }
+        
+        Point parentLocation = owner.getLocation();
+        Dimension parentSize = owner.getSize();
+        int x = (int) (parentLocation.getX() + parentSize.getWidth() / 2 - getSize().getWidth() / 2);
+        int y = (int) (parentLocation.getY() + parentSize.getHeight() / 2 - getSize().getHeight() / 2);
+        setLocation(new Point(x, y));
+    }
+    
+    private int getDESPositionBaseUncertainValue(TablePotential potential, EvidenceCase configuration) {
+        int[] coordinates;
+        int sizeCoordinates;
+        int pos;
+        int sizeEvi = configuration.getFindings().size();
+        //If there is only one state; then it is multiplied by 1
+        sizeCoordinates = 1+ sizeEvi;
+        coordinates = new int[sizeCoordinates];
+        List<Variable> varsTable = potential.getVariables();
+        for (int i = 1; i < sizeCoordinates; i++) {
+            coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
+        }
+        pos = potential.getPosition(coordinates);
+        return pos;
+    }
+    // End DES uncertainty
+    
     
     /**
      * @param owner the owner

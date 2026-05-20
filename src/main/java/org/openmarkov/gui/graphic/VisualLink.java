@@ -10,7 +10,9 @@ package org.openmarkov.gui.graphic;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
+import org.openmarkov.core.model.network.constraint.OnlySelfLoopsWithEventAndChanceNodes;
 import org.openmarkov.gui.configuration.GUIColors;
 
 import java.awt.*;
@@ -109,18 +111,37 @@ public non-sealed class VisualLink extends VisualArrow implements ClassLocalizab
                                    destination.getTemporalPosition().getY()));
         setStartPoint(source.getCutPoint(line, g));
         setEndPoint(destination.getCutPoint(line, g));
+        // 29/12/2019 When having a loop in event nodes source = destination and startPoint and endPoint are the center of the arc
+        //02/02/2020 loops also in Cnance nodes so I have put an abstract method in VisualNode and overriden it in ChanceVisualNode and EventVisualNode
+        if ( source.getNode().getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes()) &&
+                (destination.getNode().getName().equals(source.getNode().getName()))
+                && ( (destination.getNode().getNodeType() == NodeType.EVENT  ) || (destination.getNode().getNodeType() == NodeType.CHANCE  ))
+        ) {
+            setStartPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
+            setEndPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
+        }
+        //
         return super.getCenteredShape(g);
     }
     
     @Override public Shape getShape(Graphics2D g) {
         Shape sourceShape = source.getShape(g);
         Shape destinationShape = destination.getShape(g);
-        
         Segment line = new Segment(
                 new Point2D.Double(sourceShape.getBounds2D().getCenterX(), sourceShape.getBounds2D().getCenterY()),
                 new Point2D.Double(destinationShape.getBounds2D().getCenterX(), destinationShape.getBounds2D().getCenterY()));
         setStartPoint(source.getCutPoint(line, g));
         setEndPoint(destination.getCutPoint(line, g));
+        // 29/12/2019 When having a loop in event nodes source = destination and startPoint and endPoint are the center of the arc
+        //02/02/2020 loops also in Cnance nodes so I have put an abstract method in VisualNode and overriden it in ChanceVisualNode and EventVisualNode
+        if ( source.getNode().getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes()) &&
+                (destination.getNode().getName().equals(source.getNode().getName()))
+                && ( (destination.getNode().getNodeType() == NodeType.EVENT  ) || (destination.getNode().getNodeType() == NodeType.CHANCE  ))
+        ) {
+            setStartPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
+            setEndPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
+        }
+        
         return super.getShape(g);
     }
     
@@ -132,6 +153,20 @@ public non-sealed class VisualLink extends VisualArrow implements ClassLocalizab
     @Override public void paint(Graphics2D g) {
         Shape sourceShape = source.getShape(g);
         Shape destinationShape = destination.getShape(g);
+        if(source!=null && destination!=null && source== destination){
+            // 28/12/2019 allowed self lopps for Event nodes- 02/04/2020 allowed self-loops for chance nodes
+            //Before adding this block, this catch was empty only has a return.
+            //Now it checks if the link is a self-loop in an event node. If  it is the case the circular arrow is painted
+            if (  source.getNode().getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes()) &&
+                    (destination.getNode().getName().equals(source.getNode().getName()))
+                    && ( (destination.getNode().getNodeType() == NodeType.EVENT  ) || (destination.getNode().getNodeType() == NodeType.CHANCE  ))
+            ){
+                setStartPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
+                setEndPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
+                super.paint(g);
+            }
+            return;
+        }
         
         // Paint the final arrow when the user releases the button of the
         // mouse

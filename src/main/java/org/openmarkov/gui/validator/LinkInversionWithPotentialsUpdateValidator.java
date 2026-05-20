@@ -48,6 +48,23 @@ public class LinkInversionWithPotentialsUpdateValidator {
         LinkInversionWithPotentialsUpdateValidator.validNode(node1);
         LinkInversionWithPotentialsUpdateValidator.validNode(node2);
         LinkInversionWithPotentialsUpdateValidator.validNewLinks(node1, node2);
+        
+        /*Iago code on this method is:
+        boolean validPotentials;
+
+		try {
+			Potential potential1 = link.getNode1().getPotentials().get(0);
+			Potential potential2 = link.getNode2().getPotentials().get(0);
+			validPotentials = validatePotential(potential1) && validatePotential(potential2);
+		} catch (IndexOutOfBoundsException ex) {
+			// This exception is thrown when one of the involved nodes is decision.
+			return false; // Arc reversal is only applicable if both nodes are chance.
+		}
+
+		// 1. The link must be directed
+		// 2. The potential must be convertible to TablePotential
+		return (link.isDirected() && validPotentials);
+         */
     }
     
     private static void validNewLinks(Node node1, Node node2) throws ConstraintViolatedException {

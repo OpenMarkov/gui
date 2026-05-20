@@ -23,7 +23,7 @@ import java.awt.*;
  * @version 1.2 asaez - The class is defined as abstract
  * Some new constants, attributes and methods are defined
  */
-public abstract sealed class VisualNode extends VisualElement implements ClassLocalizable permits VisualChanceNode, VisualDecisionNode, VisualUtilityNode {
+public abstract sealed class VisualNode extends VisualElement implements ClassLocalizable permits VisualChanceNode, VisualDecisionNode, VisualEventNode, VisualUtilityNode {
     
     /**
      * Font type Helvetica, bold, size 15.

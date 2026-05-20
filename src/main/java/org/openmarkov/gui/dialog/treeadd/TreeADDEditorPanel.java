@@ -21,6 +21,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.exception.*;
@@ -105,6 +106,19 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     
     public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node) {
         this(cellRenderer, node, false);
+    }
+    
+    // 08/04/2020
+    public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node, TreeADDPotential treeADDPotential, boolean readOnly) {
+        this.rootTreeADDPotential = treeADDPotential;
+        this.node = node;
+        setupUserInterface(cellRenderer);
+        
+        setReadOnly(readOnly);
+    }
+    
+    public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node, TreeADDPotential treeADDPotential) {
+        this(cellRenderer, node, treeADDPotential, false);
     }
     
     private void setupUserInterface(TreeADDCellRenderer cellRenderer) {
@@ -307,7 +321,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         // Offer all the variables of the potential that are not utility variables
         ProbNet probNet = node.getProbNet();
         for (Variable variable : branch.getParentVariables()) {
-            if (probNet.getNode(variable).getNodeType() != NodeType.UTILITY)
+            //if (probNet.getNode(variable).getNodeType() != NodeType.UTILITY)
                 possibleRootVariables.add(variable);
         }
         // Except the current root variable and the conditioned variable
@@ -747,6 +761,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                         if (variable.getName().equals(variableName)) {
                             newVariables.add(variable);
                         }
+                        break;
                     }
                 }
             }
@@ -1163,6 +1178,10 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         ProbNet dummyProbNet = new ProbNet();
         for (Variable variable : potential.getVariables()) {
             dummyProbNet.addNode(variable, probNet.getNode(variable).getNodeType());
+        }
+        if(probNet.getNetworkType() instanceof DESNetworkType){
+            dummyProbNet = new ProbNet(DESNetworkType.getUniqueInstance());
+            dummyProbNet.addPotential(potential, probNet);
         }
         dummyProbNet.addPotential(potential);
         Variable conditionedVariable = parentTreeADD.getConditionedVariable();

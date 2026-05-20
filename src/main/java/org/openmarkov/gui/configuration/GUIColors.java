@@ -50,6 +50,16 @@ public class GUIColors {
         
         public static final class UtilityNode {
             public static final GUIColor BACKGROUND = new GUIColor(new Color(208, 230, 178));
+            public static final GUIColor BACKGROUND_WITH_EVENT = new GUIColor(new Color(93, 155, 49));
+            public static final GUIColor FOREGROUND = new GUIColor(new Color(0, 0, 0));
+            public static final GUIColor TEXT = new GUIColor(new Color(0, 0, 0));
+        }
+        
+        public static final class EventNode {
+            public static final GUIColor BACKGROUND = new GUIColor(new Color(255, 200, 0));
+            public static final GUIColor BACKGROUND_TERMINAL = new GUIColor(new Color(230, 126, 0));
+            public static final GUIColor BACKGROUND_INITIAL = new GUIColor(new Color(255, 175, 175));
+            
             public static final GUIColor FOREGROUND = new GUIColor(new Color(0, 0, 0));
             public static final GUIColor TEXT = new GUIColor(new Color(0, 0, 0));
         }

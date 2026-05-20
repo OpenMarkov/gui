@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.constraint.OnlySelfLoopsWithEventAndChanceNodes;
 import org.openmarkov.gui.action.RemoveSelectedEdit;
 import org.openmarkov.gui.util.MovedNodeInfo;
 import org.openmarkov.gui.window.edition.EditorPanelClipboardAssistant;
@@ -876,6 +877,7 @@ public class VisualNetwork implements PNEditListener {
             case CHANCE -> new VisualChanceNode(node, this);
             case DECISION -> new VisualDecisionNode(node, this);
             case UTILITY -> new VisualUtilityNode(node, this);
+            case EVENT -> new VisualEventNode(node, this);
             default -> null;
         };
     }
@@ -975,12 +977,20 @@ public class VisualNetwork implements PNEditListener {
         if (newLink != null) {
             newLink = null;
             if (newLinkSource != null) {
-                VisualNode newLinkDestination;
-                if ((newLinkDestination = whatNodeInPosition(point, g)) != null) {
-                    if (!newLinkSource.equals(newLinkDestination)) {
+                VisualNode newLinkDestination = whatNodeInPosition(point, g);
+                if(newLinkDestination==null){
+                    return;
+                }
+                if (  (!newLinkSource.equals(newLinkDestination))
+                        // 29/12/2019 - in DESNETS we can have loops for event nodes - or added
+                        //05/04/2020 - loops for Chance nodes
+                        || ( newLinkDestination.getNode().getProbNet().getNetworkType().isApplicableConstraint((new OnlySelfLoopsWithEventAndChanceNodes()))
+                        && ( (newLinkDestination.getNode().getNodeType() == NodeType.EVENT  ) || (newLinkDestination.getNode().getNodeType() == NodeType.CHANCE  ) ))
+                )
+                //
+                {
                         linkEdit = new AddLinkEdit(probNet, probNet.getVariable(newLinkSource.getNode().getName()),
                                                    probNet.getVariable(newLinkDestination.getNode().getName()), true);
-                    }
                 }
                 newLinkSource = null;
             }

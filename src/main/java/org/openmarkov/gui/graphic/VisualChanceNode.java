@@ -22,7 +22,7 @@ import java.awt.geom.RoundRectangle2D;
  * @author jmendoza
  * @version 1.2 asaez - add expanded representation
  */
-public non-sealed class VisualChanceNode extends VisualNode {
+public non-sealed class VisualChanceNode extends VisualNode implements SelfLoopableNode {
     
     protected static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(6.0f);
     protected static final BasicStroke OBSERVED_NORMAL_STROKE = new BasicStroke(3.0f);
@@ -53,6 +53,7 @@ public non-sealed class VisualChanceNode extends VisualNode {
             case FINITE_STATES -> new FSVariableBox(this);
             case DISCRETIZED -> new DiscretizedVariableBox(this);
             case NUMERIC -> new NumericVariableBox(this);
+            case EVENT -> null; //TODO
         };
     }
     
@@ -234,6 +235,27 @@ public non-sealed class VisualChanceNode extends VisualNode {
         
         return point;
     }
+    
+    // -05/04/2020
+    
+    /**
+     * TODO This method is repeated in VisualEventNode. Both classes are similar and there is  a lot  repeated code. It is done this way in order to introduce as few changes as possible in previous code and prevent regressions but when having a stable representation and algotithm there should be extracted to superclass descendant of VisualNode
+     * Returns the point which will be the center for a circular arrow
+     * 05/04/2020 - At this time only Event and Chance Nodes may have circular arrows (self-loops)
+     *
+     * @param g graphics object where to paint the element.
+     *
+     * @return the point which will be the center for a circular arrow
+     */
+    @Override
+    public Point2D.Double getCentreArcPoint(Graphics2D g) {
+        Point2D.Double centreNodePoint = getTemporalPosition();
+        double[] dims = getCenteredPoints(g);
+        Point2D.Double centreArcPoint = new Point2D.Double();
+        centreArcPoint.setLocation(centreNodePoint.getX() + dims[2], centreNodePoint.getY() + dims[3]);
+        return centreArcPoint;
+    }
+    //
     
     /**
      * Paints the visual node into the graphics object as a rounded rectangle.

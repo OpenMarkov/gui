@@ -529,6 +529,23 @@ public class MenuItemNames {
 	public static final String UNCERTAINTY_REMOVE_MENUITEM = "Uncertainty.Remove";
 
 	public static final String EDIT_LOG_MENUITEM = EDIT_MENU + ".Log";
+	
+	// 26/08/2019 Contextual Menu Item for setting in the TTE potential impossible configurations
+	// 14/12/2019 Added contextual menu item for adding a function to a TableWithEvents
+	/**
+	 * String database token for the TTE contextual menu item Set impossible configuration.
+	 */
+	public static final String SET_IMPOSSIBLE_CONFIGURATION_MENUITEM = "ImpossibleConfiguration.Set" ;
+	
+	/**
+	 * String database token for the TTE contextual menu item Set possible configuration.
+	 */
+	public static final String UNSET_IMPOSSIBLE_CONFIGURATION_MENUITEM = "ImpossibleConfiguration.UnSet";
+	
+	/**
+	 * String database token for the TTE contextual menu item Set possible configuration.
+	 */
+	public static final String ADD_FUNCTION = "AddFunction";
 
 	/**
 	 * String database token for the item 'Impose Policy' in decision node's contextual menu
@@ -544,7 +561,12 @@ public class MenuItemNames {
 	 * String database token for the item 'Remove Policy' in decision node's contextual menu
 	 */
 	public static final String DECISION_REMOVE_POLICY_MENUITEM = "Decision.RemovePolicy";
-
+	
+	/**
+	 * String database token for the item 'Impose Policy' in decision node's contextual menu
+	 */
+	public static final String EVENT_EDIT_TIME_TO_EVENT_MENUITEM = "Event.EditTimeToEvent";
+	
 	/**
 	 * String database token for the item 'Show Expected Utility' in decision node's contextual menu
 	 */

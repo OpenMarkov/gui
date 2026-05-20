@@ -23,5 +23,10 @@
             <artifactId>io</artifactId>
             <version>0.3.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.openmarkov</groupId>
+            <artifactId>inference.DES</artifactId>
+            <version>0.3.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

@@ -179,6 +179,7 @@
     <NetworkDefinitionPanel>
         <NetworkTypes>
             <Items>
+                <DESNet value="DES Network"/>
                 <InfluenceDiagram value="Influence diagram"/>
                 <POMDP value="POMDP"/>
                 <TuningNetwork value="Tuning network"/>
@@ -436,9 +437,9 @@
             <CostEffectiveness value="Cost-Effectiveness"/>
         </Type>
         <TableHeader>
-            <Criterion value="Criterion"/>
+            <Criterion value="Criterion (in the model)"/>
             <Scale value="Scale"/>
-            <Use value="Role"/>
+            <Use value="Role (in the analysis)"/>
             <Discount value="Discount"/>
             <Unit value="Units"/>
         </TableHeader>
@@ -558,6 +559,7 @@
                 <Continuous value="Numeric"/>
                 <Discrete value="Finite states"/>
                 <Discretized value="Discretized"/>
+                <Event value="Event"/>
             </Items>
         </jComboBoxNodeVariableType>
         <jLabelUnit>
@@ -903,7 +905,7 @@
         <Title value="Select zoomManager"/>
     </SelectZoom>
     <SelectNetworkURL>
-        <Title value="Network URL"/>
+        <Title value="Open network from URL"/>
     </SelectNetworkURL>
     <OtherProperties>
         <Title value="Other properties"/>

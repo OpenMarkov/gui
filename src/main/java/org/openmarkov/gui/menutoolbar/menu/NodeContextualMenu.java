@@ -73,6 +73,11 @@ public class NodeContextualMenu extends ContextualMenu {
     private JMenuItem imposePolicyMenuItem = null;
     
     /**
+     * Object that represents the item 'AddTimeToEvent'.
+     */
+    private JMenuItem editTimeToEventMenuItem = null;
+    
+    /**
      * Object that represents the item 'RemovePolicy'.
      */
     private JMenuItem removePolicyMenuItem = null;
@@ -136,11 +141,14 @@ public class NodeContextualMenu extends ContextualMenu {
         // Test if parents of the node can be absorbed. Validate method returns true in that case
         setOptionEnabled(ActionCommands.ABSORB_PARENTS.getCommandName(), AbsorbParentsValidator.validate(node));
         
+        boolean isEventNode = selectedNode.getNode().getNodeType().equals(NodeType.EVENT);
         
         add(getCutMenuItem());
         add(getCopyMenuItem());
         add(getRemoveMenuItem());
-        if (networkEditorPanel.getVisualNetwork().getSelectedNodes().size() > 1 && networkEditorPanel.getWorkingMode()== NetworkEditorPanel.WorkingMode.EDITION) {
+        if (networkEditorPanel.getVisualNetwork()
+                              .getSelectedNodes()
+                              .size() > 1 && networkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION) {
             add(getAlignmentMenuItem());
         }
         
@@ -165,6 +173,11 @@ public class NodeContextualMenu extends ContextualMenu {
             addSeparator();
         }
         add(getPropertiesMenuItem());
+        if (isEventNode) {
+            add(getEditTimeToEventMenuItem());
+        }
+        
+        
         if (nodeType != NodeType.DECISION) {
             add(getEditPotentialMenuItem());
         }
@@ -198,7 +211,7 @@ public class NodeContextualMenu extends ContextualMenu {
     private JMenuItem getAlignmentMenuItem() {
         if (this.alignmentMenuItem == null) {
             this.alignmentMenuItem = new JMenuItemBuilder("Alignment")
-                    .enabled(this.networkEditorPanel.getWorkingMode()== NetworkEditorPanel.WorkingMode.EDITION)
+                    .enabled(this.networkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION)
                     .withItems(
                             new JMenuItemBuilder("Center vertically")
                                     .onClick(() -> NodesAlignment.verticalAlign(this.networkEditorPanel))
@@ -272,7 +285,7 @@ public class NodeContextualMenu extends ContextualMenu {
         if (cutMenuItem == null) {
             cutMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_CUT_MENUITEM, ActionCommands.CLIPBOARD_CUT.getCommandName());
             cutMenuItem.setIcon(IconBind.CUT_ENABLED.icon());
-            cutMenuItem.setEnabled(networkEditorPanel.getWorkingMode()== NetworkEditorPanel.WorkingMode.EDITION);
+            cutMenuItem.setEnabled(networkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
             cutMenuItem.addActionListener(listener);
         }
         return cutMenuItem;
@@ -301,7 +314,7 @@ public class NodeContextualMenu extends ContextualMenu {
         if (removeMenuItem == null) {
             removeMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REMOVE_MENUITEM, ActionCommands.OBJECT_REMOVAL.getCommandName());
             removeMenuItem.setIcon(IconBind.REMOVE_ENABLED.icon());
-            removeMenuItem.setEnabled(networkEditorPanel.getWorkingMode()== NetworkEditorPanel.WorkingMode.EDITION);
+            removeMenuItem.setEnabled(networkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
             removeMenuItem.addActionListener(listener);
         }
         return removeMenuItem;
@@ -348,6 +361,20 @@ public class NodeContextualMenu extends ContextualMenu {
             relationMenuItem.addActionListener(listener);
         }
         return relationMenuItem;
+    }
+    
+    /**
+     * This methods return the Time To Event menu item
+     *
+     * @return a new addTimeToEvent menu item.
+     */
+    private JMenuItem getEditTimeToEventMenuItem() {
+        if (editTimeToEventMenuItem == null) {
+            editTimeToEventMenuItem = new LocalizedMenuItem(MenuItemNames.EVENT_EDIT_TIME_TO_EVENT_MENUITEM,
+                                                            ActionCommands.EVENT_EDIT_TIME_TO_EVENT.getCommandName());
+            editTimeToEventMenuItem.addActionListener(listener);
+        }
+        return editTimeToEventMenuItem;
     }
     
     /**
@@ -510,6 +537,7 @@ public class NodeContextualMenu extends ContextualMenu {
             case ActionCommands.DECISION_IMPOSE_POLICY ->
                     selectedNode instanceof VisualDecisionNode vs ? !vs.isHasPolicy() ? imposePolicyMenuItem : null : null;
             case ActionCommands.DECISION_REMOVE_POLICY -> removePolicyMenuItem;
+            case ActionCommands.EVENT_EDIT_TIME_TO_EVENT -> editTimeToEventMenuItem;
             case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY -> showExpectedUtilityMenuItem;
             case ActionCommands.DECISION_SHOW_OPTIMAL_POLICY -> showOptimalPolicyMenuItem;
             case ActionCommands.NODE_EXPANSION -> expandMenuItem;

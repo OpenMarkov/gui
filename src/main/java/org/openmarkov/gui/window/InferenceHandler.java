@@ -33,6 +33,7 @@ import org.openmarkov.inference.algorithm.variableElimination.tasks.VEOptimalInt
 
 import javax.swing.SwingUtilities;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -116,7 +117,6 @@ class InferenceHandler {
             MainGUI.INSTANCE.mainPanel.adaptToolBarSize();
         });
     }
-
     void setNewExpansionThreshold(Double newValue) {
         getCurrentNetworkEditorPanel().setExpansionThreshold(newValue);
         getCurrentNetworkEditorPanel().setSelectedAllNodes(false);

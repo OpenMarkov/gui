@@ -8,6 +8,9 @@
             <Selection>
                 <ToolTip value="Seleción de objetos"/>
             </Selection>
+            <Event>
+                <ToolTip value="Añadir nodos de eventos"/>
+            </Event>
             <Decision>
                 <ToolTip value="Añadir nodos de decisión"/>
             </Decision>
@@ -31,6 +34,9 @@
     <ChangeWorkingMode>
         <ToolTip value="modo Inferencia/Edición"/>
     </ChangeWorkingMode>
+    <MCSimulateNetwork>
+        <ToolTip value="Simulación DES"/>
+    </MCSimulateNetwork>
     <Undo>
         <ToolTip value="Deshace la última operación"/>
     </Undo>

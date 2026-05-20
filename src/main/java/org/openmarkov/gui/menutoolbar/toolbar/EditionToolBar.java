@@ -61,6 +61,14 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
      * Button to activate decision creation.
      */
     private JToggleButton decisionCreationButton = null;
+    
+    // 03/2019
+    /**
+     * Button to activate chance creation.
+     */
+    private JToggleButton eventCreationButton = null;
+    //
+    
     /**
      * Button to activate utility creation.
      */
@@ -100,6 +108,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
         add(getChanceCreationButton());
         add(getDecisionCreationButton());
         add(getUtilityCreationButton());
+        add(getEventCreationButton());
         add(getLinkCreationButton());
         add(Box.createHorizontalGlue());
     }
@@ -296,6 +305,27 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
         return utilityCreationButton;
     }
     
+    // 03/2019
+    /**
+     * This method initialises eventCreationButton.
+     *
+     * @return an event creation button.
+     */
+    private JToggleButton getEventCreationButton() {
+        if (eventCreationButton == null) {
+            eventCreationButton = new JToggleButton();
+            eventCreationButton.setIcon(IconBind.EVENT_ENABLED.icon());
+            eventCreationButton.setActionCommand(ActionCommands.EVENT_CREATION.getCommandName());
+            eventCreationButton.setFocusable(false);
+            eventCreationButton
+                    .setToolTipText(stringDatabase.getString(ActionCommands.EVENT_CREATION + STRING_TOOLTIP_SUFFIX));
+            eventCreationButton.addActionListener(listener);
+            eventCreationButton.addMouseMotionListener(this);
+            editionButtonGroup.add(eventCreationButton);
+        }
+        return eventCreationButton;
+    }
+    
     /**
      * This method initialises linkCreationButton.
      *
@@ -336,6 +366,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
             case ActionCommands.CHANCE_CREATION -> chanceCreationButton;
             case ActionCommands.DECISION_CREATION -> decisionCreationButton;
             case ActionCommands.UTILITY_CREATION -> utilityCreationButton;
+            case ActionCommands.EVENT_CREATION -> eventCreationButton;
             case ActionCommands.LINK_CREATION -> linkCreationButton;
             case null, default -> null;
         };

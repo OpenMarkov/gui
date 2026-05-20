@@ -60,7 +60,45 @@ abstract public class IconFactory {
 		
 		return ImageLoader.of(image);
 	}
-
+	
+	/* *
+	 * Returns the icon for Events in trees. It is the same as createChanceIcon but with another color.
+	 * TODO extract the common part to a private method
+	 * @param text
+	 * @param f
+	 * @return
+	 */
+	public static Icon createEventIcon(String text, Font f){
+		FontRenderContext fr = new FontRenderContext(null, false, false);
+		TextLayout t = new TextLayout(text, f, fr);
+		
+		int hMargin = 6;
+		int vMargin = 6;
+		
+		Rectangle2D r = t.getBounds();
+		int width = (int) r.getWidth() + 2 * (hMargin + 1);
+		int height = (int) r.getHeight() + 2 * vMargin;
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) image.createGraphics();
+		
+		int ovalWidth = Math.min(height, width);
+		
+		g.setColor(Color.ORANGE);
+		g.fillArc(0, 0, ovalWidth, height - 1, 90, 180);
+		g.fillArc(width - ovalWidth - 1, 0, ovalWidth, height - 1, 270, 180);
+		g.fillRect(ovalWidth / 2, 0, width - ovalWidth, height - 1);
+		
+		g.setColor(Color.black);
+		g.drawArc(0, 0, ovalWidth, height - 1, 90, 180);
+		g.drawArc(width - ovalWidth - 1, 0, ovalWidth, height - 1, 270, 180);
+		g.drawLine(ovalWidth / 2, 0, width - ovalWidth / 2, 0);
+		g.drawLine(ovalWidth / 2, height - 1, width - ovalWidth / 2, height - 1);
+		
+		t.draw(g, hMargin, height - vMargin - 1);
+		
+		return new ImageIcon(image);
+	}
+	
 	/**
      * Creates a decision-node icon (rectangle) with the given foreground.
 	 *

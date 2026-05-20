@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.inference.common;
 
+import org.openmarkov.core.action.core.MonteCarloOptionsEdit;
 import org.openmarkov.core.action.core.MulticriteriaEdit;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
@@ -15,6 +16,7 @@ import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 import org.openmarkov.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.core.localize.StringDatabase;
@@ -130,6 +132,11 @@ public class InferenceOptionsDialog extends OkCancelDialog {
      * Boolean attribute that indicates if the probnet have multicriteria
      */
     private boolean isMulticriteria;
+    // 25/07/11019
+    /**
+     * Boolean attribute that indicates if the simulation will be done using Monte Carlo Simulation
+     */
+    private boolean isMonteCarloSimulation;
     /**
      * Temporal copy of Multicriteria options
      */
@@ -185,6 +192,11 @@ public class InferenceOptionsDialog extends OkCancelDialog {
     private JPanel temporalPanel;
 
     private boolean expandNetwork = false;
+    //  16/12/2019 Extracted Monte Carlo Panel to an independent class
+    /**
+     * Panel with Monte Carlo Options
+     */
+    private MonteCarloOptionsPanel monteCarloOptionsPanel;
     
     /**
      * Constructor of the dialog
@@ -206,6 +218,14 @@ public class InferenceOptionsDialog extends OkCancelDialog {
             this.isMulticriteria = true;
         }
         
+        // 25/08/2019
+        //isMCSimulation may be used with another networks but currently is used only with DesNet
+        isMonteCarloSimulation = false;
+        if (probNet.getNetworkType() instanceof DESNetworkType) {
+            isMonteCarloSimulation = true;
+        }
+        //
+        
         // Center the dialog
         setLocationRelativeTo(owner);
         
@@ -223,6 +243,11 @@ public class InferenceOptionsDialog extends OkCancelDialog {
         mainPanel = new JPanel();
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+        
+        // 25/08/2019 -- if we have a Monte Carlo simulation, the panel with the Monte Carlo options is added. Currently it is only for DESNets
+        if (isMonteCarloSimulation) {
+            mainPanel.add(getMonteCarloOptionsPanel());
+        }
         
         if (isTemporal) {
             mainPanel.add(getTemporalPanel());
@@ -887,6 +912,19 @@ public class InferenceOptionsDialog extends OkCancelDialog {
         return temporalPanel;
     }
     
+    // -16/12/2019 extracted Monte Carlo Options to an independent panel
+    /**
+     * Returns a panel with the Monte Carlo Options
+     *
+     * @return
+     */
+    public JPanel getMonteCarloOptionsPanel() {
+        if (monteCarloOptionsPanel == null) {
+            monteCarloOptionsPanel= new MonteCarloOptionsPanel(probNet);
+        }
+        return monteCarloOptionsPanel;
+    }
+    
     private JPanel getNumSlicesPanel() {
         if (numSlicesPanel == null) {
             numSlicesPanel = new JPanel();
@@ -972,6 +1010,13 @@ public class InferenceOptionsDialog extends OkCancelDialog {
             transitionsPanel.add(getBeginningOfCycleButton());
             transitionsPanel.add(getHalfCycleButton());
             transitionsPanel.add(getEndOfCycleButton());
+            if (isMonteCarloSimulation){
+                getBeginningOfCycleButton().setEnabled(false);
+                getHalfCycleButton().setEnabled(false);
+                getEndOfCycleButton().setEnabled(false);
+                transitionsPanel.setEnabled(false);
+                transitionsPanel.setVisible(false);
+            }
         }
         return transitionsPanel;
     }
@@ -1005,7 +1050,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                 throw new InvalidArgumentException("Slices number", numSlicesTextField.getText(), "is not a valid number, as it must be a number between " + Integer.MIN_VALUE + " and " + Integer.MAX_VALUE);
             }
             this.temporalOptions.setHorizon(numSlices);
-            if(!expandNetwork) {
+            if(!expandNetwork && !isMonteCarloSimulation) {
                 if (beginningOfCycleButton.isSelected()) {
                     this.temporalOptions.setTransition(TemporalOptions.TransitionTime.BEGINNING);
                 } else if (halfCycleButton.isSelected()) {
@@ -1016,6 +1061,10 @@ public class InferenceOptionsDialog extends OkCancelDialog {
             }
             probNet.getInferenceOptions().setTemporalOptions(temporalOptions);
 
+        }
+        
+        if (isMonteCarloSimulation) {
+            new MonteCarloOptionsEdit(probNet, monteCarloOptionsPanel.getMonteCarloOptions()).executeEdit();
         }
         
         probNet.getPNESupport().closeSubEditHistory();

@@ -26,6 +26,7 @@ open module org.openmarkov.gui {
     requires java.xml;
     requires colt;
     requires com.google.errorprone.annotations;
+    requires inference.DES;
     
     exports org.openmarkov.gui.action;
     exports org.openmarkov.gui.layout.bayesian;

@@ -127,7 +127,7 @@ public class NodePropertiesDialog extends OkCancelDialog {
         this.node = node;
         this.setTitle(this.stringDatabase.getString("NodePropertiesDialog.Title") + ": " + node.getName());
         this.nodeDefinitionPanel.setNodeProperties(node);
-        if (node.getNodeType() == NodeType.CHANCE || node.getNodeType() == NodeType.DECISION) {
+        if (node.getNodeType() == NodeType.CHANCE || node.getNodeType() == NodeType.DECISION|| node.getNodeType() == NodeType.EVENT) {
             this.getNodeDomainValuesTablePanel().setFieldsFromProperties(node);
             if (node.getVariable().getVariableType() == VariableType.FINITE_STATES || node.getVariable()
                                                                                           .getVariableType() == VariableType.DISCRETIZED) {

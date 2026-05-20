@@ -10,6 +10,7 @@ package org.openmarkov.gui.menutoolbar.menu;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.constraint.NoEventNodes;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.gui.componentBuilder.JMenuItemBuilder;
 import org.openmarkov.gui.loader.element.IconBind;
@@ -108,7 +109,13 @@ public class NetworkContextualMenu extends ContextualMenu {
                                                       ActionCommands.DECISION_CREATION, !currentNetwork.hasConstraintOfClass(OnlyChanceNodes.class)),
                                 new NodeMenuGenerator(NodeType.UTILITY, "Utility node", "jmenuItemCreateUtilityNode","Create an utility node",
                                                       IconBind.UTILITY_ENABLED.icon(),
-                                                      ActionCommands.UTILITY_CREATION, !currentNetwork.hasConstraintOfClass(OnlyChanceNodes.class))
+                                                      ActionCommands.UTILITY_CREATION, !currentNetwork.hasConstraintOfClass(OnlyChanceNodes.class)),
+                                
+                                new NodeMenuGenerator(NodeType.EVENT, "Event node", "jmenuItemCreateEventNode","Create an event node",
+                                                      IconBind.EVENT_ENABLED.icon(),
+                                                      ActionCommands.EVENT_CREATION, !currentNetwork.hasConstraintOfClass(OnlyChanceNodes.class) && !currentNetwork.hasConstraintOfClass(NoEventNodes.class))
+                        
+                        
                         ).map(nodeMenuGenerator -> new JMenuItemBuilder(nodeMenuGenerator.title)
                                 .withName(nodeMenuGenerator.name)
                                 .withIcon(nodeMenuGenerator.icon)

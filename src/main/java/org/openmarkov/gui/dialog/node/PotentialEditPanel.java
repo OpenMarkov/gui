@@ -31,6 +31,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialUtils;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
 import org.openmarkov.gui.commonComponents.JComboBoxFunctionRender;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
@@ -642,6 +643,10 @@ public class PotentialEditPanel extends JPanel {
      */
     private boolean enableReorderVariableButton() {
         // We retrieve the necessary data from the node
+        if (node.getProbNet().getNetworkType() instanceof DESNetworkType){
+            return false;
+        }
+        
         Potential potential = this.node.getPotentials().getFirst();
         int numPotentialVariables = potential.getNumVariables();
         

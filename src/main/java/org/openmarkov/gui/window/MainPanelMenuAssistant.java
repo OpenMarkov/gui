@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MIDType;
@@ -56,7 +57,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
      */
     public static final ActionCommands[] EDITING_ACTION_COMMANDS = {ActionCommands.OBJECT_SELECTION,
             ActionCommands.CHANCE_CREATION, ActionCommands.DECISION_CREATION, ActionCommands.UTILITY_CREATION,
-            ActionCommands.LINK_CREATION};
+            ActionCommands.EVENT_CREATION, ActionCommands.LINK_CREATION};
     /**
      * Composed action command that contains inference actions.
      */
@@ -64,6 +65,14 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
             ActionCommands.GO_TO_FIRST_EVIDENCE_CASE, ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE,
             ActionCommands.GO_TO_NEXT_EVIDENCE_CASE, ActionCommands.GO_TO_LAST_EVIDENCE_CASE,
             ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES, ActionCommands.PROPAGATE_EVIDENCE};
+    
+    /**
+     * Composed action command that contains all the viewing actions (except
+     * view message window).
+     */
+    public static final ActionCommands[] VIEWING_ACTION_COMMANDS = { ActionCommands.ZOOM, ActionCommands.ZOOM_IN,
+            ActionCommands.ZOOM_OUT, ActionCommands.NODES };
+    
     /**
      * Menus and toolbar that manage zoomManager.
      */
@@ -125,6 +134,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
         setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
         setOptionEnabled(ActionCommands.EDITION_MODE_PREFIX, false);
+        disableMenuOptionsforDESnets();
         
         setOptionEnabled(ActionCommands.NODE_EXPANSION, false);
         setOptionEnabled(ActionCommands.NODE_CONTRACTION, false);
@@ -169,6 +179,15 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
      * Disables the menu items and toolbar buttons when any network is opened.
      */
     public void updateOptionsNewNetworkOpen() {
+        // For DESnets
+        if (getCurrentNetworkEditorPanel().getProbNet().getNetworkType() instanceof DESNetworkType){
+            updateOptionsAllNetworkClosed();
+            enableMenuOptionsforDESnets();
+            return;
+        } else{
+            disableMenuOptionsforDESnets();
+        }
+        
         NetworkEditorPanel.WorkingMode workingMode = NetworkEditorPanel.WorkingMode.EDITION;
         NetworkEditorPanel currentNetworkEditorPanel = getCurrentNetworkEditorPanel();
         if (currentNetworkEditorPanel != null) {
@@ -223,6 +242,28 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         return networkType instanceof InfluenceDiagramType || networkType instanceof BayesianNetworkType;
     }
     
+    /**
+     *  -- 07/01/2022
+     * Enables the menu options for using DESnets when having a DESnet in the evaluation version.
+     * FIXME reformat code in integration
+     */
+    private void enableMenuOptionsforDESnets(){
+        setOptionEnabled(EDITING_ACTION_COMMANDS, true);
+        setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, true);
+        setOptionEnabled(ActionCommands.SAVEAS_NETWORK,true);
+        //20/03/2023; Zoom enabled
+        setOptionEnabled(VIEWING_ACTION_COMMANDS, true);
+    }
+    /**
+     *  -- 07/01/2022
+     * Disables the specific menu options for using DESnets when having a DESnet in the evaluation version.
+     * FIXME reformat code in integration
+     */
+    private void disableMenuOptionsforDESnets(){
+        setOptionEnabled(ActionCommands.EVENT_CREATION, false);
+        setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, false);
+    }
+    
     public void updateInferenceButtons() {
         NetworkEditorPanel currentNetworkEditorPanel = getCurrentNetworkEditorPanel();
         if (currentNetworkEditorPanel == null) {
@@ -268,9 +309,16 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     public void updateOptionsNetworkModified(boolean canUndo, boolean canRedo) {
         // updateUndoRedo(basicUndoManager);
         // changed by mpalacios
-        updateInferenceButtons();
-        checkInferenceOptions();
-        updateUndoRedo(canUndo, canRedo);
+        // 10/01/2023 setting options for DESnets FIXME provisional
+        if (!(getCurrentNetworkEditorPanel().getProbNet().getNetworkType() instanceof DESNetworkType)) {
+            //
+            updateInferenceButtons();
+            checkInferenceOptions();
+            updateUndoRedo(canUndo, canRedo);
+            // 10/01/2023 setting options for DESnets
+        } else{
+            enableMenuOptionsforDESnets();
+        }
         // If the network has been opened from a URL the save button has to remain disabled
         setOptionEnabled(ActionCommands.SAVE_NETWORK, !networkOpenedURL);
     }
@@ -419,6 +467,14 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         mainPanel.setToolBarPanel(currentNetworkEditorPanel.getWorkingMode());
         
         checkInferenceOptions();
+        // 10/01/2023 - provisional options in toolbar
+        if (currentProbNet.getNetworkType() instanceof DESNetworkType){
+            updateOptionsAllNetworkClosed();
+            enableMenuOptionsforDESnets();
+        } else{
+            disableMenuOptionsforDESnets();
+        }
+        
     }
     
     /**
@@ -565,6 +621,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         boolean canShowOptimalPolicy = false;
         boolean canShowExpectedUtility = false;
         boolean canRemovePolicy = false;
+        boolean canAddTimeToEvent = false;
         boolean canEditPolicy = false;
         boolean canImposePolicy = false;
         boolean canLog = false;
@@ -660,12 +717,15 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                                 }
                             }
                         }
+                        case EVENT -> {
+                            canAddTimeToEvent = true;
+                        }
                         case SV_SUM, SV_PRODUCT -> {
                         }
                     }
                     String label = StringDatabase.getUniqueInstance().getString(
                             switch (visualNode.getNode().getNodeType()) {
-                                case CHANCE, DECISION -> switch (workingMode) {
+                                case CHANCE, DECISION, EVENT -> switch (workingMode) {
                                     case EDITION -> "Edit.NodePotential";
                                     case INFERENCE -> "Edit.ViewNodePotential";
                                 };
@@ -719,6 +779,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         setOptionEnabled(ActionCommands.DECISION_REMOVE_POLICY, canRemovePolicy);
         setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, canShowExpectedUtility);
         setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);
+        setOptionEnabled(ActionCommands.EVENT_EDIT_TIME_TO_EVENT, canAddTimeToEvent);
         setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, canTemporalEvolution);
         setOptionEnabled(ActionCommands.NEXT_SLICE_NODE, canCreateNextSliceNode);
     }

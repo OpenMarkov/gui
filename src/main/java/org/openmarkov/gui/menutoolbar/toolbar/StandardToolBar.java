@@ -60,6 +60,12 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
      * Button to switch to Inference mode.
      */
     private JToggleButton workingModeButton = null;
+    // 25/08/2019
+    /**
+     * Button perform a Monte Carlo simulation. Currently only it works with DESNet
+     */
+    private JToggleButton monteCarloSimulationButton = null;
+    //
     /**
      * Button to show optimal strategy.
      */
@@ -104,6 +110,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
         add(getDecisionTreeButton());
         add(getSensAnalysisButton());
         add(getCostEffectivenessButton());
+        add(getMonteCarloSimulationButton());
         add(Box.createHorizontalGlue());
     }
     
@@ -301,6 +308,26 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
         return costEffectivenessButton;
     }
     
+    // 21/08/2019
+    /**
+     * This method initialises simulateDESNetBUtton.
+     *
+     * @return a
+     */
+    private JToggleButton getMonteCarloSimulationButton() {
+        if (monteCarloSimulationButton == null) {
+            monteCarloSimulationButton = new JToggleButton();
+            monteCarloSimulationButton.setIcon(IconBind.SIMULATION_ENABLED.icon());
+            monteCarloSimulationButton.setFocusable(false);
+            monteCarloSimulationButton.setActionCommand(ActionCommands.MC_SIMULATE_NETWORK.getCommandName());
+            monteCarloSimulationButton.setToolTipText(
+                    stringDatabase.getString(ActionCommands.MC_SIMULATE_NETWORK + STRING_TOOLTIP_SUFFIX));
+            monteCarloSimulationButton.addActionListener(listener);
+            monteCarloSimulationButton.addMouseMotionListener(this);
+        }
+        return monteCarloSimulationButton;
+    }
+    
     /**
      * This method initialises costEffectivenessButton.
      *
@@ -332,6 +359,15 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
         workingModeButton.setSelected(workingMode == NetworkEditorPanel.WorkingMode.INFERENCE);
     }
     
+    // 2019/09/09
+    /**
+     * Select/unselect MonteCarloButon
+     * @param select - true if moteCarloButton will be selected0
+     */
+    public void selectMonteCarloButton(boolean select) {
+        monteCarloSimulationButton.setSelected(false);
+    }
+    
     /**
      * Returns the component that corresponds to an action command.
      *
@@ -353,6 +389,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
             case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY -> showOptimalStrategyButton;
             case ActionCommands.CHANGE_TO_EDITION_MODE, ActionCommands.CHANGE_TO_INFERENCE_MODE,
                  ActionCommands.CHANGE_WORKING_MODE -> workingModeButton;
+            case ActionCommands.MC_SIMULATE_NETWORK -> monteCarloSimulationButton;
             case null, default -> null;
         };
     }

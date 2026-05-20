@@ -175,6 +175,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
             case CHANCE -> IconFactory.createChanceIcon(variable.getName(), textIconFont);
             case DECISION -> IconFactory.createDecisionIcon(variable.getName(), textIconFont);
             case UTILITY -> IconFactory.createUtilityIcon(variable.getName(), textIconFont);
+            case EVENT -> IconFactory.createEventIcon(variable.getName(), textIconFont);
             case SV_SUM, SV_PRODUCT ->
                     throw new UnreachableException(new NotSupportedOperationException(nodeType.toString() + " is not supported yet"));
         };
