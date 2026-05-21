@@ -409,7 +409,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
         JComboBox<String> comboBoxUse = null;
         JComboBox<String> comboBoxDiscountUnits = null;
         ValuesTableCellRenderer renderer = new ValuesTableCellRenderer(1);
-        
+
         MultiCriteriaTableModel model = new MultiCriteriaTableModel();
         
         // Construction of the TableModel
@@ -478,20 +478,20 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                     comboBoxDiscountUnits = new JComboBox<String>();
                     for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
                         String newUnit = StringDatabase.getUniqueInstance()
-                                                       .getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
+                                                       .getString("NetworkTemporalOptionsPanel.TemporalOptions.DiscountUnit." + unit.toString());
                         comboBoxDiscountUnits.addItem(newUnit);
                     }
                     // Set the selected discount unit with criteron data
                     if (criterion.getDiscountUnit() == null) {
                         comboBoxDiscountUnits.setSelectedItem(StringDatabase.getUniqueInstance()
-                                                                            .getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit.YEAR"));
+                                                                            .getString("NetworkTemporalOptionsPanel.TemporalOptions.DiscountUnit.YEAR"));
                         criterion.setDiscountUnit(CycleLength.DiscountUnit.YEAR);
                     } else {
                         for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
                             
                             if (criterion.getDiscountUnit() == unit) {
                                 String newUnit = StringDatabase.getUniqueInstance().getString(
-                                        "NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
+                                        "NetworkTemporalOptionsPanel.TemporalOptions.DiscountUnit." + unit.toString());
                                 comboBoxDiscountUnits.setSelectedItem(newUnit);
                             }
                         }
@@ -524,21 +524,21 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                     comboBoxDiscountUnits = new JComboBox<String>();
                     for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
                         String newUnit = StringDatabase.getUniqueInstance()
-                                                       .getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
+                                                       .getString("NetworkTemporalOptionsPanel.TemporalOptions.DiscountUnit." + unit.toString());
                         comboBoxDiscountUnits.addItem(newUnit);
                     }
                     
                     // Set the selected discount unit with criteron data
                     if (criterion.getDiscountUnit() == null) {
                         comboBoxDiscountUnits.setSelectedItem(StringDatabase.getUniqueInstance()
-                                                                            .getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit.YEAR"));
+                                                                            .getString("NetworkTemporalOptionsPanel.TemporalOptions.DiscountUnit.YEAR"));
                         criterion.setDiscountUnit(CycleLength.DiscountUnit.YEAR);
                     } else {
                         for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
                             
                             if (criterion.getDiscountUnit() == unit) {
                                 String newUnit = StringDatabase.getUniqueInstance().getString(
-                                        "NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
+                                        "NetworkTemporalOptionsPanel.TemporalOptions.DiscountUnit." + unit.toString());
                                 comboBoxDiscountUnits.setSelectedItem(newUnit);
                             }
                         }
@@ -668,7 +668,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                             CycleLength.DiscountUnit unitSelected = CycleLength.DiscountUnit.YEAR;
                             for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
                                 if (StringDatabase.getUniqueInstance().getString(
-                                                          "NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString())
+                                                          "NetworkTemporalOptionsPanel.TemporalOptions.DiscountUnit." + unit.toString())
                                                   .equals(table.getValueAt(row, CE_DISCOUNT_UNIT_COLUMN).toString())) {
                                     unitSelected = unit;
                                     break;
@@ -708,7 +708,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                             CycleLength.DiscountUnit unitSelected = CycleLength.DiscountUnit.YEAR;
                             for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
                                 if (StringDatabase.getUniqueInstance().getString(
-                                                          "NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString())
+                                                          "NetworkTemporalOptionsPanel.TemporalOptions.DiscountUnit." + unit.toString())
                                                   .equals(table.getValueAt(row, UNICRITERIA_DISCOUNT_UNIT_COLUMN)
                                                                .toString())) {
                                     unitSelected = unit;

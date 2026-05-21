@@ -62,7 +62,7 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
             JComboBox<String> comboBox = new JComboBox<String>();
             for (CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()) {
                 String newUnit = StringDatabase.getUniqueInstance()
-                                               .getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
+                                               .getString("NetworkTemporalOptionsPanel.TemporalOptions.DiscountUnit." + unit.toString());
                 comboBox.addItem(newUnit);
             }
             

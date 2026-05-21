@@ -441,7 +441,7 @@
             <Scale value="Scale"/>
             <Use value="Role (in the analysis)"/>
             <Discount value="Discount"/>
-            <Unit value="Units"/>
+            <Unit value="Period"/>
         </TableHeader>
         <Unit>
             <Title value="Unit"/>

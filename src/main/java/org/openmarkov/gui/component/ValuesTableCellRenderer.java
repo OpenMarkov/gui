@@ -10,7 +10,6 @@
 
 package org.openmarkov.gui.component;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.gui.configuration.GUIColor;
 import org.openmarkov.gui.configuration.GUIColors;
@@ -22,11 +21,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.stream.IntStream;
 
-import static org.openmarkov.java.nullUtils.NullUtils.firstNotNull;
+import static org.openmarkov.gui.dialog.inference.common.InferenceOptionsDialog.CRITERION_COLUMN;
 
 /**
  * This class is used for painting and coloring the table and the headers
@@ -84,7 +82,11 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                                                    int row, int column) {
-        setHorizontalAlignment(SwingConstants.CENTER);
+        if (column == CRITERION_COLUMN) {
+            setHorizontalAlignment(SwingConstants.LEFT);
+        } else {
+            setHorizontalAlignment(SwingConstants.CENTER);
+        }
         setMinimumSize(table, value, isSelected, hasFocus, row, column);
         setCellFonts(table, value, isSelected, hasFocus, row, column);
         setCellBorders(table, value, isSelected, hasFocus, row, column);
