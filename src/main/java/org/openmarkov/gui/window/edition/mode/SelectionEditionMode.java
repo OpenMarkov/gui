@@ -124,23 +124,33 @@ public class SelectionEditionMode extends EditionMode {
         if (this.visualNetwork.getSelectedNodes().isEmpty()) {
             return;
         }
-        if (this.selectionState != SelectionState.MOVING && this.selectionState != SelectionState.NOTHING) {
-            return;
-        }
-        int diffX = 0, diffY = 0;
-        for (var key : this.currentlyHeldKeys) {
-            switch (key) {
-                case KeyEvent.VK_UP -> diffY -= SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
-                case KeyEvent.VK_RIGHT -> diffX += SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
-                case KeyEvent.VK_DOWN -> diffY += SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
-                case KeyEvent.VK_LEFT -> diffX -= SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
+        switch (this.selectionState) {
+            case NOTHING, MOVING -> {
+                int diffX = 0, diffY = 0;
+                for (var key : this.currentlyHeldKeys) {
+                    switch (key) {
+                        case KeyEvent.VK_UP -> diffY -= SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
+                        case KeyEvent.VK_RIGHT -> diffX += SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
+                        case KeyEvent.VK_DOWN -> diffY += SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
+                        case KeyEvent.VK_LEFT -> diffX -= SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
+                    }
+                }
+                if (diffX == 0 && diffY == 0) {
+                    return;
+                }
+                this.setSelectionState(SelectionState.MOVING);
+                this.visualNetwork.moveSelectedElements(diffX, diffY);
+            }
+            case SELECTING -> {
+            }
+            case CREATING_LINK -> {
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    this.visualNetwork.cancelLinkCreation();
+                }
             }
         }
-        if (diffX == 0 && diffY == 0) {
-            return;
-        }
-        this.setSelectionState(SelectionState.MOVING);
-        this.visualNetwork.moveSelectedElements(diffX, diffY);
+        
+
         this.networkEditorPanel.repaint();
     }
     

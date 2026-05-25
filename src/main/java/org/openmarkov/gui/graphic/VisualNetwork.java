@@ -947,9 +947,11 @@ public class VisualNetwork implements PNEditListener {
      * @param g              the g
      */
     public void startLinkCreation(Point2D.Double cursorPosition, Graphics2D g) {
-        VisualNode node;
-        
-        if ((node = whatNodeInPosition(cursorPosition, g)) != null) {
+        if (this.newLink != null) {
+            return;
+        }
+        VisualNode node = whatNodeInPosition(cursorPosition, g);
+        if (node != null) {
             this.newLink = new VisualArrow(cursorPosition.clone(), cursorPosition, true);
             this.newLinkSource = node;
             updateLinkCreation(cursorPosition, g);
@@ -957,28 +959,29 @@ public class VisualNetwork implements PNEditListener {
     }
     
     public void updateLinkCreation(Point2D.Double position, Graphics2D g) {
-        if (this.newLink != null) {
-            @Nullable VisualNode destinationNode = whatNodeInPosition(position, g);
-            if (destinationNode == this.newLinkSource && this.probNet.hasConstraintOfClass(NoSelfLoop.class)) {
-                destinationNode = null;
-            }
-            Tuple2Record<Point2D.Double, Point2D.Double> points = null;
-            try {
-                points = VisualLink.shortenedPoints(g, this.newLinkSource, destinationNode, position);
-                this.newLink.setStartPoint(points.v0());
-                this.newLink.setEndPoint(points.v1());
-                this.newLink.setSelfLoop(this.newLinkSource==destinationNode);
-            } catch (VisualLink.LinkCannotBePaintedException e) {
-                //Do not update positions
-            }
-            boolean canCreate = destinationNode != null && new AddLinkEdit(this.probNet,
-                                                                           this.probNet.getVariable(this.newLinkSource.getNode()
-                                                                                                                      .getName()),
-                                                                           this.probNet.getVariable(destinationNode.getNode()
-                                                                                                                   .getName()), true)
-                    .constraintsWillBeMet();
-            this.newLink.setLinkColor(canCreate ? GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_SUCCESS : destinationNode == null ? GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_NOTHING : GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_FAILURE);
+        if (this.newLink == null) {
+            return;
         }
+        @Nullable VisualNode destinationNode = whatNodeInPosition(position, g);
+        if (destinationNode == this.newLinkSource && this.probNet.hasConstraintOfClass(NoSelfLoop.class)) {
+            destinationNode = null;
+        }
+        Tuple2Record<Point2D.Double, Point2D.Double> points = null;
+        try {
+            points = VisualLink.shortenedPoints(g, this.newLinkSource, destinationNode, position);
+            this.newLink.setStartPoint(points.v0());
+            this.newLink.setEndPoint(points.v1());
+            this.newLink.setSelfLoop(this.newLinkSource == destinationNode);
+        } catch (VisualLink.LinkCannotBePaintedException e) {
+            //Do not update positions
+        }
+        boolean canCreate = destinationNode != null && new AddLinkEdit(this.probNet,
+                                                                       this.probNet.getVariable(this.newLinkSource.getNode()
+                                                                                                                  .getName()),
+                                                                       this.probNet.getVariable(destinationNode.getNode()
+                                                                                                               .getName()), true)
+                .constraintsWillBeMet();
+        this.newLink.setLinkColor(canCreate ? GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_SUCCESS : destinationNode == null ? GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_NOTHING : GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_FAILURE);
     }
     
     /**
@@ -994,32 +997,29 @@ public class VisualNetwork implements PNEditListener {
         if (newLinkDestination == this.newLinkSource && this.probNet.hasConstraintOfClass(NoSelfLoop.class)) {
             newLinkDestination = null;
         }
-        if (this.newLink == null || this.newLinkSource == null ||  newLinkDestination == null) {
-            this.newLink = null;
-            this.newLinkSource = null;
+        if (this.newLink == null || this.newLinkSource == null || newLinkDestination == null) {
+            cancelLinkCreation();
             return;
         }
         try {
             new AddLinkEdit(this.probNet, this.probNet.getVariable(this.newLinkSource.getNode().getName()),
                             this.probNet.getVariable(newLinkDestination.getNode()
                                                                        .getName()), true).executeEdit();
-        } catch (Exception e) {
+        } catch (DoEditException e) {
             this.newLink.setLinkColor(GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_FAILURE);
-            //Locally calls the exception handler, which allows to show dialogs while still showing the wrong link, and
-            //once the Exception dialog closes, the link is removed in the "finally" block, dissappearing from the UI.
-            Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
-        } finally {
-            this.newLink = null;
-            this.newLinkSource = null;
+            throw e;
         }
+        cancelLinkCreation();
+        
         
     }
     
-    public void cancelLinkCreation(NetworkEditorPanel networkEditorPanel) {
+    public void cancelLinkCreation() {
         this.newLink = null;
         this.newLinkSource = null;
-        networkEditorPanel.repaint();
+        this.networkEditorPanel.repaint();
     }
+    
     
     public void startSelectionRectangle(Point2D.Double position) {
         this.selection = new SelectionRectangle();

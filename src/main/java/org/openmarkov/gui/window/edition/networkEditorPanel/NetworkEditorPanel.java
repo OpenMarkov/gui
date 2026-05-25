@@ -408,7 +408,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
          * Object Dialog for potentials edition
          */
         PotentialEditDialog potentialsDialog = new PotentialEditDialog(owner, node, readOnly);
-        this.visualNetwork.cancelLinkCreation(this);
+        this.visualNetwork.cancelLinkCreation();
         return (
                 potentialsDialog.requestValues()// to know if the user has
                         // selected the ok button when

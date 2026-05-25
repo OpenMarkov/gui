@@ -55,6 +55,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
      * @param e mouse event information.
      */
     @Override public void mousePressed(MouseEvent e) {
+        this.networkEditorPanel.requestFocus();
         // requestFocusInWindow(); Activate if nodes can't be moved by arrows.
         if (e.getClickCount() <= (this.lastClickCount + 1)) {
             this.lastLeftClickProducedANode = false;

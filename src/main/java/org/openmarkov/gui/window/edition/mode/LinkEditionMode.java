@@ -51,7 +51,9 @@ import java.awt.event.MouseEvent;
     }
     
     @Override public void keyPressed(KeyEvent e) {
-    
+        if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            this.visualNetwork.cancelLinkCreation();
+        }
     }
     
     @Override public void keyReleased(KeyEvent e) {
