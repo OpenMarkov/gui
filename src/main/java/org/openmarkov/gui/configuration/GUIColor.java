@@ -90,8 +90,9 @@ public class GUIColor {
     
     private static Theme themeInderection(Theme originalTheme) {
         return switch (originalTheme) {
-            case SYSTEM, DARK -> Theme.LIGHT;
-            case LIGHT -> Theme.SYSTEM;
+            case SYSTEM_LF, DARK -> Theme.LIGHT;
+            case SYNC_OS -> Theme.OSisDark()?Theme.DARK:Theme.LIGHT;
+            case LIGHT -> Theme.SYSTEM_LF;
         };
     }
     

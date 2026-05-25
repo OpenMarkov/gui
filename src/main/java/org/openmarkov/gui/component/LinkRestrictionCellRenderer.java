@@ -26,13 +26,13 @@ import javax.swing.*;
         var colors = super.setCellColors(table, value, isSelected, hasFocus, row, column);
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
             if (value.toString().equalsIgnoreCase(INCOMPATIBILITY_VALUE)) {
-                return new SetColor(GUIColors.Network.LinkRestriction.INCOMPATIBILITY_FOREGROUND.getColor(),
-                                    GUIColors.Network.LinkRestriction.INCOMPATIBILITY_BACKGROUND.getColor(),
+                return new SetColor(GUIColors.Network.Link.LinkRestriction.INCOMPATIBILITY_FOREGROUND.getColor(),
+                                    GUIColors.Network.Link.LinkRestriction.INCOMPATIBILITY_BACKGROUND.getColor(),
                                     true);
             }
             if (value.toString().equalsIgnoreCase(COMPATIBILITY_VALUE)) {
-                return new SetColor(GUIColors.Network.LinkRestriction.COMPATIBILITY_FOREGROUND.getColor(),
-                                    GUIColors.Network.LinkRestriction.COMPATIBILITY_BACKGROUND.getColor(),
+                return new SetColor(GUIColors.Network.Link.LinkRestriction.COMPATIBILITY_FOREGROUND.getColor(),
+                                    GUIColors.Network.Link.LinkRestriction.COMPATIBILITY_BACKGROUND.getColor(),
                                     true);
             }
         }

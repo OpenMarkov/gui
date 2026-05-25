@@ -22,7 +22,7 @@ import java.awt.geom.RoundRectangle2D;
  * @author jmendoza
  * @version 1.2 asaez - add expanded representation
  */
-public non-sealed class VisualChanceNode extends VisualNode implements SelfLoopableNode {
+public non-sealed class VisualChanceNode extends VisualNode {
     
     protected static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(6.0f);
     protected static final BasicStroke OBSERVED_NORMAL_STROKE = new BasicStroke(3.0f);
@@ -248,7 +248,7 @@ public non-sealed class VisualChanceNode extends VisualNode implements SelfLoopa
      * @return the point which will be the center for a circular arrow
      */
     @Override
-    public Point2D.Double getCentreArcPoint(Graphics2D g) {
+    public Point2D.Double getSelfLoopPosition(Graphics2D g) {
         Point2D.Double centreNodePoint = getTemporalPosition();
         double[] dims = getCenteredPoints(g);
         Point2D.Double centreArcPoint = new Point2D.Double();

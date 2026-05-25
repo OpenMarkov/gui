@@ -24,7 +24,7 @@ import javax.swing.*;
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
 			try {
 				if (!table.isCellEditable(row, column)) {
-					colors.background = GUIColors.Network.LinkRestriction.INCOMPATIBILITY_BACKGROUND.getColor();
+					colors.background = GUIColors.Network.Link.LinkRestriction.INCOMPATIBILITY_BACKGROUND.getColor();
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
 			}

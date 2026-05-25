@@ -224,5 +224,9 @@ public non-sealed class VisualUtilityNode extends VisualNode {
         
     }
     
+    @Override public Point2D.Double getSelfLoopPosition(Graphics2D g) {
+        return new Point2D.Double(getShape(g).getBounds2D().getMaxX(), getShape(g).getBounds2D().getMaxY());
+    }
+    
     private static final double NODE_EXPANDED_WIDTH_MARGIN = 4;
 }

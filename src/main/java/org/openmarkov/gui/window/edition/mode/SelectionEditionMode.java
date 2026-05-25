@@ -59,7 +59,7 @@ public class SelectionEditionMode extends EditionMode {
         if (this.selectionState == SelectionState.SELECTING) {
             this.visualNetwork.updateSelectionRectangle(diffX, diffY);
         } else if (this.selectionState == SelectionState.CREATING_LINK) {
-            visualNetwork.updateLinkCreation(position);
+            visualNetwork.updateLinkCreation(position, g);
             networkEditorPanel.repaint();
         } else if (this.selectionState == SelectionState.MOVING ||
                 (this.selectionState == SelectionState.NOTHING && SwingUtilities.isLeftMouseButton(e) && !this.visualNetwork.getSelectedNodes()

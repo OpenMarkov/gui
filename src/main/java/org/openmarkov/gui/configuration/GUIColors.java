@@ -22,11 +22,31 @@ public class GUIColors {
     
     public static final class Network {
         
+        public static final class Link{
+            
+            public static final GUIColor FOREGOUND = new GUIColor(new Color(0, 0, 0));
+            
+            public static final class Creation{
+                public static final GUIColor FOREGROUND_ON_SELECTS_NOTHING = new GUIColor(new Color(178, 178, 178));
+                public static final GUIColor FOREGROUND_ON_SELECTS_FAILURE = new GUIColor(new Color(255, 0, 0));
+                public static final GUIColor FOREGROUND_ON_SELECTS_SUCCESS = new GUIColor(new Color(0, 25, 209))
+                        .inDark(new Color(0, 21, 174));
+            }
+            
+            public static final class LinkRestriction {
+                public static final GUIColor INCOMPATIBILITY_BACKGROUND = new GUIColor(new Color(255, 88, 88));
+                public static final GUIColor COMPATIBILITY_BACKGROUND = new GUIColor(new Color(174, 255, 174));
+                
+                public static final GUIColor INCOMPATIBILITY_FOREGROUND = new GUIColor(new Color(255, 255, 255));
+                public static final GUIColor COMPATIBILITY_FOREGROUND = new GUIColor(new Color(0, 0, 0));
+            }
+        }
+        
         public static final GUIColor BACKGROUND = new GUIColor(new Color(255, 255, 255))
                 .inDark(new Color(69, 72, 74));
-        public static final GUIColor LINK = new GUIColor(new Color(0, 0, 0));
-        public static final GUIColor ALWAYS_OBSERVED = new GUIColor(new Color(128, 0, 0));
         public static final GUIColor REVELATION_ARC_VARIABLE = new GUIColor(new Color(128, 0, 0));
+        
+        public static final GUIColor ALWAYS_OBSERVED = new GUIColor(new Color(128, 0, 0));
         
         public static final class ChanceNode {
             public static final GUIColor BACKGROUND = new GUIColor(new Color(251, 249, 153));
@@ -64,13 +84,6 @@ public class GUIColors {
             public static final GUIColor TEXT = new GUIColor(new Color(0, 0, 0));
         }
         
-        public static final class LinkRestriction {
-            public static final GUIColor INCOMPATIBILITY_BACKGROUND = new GUIColor(new Color(255, 88, 88));
-            public static final GUIColor COMPATIBILITY_BACKGROUND = new GUIColor(new Color(174, 255, 174));
-            
-            public static final GUIColor INCOMPATIBILITY_FOREGROUND = new GUIColor(new Color(255, 255, 255));
-            public static final GUIColor COMPATIBILITY_FOREGROUND = new GUIColor(new Color(0, 0, 0));
-        }
     }
     
     public static final class DecisionTree {

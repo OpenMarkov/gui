@@ -10,9 +10,11 @@ package org.openmarkov.gui.window;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.base.PNEditListener;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.constraint.NoEventNodes;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -134,7 +136,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
         setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
         setOptionEnabled(ActionCommands.EDITION_MODE_PREFIX, false);
-        disableMenuOptionsforDESnets();
+        setOptionEnabled(ActionCommands.EVENT_CREATION, false);
+        setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, false);
         
         setOptionEnabled(ActionCommands.NODE_EXPANSION, false);
         setOptionEnabled(ActionCommands.NODE_CONTRACTION, false);
@@ -179,15 +182,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
      * Disables the menu items and toolbar buttons when any network is opened.
      */
     public void updateOptionsNewNetworkOpen() {
-        // For DESnets
-        if (getCurrentNetworkEditorPanel().getProbNet().getNetworkType() instanceof DESNetworkType){
-            updateOptionsAllNetworkClosed();
-            enableMenuOptionsforDESnets();
-            return;
-        } else{
-            disableMenuOptionsforDESnets();
-        }
-        
         NetworkEditorPanel.WorkingMode workingMode = NetworkEditorPanel.WorkingMode.EDITION;
         NetworkEditorPanel currentNetworkEditorPanel = getCurrentNetworkEditorPanel();
         if (currentNetworkEditorPanel != null) {
@@ -208,15 +202,17 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
         setOptionEnabled(ActionCommands.PROPAGATION_OPTIONS, true);
         
-        checkInferenceOptions();
+
         
         setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION, false);
         setOptionEnabled(ActionCommands.NEXT_SLICE_NODE, false);
         
-        updateInferenceButtons();
+
+        checkInferenceOptions();
     }
     
     private void checkInferenceOptions() {
+        updateInferenceButtons();
         NetworkEditorPanel currentNetworkEditorPanel = getCurrentNetworkEditorPanel();
         if (currentNetworkEditorPanel == null) {
             setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, false);
@@ -240,28 +236,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         if (currentNetworkEditorPanel == null) return false;
         NetworkType networkType = currentNetworkEditorPanel.getProbNet().getNetworkType();
         return networkType instanceof InfluenceDiagramType || networkType instanceof BayesianNetworkType;
-    }
-    
-    /**
-     *  -- 07/01/2022
-     * Enables the menu options for using DESnets when having a DESnet in the evaluation version.
-     * FIXME reformat code in integration
-     */
-    private void enableMenuOptionsforDESnets(){
-        setOptionEnabled(EDITING_ACTION_COMMANDS, true);
-        setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, true);
-        setOptionEnabled(ActionCommands.SAVEAS_NETWORK,true);
-        //20/03/2023; Zoom enabled
-        setOptionEnabled(VIEWING_ACTION_COMMANDS, true);
-    }
-    /**
-     *  -- 07/01/2022
-     * Disables the specific menu options for using DESnets when having a DESnet in the evaluation version.
-     * FIXME reformat code in integration
-     */
-    private void disableMenuOptionsforDESnets(){
-        setOptionEnabled(ActionCommands.EVENT_CREATION, false);
-        setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, false);
     }
     
     public void updateInferenceButtons() {
@@ -309,16 +283,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     public void updateOptionsNetworkModified(boolean canUndo, boolean canRedo) {
         // updateUndoRedo(basicUndoManager);
         // changed by mpalacios
-        // 10/01/2023 setting options for DESnets FIXME provisional
-        if (!(getCurrentNetworkEditorPanel().getProbNet().getNetworkType() instanceof DESNetworkType)) {
-            //
-            updateInferenceButtons();
-            checkInferenceOptions();
-            updateUndoRedo(canUndo, canRedo);
-            // 10/01/2023 setting options for DESnets
-        } else{
-            enableMenuOptionsforDESnets();
-        }
+        checkInferenceOptions();
+        updateUndoRedo(canUndo, canRedo);
         // If the network has been opened from a URL the save button has to remain disabled
         setOptionEnabled(ActionCommands.SAVE_NETWORK, !networkOpenedURL);
     }
@@ -401,7 +367,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
         setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
         setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
         setOptionEnabled(ActionCommands.DECISION_TREE, false);
-        updateInferenceButtons();
         setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
         switch (workingMode) {
             case EDITION -> {
@@ -409,26 +374,23 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                 setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
                 setOptionEnabled(ActionCommands.LINK_CREATION, true);
                 setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
-                if (!currentProbNet.hasConstraintOfClass(OnlyChanceNodes.class)) {
-                    setOptionEnabled(ActionCommands.DECISION_CREATION, true);
-                    setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
-                    setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
-                    setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
-                    NetworkType networkType = currentProbNet.getNetworkType();
-                    if ((networkType instanceof InfluenceDiagramType)
-                            || (networkType instanceof DecisionAnalysisNetworkType)) {
-                        setOptionEnabled(ActionCommands.DECISION_TREE, true);
-                    }
-                    setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
-                }
-                if ((
+                boolean isOnlyChanceNodes = currentProbNet.hasConstraintOfClass(OnlyChanceNodes.class);
+                setOptionEnabled(ActionCommands.DECISION_CREATION, !isOnlyChanceNodes);
+                setOptionEnabled(ActionCommands.UTILITY_CREATION, !isOnlyChanceNodes);
+                setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, isOnlyChanceNodes);
+                setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, isOnlyChanceNodes);
+                setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, !isOnlyChanceNodes);
+                setOptionEnabled(ActionCommands.DECISION_TREE, !isOnlyChanceNodes && ((currentProbNet.getNetworkType() instanceof InfluenceDiagramType)
+                        || (currentProbNet.getNetworkType() instanceof DecisionAnalysisNetworkType)));
+                setOptionEnabled(ActionCommands.EVENT_CREATION, !isOnlyChanceNodes && !currentProbNet.hasConstraintOfClass(NoEventNodes.class));
+                boolean canPerformCE = (
                         currentProbNet.getNetworkType() instanceof MIDType || currentProbNet
                                 .getNetworkType() instanceof InfluenceDiagramType || currentProbNet
                                 .getNetworkType() instanceof DecisionAnalysisNetworkType
-                ) && currentProbNet.getDecisionCriteria() != null && currentProbNet.getDecisionCriteria().size() > 1) {
-                    setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
-                    setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, true);
-                }
+                ) && currentProbNet.getDecisionCriteria() != null && currentProbNet.getDecisionCriteria().size() > 1;
+                setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, canPerformCE);
+                setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, canPerformCE);
+                setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, currentProbNet.getNetworkType() instanceof DESNetworkType);
             }
             case INFERENCE -> {
                 setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
@@ -465,15 +427,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                        currentNetworkEditorPanel.getProbNet().getPNESupport().getCanRedo());
         // updateUndoRedo(networkPanel.getUndoManager());
         mainPanel.setToolBarPanel(currentNetworkEditorPanel.getWorkingMode());
-        
-        checkInferenceOptions();
-        // 10/01/2023 - provisional options in toolbar
-        if (currentProbNet.getNetworkType() instanceof DESNetworkType){
-            updateOptionsAllNetworkClosed();
-            enableMenuOptionsforDESnets();
-        } else{
-            disableMenuOptionsforDESnets();
-        }
+
         
     }
     
@@ -787,22 +741,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
     // TODO OOPN start
     
     // TODO OOPN end
-    
-    /**
-     * This method indicates that some information has been put into the
-     * clipboard.
-     */
-    public void dataStoredClipboard() {
-        setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, true);
-    }
-    
-    /**
-     * This method indicates that there isn't valid information in the
-     * clipboard.
-     */
-    public void invalidDataClipboard() {
-        setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
-    }
     
     @Override public void afterEditExecutes(PNEdit edit) {
         NetworkEditorPanel currentNetworkEditorPanel = getCurrentNetworkEditorPanel();

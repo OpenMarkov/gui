@@ -99,10 +99,14 @@ public class PotentialEditDialog extends OkCancelDialog {
         
         this.setResizable(true);
         // Set default title
-        this.setTitle(StringDatabase.getUniqueInstance().getString("NodePotentialDialog.Title"));
+        this.setTitle(getBaseTitle() +": "+this.node.getName());
         this.setMinimumSize(new Dimension(600, 100));
         this.setSize(1000, 400);
         this.setLocationRelativeTo(this.getOwner());
+    }
+    
+    protected String getBaseTitle() {
+        return StringDatabase.getUniqueInstance().getString("NodePropertiesDialog.EditPotentialTab.EditPotentialTitle");
     }
     
     public PotentialEditPanel getPotentialEditPanel() {

@@ -480,7 +480,6 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     
     private static void requestImposePolicyValues(Window owner, VisualDecisionNode visualNode) {
         PotentialEditDialog imposePolicyDialog = new ImposePolicyDialog(owner, false, visualNode);
-        imposePolicyDialog.setTitle("ImposePolicydialog.Title");
         imposePolicyDialog.requestValues();
     }
     

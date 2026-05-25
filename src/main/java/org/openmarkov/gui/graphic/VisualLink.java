@@ -7,6 +7,11 @@
 
 package org.openmarkov.gui.graphic;
 
+import io.github.jorgericovivas.rust_essentials.tuples.Tuple2Record;
+import io.github.jorgericovivas.rust_essentials.tuples.Tuples;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -52,9 +57,9 @@ public non-sealed class VisualLink extends VisualArrow implements ClassLocalizab
     public VisualLink(Link<Node> newLink, VisualNode newSource, VisualNode newDestination) {
         super(newSource.getPosition(), newDestination.getPosition(), newLink.isDirected());
         
-        link = newLink;
-        source = newSource;
-        destination = newDestination;
+        this.link = newLink;
+        this.source = newSource;
+        this.destination = newDestination;
     }
     
     /**
@@ -64,7 +69,7 @@ public non-sealed class VisualLink extends VisualArrow implements ClassLocalizab
      */
     public VisualNode getSourceNode() {
         
-        return source;
+        return this.source;
         
     }
     
@@ -75,7 +80,7 @@ public non-sealed class VisualLink extends VisualArrow implements ClassLocalizab
      */
     public VisualNode getDestinationNode() {
         
-        return destination;
+        return this.destination;
         
     }
     
@@ -85,7 +90,7 @@ public non-sealed class VisualLink extends VisualArrow implements ClassLocalizab
      * @param node the destination node of the link.
      */
     public void setDestinationNode(VisualNode node) {
-        destination = node;
+        this.destination = node;
     }
     
     /**
@@ -95,7 +100,7 @@ public non-sealed class VisualLink extends VisualArrow implements ClassLocalizab
      */
     public Link<Node> getLink() {
         
-        return link;
+        return this.link;
         
     }
     
@@ -106,40 +111,35 @@ public non-sealed class VisualLink extends VisualArrow implements ClassLocalizab
      */
     @Override public Shape getCenteredShape(Graphics2D g) {
         Segment line = new Segment(
-                new Point2D.Double(source.getTemporalPosition().getX(), source.getTemporalPosition().getY()),
-                new Point2D.Double(destination.getTemporalPosition().getX(),
-                                   destination.getTemporalPosition().getY()));
-        setStartPoint(source.getCutPoint(line, g));
-        setEndPoint(destination.getCutPoint(line, g));
+                new Point2D.Double(this.source.getTemporalPosition().getX(), this.source.getTemporalPosition().getY()),
+                new Point2D.Double(this.destination.getTemporalPosition().getX(),
+                                   this.destination.getTemporalPosition().getY()));
+        this.setStartPoint(this.source.getCutPoint(line, g));
+        this.setEndPoint(this.destination.getCutPoint(line, g));
         // 29/12/2019 When having a loop in event nodes source = destination and startPoint and endPoint are the center of the arc
         //02/02/2020 loops also in Cnance nodes so I have put an abstract method in VisualNode and overriden it in ChanceVisualNode and EventVisualNode
-        if ( source.getNode().getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes()) &&
-                (destination.getNode().getName().equals(source.getNode().getName()))
-                && ( (destination.getNode().getNodeType() == NodeType.EVENT  ) || (destination.getNode().getNodeType() == NodeType.CHANCE  ))
-        ) {
-            setStartPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
-            setEndPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
+        if (this.source == this.destination) {
+            this.setStartPoint(this.source.getSelfLoopPosition(g));
+            this.setEndPoint(this.source.getSelfLoopPosition(g));
         }
         //
         return super.getCenteredShape(g);
     }
     
     @Override public Shape getShape(Graphics2D g) {
-        Shape sourceShape = source.getShape(g);
-        Shape destinationShape = destination.getShape(g);
+        Shape sourceShape = this.source.getShape(g);
+        Shape destinationShape = this.destination.getShape(g);
         Segment line = new Segment(
                 new Point2D.Double(sourceShape.getBounds2D().getCenterX(), sourceShape.getBounds2D().getCenterY()),
-                new Point2D.Double(destinationShape.getBounds2D().getCenterX(), destinationShape.getBounds2D().getCenterY()));
-        setStartPoint(source.getCutPoint(line, g));
-        setEndPoint(destination.getCutPoint(line, g));
+                new Point2D.Double(destinationShape.getBounds2D().getCenterX(), destinationShape.getBounds2D()
+                                                                                                .getCenterY()));
+        this.setStartPoint(this.source.getCutPoint(line, g));
+        this.setEndPoint(this.destination.getCutPoint(line, g));
         // 29/12/2019 When having a loop in event nodes source = destination and startPoint and endPoint are the center of the arc
         //02/02/2020 loops also in Cnance nodes so I have put an abstract method in VisualNode and overriden it in ChanceVisualNode and EventVisualNode
-        if ( source.getNode().getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes()) &&
-                (destination.getNode().getName().equals(source.getNode().getName()))
-                && ( (destination.getNode().getNodeType() == NodeType.EVENT  ) || (destination.getNode().getNodeType() == NodeType.CHANCE  ))
-        ) {
-            setStartPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
-            setEndPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
+        if (this.source == this.destination) {
+            this.setStartPoint(this.source.getSelfLoopPosition(g));
+            this.setEndPoint(this.source.getSelfLoopPosition(g));
         }
         
         return super.getShape(g);
@@ -151,49 +151,68 @@ public non-sealed class VisualLink extends VisualArrow implements ClassLocalizab
      * @param g graphics object where paint the link.
      */
     @Override public void paint(Graphics2D g) {
-        Shape sourceShape = source.getShape(g);
-        Shape destinationShape = destination.getShape(g);
-        if(source!=null && destination!=null && source== destination){
+        Tuple2Record<Point2D.Double, Point2D.Double> startAndEndPoint = null;
+        this.isSelfLoop = this.source != null && this.source == this.destination;
+        try {
+            startAndEndPoint = VisualLink.shortenedPoints(g, this.source, this.destination, null);
+        } catch (LinkCannotBePaintedException e) {
+            return;
+        }
+        this.setStartPoint(startAndEndPoint.v0());
+        this.setEndPoint(startAndEndPoint.v1());
+        boolean hasAbsoluteLinkRestriction = this.link.hasTotalRestriction();
+        this.setDoubleStriped(hasAbsoluteLinkRestriction);
+        this.setSingleStriped(this.link.hasRestrictions() && !hasAbsoluteLinkRestriction);
+        this.setLinkColor(this.link.hasRevealingConditions() ? GUIColors.Network.REVELATION_ARC_VARIABLE : GUIColors.Network.Link.FOREGOUND);
+        super.paint(g);
+    }
+    
+    //Cannot paint node from {source} to {destination}.
+    static class LinkCannotBePaintedException extends OpenMarkovException {
+        public final VisualNode source;
+        public final VisualNode destination;
+        
+        LinkCannotBePaintedException(VisualNode source, VisualNode destination) {
+            this.source = source;
+            this.destination = destination;
+        }
+    }
+    
+    public static final @NotNull Tuple2Record<Point2D.Double, Point2D.Double> shortenedPoints(Graphics2D g,
+                                                                                              @NotNull VisualNode source,
+                                                                                              @Nullable VisualNode destination,
+                                                                                              @Nullable Point2D.Double cursorPosition) throws LinkCannotBePaintedException {
+        if (source == destination && source != null) {
             // 28/12/2019 allowed self lopps for Event nodes- 02/04/2020 allowed self-loops for chance nodes
             //Before adding this block, this catch was empty only has a return.
             //Now it checks if the link is a self-loop in an event node. If  it is the case the circular arrow is painted
-            if (  source.getNode().getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes()) &&
-                    (destination.getNode().getName().equals(source.getNode().getName()))
-                    && ( (destination.getNode().getNodeType() == NodeType.EVENT  ) || (destination.getNode().getNodeType() == NodeType.CHANCE  ))
-            ){
-                setStartPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
-                setEndPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
-                super.paint(g);
-            }
-            return;
+            return Tuples.record(source.getSelfLoopPosition(g), source.getSelfLoopPosition(g));
         }
-        
-        // Paint the final arrow when the user releases the button of the
-        // mouse
-        Segment line;
-        try {
-            line = new Segment(
+        Shape sourceShape = source.getShape(g);
+        if (destination == null) {
+            Segment line = new Segment(
                     new Point2D.Double(sourceShape.getBounds2D().getCenterX(), sourceShape.getBounds2D().getCenterY()),
-                    new Point2D.Double(destinationShape.getBounds2D().getCenterX(), destinationShape.getBounds2D().getCenterY()));
-
-        } catch (IllegalArgumentException e) {
-            return;
+                    new Point2D.Double(cursorPosition.getX(), cursorPosition.getY()));
+            Point2D.Double sourceCutPoint = source.getCutPoint(line, g);
+            if (sourceCutPoint == null) {
+                return Tuples.record(
+                        new Point2D.Double(sourceShape.getBounds2D().getCenterX(),
+                                           sourceShape.getBounds2D().getCenterY()),
+                        cursorPosition);
+            }
+            return Tuples.record(sourceCutPoint, cursorPosition);
         }
-        if (link.hasRevealingConditions()) {
-            setLinkColor(GUIColors.Network.REVELATION_ARC_VARIABLE);
-        } else {
-            setLinkColor(GUIColors.Network.LINK);
-        }
-        
-        boolean hasAbsoluteLinkRestriction = link.hasTotalRestriction();
-        setDoubleStriped(hasAbsoluteLinkRestriction);
-        setSingleStriped(link.hasRestrictions() && !hasAbsoluteLinkRestriction);
+        Shape destinationShape = destination.getShape(g);
+        Segment line = new Segment(
+                new Point2D.Double(sourceShape.getBounds2D().getCenterX(), sourceShape.getBounds2D().getCenterY()),
+                new Point2D.Double(destinationShape.getBounds2D().getCenterX(), destinationShape.getBounds2D()
+                                                                                                .getCenterY()));
         Point2D.Double sourceCutPoint = source.getCutPoint(line, g);
         Point2D.Double cutPoint = destination.getCutPoint(line, g);
-        setStartPoint(sourceCutPoint);
-        setEndPoint(cutPoint);
-        
-        super.paint(g);
+        if (sourceCutPoint == null || cutPoint == null) {
+            throw new LinkCannotBePaintedException(source, destination);
+        }
+        return Tuples.record(sourceCutPoint, cutPoint);
     }
     
     @Override public String toString() {

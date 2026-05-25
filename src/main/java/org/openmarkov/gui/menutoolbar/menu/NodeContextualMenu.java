@@ -220,6 +220,14 @@ public class NodeContextualMenu extends ContextualMenu {
                             new JMenuItemBuilder("Center horizontally")
                                     .onClick(() -> NodesAlignment.horizontalAlign(this.networkEditorPanel))
                                     .enabled(NodesAlignment.canHorizontalAlign(this.networkEditorPanel))
+                                    .build(),
+                            new JMenuItemBuilder("Sparse vertically")
+                                    .onClick(() -> NodesAlignment.verticalSparse(this.networkEditorPanel))
+                                    .enabled(NodesAlignment.canVerticalSparse(this.networkEditorPanel))
+                                    .build(),
+                            new JMenuItemBuilder("Sparse horizontally")
+                                    .onClick(() -> NodesAlignment.horizontalSparse(this.networkEditorPanel))
+                                    .enabled(NodesAlignment.canHorizontalSparse(this.networkEditorPanel))
                                     .build()
                     )
                     .build();

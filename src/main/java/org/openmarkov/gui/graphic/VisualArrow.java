@@ -66,6 +66,8 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 	 */
     private Point2D.Double endPoint;
 
+	protected boolean isSelfLoop;
+	
 	/**
 	 * Is the link directed
 	 */
@@ -81,7 +83,7 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 	 */
 	private boolean isSingleStriped;
     
-    private GUIColor linkColor = GUIColors.Network.LINK;
+    private GUIColor linkColor = GUIColors.Network.Link.FOREGOUND;
 
 	/**
 	 * Creates a new visual link from the two points that define the start and
@@ -95,11 +97,7 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 		this.endPoint = newEndPoint;
 		this.isDirected = isDirected;
 	}
-
-	public VisualArrow(Point2D.Double newStartPoint, Point2D.Double newEndPoint) {
-		this(newStartPoint, newEndPoint, true);
-	}
-
+	
 	/**
 	 * Calculates the nine points of the line with top of arrow. /** Calculates
 	 * the nine points of the line with top of arrow.
@@ -421,7 +419,6 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 		g.setStroke(stroke);
 		g.fill(getLoopArrowHeadShape(start, CIRCULAR_ARROW_RADIOUS));
 		g.draw(getLoopShape(start, CIRCULAR_ARROW_RADIOUS));
-		
 	}
 //
 	
@@ -549,7 +546,7 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 			paintLine(g, startPoint, endPoint, stroke);
 		}
 		// 01/01/2020 Paints a circular arrow when there is a self-loop in an event node
-		if (startPoint!=null && endPoint!=null && startPoint.distance(endPoint)==0){
+		if (startPoint!=null && endPoint!=null && startPoint.distance(endPoint)==0 && isSelfLoop){
 			paintLoopArrow(g, startPoint, stroke);
 		}
 	}
@@ -606,5 +603,8 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 	public void setSingleStriped(boolean isSingleStriped) {
 		this.isSingleStriped = isSingleStriped;
 	}
-
+	
+	public void setSelfLoop(boolean isSelfLoop) {
+		this.isSelfLoop=isSelfLoop;
+	}
 }

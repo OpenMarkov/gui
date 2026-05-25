@@ -227,6 +227,10 @@ public non-sealed class VisualDecisionNode extends VisualNode {
         
     }
     
+    @Override public Point2D.Double getSelfLoopPosition(Graphics2D g) {
+        return new Point2D.Double(getShape(g).getBounds2D().getMaxX(), getShape(g).getBounds2D().getMaxY());
+    }
+    
     /**
      * Imposes a policy on this decision node.
      *

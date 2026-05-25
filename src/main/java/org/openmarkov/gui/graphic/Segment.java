@@ -291,19 +291,11 @@ public class Segment {
 	 * segment have jointly or null if they haven't.
 	 */
 	public Point2D.Double[] cutPoint(Point2D.Double circleCenter, double circleRadius) {
-
 		double cx = circleCenter.getX();
 		double cy = circleCenter.getY();
-		Segment segment;
-		Point2D.Double[] points;
-
-		try {
-			segment = new Segment(new Point2D.Double(startPoint.getX() - cx, startPoint.getY() - cy),
-					new Point2D.Double(endPoint.getX() - cx, endPoint.getY() - cy));
-		} catch (IllegalArgumentException e) {
-
-			return null;
-		}
+        Point2D.Double[] points;
+        Segment segment = new Segment(new Point2D.Double(startPoint.getX() - cx, startPoint.getY() - cy),
+                                      new Point2D.Double(endPoint.getX() - cx, endPoint.getY() - cy));
 		if (segment.getSegmentType() == SEGMENT_NORMAL) {
 			points = cutPointHorizontal(segment, circleRadius);
 		} else {
@@ -314,9 +306,7 @@ public class Segment {
 				point.setLocation(point.getX() + cx, point.getY() + cy);
 			}
 		}
-
 		return points;
-
 	}
 
 	/**

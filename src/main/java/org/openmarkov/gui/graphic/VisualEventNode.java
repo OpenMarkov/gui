@@ -27,7 +27,7 @@ import java.awt.geom.RoundRectangle2D;
  * @author cyago
  * @version 1 28/12/2019- 25/01/2020 added initialEvent
  */
-public final class VisualEventNode extends VisualNode implements SelfLoopableNode{
+public final class VisualEventNode extends VisualNode {
 
 	private static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(6.0f);
 	private static final BasicStroke OBSERVED_NORMAL_STROKE = new BasicStroke(3.0f);
@@ -111,7 +111,7 @@ public final class VisualEventNode extends VisualNode implements SelfLoopableNod
 	 * @return
 	 */
 	@Override
-	public org.openmarkov.core.model.network.Point2D.Double getCentreArcPoint   (Graphics2D g) {
+	public org.openmarkov.core.model.network.Point2D.Double getSelfLoopPosition(Graphics2D g) {
 		Point2D.Double centreNodePoint = getTemporalPosition();
 		double[] dims = getNodeDimensions(g);
 		//dims[2] = width and dims[3] = height

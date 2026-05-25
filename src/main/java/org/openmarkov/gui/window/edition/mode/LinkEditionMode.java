@@ -42,7 +42,7 @@ import java.awt.event.MouseEvent;
     
     @Override public void mouseMoved(MouseEvent e, Point2D.Double cursorPosition, double diffX, double diffY,
                                      Graphics2D g) {
-        visualNetwork.updateLinkCreation(cursorPosition);
+        visualNetwork.updateLinkCreation(cursorPosition, g);
         networkEditorPanel.repaint();
     }
     

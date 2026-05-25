@@ -22,7 +22,7 @@ import java.util.function.Consumer;
  * Dialog for imposing a policy on a decision node. If the node does not already
  * have a policy, a new {@link TablePotential} with role POLICY is created.
  */
-public class ImposePolicyDialog extends PotentialEditDialog{
+public class ImposePolicyDialog extends PotentialEditDialog {
     
     private final @NotNull VisualDecisionNode visualNode;
     
@@ -33,5 +33,9 @@ public class ImposePolicyDialog extends PotentialEditDialog{
     
     @Override PotentialEditPanel generatePotentialEditPanel(Node node, boolean readOnly) {
         return new ImposePolicyPanel(this.visualNode, readOnly, true);
+    }
+    
+    @Override protected String getBaseTitle() {
+        return StringDatabase.getUniqueInstance().getString("NodePropertiesDialog.EditPotentialTab.EditPolicyTitle");
     }
 }

@@ -147,6 +147,16 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
     }
     
     /**
+     * Returns the point which will be the center for a circular arrow
+     * 05/04/2020 - At this time only Event and Chance Nodes may have circular arrows (self-loops)
+     *
+     * @param g graphics object where to paint the element.
+     *
+     * @return the point which will be the center for a circular arrow
+     */
+    public abstract Point2D.Double getSelfLoopPosition(Graphics2D g);
+    
+    /**
      * Returns the real position of the node.
      *
      * @return position of the node in the screen.
@@ -192,6 +202,14 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
     
     public void setTemporalCoordinateY(double temporalCoordinateY) {
         this.temporalCoordinateY = temporalCoordinateY;
+    }
+    
+    public double getTemporalCoordinateX() {
+        return this.temporalCoordinateX;
+    }
+    
+    public double getTemporalCoordinateY() {
+        return this.temporalCoordinateY;
     }
     
     /**

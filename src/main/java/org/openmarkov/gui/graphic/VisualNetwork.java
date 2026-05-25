@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.graphic;
 
+import io.github.jorgericovivas.rust_essentials.tuples.Tuple2Record;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.PNESupport;
@@ -19,8 +20,9 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.constraint.OnlySelfLoopsWithEventAndChanceNodes;
+import org.openmarkov.core.model.network.constraint.NoSelfLoop;
 import org.openmarkov.gui.action.RemoveSelectedEdit;
+import org.openmarkov.gui.configuration.GUIColors;
 import org.openmarkov.gui.util.MovedNodeInfo;
 import org.openmarkov.gui.window.edition.EditorPanelClipboardAssistant;
 import org.openmarkov.gui.window.edition.SelectedContent;
@@ -76,7 +78,7 @@ public class VisualNetwork implements PNEditListener {
      * This object represents the arrow that is painted when a new link is being
      * created.
      */
-    private VisualArrow newLink = null;
+    private @Nullable VisualArrow newLink = null;
     
     public VisualArrow getNewLink() {
         return this.newLink;
@@ -85,7 +87,7 @@ public class VisualNetwork implements PNEditListener {
     /**
      * This object represents the source node of a new link.
      */
-    private VisualNode newLinkSource = null;
+    private @Nullable VisualNode newLinkSource = null;
     
     /**
      * Rectangle used to select various nodes.
@@ -144,7 +146,7 @@ public class VisualNetwork implements PNEditListener {
         
         double[] networkBounds = {Double.MAX_VALUE, Double.MIN_VALUE, Double.MAX_VALUE, Double.MIN_VALUE};
         
-        for (VisualNode node : visualNodes) {
+        for (VisualNode node : this.visualNodes) {
             Rectangle2D nodeBounds = node.getShape(g).getBounds2D();
             networkBounds[0] = Math.min(nodeBounds.getMinX(), networkBounds[0]);
             networkBounds[1] = Math.max(nodeBounds.getMaxX(), networkBounds[1]);
@@ -182,54 +184,52 @@ public class VisualNetwork implements PNEditListener {
     }
     
     private void reconstructVisualInfo(NodeIsToKeep nodeIsToKeep) {
-        List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
-        List<Node> nodesToAdd = probNet.getNodes();
-        for (VisualNode vNode : visualNodes) {
-            if (nodeIsToKeep.nodeIsToKeep(vNode, Collections.unmodifiableList(nodesToAdd))) {
-                nodesToAdd.remove(vNode.getNode());
+        List<VisualNode> visualNodesToDelete = new ArrayList<VisualNode>();
+        List<Node> nodesToAdd = this.probNet.getNodes();
+        for (VisualNode visualNode : this.visualNodes) {
+            if (nodeIsToKeep.nodeIsToKeep(visualNode, Collections.unmodifiableList(nodesToAdd))) {
+                nodesToAdd.remove(visualNode.getNode());
             } else {
-                vNodesToDelete.add(vNode);
+                visualNodesToDelete.add(visualNode);
             }
         }
-        visualNodes.removeAll(vNodesToDelete);
+        this.visualNodes.removeAll(visualNodesToDelete);
         for (Node node : nodesToAdd) {
-            VisualNode vNode1 = createVisualNode(node);
-            visualNodes.add(vNode1);
-            vNode1.setByTitle(byTitle);
+            VisualNode visualNode = createVisualNode(node);
+            this.visualNodes.add(visualNode);
+            visualNode.setByTitle(this.byTitle);
         }
-        List<Link<Node>> links = probNet.getLinks();
+        List<Link<Node>> links = this.probNet.getLinks();
         List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
-        for (VisualLink vLink : visualLinks) {
+        for (VisualLink vLink : this.visualLinks) {
             Link<Node> linkToCheck = vLink.getLink();
-            boolean containsLink = links.contains(linkToCheck);
-            boolean containsNodeToDelete = containsNodeToDelete(linkToCheck, vNodesToDelete);
-            if (containsLink && !containsNodeToDelete) {
+            if (links.contains(linkToCheck) && !containsNodeToDelete(linkToCheck, visualNodesToDelete)) {
                 links.remove(linkToCheck);
             } else {
                 vLinksToDelete.add(vLink);
             }
         }
-        visualLinks.removeAll(vLinksToDelete);
-        int visualNodesCount = visualNodes.size();
+        this.visualLinks.removeAll(vLinksToDelete);
+        int visualNodesCount = this.visualNodes.size();
         for (Link<Node> link : links) {
             VisualNode vNode1 = null;
             VisualNode vNode2 = null;
             int i = 0;
             while ((i < visualNodesCount) && ((vNode1 == null) || (vNode2 == null))) {
                 if (vNode1 == null) {
-                    if (link.getFrom().equals(visualNodes.get(i).getNode())) {
-                        vNode1 = visualNodes.get(i);
+                    if (link.getFrom().equals(this.visualNodes.get(i).getNode())) {
+                        vNode1 = this.visualNodes.get(i);
                     }
                 }
                 if (vNode2 == null) {
-                    if (link.getTo().equals(visualNodes.get(i).getNode())) {
-                        vNode2 = visualNodes.get(i);
+                    if (link.getTo().equals(this.visualNodes.get(i).getNode())) {
+                        vNode2 = this.visualNodes.get(i);
                     }
                 }
                 i++;
             }
             if ((vNode1 != null) && (vNode2 != null)) {
-                visualLinks.add(new VisualLink(link, vNode1, vNode2));
+                this.visualLinks.add(new VisualLink(link, vNode1, vNode2));
             }
         }
     }
@@ -258,7 +258,7 @@ public class VisualNetwork implements PNEditListener {
      * name.
      */
     public boolean getByTitle() {
-        return byTitle;
+        return this.byTitle;
     }
     
     /**
@@ -268,10 +268,10 @@ public class VisualNetwork implements PNEditListener {
      */
     public void setByTitle(boolean value) {
         
-        if (byTitle != value) {
-            byTitle = value;
+        if (this.byTitle != value) {
+            this.byTitle = value;
         }
-        for (VisualNode node : visualNodes) {
+        for (VisualNode node : this.visualNodes) {
             node.setByTitle(value);
         }
         
@@ -293,7 +293,7 @@ public class VisualNetwork implements PNEditListener {
         ArrayList<VisualNode> nodesSelected = new ArrayList<VisualNode>();
         ArrayList<VisualNode> nodesUnselected = new ArrayList<VisualNode>();
         
-        for (VisualNode node : visualNodes) {
+        for (VisualNode node : this.visualNodes) {
             if (node.isSelected()) {
                 nodesSelected.add(node);
             } else {
@@ -354,10 +354,10 @@ public class VisualNetwork implements PNEditListener {
     public VisualNode whatNodeInPosition(Point2D.Double position, Graphics2D g) {
         
         VisualNode nodeFound = null;
-        int index = 0, length = visualNodes.size();
+        int index = 0, length = this.visualNodes.size();
         
         while ((nodeFound == null) && (index < length)) {
-            VisualNode node = visualNodes.get(index++);
+            VisualNode node = this.visualNodes.get(index++);
             if (node.pointInsideShape(position, g)) {
                 nodeFound = node;
             }
@@ -380,9 +380,9 @@ public class VisualNetwork implements PNEditListener {
         
         InnerBox innerBoxFound = null;
         int index = 0;
-        int nodesLength = visualNodes.size();
+        int nodesLength = this.visualNodes.size();
         while ((innerBoxFound == null) && (index < nodesLength)) {
-            VisualNode node = visualNodes.get(index++);
+            VisualNode node = this.visualNodes.get(index++);
             if (node.pointInsideShape(position, g)) {
                 InnerBox innerBox = node.getInnerBox();
                 if (innerBox.pointInsideShape(position, g)) {
@@ -406,9 +406,9 @@ public class VisualNetwork implements PNEditListener {
         
         VisualState stateFound = null;
         int index = 0;
-        int nodesLength = visualNodes.size();
+        int nodesLength = this.visualNodes.size();
         while ((stateFound == null) && (index < nodesLength)) {
-            VisualNode node = visualNodes.get(index++);
+            VisualNode node = this.visualNodes.get(index++);
             if (node.pointInsideShape(position, g)) {
                 if (node.getInnerBox() instanceof FSVariableBox) {
                     int numStates = node.getInnerBox().getNumStates();
@@ -436,9 +436,9 @@ public class VisualNetwork implements PNEditListener {
      */
     public @Nullable VisualLink whatLinkInPosition(Point2D.Double position, Graphics2D g) {
         int index = 0;
-        int length = visualLinks.size();
+        int length = this.visualLinks.size();
         while (index < length) {
-            VisualLink link = visualLinks.get(index++);
+            VisualLink link = this.visualLinks.get(index++);
             if (link.pointInsideShape(position, g)) {
                 return link;
             }
@@ -505,11 +505,11 @@ public class VisualNetwork implements PNEditListener {
     public void setSelectedNode(String name, boolean selected) {
         
         boolean found = false;
-        int i = 0, l = visualNodes.size();
+        int i = 0, l = this.visualNodes.size();
         
         while (!found && (i < l)) {
-            if (visualNodes.get(i).getNode().getName().equals(name)) {
-                setSelectionOfElement(visualNodes.get(i), selected);
+            if (this.visualNodes.get(i).getNode().getName().equals(name)) {
+                setSelectionOfElement(this.visualNodes.get(i), selected);
                 found = true;
             } else {
                 i++;
@@ -539,9 +539,9 @@ public class VisualNetwork implements PNEditListener {
     public void setSelectedLink(Link<Node> link, boolean selected) {
         int i = 0;
         VisualLink visualLink = null;
-        while (visualLink == null && i < visualLinks.size()) {
-            if (visualLinks.get(i).getLink().equals(link)) {
-                visualLink = visualLinks.get(i);
+        while (visualLink == null && i < this.visualLinks.size()) {
+            if (this.visualLinks.get(i).getLink().equals(link)) {
+                visualLink = this.visualLinks.get(i);
             }
             ++i;
         }
@@ -556,7 +556,7 @@ public class VisualNetwork implements PNEditListener {
      * @param selected new selection state.
      */
     public void setSelectedAllNodes(boolean selected) {
-        for (VisualNode node : visualNodes) {
+        for (VisualNode node : this.visualNodes) {
             setSelectionOfElement(node, selected);
         }
         if (!selected) {
@@ -571,7 +571,7 @@ public class VisualNetwork implements PNEditListener {
      * @param selected new selection state.
      */
     private void setSelectedAllLinks(boolean selected) {
-        for (VisualLink link : visualLinks) {
+        for (VisualLink link : this.visualLinks) {
             setSelectionOfElement(link, selected);
         }
         if (!selected) {
@@ -599,7 +599,7 @@ public class VisualNetwork implements PNEditListener {
      *                 nodes are moved.
      */
     private void moveNodes(double diffX, double diffY, boolean selected) {
-        for (VisualNode node : visualNodes) {
+        for (VisualNode node : this.visualNodes) {
             if (!selected || (node.isSelected())) {
                 Point2D.Double originalPosition = node.getTemporalPosition();
                 double newPosX = originalPosition.getX() + diffX;
@@ -660,7 +660,7 @@ public class VisualNetwork implements PNEditListener {
         setSelectedAllLinks(false);
         // Select nodes
         ArrayList<VisualNode> selectedVisualNodes = new ArrayList<VisualNode>();
-        for (VisualNode node : visualNodes) {
+        for (VisualNode node : this.visualNodes) {
             if (selection.containsNode(node)) {
                 setSelectionOfElement(node, true);
                 selectedVisualNodes.add(node);
@@ -682,7 +682,7 @@ public class VisualNetwork implements PNEditListener {
         
         List<MovedNodeInfo> movedNodes = new ArrayList<MovedNodeInfo>();
         
-        for (VisualNode node : visualNodes) {
+        for (VisualNode node : this.visualNodes) {
             if (node.isSelected()) {
                 movedNodes.add(new MovedNodeInfo(node.getNode(), node.getPosition()));
             }
@@ -727,7 +727,7 @@ public class VisualNetwork implements PNEditListener {
      * @return a list containing all the nodes in the network.
      */
     public List<VisualNode> getAllNodes() {
-        return visualNodes;
+        return this.visualNodes;
     }
     
     /**
@@ -742,7 +742,7 @@ public class VisualNetwork implements PNEditListener {
     private List<VisualLink> getLinksOfNodes(List<VisualNode> nodes, boolean onlyBothEnds) {
         ArrayList<VisualLink> links = new ArrayList<VisualLink>();
         int l = nodes.size();
-        for (VisualLink visualLink : visualLinks) {
+        for (VisualLink visualLink : this.visualLinks) {
             boolean found = false;
             boolean foundSource = false;
             boolean foundDestination = false;
@@ -783,7 +783,7 @@ public class VisualNetwork implements PNEditListener {
      * @param listener listener to be set.
      */
     public void addSelectionListener(SelectionListener listener) {
-        selectionListeners.add(listener);
+        this.selectionListeners.add(listener);
     }
     
     /**
@@ -795,7 +795,7 @@ public class VisualNetwork implements PNEditListener {
         return new ArrayList<>(getSelectedElementsOf(VisualNode.class).toList());
     }
     
-    public VisualNode getLastSelectedNode(){
+    public VisualNode getLastSelectedNode() {
         return getSelectedElementOf(VisualNode.class);
     }
     
@@ -822,7 +822,7 @@ public class VisualNetwork implements PNEditListener {
         return new ArrayList<VisualLink>(getSelectedElementsOf(VisualLink.class).toList());
     }
     
-    public VisualLink getLastSelectedLink(){
+    public VisualLink getLastSelectedLink() {
         return getSelectedElementOf(VisualLink.class);
     }
     
@@ -833,7 +833,7 @@ public class VisualNetwork implements PNEditListener {
      */
     private void notifyObjectsSelected() {
         
-        for (SelectionListener listener : selectionListeners) {
+        for (SelectionListener listener : this.selectionListeners) {
             listener.objectsSelected();
         }
     }
@@ -844,20 +844,17 @@ public class VisualNetwork implements PNEditListener {
      * @return network which is painted.
      */
     public ProbNet getNetwork() {
-        return probNet;
+        return this.probNet;
     }
     
     public PNESupport getpNESupport() {
         //review method
-        return probNet.getPNESupport();
+        return this.probNet.getPNESupport();
         
     }
     
     @Override public void afterEditExecutes(PNEdit edit) {
         constructVisualInfo();
-        if (getWorkingMode() != NetworkEditorPanel.WorkingMode.INFERENCE) {
-            visualDecisionNodeRefresh();
-        }
     }
     
     private void visualDecisionNodeRefresh() {
@@ -953,14 +950,34 @@ public class VisualNetwork implements PNEditListener {
         VisualNode node;
         
         if ((node = whatNodeInPosition(cursorPosition, g)) != null) {
-            newLink = new VisualArrow(cursorPosition.clone(), cursorPosition);
-            newLinkSource = node;
+            this.newLink = new VisualArrow(cursorPosition.clone(), cursorPosition, true);
+            this.newLinkSource = node;
+            updateLinkCreation(cursorPosition, g);
         }
     }
     
-    public void updateLinkCreation(Point2D.Double position) {
-        if (newLink != null) {
-            newLink.setEndPoint(position);
+    public void updateLinkCreation(Point2D.Double position, Graphics2D g) {
+        if (this.newLink != null) {
+            @Nullable VisualNode destinationNode = whatNodeInPosition(position, g);
+            if (destinationNode == this.newLinkSource && this.probNet.hasConstraintOfClass(NoSelfLoop.class)) {
+                destinationNode = null;
+            }
+            Tuple2Record<Point2D.Double, Point2D.Double> points = null;
+            try {
+                points = VisualLink.shortenedPoints(g, this.newLinkSource, destinationNode, position);
+                this.newLink.setStartPoint(points.v0());
+                this.newLink.setEndPoint(points.v1());
+                this.newLink.setSelfLoop(this.newLinkSource==destinationNode);
+            } catch (VisualLink.LinkCannotBePaintedException e) {
+                //Do not update positions
+            }
+            boolean canCreate = destinationNode != null && new AddLinkEdit(this.probNet,
+                                                                           this.probNet.getVariable(this.newLinkSource.getNode()
+                                                                                                                      .getName()),
+                                                                           this.probNet.getVariable(destinationNode.getNode()
+                                                                                                                   .getName()), true)
+                    .constraintsWillBeMet();
+            this.newLink.setLinkColor(canCreate ? GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_SUCCESS : destinationNode == null ? GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_NOTHING : GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_FAILURE);
         }
     }
     
@@ -973,51 +990,49 @@ public class VisualNetwork implements PNEditListener {
      * @return The edit for the new link created
      */
     public void finishLinkCreation(Point2D.Double point, Graphics2D g) throws DoEditException {
-        PNEdit linkEdit = null;
-        if (newLink != null) {
-            newLink = null;
-            if (newLinkSource != null) {
-                VisualNode newLinkDestination = whatNodeInPosition(point, g);
-                if(newLinkDestination==null){
-                    return;
-                }
-                if (  (!newLinkSource.equals(newLinkDestination))
-                        // 29/12/2019 - in DESNETS we can have loops for event nodes - or added
-                        //05/04/2020 - loops for Chance nodes
-                        || ( newLinkDestination.getNode().getProbNet().getNetworkType().isApplicableConstraint((new OnlySelfLoopsWithEventAndChanceNodes()))
-                        && ( (newLinkDestination.getNode().getNodeType() == NodeType.EVENT  ) || (newLinkDestination.getNode().getNodeType() == NodeType.CHANCE  ) ))
-                )
-                //
-                {
-                        linkEdit = new AddLinkEdit(probNet, probNet.getVariable(newLinkSource.getNode().getName()),
-                                                   probNet.getVariable(newLinkDestination.getNode().getName()), true);
-                }
-                newLinkSource = null;
-            }
+        @Nullable VisualNode newLinkDestination = whatNodeInPosition(point, g);
+        if (newLinkDestination == this.newLinkSource && this.probNet.hasConstraintOfClass(NoSelfLoop.class)) {
+            newLinkDestination = null;
         }
-        if (linkEdit != null) {
-            linkEdit.executeEdit();
+        if (this.newLink == null || this.newLinkSource == null ||  newLinkDestination == null) {
+            this.newLink = null;
+            this.newLinkSource = null;
+            return;
         }
+        try {
+            new AddLinkEdit(this.probNet, this.probNet.getVariable(this.newLinkSource.getNode().getName()),
+                            this.probNet.getVariable(newLinkDestination.getNode()
+                                                                       .getName()), true).executeEdit();
+        } catch (Exception e) {
+            this.newLink.setLinkColor(GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_FAILURE);
+            //Locally calls the exception handler, which allows to show dialogs while still showing the wrong link, and
+            //once the Exception dialog closes, the link is removed in the "finally" block, dissappearing from the UI.
+            Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+        } finally {
+            this.newLink = null;
+            this.newLinkSource = null;
+        }
+        
     }
     
     public void cancelLinkCreation(NetworkEditorPanel networkEditorPanel) {
-        newLink = null;
-        newLinkSource = null;
+        this.newLink = null;
+        this.newLinkSource = null;
         networkEditorPanel.repaint();
     }
     
     public void startSelectionRectangle(Point2D.Double position) {
-        selection = new SelectionRectangle();
-        selection.initSelection(position, 0, 0);
+        this.selection = new SelectionRectangle();
+        this.selection.initSelection(position, 0, 0);
     }
     
     public void finishSelectionRectangle(Point2D.Double position) {
-        selection.clearSelectionSquare();
+        this.selection.clearSelectionSquare();
     }
     
     public void updateSelectionRectangle(double diffX, double diffY) {
-        selection.setSize(selection.getWidth() + diffX, selection.getHeight() + diffY);
-        selectElementsInsideSelection(selection);
+        this.selection.setSize(this.selection.getWidth() + diffX, this.selection.getHeight() + diffY);
+        selectElementsInsideSelection(this.selection);
     }
     
     /**
@@ -1026,7 +1041,7 @@ public class VisualNetwork implements PNEditListener {
      * @return the isPropagationActive.
      */
     boolean isPropagationActive() {
-        return isPropagationActive;
+        return this.isPropagationActive;
     }
     
     /**
@@ -1039,7 +1054,7 @@ public class VisualNetwork implements PNEditListener {
     }
     
     public NetworkEditorPanel.WorkingMode getWorkingMode() {
-        return workingMode;
+        return this.workingMode;
     }
     
     public void setWorkingMode(NetworkEditorPanel.WorkingMode workingMode) {
