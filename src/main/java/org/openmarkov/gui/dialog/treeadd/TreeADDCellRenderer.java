@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 import java.util.HashMap;
@@ -71,22 +72,33 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
         textIconFont = new Font("Helvetica", Font.BOLD, 15);
         // precisionProxy= new PrecisionProxy(2);
     }
-    
+
     @Override
-    public @Nullable Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
-                                                            boolean leaf, int row, boolean hasFocus) {
+    public @Nullable Component getTreeCellRendererComponent(
+            JTree tree, Object value, boolean selected,
+            boolean expanded, boolean leaf, int row, boolean hasFocus) {
+
         leftLabel.setText(null);
         rightLabel.setText(null);
+
+        // LIMPIAR BORDE Y TEXTO
+        rightLabel.setBorder(null);
+        rightLabel.setIcon(null);
+
         if (value instanceof TreeADDBranch) {
-            return getTreeCellRendererBranch(tree, (TreeADDBranch) value, selected, expanded, leaf, row, hasFocus);
+            return getTreeCellRendererBranch(tree, (TreeADDBranch) value,
+                    selected, expanded, leaf, row, hasFocus);
         }
+
         if (value instanceof Potential) {
-            return getTreeCellRendererPotential(tree, (Potential) value, selected, expanded, leaf, row, hasFocus);
+            return getTreeCellRendererPotential((Potential) value);
         }
+
         if (value instanceof String) {
             leftLabel.setText("@" + value);
             return this;
         }
+
         return null;
     }
     
@@ -124,23 +136,56 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
     /**
      * Draws a TreeADDPotential or a TablePotential node
      *
-     * @param tree the tree
      * @param potential Potential Node of the ADD/Tree
-     * @param selected  Selection Flag: true when this treenode is selected
-     * @param expanded  true when this treenode is expanded
-     * @param leaf      true when this treenode is a leaf
-     * @param row the row
-     * @param hasFocus the has focus
-     * @return the tree cell renderer potential
      */
-    public Component getTreeCellRendererPotential(JTree tree, Potential potential, boolean selected, boolean expanded,
-                                                  boolean leaf, int row, boolean hasFocus) {
+    public Component getTreeCellRendererPotential(Potential potential) {
+
         if (potential instanceof TreeADDPotential treeADDPotential) {
+
             Variable topVariable = treeADDPotential.getRootVariable();
             leftLabel.setIcon(getIcon(topVariable));
+
         } else {
-            rightLabel.setText(" " + potential.treeADDString());
+
+            rightLabel.setText(potential.treeADDString());
+
+            Border normalBorder = BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.GRAY, 1),
+                    BorderFactory.createEmptyBorder(2, 4, 2, 4)
+            );
+
+            // Separación respecto al texto de la izquierda
+            Border leftSpacing = BorderFactory.createEmptyBorder(0, 6, 0, 0);
+
+            // SOLO si el potencial es incierto
+            if (potential.isUncertain()) {
+
+                Border cornerBorder = BorderFactory.createMatteBorder(
+                        4, 4, 0, 0,
+                        new Color(255, 180, 0)
+                );
+
+                rightLabel.setBorder(
+                        BorderFactory.createCompoundBorder(
+                                leftSpacing,
+                                BorderFactory.createCompoundBorder(
+                                        cornerBorder,
+                                        normalBorder
+                                )
+                        )
+                );
+
+            } else {
+
+                rightLabel.setBorder(
+                        BorderFactory.createCompoundBorder(
+                                leftSpacing,
+                                normalBorder
+                        )
+                );
+            }
         }
+
         return this;
     }
     
@@ -186,7 +231,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
      * variables
      */
     public static String getBranchDescriptiontHTML(TreeADDBranch treeBranch) {
-        String txtLeft = "<html><table border=1>";
+        String txtLeft = "<html>";
         Variable topVariable = treeBranch.getRootVariable();
         if (topVariable == null) {
         } else if (topVariable.getVariableType() == VariableType.NUMERIC) {
@@ -233,7 +278,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
             }
             txtLeft += "<td align=center border=0>" + varName + "=" + varStateNames + "</td>";
         }
-        txtLeft += "</table></html>";
+        txtLeft += "</html>";
         return txtLeft;
     }
 }

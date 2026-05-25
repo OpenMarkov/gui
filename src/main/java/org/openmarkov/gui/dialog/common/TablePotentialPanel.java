@@ -772,7 +772,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     public void removeUncertainty() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, ThereIsNoPotentialsInNodeException, DoEditException, NonProjectablePotentialException {
         evidenceCase = getEvidenceCaseFromSelectedColumn();
         UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(node, evidenceCase);
-        ProbNet probNet = node.getProbNet();
         uncertEdit.executeEdit();
         if (selectedColumn <= 0) {
             return;
