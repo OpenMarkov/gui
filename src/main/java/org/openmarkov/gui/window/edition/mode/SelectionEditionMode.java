@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@EditionState(name = "Edit.Mode.Selection", icon = "selection.gif")
+@EditionState(name = "Edit.Mode.Selection", icon = "selection.png")
 public class SelectionEditionMode extends EditionMode {
     
     private static final int NODE_SPEED_ON_ARROW_PRESS = 2;

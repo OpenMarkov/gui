@@ -18,7 +18,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-@EditionState(name = "Edit.Mode.Link", icon = "link.gif", cursor = "link.gif") public class LinkEditionMode
+@EditionState(name = "Edit.Mode.Link", icon = "link.png", cursor = "link.png") public class LinkEditionMode
         extends EditionMode {
     
     public LinkEditionMode(NetworkEditorPanel networkEditorPanel, ProbNet probNet) {

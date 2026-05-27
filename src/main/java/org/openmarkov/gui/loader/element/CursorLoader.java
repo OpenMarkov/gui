@@ -33,7 +33,7 @@ public class CursorLoader {
      */
     public static final Cursor CURSOR_MULTIPLE_SELECTION = new Cursor(Cursor.CROSSHAIR_CURSOR);
     
-    public static final Cursor CURSOR_LINK = load("link.gif");
+    public static final Cursor CURSOR_LINK = load("link.png");
     
     /**
      * Folder where cursors are saved.
