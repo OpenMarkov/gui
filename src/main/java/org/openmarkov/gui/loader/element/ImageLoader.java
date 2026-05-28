@@ -7,9 +7,20 @@
 
 package org.openmarkov.gui.loader.element;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import io.github.jorgericovivas.rust_essentials.tuples.Tuple3Record;
+import io.github.jorgericovivas.rust_essentials.tuples.Tuples;
+import org.openmarkov.core.exception.UnreachableException;
+import org.openmarkov.gui.configuration.LocalPreferences;
+
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.io.IOException;
 import java.net.URL;
 import java.util.MissingResourceException;
 
@@ -21,21 +32,34 @@ import java.util.MissingResourceException;
  */
 public class ImageLoader {
     
+    private static class OMImageIcon extends ImageIcon {
+        
+        public OMImageIcon(URL resource) {
+            super(resource);
+        }
+        
+        public OMImageIcon(Image image) {
+            super(image);
+        }
+        
+        @Override public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
+            super.paintIcon(c, ImageLoader.generateGraphicsWithIconHints(g), x, y);
+        }
+        
+        
+    }
+    
     /**
      * This method loads an image resource.
      *
      * @param imageName name of the image to load.
+     *
      * @return a reference to the image resource.
+     *
      * @throws MissingResourceException if the resource doesn't exist.
      */
     public static ImageIcon load(String imageName) throws MissingResourceException {
-        return new ImageIcon(ImageLoader.class.getResource(imageName)) {
-            
-            @Override
-            public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
-                super.paintIcon(c, ImageLoader.generateGraphicsWithIconHints(g), x, y);
-            }
-        };
+        return createHiDPIIconFrom64(ImageLoader.class.getResource(imageName));
     }
     
     /**
@@ -48,23 +72,12 @@ public class ImageLoader {
      * @throws MissingResourceException if the resource doesn't exist.
      */
     public static ImageIcon load(URL location) throws MissingResourceException {
-        return new ImageIcon(location) {
-            
-            @Override
-            public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
-                super.paintIcon(c, ImageLoader.generateGraphicsWithIconHints(g), x, y);
-            }
-        };
+        return createHiDPIIconFrom64(location);
     }
     
     
     public static Icon of(Image image) {
-        return new ImageIcon(image) {
-            @Override
-            public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
-                super.paintIcon(c, ImageLoader.generateGraphicsWithIconHints(g), x, y);
-            }
-        };
+        return createHiDPIIconFrom64(image);
     }
     
     private static Graphics2D generateGraphicsWithIconHints(Graphics g) {
@@ -75,4 +88,33 @@ public class ImageLoader {
         return g2d;
     }
     
+    public static ImageIcon createHiDPIIconFrom64(URL url) {
+        try {
+            return createHiDPIIconFrom64(ImageIO.read(url));
+        } catch (IOException e) {
+            throw new UnreachableException(e);
+        }
+    }
+    
+    public static ImageIcon createHiDPIIconFrom64(Image source) {
+        Double uiScale = LocalPreferences.UI_SCALE.get();
+        var desiredScale = ImageLoader.SCALES[ImageLoader.SCALES.length - 1];
+        for (var scale : ImageLoader.SCALES) {
+            if (uiScale >= scale.v0() && uiScale < scale.v1()) {
+                desiredScale = scale;
+                break;
+            }
+        }
+        return new OMImageIcon(source.getScaledInstance(desiredScale.v2(), desiredScale.v2(), Image.SCALE_SMOOTH));
+    }
+    
+    private static final Tuple3Record<Double, Double, Integer>[] SCALES = new Tuple3Record[]{
+            Tuples.record(Double.MIN_VALUE, 0.1, 1),
+            Tuples.record(0.1, 0.2, 2),
+            Tuples.record(0.2, 0.5, 4),
+            Tuples.record(0.5, 0.7, 8),
+            Tuples.record(0.7, 1.2, 20),
+            Tuples.record(1.2, 1.5, 32),
+            Tuples.record(1.5, Double.MAX_VALUE, 64)
+    };
 }
