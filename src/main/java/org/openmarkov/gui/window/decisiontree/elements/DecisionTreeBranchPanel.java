@@ -48,7 +48,7 @@ public non-sealed class DecisionTreeBranchPanel extends DecisionTreeElementPanel
 		DecisionTreeNode parent = treeBranch.getParent();
 		if (parent != null && parent.getNodeType() == NodeType.DECISION) {
 			if (parent.isBestDecision(treeBranch)) {
-				txtLeft += "<td width=10px bgcolor=red border=0></td>";
+				txtLeft += "<td width=10px bgcolor=green border=0></td>";
 			} else {
 				txtLeft += "<td width=10px border=0></td>";
 			}

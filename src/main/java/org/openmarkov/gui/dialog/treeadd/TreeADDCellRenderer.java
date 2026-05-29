@@ -16,6 +16,7 @@ import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.gui.configuration.GUIColors;
+import org.openmarkov.gui.loader.element.IconBind;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -122,8 +123,18 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
         // be a TreeADD or a Potential
         Object child = tree.getModel().getChild(branch, 0);
         boolean isLeaf = tree.getModel().isLeaf(child);
+        if (!leaf && child instanceof TreeADDPotential && !expanded) {
+            rightLabel.setText("    ...");
+        }
         if (isLeaf && !expanded) {
             getTreeCellRendererComponent(tree, child, selected, expanded, leaf, row, hasFocus);
+            String txt = rightLabel.getText();
+
+            if (txt != null && txt.length() > 15) {
+                txt = txt.substring(0, 20) + "...";
+            }
+
+            rightLabel.setText(txt);
         }
         if (branch.isLabeled()) {
             String oldText = (rightLabel.getText() != null) ? rightLabel.getText() : "";
@@ -147,33 +158,43 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 
         } else {
 
-            rightLabel.setText(potential.treeADDString());
+            String text = potential.treeADDString();
+            if (text.contains("P(")){
+                text = text.replaceFirst("P", "<i>P</i>");
+            }
+            rightLabel.setText("<html>" + text + "</html>");
 
             Border normalBorder = BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.GRAY, 1),
                     BorderFactory.createEmptyBorder(2, 4, 2, 4)
             );
 
-            // Separación respecto al texto de la izquierda
             Border leftSpacing = BorderFactory.createEmptyBorder(0, 6, 0, 0);
 
-            // SOLO si el potencial es incierto
             if (potential.isUncertain()) {
 
-                Border cornerBorder = BorderFactory.createMatteBorder(
-                        4, 4, 0, 0,
-                        new Color(255, 180, 0)
-                );
+                rightLabel.setIcon(IconBind.UNCERTAINTY.icon());
+
+                rightLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+
+                rightLabel.setHorizontalAlignment(SwingConstants.LEFT);
+                rightLabel.setVerticalAlignment(SwingConstants.TOP);
+
+
+                rightLabel.setIconTextGap(0);
 
                 rightLabel.setBorder(
                         BorderFactory.createCompoundBorder(
                                 leftSpacing,
                                 BorderFactory.createCompoundBorder(
-                                        cornerBorder,
-                                        normalBorder
+                                        BorderFactory.createLineBorder(Color.GRAY, 1),
+                                        BorderFactory.createEmptyBorder(0, 4, 0, 2)
                                 )
                         )
                 );
+
+                rightLabel.setPreferredSize(null);
+
 
             } else {
 
@@ -276,7 +297,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
             if (branchStates.size() > 1) {
                 varStateNames += "}";
             }
-            txtLeft += "<td align=center border=0>" + varName + "=" + varStateNames + "</td>";
+            txtLeft += "<td align=center border=0>" + varStateNames + "</td>";
         }
         txtLeft += "</html>";
         return txtLeft;
