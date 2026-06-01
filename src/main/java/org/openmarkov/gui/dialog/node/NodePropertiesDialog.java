@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.node;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.core.RemovePolicyEdit;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
@@ -17,7 +18,6 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
-import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
@@ -32,13 +32,10 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.stream.Stream;
 
 /**
@@ -76,7 +73,7 @@ public class NodePropertiesDialog extends OkCancelDialog {
         this.setName("NodePropertiesDialog");
         this.setName("NodePropertiesDialog");
         this.node.getProbNet().getPNESupport().openNewSubEditHistory();
-        this.initialize();
+        this.reinitialize();
         this.pack();
         this.setLocationRelativeTo(owner);
         this.setMinimumSize(this.getSize());
@@ -127,7 +124,7 @@ public class NodePropertiesDialog extends OkCancelDialog {
         this.node = node;
         this.setTitle(this.stringDatabase.getString("NodePropertiesDialog.Title") + ": " + node.getName());
         this.nodeDefinitionPanel.setNodeProperties(node);
-        if (node.getNodeType() == NodeType.CHANCE || node.getNodeType() == NodeType.DECISION|| node.getNodeType() == NodeType.EVENT) {
+        if (node.getNodeType() == NodeType.CHANCE || node.getNodeType() == NodeType.DECISION || node.getNodeType() == NodeType.EVENT) {
             this.getNodeDomainValuesTablePanel().setFieldsFromProperties(node);
             if (node.getVariable().getVariableType() == VariableType.FINITE_STATES || node.getVariable()
                                                                                           .getVariableType() == VariableType.DISCRETIZED) {
@@ -153,7 +150,15 @@ public class NodePropertiesDialog extends OkCancelDialog {
     /**
      * This method configures the dialog box.
      */
-    protected void initialize() {
+    protected void reinitialize() {
+        this.tabbedPane = null;
+        this.nodeDefinitionPanel = null;
+        this.nodeDomainValuesTablePanel = null;
+        this.nodeParentsPanel = null;
+        this.nodeOtherPropsTablePanel = null;
+        this.panelForPotentialEdit = null;
+        this.removeButtonFromButtonsPanel(this.editOrViewPotentialButton);
+        this.removeButtonFromButtonsPanel(this.cancelEditPotentialButton);
         this.setTitle(this.stringDatabase.getString("NodePropertiesDialog.Title") + ": " + (
                 this.node == null ? "" : this.node.getName()
         ));
@@ -168,6 +173,7 @@ public class NodePropertiesDialog extends OkCancelDialog {
                                   .forEach(ComponentUtilities::removeInputsFor);
             }
         }
+        this.setFieldsFromProperties(this.node);
         this.pack();
     }
     
@@ -177,6 +183,7 @@ public class NodePropertiesDialog extends OkCancelDialog {
      */
     private void configureComponentsPanel() {
         this.getComponentsPanel().setLayout(new BorderLayout());
+        this.getComponentsPanel().removeAll();
         this.getComponentsPanel().add(this.getTabbedPane(), BorderLayout.CENTER);
     }
     
@@ -203,7 +210,7 @@ public class NodePropertiesDialog extends OkCancelDialog {
     }
     
     private void tryAddEditPotentialTab() {
-        if (!(this.node.getNodeType() == NodeType.CHANCE || (this.visualNode instanceof VisualDecisionNode && this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION))) {
+        if (!(this.node.getNodeType() == NodeType.CHANCE || this.node.getNodeType() == NodeType.UTILITY)) {
             return;
         }
         this.panelForPotentialEdit = new JPanel();
@@ -211,11 +218,7 @@ public class NodePropertiesDialog extends OkCancelDialog {
         this.editOrViewPotentialButton = new JButton();
         this.editOrViewPotentialButton.setIcon(IconBind.EDIT_PROBABILITIES_ENABLED.icon());
         this.editOrViewPotentialButton.addActionListener(_ -> {
-            if (this.visualNode instanceof VisualDecisionNode visualDecisionNode) {
-                new ImposePolicyDialog(this, this.readOnly, visualDecisionNode).setVisible(true);
-            } else {
-                new PotentialEditDialog(this, this.node, this.readOnly).setVisible(true);
-            }
+            new PotentialEditDialog(this, this.node, this.readOnly).setVisible(true);
             this.updatePotentialTabTitleAndButton();
         });
         this.cancelEditPotentialButton = new JButton();
@@ -226,22 +229,6 @@ public class NodePropertiesDialog extends OkCancelDialog {
             this.repaint();
             this.cancelEditPotentialButton.requestFocus();
         });
-        this.removePolicyButton = new JButton();
-        this.removePolicyButton.addActionListener(e -> {
-            this.denyPotentialEditChanges();
-            try {
-                new RemovePolicyEdit(this.visualNode.getNode()).executeEdit();
-            } catch (DoEditException ex) {
-                throw new UnreachableException(ex);
-            } finally {
-                if (this.panelForPotentialEdit == this.tabbedPane.getSelectedComponent()) {
-                    this.tabbedPane.setSelectedIndex(0);
-                }
-                updatePotentialTabTitleAndButton();
-                this.getOKButton().requestFocus();
-            }
-        });
-        
         this.tabbedPane.addChangeListener(_ -> this.handleChangeTab());
         this.tabbedPane.addTab("", null, this.panelForPotentialEdit, null);
         this.updatePotentialTabTitleAndButton();
@@ -252,18 +239,11 @@ public class NodePropertiesDialog extends OkCancelDialog {
         if (this.panelForPotentialEdit == this.tabbedPane.getSelectedComponent()) {
             this.panelForPotentialEdit.removeAll();
             PotentialEditPanel potentialEditPanel;
-            if (this.visualNode instanceof VisualDecisionNode visualDecisionNode) {
-                potentialEditPanel = new ImposePolicyPanel(visualDecisionNode, this.readOnly, true);
-            } else {
-                potentialEditPanel = new PotentialEditPanel(this.node, this.readOnly, true);
-            }
+            potentialEditPanel = new PotentialEditPanel(this.node, this.readOnly, true);
             this.panelForPotentialEdit.add(potentialEditPanel, BorderLayout.CENTER);
             this.cancelEditPotentialButton.setEnabled(false);
             Stream.concat(Stream.of(potentialEditPanel), ComponentUtilities.findComponents(potentialEditPanel, Component.class, ignored -> true))
-                  .forEach(c -> {
-                      
-                      addReadListenersOfPotentialChanges(c, potentialEditPanel);
-                  });
+                  .forEach(c -> addReadListenersOfPotentialChanges(c));
         } else {
             this.acceptPotentialEditChanges(false);
             this.panelForPotentialEdit.removeAll();
@@ -271,71 +251,24 @@ public class NodePropertiesDialog extends OkCancelDialog {
         this.updatePotentialTabTitleAndButton();
     }
     
-    private void addReadListenersOfPotentialChanges(Component c, PotentialEditPanel potentialEditPanel) {
-        if (c instanceof Container container) {
-            container.addContainerListener(new ContainerListener() {
-                @Override public void componentAdded(ContainerEvent e) {
-                    Stream.concat(Stream.of(e.getChild()), ComponentUtilities.findComponents(e.getChild(), Component.class, ignored -> true))
-                          .forEach(c -> NodePropertiesDialog.this.addReadListenersOfPotentialChanges(c, potentialEditPanel));
-                }
-                
-                @Override public void componentRemoved(ContainerEvent e) {
-                
-                }
-            });
+    private @Nullable PotentialEditPanel getPotentialEditPanel() {
+        if (this.panelForPotentialEdit == null || this.panelForPotentialEdit.getComponents().length == 0) {
+            return null;
         }
-        c.addFocusListener(new FocusListener() {
-            @Override public void focusGained(FocusEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-            
-            @Override public void focusLost(FocusEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-        });
-        c.addMouseListener(new MouseListener() {
-            @Override public void mouseClicked(MouseEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-            
-            @Override public void mousePressed(MouseEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-            
-            @Override public void mouseReleased(MouseEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-            
-            @Override public void mouseEntered(MouseEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-            
-            @Override public void mouseExited(MouseEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-        });
-        c.addMouseMotionListener(new MouseMotionListener() {
-            @Override public void mouseDragged(MouseEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-            
-            @Override public void mouseMoved(MouseEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-        });
-        c.addKeyListener(new KeyListener() {
-            @Override public void keyTyped(KeyEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-            
-            @Override public void keyPressed(KeyEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-            
-            @Override public void keyReleased(KeyEvent e) {
-                NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(potentialEditPanel.potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
-            }
-        });
+        if (!(this.panelForPotentialEdit.getComponent(0) instanceof PotentialEditPanel potentialEditPanel)) {
+            return null;
+        }
+        return potentialEditPanel;
+    }
+    
+    private void addReadListenersOfPotentialChanges(Component c) {
+        if (c instanceof Container container) {
+            container.addContainerListener(containerListenerOfPotentialChanges);
+        }
+        c.addFocusListener(focusListenerOfPotentialChanges);
+        c.addMouseListener(mouseAdapterListenerOfPotentialChanges);
+        c.addMouseMotionListener(mouseAdapterListenerOfPotentialChanges);
+        c.addKeyListener(keyListenerOfPotentialChanges);
     }
     
     private void updatePotentialTabTitleAndButton() {
@@ -346,30 +279,23 @@ public class NodePropertiesDialog extends OkCancelDialog {
             this.removeButtonFromButtonsPanel(this.editOrViewPotentialButton);
             this.addButtonToButtonsPanel(this.cancelEditPotentialButton, 1);
         } else {
-            this.removeButtonFromButtonsPanel(this.removePolicyButton);
             this.removeButtonFromButtonsPanel(this.cancelEditPotentialButton);
             this.addButtonToButtonsPanel(this.editOrViewPotentialButton, 1);
         }
-        if (!this.readOnly && this.visualNode instanceof VisualDecisionNode visualDecisionNode && visualDecisionNode.isHasPolicy()) {
-            this.addButtonToButtonsPanel(this.removePolicyButton, 2);
-        }
         String goal = stringDatabase.getString("NodePropertiesDialog.EditPotentialTab.Goal." +
-                                                       (this.visualNode instanceof VisualDecisionNode ? "Policy" : "Probability")
+                                                       (this.node.getNodeType() == NodeType.CHANCE ? "Probability": "Utility")
         );
         String tabTitle = (this.readOnly ? this.stringDatabase.getString("NodePropertiesDialog.EditPotentialTab.Action.View") :
-                this.stringDatabase.getString("NodePropertiesDialog.EditPotentialTab.Action." + (
-                        this.visualNode instanceof VisualDecisionNode visualDecisionNode && visualDecisionNode.isHasPolicy()
-                        ? "Impose" : "Edit")))
+                this.stringDatabase.getString("NodePropertiesDialog.EditPotentialTab.Action.Edit"))
                 + " " + goal.toLowerCase();
         this.editOrViewPotentialButton.setText(tabTitle);
-        this.removePolicyButton.setText(this.stringDatabase.getString("NodePropertiesDialog.EditPotentialTab.Action.Remove") + " " + goal.toLowerCase());
         this.cancelEditPotentialButton.setText(stringDatabase.getString("NodePropertiesDialog.EditPotentialTab.Action.Reset") + " " + goal);
-        this.tabbedPane.setTitleAt(this.tabbedPane.indexOfComponent(this.panelForPotentialEdit), tabTitle);
+        this.tabbedPane.setTitleAt(this.tabbedPane.indexOfComponent(this.panelForPotentialEdit), goal);
     }
     
     
     private void acceptPotentialEditChanges(boolean canIgnoreException) {
-        if (this.panelForPotentialEdit==null||this.panelForPotentialEdit.getComponents().length == 0) {
+        if (this.panelForPotentialEdit == null || this.panelForPotentialEdit.getComponents().length == 0) {
             return;
         }
         PotentialEditPanel panel = (PotentialEditPanel) this.panelForPotentialEdit.getComponent(0);
@@ -403,7 +329,7 @@ public class NodePropertiesDialog extends OkCancelDialog {
      */
     private NodeDefinitionPanel getNodeDefinitionPanel() {
         if (this.nodeDefinitionPanel == null) {
-            this.nodeDefinitionPanel = new NodeDefinitionPanel(this.node);
+            this.nodeDefinitionPanel = new NodeDefinitionPanel(this.nodeNetworkEditorPanel, this.node, this);
             this.nodeDefinitionPanel.setName("nodeDefinitionPanel");
             this.nodeDefinitionPanel.setNewNode(this.newNode);
             this.nodeDefinitionPanel.setNodeProperties(this.node);
@@ -505,5 +431,70 @@ public class NodePropertiesDialog extends OkCancelDialog {
     private final VisualNode visualNode;
     private JButton editOrViewPotentialButton;
     private JButton cancelEditPotentialButton;
-    private JButton removePolicyButton;
+    private FocusListener focusListenerOfPotentialChanges = new FocusListener() {
+        @Override public void focusGained(FocusEvent e) {
+            onActionTriggeredInPotential();
+        }
+        
+        @Override public void focusLost(FocusEvent e) {
+            onActionTriggeredInPotential();
+        }
+    };
+    
+    private MouseAdapter mouseAdapterListenerOfPotentialChanges = new MouseAdapter() {
+        @Override public void mouseClicked(MouseEvent e) {
+            onActionTriggeredInPotential();
+        }
+        
+        @Override public void mousePressed(MouseEvent e) {
+            onActionTriggeredInPotential();
+        }
+        
+        @Override public void mouseReleased(MouseEvent e) {
+            onActionTriggeredInPotential();
+        }
+        
+        @Override public void mouseEntered(MouseEvent e) {
+            onActionTriggeredInPotential();
+        }
+        
+        @Override public void mouseExited(MouseEvent e) {
+            onActionTriggeredInPotential();
+        }
+        
+        @Override public void mouseDragged(MouseEvent e) {
+            onActionTriggeredInPotential();
+        }
+        
+        @Override public void mouseMoved(MouseEvent e) {
+            onActionTriggeredInPotential();
+        }
+    };
+    private KeyListener keyListenerOfPotentialChanges = new KeyListener() {
+        @Override public void keyTyped(KeyEvent e) {
+            onActionTriggeredInPotential();
+        }
+        
+        @Override public void keyPressed(KeyEvent e) {
+            onActionTriggeredInPotential();
+        }
+        
+        @Override public void keyReleased(KeyEvent e) {
+            onActionTriggeredInPotential();
+        }
+    };
+    private ContainerListener containerListenerOfPotentialChanges = new ContainerListener() {
+        @Override public void componentAdded(ContainerEvent e) {
+            Stream.concat(Stream.of(e.getChild()), ComponentUtilities.findComponents(e.getChild(), Component.class, ignored -> true))
+                  .forEach(c -> NodePropertiesDialog.this.addReadListenersOfPotentialChanges(c));
+        }
+        
+        @Override public void componentRemoved(ContainerEvent e) {
+        
+        }
+    };
+    
+    private void onActionTriggeredInPotential() {
+        NodePropertiesDialog.this.cancelEditPotentialButton.setEnabled(getPotentialEditPanel()!=null && getPotentialEditPanel().potentialHasChanged() && NodePropertiesDialog.this.nodeNetworkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION);
+    }
 }

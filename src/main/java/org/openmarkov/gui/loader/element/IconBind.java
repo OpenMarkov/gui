@@ -4,7 +4,6 @@ import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.gui.exception.ResourceNotFoundException;
 
 import javax.swing.*;
-import java.awt.*;
 import java.net.URL;
 
 /**
@@ -29,7 +28,8 @@ public enum IconBind {
     DECISION_ENABLED(Locations.STANDARD_RESOURCE_ICONS_PATH + "decision.png"),
     EVENT_ENABLED(Locations.STANDARD_RESOURCE_ICONS_PATH +"event.png"),
     UTILITY_ENABLED(Locations.STANDARD_RESOURCE_ICONS_PATH + "utility.png"),
-    LINK_ENABLED(Locations.STANDARD_RESOURCE_ICONS_PATH + "link.png"),
+    LINK_PARENT_ENABLED(Locations.STANDARD_RESOURCE_ICONS_PATH + "link.png"),
+    LINK_CHILD_ENABLED(Locations.STANDARD_RESOURCE_ICONS_PATH + "linkUp.png"),
     EDIT_PROBABILITIES_ENABLED(Locations.STANDARD_RESOURCE_ICONS_PATH + "edit_probabilities.png"),
     ZOOM_IN_ENABLED(Locations.STANDARD_RESOURCE_ICONS_PATH + "zoomin.png"),
     ZOOM_OUT_ENABLED(Locations.STANDARD_RESOURCE_ICONS_PATH + "zoomout.png"),

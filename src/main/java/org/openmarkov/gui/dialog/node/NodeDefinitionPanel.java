@@ -16,13 +16,18 @@ import org.openmarkov.core.action.core.RelevanceEdit;
 import org.openmarkov.core.action.core.TimeSliceEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.constraint.NoEventNodes;
+import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
+import org.openmarkov.gui.action.ChangeNodeTypeEdit;
 import org.openmarkov.gui.action.NodeAgentEdit;
 import org.openmarkov.gui.action.NodeDecisionCriteriaEdit;
+import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.validator.AlwaysObservedPropertyValidator;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.Purpose;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -54,6 +59,8 @@ public final class NodeDefinitionPanel extends JPanel
      */
     private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     private JComboBox<String> jComboBoxNetworkAgents;
+    private JLabel jLabelNodeType;
+    private JPanel jPanelNodeTypes;
     private JLabel jLabelTimeSlice;
     private JComboBox<String> jComboBoxTimeSlice;
     private JLabel jLabelDecisionCriteria;
@@ -121,20 +128,19 @@ public final class NodeDefinitionPanel extends JPanel
     
     private JCheckBox jCheckboxAlwaysAppend;
     
-    /**
-     * constructor without construction parameters
-     */
-    public NodeDefinitionPanel() {
-        this(true);// , new ElementObservable() );
-    }
+    private final NetworkEditorPanel networkEditorPanel;
+    private final NodePropertiesDialog nodePropertiesDialog;
     
     /**
      * Constructor
      *
-     * @param node the node
+     * @param node                 the node
+     * @param nodePropertiesDialog
      */
-    public NodeDefinitionPanel(Node node) {
-        this(true);// , notifier );
+    public NodeDefinitionPanel(NetworkEditorPanel networkEditorPanel, Node node, NodePropertiesDialog nodePropertiesDialog) {
+        this.networkEditorPanel = networkEditorPanel;
+        this.nodePropertiesDialog = nodePropertiesDialog;
+        this.newNode = true;
         this.node = node;
         initialize();
         if (node.getProbNet().getAgents() != null) {
@@ -172,26 +178,6 @@ public final class NodeDefinitionPanel extends JPanel
             getJLabelAlwaysObserved().setVisible(false);
             getJCheckBoxAlwaysObserved().setVisible(false);
         }
-    }
-    
-    /**
-     * This method initialises this instance.
-     *
-     * @param newNode - true if the node is a new node; otherwise false
-     */
-    public NodeDefinitionPanel(final boolean newNode) {// , ElementObservable
-        // notifier) {
-        this.newNode = newNode;
-        // this.notifier = notifier;
-    }
-    
-    /**
-     * Get the node Properties in this panel
-     *
-     * @return the nodeProperties
-     */
-    public Node getNodeProperties() {
-        return node;
     }
     
     /**
@@ -246,10 +232,17 @@ public final class NodeDefinitionPanel extends JPanel
                                                                                                             GroupLayout.PREFERRED_SIZE)
                                                                                               .addGap(18)
                                                                                               .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                              .addComponent(getJLabelNodeType())
+                                                                                              .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                              .addComponent(getJPanelNodeTypes(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                                                                                                            GroupLayout.PREFERRED_SIZE)
+                                                                                              .addGap(18)
+                                                                                              .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                                                               .addComponent(getJLabelTimeSlice())
                                                                                               .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                                                               .addComponent(getJComboBoxTimeSlice(), GroupLayout.PREFERRED_SIZE, 85,
-                                                                                                            GroupLayout.PREFERRED_SIZE))
+                                                                                                            GroupLayout.PREFERRED_SIZE)
+                                                                           )
                                                                            .addGroup(
                                                                                    groupLayout.createSequentialGroup()
                                                                                               .addComponent(getJLabelNodePurpose())
@@ -279,10 +272,14 @@ public final class NodeDefinitionPanel extends JPanel
                 groupLayout.createSequentialGroup()
                            .addContainerGap()
                            .addGroup(
-                                   groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(getJLabelNodeName())
-                                              .addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, /* 20 */
-                                                            GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                              .addComponent(getJLabelTimeSlice()).addComponent(getJComboBoxTimeSlice()))
+                                   groupLayout.createParallelGroup(Alignment.BASELINE)
+                                              .addComponent(getJLabelNodeName())
+                                              .addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                              .addComponent(getJLabelNodeType())
+                                              .addComponent(getJPanelNodeTypes(), Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                              .addComponent(getJLabelTimeSlice())
+                                              .addComponent(getJComboBoxTimeSlice())
+                           )
                            .addPreferredGap(ComponentPlacement.RELATED)
                            .addGroup(
                                    groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -290,20 +287,14 @@ public final class NodeDefinitionPanel extends JPanel
                                                             GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                               .addComponent(getJLabelNodePurpose())
                                               .addComponent(getJLabelNodeRelevance(), GroupLayout.PREFERRED_SIZE, /* 25 */
-                                                            GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                            GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
                                               .addComponent(getJComboBoxNodeRelevance()))
                            .addPreferredGap(ComponentPlacement.RELATED)
                            .addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
                                                 .addComponent(getAgentsOrDecisionCriteriaOrObservedLabel())
                                                 .addComponent(getAgentsOrDecisionCriteriaOrObserved(), GroupLayout.PREFERRED_SIZE,
-                                                              GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                   /*
-                                    * . addComponent ( getJLabelAlwaysObserved ( ) ) . addComponent (
-                                    * getJCheckBoxAlwaysObserved ( ) , GroupLayout . PREFERRED_SIZE ,
-                                    * GroupLayout . DEFAULT_SIZE , GroupLayout . PREFERRED_SIZE )
-                                    */)
+                                                              GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                            .addGap(21)
-                           // .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
                            .addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
                                                 .addComponent(getJTextAreaLabelNodeDefinitionComment())
                                                 .addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(), GroupLayout.DEFAULT_SIZE,
@@ -328,6 +319,50 @@ public final class NodeDefinitionPanel extends JPanel
         setLayout(groupLayout);
     }
     
+    private record NodeTypeButtonDesc(NodeType nodeType, IconBind icon, boolean enabled) {
+    
+    }
+    
+    private Component getJPanelNodeTypes() {
+        if (jPanelNodeTypes == null) {
+            jPanelNodeTypes = new JPanel();
+            jPanelNodeTypes.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 0));
+            ProbNet probNet = this.networkEditorPanel.getProbNet();
+            var nodeTypesDesc = List.of(
+                    new NodeTypeButtonDesc(NodeType.CHANCE, IconBind.CHANCE_ENABLED, true),
+                    new NodeTypeButtonDesc(NodeType.EVENT, IconBind.EVENT_ENABLED, !probNet.hasConstraintOfClass(OnlyChanceNodes.class) && !probNet.hasConstraintOfClass(NoEventNodes.class)),
+                    new NodeTypeButtonDesc(NodeType.DECISION, IconBind.DECISION_ENABLED, !probNet.hasConstraintOfClass(OnlyChanceNodes.class)),
+                    new NodeTypeButtonDesc(NodeType.UTILITY, IconBind.UTILITY_ENABLED, !probNet.hasConstraintOfClass(OnlyChanceNodes.class))
+            );
+            for (NodeTypeButtonDesc nodeTypeDesc : nodeTypesDesc) {
+                var nodeTypeButton = new JToggleButton(nodeTypeDesc.icon.icon());
+                nodeTypeButton.setEnabled(nodeTypeDesc.enabled);
+                nodeTypeButton.setContentAreaFilled(false);
+                nodeTypeButton.setBorderPainted(false);
+                nodeTypeButton.addItemListener(e -> {
+                    boolean isSelected = (e.getStateChange() == ItemEvent.SELECTED);
+                    nodeTypeButton.setContentAreaFilled(isSelected);
+                    nodeTypeButton.setBorderPainted(isSelected);
+                });
+                boolean isCurrentNodeType = this.node.getNodeType() == nodeTypeDesc.nodeType;
+                nodeTypeButton.setSelected(isCurrentNodeType);
+                nodeTypeButton.addActionListener(_ -> {
+                    if(isCurrentNodeType) {
+                        return;
+                    }
+                    try {
+                        new ChangeNodeTypeEdit(this.node, nodeTypeDesc.nodeType).executeEdit();
+                    } catch (DoEditException e) {
+                        throw new UnrecoverableException(e);
+                    }
+                    nodePropertiesDialog.reinitialize();
+                });
+                jPanelNodeTypes.add(nodeTypeButton);
+            }
+        }
+        return jPanelNodeTypes;
+    }
+    
     /**
      * This method initialises jLabelTimeSlice
      *
@@ -344,6 +379,18 @@ public final class NodeDefinitionPanel extends JPanel
             jLabelTimeSlice.setLabelFor(getJComboBoxTimeSlice());
         }
         return jLabelTimeSlice;
+    }
+    
+    private JLabel getJLabelNodeType() {
+        if (jLabelNodeType == null) {
+            jLabelNodeType = new JLabel();
+            jLabelNodeType.setHorizontalAlignment(SwingConstants.LEFT);
+            jLabelNodeType.setHorizontalTextPosition(SwingConstants.LEFT);
+            jLabelNodeType.setName("jNodeType");
+            jLabelNodeType.setText("Node Type");
+            jLabelNodeType.setLabelFor(getJComboBoxTimeSlice());
+        }
+        return jLabelNodeType;
     }
     
     /**
@@ -650,7 +697,7 @@ public final class NodeDefinitionPanel extends JPanel
         }
         if (node.getNodeType() == NodeType.CHANCE) {
             return getJCheckBoxAlwaysObserved();
-        }		// 25/10/2020 Event behaviour
+        }        // 25/10/2020 Event behaviour
         else if (node.getNodeType() == NodeType.EVENT) {
             return getJCheckboxAlwaysAppend();
         }
@@ -699,7 +746,7 @@ public final class NodeDefinitionPanel extends JPanel
      */
     public JCheckBox getJCheckboxAlwaysAppend() {
         if (jCheckboxAlwaysAppend == null) {
-            jCheckboxAlwaysAppend = new JCheckBox(" Always append", false );
+            jCheckboxAlwaysAppend = new JCheckBox(" Always append", false);
             jCheckboxAlwaysAppend.setVisible(true);
             jCheckboxAlwaysAppend.setName("jCheckboxOverrideTimeStamp");
             jCheckboxAlwaysAppend.setVerticalAlignment(SwingConstants.CENTER);
@@ -801,7 +848,7 @@ public final class NodeDefinitionPanel extends JPanel
                         break;
                     }
                 }
-
+                
             }
         } else if (comboBox.equals(jComboBoxNodeRelevance)) {
             if (itemSelected != null && e.getStateChange() == ItemEvent.SELECTED) {
@@ -938,7 +985,7 @@ public final class NodeDefinitionPanel extends JPanel
      * with the same name.
      *
      * @throws ConstraintViolatedException if the name field is empty or there is
-     * another node with the same name.
+     *                                     another node with the same name.
      */
     public void checkNameConstraints() throws ConstraintViolatedException {
         new NodeBaseNameEdit(node, this.jTextFieldNodeName.getText()).tryConstraintsWillBeMet();
@@ -976,8 +1023,9 @@ public final class NodeDefinitionPanel extends JPanel
             if (e.getSource().equals(this.jCheckboxAlwaysAppend)) {
                 alwaysAppendPropertyHasChanged();
             }
-        }catch (DoEditException e1) {
+        } catch (DoEditException e1) {
             throw new UnrecoverableException(e1);
         }
     }
+    
 }

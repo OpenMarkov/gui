@@ -11,9 +11,7 @@ import org.openmarkov.core.model.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.gui.graphic.VisualChanceNode;
-import org.openmarkov.gui.graphic.VisualDecisionNode;
-import org.openmarkov.gui.graphic.VisualUtilityNode;
+import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.window.decisiontree.format.DecisionTreeUtilityFormatters;
 
 import javax.swing.*;
@@ -44,14 +42,9 @@ public non-sealed class DecisionTreeNodePanel extends DecisionTreeElementPanel {
     
     @Override public JComponent makeSummary() {
         var visualNode = switch (treeNode.getNodeType()) {
-            case CHANCE -> new VisualChanceNode(new Node(null, new Variable(treeNode.getVariable()
-                                                                                    .getName()), treeNode.getNodeType()), null);
-            case DECISION -> new VisualDecisionNode(new Node(null, new Variable(treeNode.getVariable()
-                                                                                        .getName()), treeNode.getNodeType()), null);
-            case UTILITY -> new VisualUtilityNode(new Node(null, new Variable(treeNode.getVariable()
-                                                                                      .getName()), treeNode.getNodeType()), null);
-            default ->
-                    throw new UnreachableCodeException("Only kinds of node enabled in Decision Tree are Chance, Decision and Utility");
+            case CHANCE, EVENT, DECISION, UTILITY -> new VisualNode(new Node(null, new Variable(treeNode.getVariable()
+                                                                              .getName()), treeNode.getNodeType()), null);
+            default -> throw new UnreachableCodeException("Only kinds of node enabled in Decision Tree are Chance, Decision, Utility and Event");
         };
         JPanel panel = new JPanel() {
             @Override public void paint(Graphics g) {

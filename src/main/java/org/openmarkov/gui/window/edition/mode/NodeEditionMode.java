@@ -56,6 +56,10 @@ public class NodeEditionMode extends EditionMode {
         // TODO Auto-generated method stub
     }
     
+    @Override public void tryCancelCurrentAction(MouseEvent e, Point2D.Double position, Graphics2D g) {
+    
+    }
+    
     @Override public void keyTyped(KeyEvent e) {
     
     }

@@ -98,7 +98,7 @@ public class OtherPropertyEdit extends PNEdit {
                                                   .filter(i -> Objects.equals(newPropertiesArray[i].getKey(), key))
                                                   .findFirst();
                 if (indexOfRepeatedKey.isPresent() && indexOfRepeatedKey.getAsInt() != this.propertyIndex) {
-                    throw new OtherPropertyAlreadyExistsException(key);
+                    throw new OtherPropertyAlreadyExistsException(key, this);
                 }
                 newPropertiesArray[this.propertyIndex] = new AbstractMap.SimpleEntry<>(key, this.newProperty[1]);
                 this.newProperties = ArrayUtils.arrayToLinkedMap(newPropertiesArray);

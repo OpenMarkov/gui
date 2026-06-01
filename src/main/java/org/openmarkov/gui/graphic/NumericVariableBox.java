@@ -126,7 +126,7 @@ public non-sealed class NumericVariableBox extends InnerBox {
      *
      * @param numCases Number of evidence cases in memory.
      */
-    @Override public void update(int numCases) {
+    @Override public void updateNumCases(int numCases) {
         PartitionedInterval domain = visualNode.getNode().getVariable().getPartitionedInterval();
         setMinValue(domain.getMin());
         setMaxValue(domain.getMax());
@@ -159,18 +159,6 @@ public non-sealed class NumericVariableBox extends InnerBox {
      */
     @Override public int getNumStates() {
         return 1;
-    }
-    
-    /**
-     * Returns the shape of the innerBox.
-     *
-     * @return shape of the innerBox.
-     */
-    @Override public Shape getCenteredShape(Graphics2D g) {
-        double innerNodeHeight = getInnerBoxHeight(g);
-        return new Rectangle2D.Double(visualNode.getUpperLeftCornerX(g) + INTERNAL_MARGIN,
-                                      visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + INTERNAL_MARGIN, BOX_WIDTH,
-                                      innerNodeHeight);
     }
     
     @Override public Shape getShape(Graphics2D g) {

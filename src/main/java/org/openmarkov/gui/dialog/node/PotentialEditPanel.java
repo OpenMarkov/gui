@@ -689,9 +689,7 @@ public class PotentialEditPanel extends JPanel {
     /**
      * Specifies how to remove the potential currently used while the dialog is in use. A chance node has potentials, so
      * it is removed by setting the original potential. But a decision node has policies, which might be none if no
-     * policy was set, so in the case it had one, it uses
-     * {@link org.openmarkov.gui.graphic.VisualDecisionNode#setPolicy(Potential)} to set it again, and if it had none,
-     * it uses {@link org.openmarkov.gui.graphic.VisualDecisionNode#removePolicy()}.
+     * policy was set, so in the case it had one, it uses.
      */
     protected void removePotentialOnClose(@Nullable Potential originalPotential) {
         if (originalPotential != null) {

@@ -60,7 +60,7 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 	 * Start point.
 	 */
     private Point2D.Double startPoint;
-
+	
 	/**
 	 * End point.
 	 */
@@ -242,40 +242,13 @@ public sealed class VisualArrow extends VisualElement permits VisualLink {
 	public void setEndPoint(Point2D.Double point) {
 		endPoint = point;
 	}
-
-	/**
-	 * Returns the shape of the arrow so that it can be selected with the mouse.
-	 *
-	 * @return shape of the arrow.
-	 */
-	@Override public Shape getCenteredShape(Graphics2D g) {
-        GeneralPath polygon;
-        if(startPoint ==null || endPoint ==null) {
-			return new GeneralPath(Path2D.WIND_EVEN_ODD, 0);
-		}
-		if (startPoint.distance(endPoint) <0.1) {
-			Area area = getLoopShape(startPoint, CIRCULAR_ARROW_RADIOUS);
-			area.add(getLoopArrowHeadShape(startPoint, CIRCULAR_ARROW_RADIOUS));
-			return  area ;
-		}
-        Point2D.Double[] allPoints = calculatePointsOfArrow(startPoint, endPoint);
-        Point2D.Double[] points = new Point2D.Double[8];
-        points[0] = allPoints[0];
-        points[1] = allPoints[1];
-        points[2] = allPoints[2];
-        points[3] = allPoints[6];
-        points[4] = allPoints[8];
-        points[5] = allPoints[4];
-        points[6] = allPoints[5];
-        points[7] = allPoints[0];
-        polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, points.length);
-        polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
-        int length = points.length;
-        for (int index = 1; index < length; index++) {
-            polygon.lineTo((float) points[index].getX(), (float) points[index].getY());
-        }
-        polygon.closePath();
-        return polygon;
+	
+	public Point2D.Double getEndPoint() {
+		return this.endPoint;
+	}
+	
+	public Point2D.Double getStartPoint() {
+		return this.startPoint;
 	}
 	
 	@Override public Shape getShape(Graphics2D g) {

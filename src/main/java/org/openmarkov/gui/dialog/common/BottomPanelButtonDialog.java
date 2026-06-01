@@ -80,6 +80,9 @@ public class BottomPanelButtonDialog extends DialogBase {
     }
     
     protected final void removeButtonFromButtonsPanel(JButton button) {
+        if(button==null) {
+            return;
+        }
         this.buttonsPanel.remove(button);
     }
     

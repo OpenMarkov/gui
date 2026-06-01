@@ -42,6 +42,7 @@ public abstract class EditionMode implements KeyListener {
     public abstract void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException;
 	
 	public abstract void mouseMoved(MouseEvent e, Point2D.Double position, double diffX, double diffY, Graphics2D g);
-    
-    
+	
+	
+	public abstract void tryCancelCurrentAction(MouseEvent e, Point2D.Double position, Graphics2D g);
 }

@@ -8,14 +8,18 @@
 package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.gui.dialog.common.OkCancelDialog;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.PropertyNames;
 import org.openmarkov.java.swing.ComponentUtilities;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JTabbedPane;
+import java.awt.Component;
+import java.awt.Window;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 /**
  * Dialog box to set the options of a network.
@@ -66,25 +70,18 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
     private NetworkTemporalOptionsPanel networkTemporalOptionsPanel;
     
     /**
-     * Specifies if the network whose additionalProperties are edited is new.
-     */
-    private boolean newNetwork = false;
-    
-    /**
      * This method initialises this instance.
      *
-     * @param owner   window that owns the dialog.
-     * @param probNet network
+     * @param owner    window that owns the dialog.
+     * @param probNet  network
      * @param readOnly
      */
     public NetworkPropertiesDialog(Window owner, ProbNet probNet, boolean readOnly) {
         super(owner);
-        newNetwork = probNet == null;
         if (probNet != null) {
             probNet.getPNESupport().setWithUndo(true);
             probNet.getPNESupport().openNewSubEditHistory();
             this.probNet = probNet;
-            newNetwork = false;
             initialize();
             setName("NetworkPropertiesDialog");
             setLocationRelativeTo(owner);
@@ -122,6 +119,18 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
         getComponentsPanel().add(getTabbedPane());
     }
     
+    record Tab(String title, Supplier<Component> component, BooleanSupplier use) {
+    }
+    
+    private final List<Tab> TABS = List.of(
+            new Tab("NetworkPropertiesDialog.DefinitionTab", () -> getNetworkDefinitionPanel(), () -> true),
+            new Tab("NetworkPropertiesDialog.VariablesTab", () -> getNetworkVariablesPanel(), () -> true),
+            new Tab("NetworkPropertiesDialog.DecisionCriteriaTab", () -> getNetworkDecisionCriteriaPanel(), () -> getNetworkDecisionCriteriaPanel().update(probNet)),
+            new Tab("NetworkPropertiesDialog.AgentsTab", () -> getNetworkAgentsPanel(), () -> getNetworkAgentsPanel().update(probNet)),
+            new Tab("NetworkPropertiesDialog.TemporalOptionsTab", () -> getNetworkTemporalOptionsPanel(), () -> getNetworkTemporalOptionsPanel().update(probNet)),
+            new Tab("NetworkPropertiesDialog.OtherPropertiesTab", () -> getNetworkOtherPropertiesPanel(), () -> true)
+    );
+    
     /**
      * This method initialises tabbedPane.
      *
@@ -130,23 +139,44 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
     private JTabbedPane getTabbedPane() {
         if (tabbedPane == null) {
             tabbedPane = new JTabbedPane();
-            //tabbedPane.addTab("", null, getNetworkDefinitionPanel(), null);
-            tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.DefinitionTab"), null, getNetworkDefinitionPanel(), null);
-            //tabbedPane.setTitleAt(0, stringDatabase.getString("NetworkPropertiesDialog.DefinitionTab));
-            tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.VariablesTab"), null, getNetworkVariablesPanel(), null);
-            if (!newNetwork) {
-                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.DecisionCriteriaTab"), null,
-                                  getNetworkDecisionCriteriaPanel(), null);
-                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.AgentsTab"), null,
-                                  getNetworkAgentsPanel(), null);
-                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.TemporalOptionsTab"), null,
-                                  getNetworkTemporalOptionsPanel(), null);
-                tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.OtherPropertiesTab"), null,
-                                  getNetworkOtherPropertiesPanel(), null);
-            }
             tabbedPane.setName("tabbedPane");
+            setOnlyNecesaryTabs();
         }
         return tabbedPane;
+    }
+    
+    private void setOnlyNecesaryTabs() {
+        for (int tabIndex = 0; tabIndex < TABS.size(); tabIndex++) {
+            Tab tab = TABS.get(tabIndex);
+            var shouldBePresent = tab.use.getAsBoolean();
+            JTabbedPane jTabbedPane = getTabbedPane();
+            var componentIndex = jTabbedPane.indexOfComponent(tab.component.get());
+            if (!shouldBePresent) {
+                if (componentIndex != -1) {
+                    jTabbedPane.remove(componentIndex);
+                }
+                continue;
+            }
+            if (componentIndex != -1) {
+                continue;
+            }
+            List<Component> prevComponents = IntStream
+                    .range(0, tabIndex)
+                    .mapToObj(TABS::get)
+                    .map(Tab::component)
+                    .map(Supplier::get)
+                    .toList();
+            var prevComponentIndex = prevComponents
+                    .reversed()
+                    .stream()
+                    .map(jTabbedPane::indexOfComponent)
+                    .filter(i -> i != -1)
+                    .findFirst()
+                    .orElse(-1);
+            int insertionIndex = prevComponentIndex+1;
+            jTabbedPane.insertTab(StringDatabase.getUniqueInstance()
+                                                .getString(tab.title), null, tab.component.get(), null, insertionIndex);
+        }
     }
     
     /**
@@ -221,7 +251,7 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
      */
     private NetworkOtherPropertiesPanel getNetworkOtherPropertiesPanel() {
         if (networkOtherPropertiesPanel == null) {
-            networkOtherPropertiesPanel = new NetworkOtherPropertiesPanel(newNetwork);
+            networkOtherPropertiesPanel = new NetworkOtherPropertiesPanel();
             networkOtherPropertiesPanel.setName("networkOtherPropertiesPanel");
             if (probNet != null) {
                 networkOtherPropertiesPanel.setProbNetProperties(probNet);
@@ -237,15 +267,7 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
      * @return true always
      */
     @Override protected boolean doOkClickBeforeHide() {
-        if (newNetwork) {
-            // TODO Create probNet instance
-            NetworkType networkType = getNetworkDefinitionPanel().getNetworkType();
-            probNet = new ProbNet(networkType);
-            probNet.setComment(getNetworkDefinitionPanel().getNetworkComment());
-            probNet.setDefaultStates(getNetworkVariablesPanel().getDefaultStates());
-        } else {
-            probNet.getPNESupport().closeSubEditHistory();
-        }
+        probNet.getPNESupport().closeSubEditHistory();
         return NetworkDefinitionPanel.checkName();
     }
     
@@ -256,10 +278,8 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
      * before hide the dialog.
      */
     @Override protected void doCancelClickBeforeHide() {
-        if (!newNetwork) {
-            probNet.getPNESupport().cancelLastSubEditHistory();
-            //Should cancel instead
-        }
+        probNet.getPNESupport().cancelLastSubEditHistory();
+        //Should cancel instead
     }
     
     /**
@@ -286,12 +306,9 @@ public class NetworkPropertiesDialog extends OkCancelDialog implements PropertyN
     /**
      * Updates the features of a probNet when it´s set in the definition panel
      *
-     * @param probNet the prob net
      */
-    public void update(ProbNet probNet) {
-        getNetworkDecisionCriteriaPanel().update(probNet);
-        getNetworkAgentsPanel().update(probNet);
-        getNetworkTemporalOptionsPanel().update(probNet);
+    public void update() {
+        setOnlyNecesaryTabs();
     }
     
     private final boolean readOnly;

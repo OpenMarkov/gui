@@ -8,11 +8,13 @@
 package org.openmarkov.gui.graphic;
 
 import io.github.jorgericovivas.rust_essentials.tuples.Tuple2Record;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.PNEditListener;
+import org.openmarkov.core.action.base.linkEdits.MultiAddLinkEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
@@ -32,6 +34,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -74,20 +77,20 @@ public class VisualNetwork implements PNEditListener {
     private final LinkedHashSet<VisualElement> selectedElements = new LinkedHashSet<>();
     
     
+    record NewLinkInfo(VisualArrow arrow, VisualNode source) {
+    }
+    
     /**
      * This object represents the arrow that is painted when a new link is being
      * created.
      */
-    private @Nullable VisualArrow newLink = null;
+    private @Nullable List<NewLinkInfo> newLinks = new ArrayList<>();
+    private LinkCreationSourceDirection newLinksSourceDirection;
     
-    public VisualArrow getNewLink() {
-        return this.newLink;
+    public Stream<VisualArrow> getNewLinksArrows() {
+        return this.newLinks.stream().map(NewLinkInfo::arrow);
     }
     
-    /**
-     * This object represents the source node of a new link.
-     */
-    private @Nullable VisualNode newLinkSource = null;
     
     /**
      * Rectangle used to select various nodes.
@@ -871,10 +874,7 @@ public class VisualNetwork implements PNEditListener {
      */
     private VisualNode createVisualNode(Node node) {
         return switch (node.getNodeType()) {
-            case CHANCE -> new VisualChanceNode(node, this);
-            case DECISION -> new VisualDecisionNode(node, this);
-            case UTILITY -> new VisualUtilityNode(node, this);
-            case EVENT -> new VisualEventNode(node, this);
+            case CHANCE, DECISION, UTILITY, EVENT -> new VisualNode(node, this);
             default -> null;
         };
     }
@@ -940,48 +940,88 @@ public class VisualNetwork implements PNEditListener {
         return null;
     }
     
+    public VisualNode getVisualNodeOf(Node node) {
+        return this.visualNodes.stream().filter(visualNode -> visualNode.getNode() == node).findFirst().orElse(null);
+    }
+    
+    public enum LinkCreationSourceDirection {
+        PARENT, CHILD;
+    }
+    
     /**
      * Starts link creation
      *
      * @param cursorPosition the cursor position
      * @param g              the g
      */
-    public void startLinkCreation(Point2D.Double cursorPosition, Graphics2D g) {
-        if (this.newLink != null) {
+    public void startLinkCreation(Point2D.Double cursorPosition, Graphics2D g, LinkCreationSourceDirection linkSourceDirection, boolean preserveLinkSourceDirection) {
+        if (!this.newLinks.isEmpty()) {
             return;
         }
-        VisualNode node = whatNodeInPosition(cursorPosition, g);
-        if (node != null) {
-            this.newLink = new VisualArrow(cursorPosition.clone(), cursorPosition, true);
-            this.newLinkSource = node;
-            updateLinkCreation(cursorPosition, g);
+        if(!preserveLinkSourceDirection){
+            newLinksSourceDirection = linkSourceDirection;
         }
+        getSelectedNodes().stream().map(node -> {
+            Rectangle2D nodeBounds = node.getShape(g).getBounds2D();
+            Point2D.Double nodePoint = new Point2D.Double(nodeBounds.getCenterX(), nodeBounds.getCenterY());
+            return new NewLinkInfo(
+                    new VisualArrow(switch (this.newLinksSourceDirection) {
+                        case PARENT -> nodePoint;
+                        case CHILD -> cursorPosition;
+                    }, switch (this.newLinksSourceDirection) {
+                        case PARENT -> cursorPosition;
+                        case CHILD -> nodePoint;
+                    }, true),
+                    node
+            );
+        }).forEach(this.newLinks::add);
+        updateLinkCreation(cursorPosition, g);
     }
     
     public void updateLinkCreation(Point2D.Double position, Graphics2D g) {
-        if (this.newLink == null) {
+        if (this.newLinks.isEmpty()) {
             return;
         }
         @Nullable VisualNode destinationNode = whatNodeInPosition(position, g);
-        if (destinationNode == this.newLinkSource && this.probNet.hasConstraintOfClass(NoSelfLoop.class)) {
-            destinationNode = null;
+        var multiAddLinkEdit = generateMultiAddLinkInCreation(destinationNode);
+        var addLinks = multiAddLinkEdit.getEdits()
+                                       .filter(AddLinkEdit.class::isInstance)
+                                       .map(AddLinkEdit.class::cast)
+                                       .toList();
+        for (NewLinkInfo newLink : this.newLinks) {
+            var linkSource = newLink.source;
+            var linkArrow = newLink.arrow;
+            if (linkSource == destinationNode && probNet.hasConstraintOfClass(NoSelfLoop.class)) {
+                linkArrow.setLinkColor(GUIColors.General.TRANSPARENT);
+                continue;
+            }
+            try {
+                Tuple2Record<Point2D.Double, Point2D.Double> points = VisualLink.shortenedPoints(g, linkSource, destinationNode, position);
+                switch (this.newLinksSourceDirection) {
+                    case PARENT -> {
+                        linkArrow.setStartPoint(points.v0());
+                        linkArrow.setEndPoint(points.v1());
+                    }
+                    case CHILD -> {
+                        linkArrow.setStartPoint(points.v1());
+                        linkArrow.setEndPoint(points.v0());
+                    }
+                }
+                linkArrow.setSelfLoop(linkSource == destinationNode);
+            } catch (VisualLink.LinkCannotBePaintedException e) {
+                //Do not update positions
+            }
+            var addLinkEdit = addLinks.stream()
+                                      .filter(switch (this.newLinksSourceDirection){
+                                          case PARENT -> (Predicate<AddLinkEdit>) linkEdit ->  linkEdit.getNodeFrom() == newLink.source.getNode();
+                                          case CHILD -> (Predicate<AddLinkEdit>)linkEdit ->  linkEdit.getNodeTo() == newLink.source.getNode();
+                                      })
+                                      .findFirst()
+                                      .orElse(null);
+            linkArrow.setLinkColor(addLinkEdit == null ? GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_NOTHING : addLinkEdit.constraintsWillBeMet() ? GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_SUCCESS : GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_FAILURE);
         }
-        Tuple2Record<Point2D.Double, Point2D.Double> points = null;
-        try {
-            points = VisualLink.shortenedPoints(g, this.newLinkSource, destinationNode, position);
-            this.newLink.setStartPoint(points.v0());
-            this.newLink.setEndPoint(points.v1());
-            this.newLink.setSelfLoop(this.newLinkSource == destinationNode);
-        } catch (VisualLink.LinkCannotBePaintedException e) {
-            //Do not update positions
-        }
-        boolean canCreate = destinationNode != null && new AddLinkEdit(this.probNet,
-                                                                       this.probNet.getVariable(this.newLinkSource.getNode()
-                                                                                                                  .getName()),
-                                                                       this.probNet.getVariable(destinationNode.getNode()
-                                                                                                               .getName()), true)
-                .constraintsWillBeMet();
-        this.newLink.setLinkColor(canCreate ? GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_SUCCESS : destinationNode == null ? GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_NOTHING : GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_FAILURE);
+        
+        
     }
     
     /**
@@ -994,29 +1034,54 @@ public class VisualNetwork implements PNEditListener {
      */
     public void finishLinkCreation(Point2D.Double point, Graphics2D g) throws DoEditException {
         @Nullable VisualNode newLinkDestination = whatNodeInPosition(point, g);
-        if (newLinkDestination == this.newLinkSource && this.probNet.hasConstraintOfClass(NoSelfLoop.class)) {
-            newLinkDestination = null;
-        }
-        if (this.newLink == null || this.newLinkSource == null || newLinkDestination == null) {
+        if (this.newLinks.isEmpty() || newLinkDestination == null) {
             cancelLinkCreation();
             return;
         }
         try {
-            new AddLinkEdit(this.probNet, this.probNet.getVariable(this.newLinkSource.getNode().getName()),
-                            this.probNet.getVariable(newLinkDestination.getNode()
-                                                                       .getName()), true).executeEdit();
+            MultiAddLinkEdit multiAddLinkEdit = generateMultiAddLinkInCreation(newLinkDestination);
+            if(multiAddLinkEdit.getEdits().findFirst().isPresent()){
+                multiAddLinkEdit.executeEdit();
+            }
         } catch (DoEditException e) {
-            this.newLink.setLinkColor(GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_FAILURE);
+            if (e.failedEdit instanceof AddLinkEdit failedAddLinkEdit) {
+                var failedLink = this.newLinks.stream()
+                                              .filter(newLinkInfo -> newLinkInfo.source.getNode() == failedAddLinkEdit.getNodeFrom())
+                                              .findFirst()
+                                              .get();
+                failedLink.arrow.setLinkColor(GUIColors.Network.Link.Creation.FOREGROUND_ON_SELECTS_FAILURE);
+            }
             throw e;
         }
         cancelLinkCreation();
-        
-        
+    }
+    
+    private @NotNull MultiAddLinkEdit generateMultiAddLinkInCreation(@Nullable VisualNode destinationNode) {
+        List<Node> sources = this.newLinks.stream()
+                                          .map(newLinkInfo -> newLinkInfo.source()
+                                                                         .getNode())
+                                          .toList();
+        List<Node> destinations = destinationNode == null ? Collections.emptyList() : List.of(destinationNode.getNode());
+        var multiAddLinkEdit = new MultiAddLinkEdit(this.probNet, switch (this.newLinksSourceDirection) {
+            case PARENT -> sources;
+            case CHILD -> destinations;
+        }, switch (this.newLinksSourceDirection){
+            case PARENT -> destinations;
+            case CHILD -> sources;
+        }, true);
+        return multiAddLinkEdit;
+    }
+    
+    public void toggleLinkCreationSource(Point2D.Double point) {
+        this.newLinksSourceDirection = switch (this.newLinksSourceDirection){
+            case PARENT -> LinkCreationSourceDirection.CHILD;
+            case CHILD -> LinkCreationSourceDirection.PARENT;
+        };
+        updateLinkCreation(point, (Graphics2D) this.networkEditorPanel.getGraphics());
     }
     
     public void cancelLinkCreation() {
-        this.newLink = null;
-        this.newLinkSource = null;
+        this.newLinks.clear();
         this.networkEditorPanel.repaint();
     }
     

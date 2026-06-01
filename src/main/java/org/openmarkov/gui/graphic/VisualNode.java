@@ -7,12 +7,25 @@
 
 package org.openmarkov.gui.graphic;
 
+import io.github.jorgericovivas.rust_essentials.tuples.Tuples;
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
+import org.openmarkov.core.model.network.PurposeType;
+import org.openmarkov.gui.configuration.GUIColor;
+import org.openmarkov.gui.configuration.GUIColors;
+import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
+import java.util.List;
+
 
 /**
  * This abstract class specifies the methods that all visual nodes have to
@@ -23,99 +36,116 @@ import java.awt.*;
  * @version 1.2 asaez - The class is defined as abstract
  * Some new constants, attributes and methods are defined
  */
-public abstract sealed class VisualNode extends VisualElement implements ClassLocalizable permits VisualChanceNode, VisualDecisionNode, VisualEventNode, VisualUtilityNode {
+public final class VisualNode extends VisualElement implements ClassLocalizable {
     
     /**
      * Font type Helvetica, bold, size 15.
      */
-    protected static final Font FONT_HELVETICA = new Font("Helvetica", Font.BOLD, 15);
+    private static final Font FONT_HELVETICA = new Font("Helvetica", Font.BOLD, 15);
     
     /**
      * Default width of a node when it is contracted. It is the width that it
      * has if the length of its name is shorter enough; otherwise, its width is
      * adjusted to fit the length of the name.
      */
-    protected static final double DEFAULT_NODE_CONTRACTED_WIDTH = 40;
+    private static final double DEFAULT_NODE_CONTRACTED_WIDTH = 40;
     
     /**
      * Width of a node when it is expanded.
      */
-    protected static final double NODE_EXPANDED_WIDTH = 205;
+    static final double NODE_EXPANDED_WIDTH = 205;
     
     /**
      * Vertical margin of a node when it is expanded.
      */
-    protected static final double NODE_EXPANDED_HEIGHT_MARGIN = 5;
+    private static final double NODE_EXPANDED_HEIGHT_MARGIN = 5;
     
     /**
      * Space from the left border of the node to the foreground.
      */
-    protected static final double HORIZONTAL_SPACE_TO_TEXT = 15;
+    private static final double HORIZONTAL_SPACE_TO_TEXT = 15;
     
     /**
      * Space from the top border of the node to the foreground.
      */
-    protected static final double VERTICAL_SPACE_TO_TEXT = 4;
+    private static final double VERTICAL_SPACE_TO_TEXT = 4;
     
     /**
      * Object used to measure foreground in a specific font.
      */
-    private static final FontMetrics fontMeter = new JPanel().getFontMetrics(FONT_HELVETICA);
+    private static final FontMetrics FONT_METRICS = new JPanel().getFontMetrics(VisualNode.FONT_HELVETICA);
     
     /**
      * Visual Network to which this visual node is associated.
      */
-    protected final VisualNetwork visualNetwork;
+    private final VisualNetwork visualNetwork;
     
     /**
      * Object that has the node information.
      */
-    protected final Node node;
+    final Node node;
     
     /**
      * Object that manages the internal representation of the node when
      * it is expanded.
      */
-    protected InnerBox innerBox;
+    InnerBox innerBox;
     
     /**
      * This variable determines if the node is going to be painted
      * expanded (true) or contracted (false).
      */
-    protected boolean expanded;
+    boolean expanded;
     
     /**
      * This variable indicates if the node has a pre-Resolution finding
      * established (true) or not (false).
      */
-    protected boolean preResolutionFinding;
+    boolean preResolutionFinding;
     
     /**
      * This variable indicates if the node has a post-Resolution finding
      * established (true) or not (false).
      */
-    protected boolean postResolutionFinding;
+    boolean postResolutionFinding;
     //TODO Debería ser un array de booleanos, con un valor por cada caso de evidencia
     //     (esto no pasa en el caso del preResol.)
     
     /**
      * This variable influences the width of the node.
      */
-    protected boolean byTitle = false;
+    private boolean byTitle = false;
     
     /**
      * Value of the X coordinate in temporal position of the node.
      */
-    protected double temporalCoordinateX;
+    private double temporalCoordinateX;
     
     /**
      * Value of the Y coordinate in temporal position of the node.
      */
-    protected double temporalCoordinateY;
+    private double temporalCoordinateY;
     
     public VisualNode(Node node, VisualNetwork visualNetwork) {
         this.node = node;
         this.visualNetwork = visualNetwork;
+        this.setTemporalPosition(new Point2D.Double(node.getCoordinateX(), node.getCoordinateY()));
+        this.expanded = false;
+        this.preResolutionFinding = false;
+        this.postResolutionFinding = false;
+        this.innerBox = switch (this.node.getNodeType()) {
+            case CHANCE -> switch (node.getVariable().getVariableType()) {
+                case FINITE_STATES -> new FSVariableBox(this);
+                case DISCRETIZED -> new DiscretizedVariableBox(this);
+                case NUMERIC -> new NumericVariableBox(this);
+                case EVENT -> null; //TODO
+            };
+            case DECISION -> new FSVariableBox(this);
+            case UTILITY -> new NumericVariableBox(this, "  EU");
+            case EVENT -> null;
+            case SV_SUM -> null;
+            case SV_PRODUCT -> null;
+        };
     }
     
     /**
@@ -127,9 +157,8 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      *
      * @return the height of the visual node.
      */
-    protected static double getHeight(String text, Graphics2D g) {
-        
-        return fontMeter.getStringBounds(text, g).getHeight();
+    private static double getHeight(String text, Graphics2D g) {
+        return VisualNode.FONT_METRICS.getStringBounds(text, g).getHeight();
     }
     
     /**
@@ -141,9 +170,8 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      *
      * @return the height of the visual node.
      */
-    protected static double getWidth(String text, Graphics2D g) {
-        
-        return fontMeter.getStringBounds(text, g).getWidth();
+    private static double getWidth(String text, Graphics2D g) {
+        return VisualNode.FONT_METRICS.getStringBounds(text, g).getWidth();
     }
     
     /**
@@ -154,7 +182,19 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      *
      * @return the point which will be the center for a circular arrow
      */
-    public abstract Point2D.Double getSelfLoopPosition(Graphics2D g);
+    public Point2D.Double getSelfLoopPosition(Graphics2D g) {
+        return switch (this.node.getNodeType()) {
+            case CHANCE, EVENT -> {
+                RoundRectangle2D.Double shape = (RoundRectangle2D.Double) this.getShape(g);
+                yield new Point2D.Double(shape.getMaxX(), shape.getMaxY());
+            }
+            case DECISION, UTILITY -> new Point2D.Double(this.getShape(g).getBounds2D().getMaxX(), this.getShape(g)
+                                                                                                       .getBounds2D()
+                                                                                                       .getMaxY());
+            case SV_SUM -> null;
+            case SV_PRODUCT -> null;
+        };
+    }
     
     /**
      * Returns the real position of the node.
@@ -162,7 +202,7 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      * @return position of the node in the screen.
      */
     @Override public Point2D.Double getPosition() {
-        return new Point2D.Double(node.getCoordinateX(), node.getCoordinateY());
+        return new Point2D.Double(this.node.getCoordinateX(), this.node.getCoordinateY());
     }
     
     /**
@@ -171,9 +211,8 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      * @param value new position.
      */
     public void setPosition(Point2D.Double value) {
-        
-        node.setCoordinateX((int) value.getX());
-        node.setCoordinateY((int) value.getY());
+        this.node.setCoordinateX((int) value.getX());
+        this.node.setCoordinateY((int) value.getY());
     }
     
     /**
@@ -183,7 +222,7 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      */
     public Point2D.Double getTemporalPosition() {
         
-        return new Point2D.Double(temporalCoordinateX, temporalCoordinateY);
+        return new Point2D.Double(this.temporalCoordinateX, this.temporalCoordinateY);
     }
     
     /**
@@ -192,8 +231,8 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      * @param value new position.
      */
     public void setTemporalPosition(Point2D.Double value) {
-        temporalCoordinateX = value.getX();
-        temporalCoordinateY = value.getY();
+        this.temporalCoordinateX = value.getX();
+        this.temporalCoordinateY = value.getY();
     }
     
     public void setTemporalCoordinateX(double temporalCoordinateX) {
@@ -219,9 +258,8 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      *
      * @return the string that must appear into the node.
      */
-    protected String getNodeString() {
-        
-        return node.getName();
+    private String getNodeName() {
+        return this.node.getName();
     }
     
     /**
@@ -230,7 +268,7 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      * @return information of the node.
      */
     public Node getNode() {
-        return node;
+        return this.node;
     }
     
     /**
@@ -239,7 +277,7 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      * @return innerBox associated with the visual node.
      */
     public InnerBox getInnerBox() {
-        return innerBox;
+        return this.innerBox;
     }
     
     /**
@@ -252,17 +290,6 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
     }
     
     /**
-     * Returns true if the string of the node must be the title; otherwise,
-     * false.
-     *
-     * @return true if the node will show the title; otherwise, false.
-     */
-    public boolean getByTitle() {
-        
-        return byTitle;
-    }
-    
-    /**
      * Changes the type of the foreground (name or title) that appears inside the
      * node.
      *
@@ -270,8 +297,7 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      *                   will be shown.
      */
     public void setByTitle(boolean newByTitle) {
-        
-        byTitle = newByTitle;
+        this.byTitle = newByTitle;
     }
     
     /**
@@ -280,7 +306,7 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      * @return true if the node will be painted expanded.
      */
     public boolean isExpanded() {
-        return expanded;
+        return this.expanded;
     }
     
     /**
@@ -338,7 +364,288 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
         return this.preResolutionFinding || this.postResolutionFinding;
     }
     
-    // ESCA-JAVA0173: allows unused arguments
+    @Override public Shape getShape(Graphics2D g) {
+        return switch (this.node.getNodeType()) {
+            case CHANCE, EVENT -> {
+                String text = this.getNodeName();
+                double textHeight = VisualNode.getHeight(text, g);
+                double textWidth = VisualNode.getWidth(text, g);
+                double height = textHeight + 2 * VisualNode.VERTICAL_SPACE_TO_TEXT + (this.isExpanded() ?
+                        this.innerBox.getInnerBoxHeight(g) + VisualNode.NODE_EXPANDED_HEIGHT_MARGIN * 2 : 0);
+                double width = this.isExpanded() ? VisualNode.NODE_EXPANDED_WIDTH
+                        : textWidth < textHeight ?
+                          VisualNode.DEFAULT_NODE_CONTRACTED_WIDTH
+                          : textWidth + 2 * VisualNode.HORIZONTAL_SPACE_TO_TEXT;
+                yield new RoundRectangle2D.Double(this.getTemporalPosition().getX(), this.getTemporalPosition().getY(),
+                                                  width, height,
+                                                  VisualNode.CHANCE_NODE_ARC_WIDTH,
+                                                  VisualNode.CHANCE_NODE_ARC_HEIGHT);
+            }
+            case DECISION -> {
+                String text = this.getNodeName();
+                double textHeight = VisualNode.getHeight(text, g);
+                double textWidth = VisualNode.getWidth(text, g);
+                double rectangleWidth = this.isExpanded() ? VisualNode.NODE_EXPANDED_WIDTH :
+                        textWidth < textHeight ?
+                        VisualNode.DEFAULT_NODE_CONTRACTED_WIDTH
+                        : textWidth + 2 * VisualNode.HORIZONTAL_SPACE_TO_TEXT;
+                double rectangleHeight = textHeight + 2 * VisualNode.VERTICAL_SPACE_TO_TEXT + (this.isExpanded() ?
+                        this.innerBox.getInnerBoxHeight(g) + VisualNode.NODE_EXPANDED_HEIGHT_MARGIN * 2
+                        : 0);
+                double rectanglePosX = this.getTemporalPosition().getX();
+                double rectanglePosY = this.getTemporalPosition().getY();
+                yield new Rectangle2D.Double(rectanglePosX, rectanglePosY, rectangleWidth, rectangleHeight);
+            }
+            case UTILITY -> {
+                Point2D.Double[] points = this.getUtilityNodePoints(g);
+                int length = points.length;
+                GeneralPath polygon = new GeneralPath(Path2D.WIND_EVEN_ODD, length);
+                polygon.moveTo(points[0].getX(), points[0].getY());
+                for (int i = 1; i < length; i++) {
+                    polygon.lineTo(points[i].getX(), points[i].getY());
+                }
+                polygon.closePath();
+                yield polygon;
+            }
+            case SV_SUM -> null;
+            case SV_PRODUCT -> null;
+        };
+    }
+    
+    @Override public void paint(Graphics2D g) {
+        switch (this.node.getNodeType()) {
+            case CHANCE -> {
+                String text = this.getNodeName();
+                double textHeight = VisualNode.getHeight(text, g);
+                Shape shape = this.getShape(g);
+                GUIColor fillColor = this.preResolutionFinding ? GUIColors.Network.ChanceNode.BACKGROUND_ON_PRE_RESOLUTION_FINDING
+                        : this.postResolutionFinding && this.visualNetwork.getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE ?
+                          GUIColors.Network.ChanceNode.BACKGROUND_ON_POST_RESOLUTION_FINDING
+                          : GUIColors.Network.ChanceNode.BACKGROUND;
+                g.setPaint(fillColor.getColor());
+                g.fill(shape);
+                g.setPaint(GUIColors.Network.ChanceNode.FOREGROUND.getColor());
+                if (this.node.isAlwaysObserved()) {
+                    g.setPaint(GUIColors.Network.ALWAYS_OBSERVED.getColor());
+                }
+                if (this.node.isAlwaysObserved()) {
+                    g.setStroke((this.isSelected()) ? VisualNode.CHANCE_NODE_STROKE_OBSERVED_WIDE : VisualNode.CHANCE_NODE_STROKE_OBSERVED_NORMAL);
+                } else if (this.node.isInput()) {
+                    g.setStroke((this.isSelected()) ? VisualElement.WIDE_DASHED_STROKE : VisualElement.NORMAL_DASHED_STROKE);
+                } else {
+                    g.setStroke((this.isSelected()) ? VisualElement.WIDE_STROKE : VisualElement.NORMAL_STROKE);
+                }
+                g.draw(shape);
+                g.setFont(VisualNode.FONT_HELVETICA);
+                g.setPaint(GUIColors.Network.ChanceNode.TEXT.getColor());
+                if (this.isExpanded()) {
+                    text = VisualElement.adjustText(text, shape.getBounds2D()
+                                                               .getWidth(), 3, VisualNode.FONT_HELVETICA, g);
+                }
+                FontMetrics fontMetrics = new JPanel().getFontMetrics(VisualNode.FONT_HELVETICA);
+                double textPosX = shape.getBounds2D().getCenterX() - fontMetrics.stringWidth(text) / 2;
+                double textPosY = shape.getBounds2D().getY() + (textHeight);
+                g.drawString(text, (float) textPosX, (float) textPosY);
+                if (this.isExpanded()) {
+                    var innerBoxGraphics = (Graphics2D) g.create();
+                    innerBoxGraphics.translate(shape.getBounds2D().getX() + InnerBox.INTERNAL_MARGIN,
+                                               shape.getBounds2D().getY()
+                                                       + InnerBox.INTERNAL_MARGIN
+                                                       + fontMetrics.getHeight());
+                    this.innerBox.paint(innerBoxGraphics);
+                }
+            }
+            case DECISION -> {
+                String text = this.getNodeName();
+                double textHeight = VisualNode.getHeight(text, g);
+                Shape shape = this.getShape(g);
+                if (this.preResolutionFinding) {
+                    g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_PRE_RESOLUTION_FINDING.getColor());
+                } else if (this.postResolutionFinding && (this.visualNetwork.getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE)) {
+                    g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_POST_RESOLUTION_FINDING.getColor());
+                } else {
+                    if (!this.node.getPotentials().isEmpty()) {
+                        g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_POLICY.getColor());
+                    } else {
+                        g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND.getColor());
+                    }
+                }
+                g.fill(shape);
+                g.setPaint(GUIColors.Network.DecisionNode.FOREGROUND.getColor());
+                g.setStroke(this.getContourStroke());
+                g.draw(shape);
+                g.setFont(VisualNode.FONT_HELVETICA);
+                g.setPaint(GUIColors.Network.DecisionNode.TEXT.getColor());
+                if (this.isExpanded()) {
+                    double rectangleWitdh = shape.getBounds2D().getWidth();
+                    text = VisualElement.adjustText(text, rectangleWitdh, 3, VisualNode.FONT_HELVETICA, g);
+                }
+                FontMetrics fontMetrics = new JPanel().getFontMetrics(VisualNode.FONT_HELVETICA);
+                double textPosX = shape.getBounds2D().getCenterX() - fontMetrics.stringWidth(text) / 2;
+                double textPosY = shape.getBounds2D().getY() + (textHeight);
+                g.drawString(text, (float) textPosX, (float) textPosY);
+                if (this.isExpanded()) {
+                    var innerBoxGraphics = (Graphics2D) g.create();
+                    innerBoxGraphics.translate(shape.getBounds2D().getX() + InnerBox.INTERNAL_MARGIN,
+                                               shape.getBounds2D().getY()
+                                                       + InnerBox.INTERNAL_MARGIN
+                                                       + fontMetrics.getHeight());
+                    this.innerBox.paint(innerBoxGraphics);
+                }
+            }
+            case UTILITY -> {
+                String text = this.getNodeName();
+                double textHeight = getHeight(text, g);
+                Shape shape = this.getShape(g);
+                Point2D.Double[] points = this.getUtilityNodePoints(g);
+                
+                boolean isChildOfEvent = this.node.getParents()
+                                                  .stream()
+                                                  .filter(parent -> parent.getNodeType() == NodeType.EVENT)
+                                                  .count() > 0;
+                
+                g.setPaint((isChildOfEvent ? GUIColors.Network.UtilityNode.BACKGROUND_WITH_EVENT : GUIColors.Network.UtilityNode.BACKGROUND).getColor());
+                g.fill(shape);
+                g.setPaint(GUIColors.Network.UtilityNode.FOREGROUND.getColor());
+                g.setStroke(this.getContourStroke());
+                
+                g.draw(shape);
+                g.setFont(FONT_HELVETICA);
+                g.setPaint(GUIColors.Network.UtilityNode.TEXT.getColor());
+                
+                if (this.isExpanded()) {
+                    double interiorWitdh = points[2].getX() - points[1].getX();
+                    text = adjustText(text, interiorWitdh, 3, FONT_HELVETICA, g);
+                }
+                
+                FontMetrics fontMetrics = new JPanel().getFontMetrics(FONT_HELVETICA);
+                double textPosX = shape.getBounds2D().getCenterX() - fontMetrics.stringWidth(text) / 2;
+                double textPosY = shape.getBounds2D().getY() + (textHeight);
+                
+                g.drawString(text, (float) textPosX, (float) textPosY);
+                if (this.isExpanded()) {
+                    var innerBoxGraphics = (Graphics2D) g.create();
+                    innerBoxGraphics.translate(shape.getBounds2D()
+                                                    .getX() + UTILITY_NODE_EXPANDED_WIDTH_MARGIN + InnerBox.INTERNAL_MARGIN,
+                                               shape.getBounds2D().getY()
+                                                       + InnerBox.INTERNAL_MARGIN
+                                                       + fontMetrics.getHeight());
+                    this.innerBox.paint(innerBoxGraphics);
+                }
+            }
+            case EVENT -> {
+                String text = this.getNodeName();
+                double textHeight = VisualNode.getHeight(text, g);
+                Shape shape = this.getShape(g);
+                
+                // If it is Non Terminal Node
+                if (this.node.getPurpose().equals(PurposeType.TERMINAL_EVENT.getName())) {
+                    g.setPaint(GUIColors.Network.EventNode.BACKGROUND_TERMINAL.getColor());
+                } else if (this.node.getPurpose().equals(PurposeType.INITIAL_EVENT.getName())) {
+                    g.setPaint(GUIColors.Network.EventNode.BACKGROUND_INITIAL.getColor());
+                } else {
+                    g.setPaint(GUIColors.Network.EventNode.BACKGROUND.getColor());
+                }
+                
+                g.fill(shape);
+                g.setPaint(GUIColors.Network.EventNode.FOREGROUND.getColor());
+                
+                if (this.node.isAlwaysObserved()) {
+                    g.setPaint(GUIColors.Network.ALWAYS_OBSERVED.getColor());
+                    g.setStroke((this.isSelected()) ? VisualNode.EVENT_NODE_STROKE_OBSERVED_WIDE : VisualNode.EVENT_NODE_STROKE_OBSERVED_NORMAL);
+                } else if (this.node.isInput()) {
+                    g.setPaint(GUIColors.Network.EventNode.FOREGROUND.getColor());
+                    g.setStroke((this.isSelected()) ? VisualElement.WIDE_DASHED_STROKE : VisualElement.NORMAL_DASHED_STROKE);
+                } else {
+                    g.setPaint(GUIColors.Network.EventNode.FOREGROUND.getColor());
+                    g.setStroke((this.isSelected()) ? VisualElement.WIDE_STROKE : VisualElement.NORMAL_STROKE);
+                }
+                
+                g.draw(shape);
+                g.setFont(VisualNode.FONT_HELVETICA);
+                g.setPaint(GUIColors.Network.EventNode.TEXT.getColor());
+                
+                if (this.isExpanded()) {
+                    text = VisualElement.adjustText(text, shape.getBounds2D()
+                                                               .getWidth(), 3, VisualNode.FONT_HELVETICA, g);
+                }
+                FontMetrics fontMetrics = new JPanel().getFontMetrics(VisualNode.FONT_HELVETICA);
+                double textPosX = shape.getBounds2D().getCenterX() - fontMetrics.stringWidth(text) / 2;
+                double textPosY = shape.getBounds2D().getY() + (textHeight);
+                
+                g.drawString(text, (float) textPosX, (float) textPosY);
+                if (this.isExpanded()) {
+                    var innerBoxGraphics = (Graphics2D) g.create();
+                    innerBoxGraphics.translate(shape.getBounds2D().getX() + InnerBox.INTERNAL_MARGIN,
+                                               shape.getBounds2D().getY()
+                                                       + InnerBox.INTERNAL_MARGIN
+                                                       + fontMetrics.getHeight());
+                    this.innerBox.paint(innerBoxGraphics);
+                }
+            }
+            case SV_SUM -> {
+            }
+            case SV_PRODUCT -> {
+            }
+        }
+        ;
+    }
+    
+    /**
+     * Returns the six points of the hexagon that limits the node. The order is:
+     * first the most left point,
+     * second the left top point,
+     * third the right top point,
+     * fourth the most right point,
+     * fifth the right bottom point,
+     * sixth the left bottom points.
+     *
+     * @param g graphic object where the node can be painted.
+     *
+     * @return an array that contains the six (or four) points of the hexagon.
+     */
+    private Point2D.Double[] getUtilityNodePoints(Graphics2D g) {
+        String text = this.getNodeName();
+        double textHeight = VisualNode.getHeight(text, g);
+        double textWidth = VisualNode.getWidth(text, g);
+        double posX = this.getTemporalPosition().getX();
+        double posY = this.getTemporalPosition().getY();
+        
+        double hexagonWidth;
+        double hexagonHeight;
+        
+        if (this.isExpanded()) {
+            hexagonHeight = this.innerBox.getInnerBoxHeight(g) + textHeight + 2 * VisualNode.VERTICAL_SPACE_TO_TEXT
+                    + VisualNode.NODE_EXPANDED_HEIGHT_MARGIN * 2;
+            hexagonWidth = VisualNode.NODE_EXPANDED_WIDTH + 8.0;
+        } else {
+            hexagonHeight = textHeight + 2 * VisualNode.VERTICAL_SPACE_TO_TEXT;
+            if (textWidth < textHeight) {
+                hexagonWidth = VisualNode.DEFAULT_NODE_CONTRACTED_WIDTH;
+            } else {
+                hexagonWidth = textWidth + 2 * VisualNode.HORIZONTAL_SPACE_TO_TEXT;
+            }
+        }
+        
+        double triangleWidth = 8.0;
+        
+        Point2D.Double[] points = new Point2D.Double[6];
+        
+        points[0] = new Point2D.Double(posX - hexagonWidth / 2, posY);
+        points[3] = new Point2D.Double(posX + hexagonWidth / 2, posY);
+        points[1] = new Point2D.Double(points[0].getX() + triangleWidth, posY - (hexagonHeight / 2));
+        points[2] = new Point2D.Double(points[3].getX() - triangleWidth, points[1].getY());
+        points[4] = new Point2D.Double(points[2].getX(), posY + (hexagonHeight / 2));
+        points[5] = new Point2D.Double(points[1].getX(), points[4].getY());
+        for (int i = 0; i < points.length; i++) {
+            var centeredPoint = points[i];
+            points[i] = new Point2D.Double(
+                    centeredPoint.getX() + hexagonWidth / 2,
+                    centeredPoint.getY() + hexagonHeight / 2);
+        }
+        return points;
+        
+    }
     
     /**
      * Returns the point where the segment cuts with the border of the node.
@@ -349,29 +656,125 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      * @return the point where the segments cuts the border or null if it
      * doesn't.
      */
-    @Override public abstract Point2D.Double getCutPoint(Segment segment, Graphics2D g);
-    
-    /**
-     * Returns the X-coordinate of the upper-left corner of the visual node.
-     *
-     * @return the X-coordinate of the upper-left corner of the visual node.
-     */
-    public abstract double getUpperLeftCornerX(Graphics2D g);
-    
-    /**
-     * Returns the Y-coordinate of the upper-left corner of the visual node.
-     *
-     * @return the Y-coordinate of the upper-left corner of the visual node.
-     */
-    public abstract double getUpperLeftCornerY(Graphics2D g);
-    
-    /**
-     * Returns the foreground's height of node's name.
-     *
-     * @return the foreground's height of node's name.
-     */
-    public double getTextHeight(Graphics2D g) {
-        return getHeight(getNodeString(), g);
+    @Override public Point2D.@Nullable Double getCutPoint(Segment segment, Graphics2D g) {
+        return switch (this.node.getNodeType()) {
+            case CHANCE, EVENT -> {
+                RoundRectangle2D.Double dimensions = (RoundRectangle2D.Double) this.getShape(g);
+                double radius = dimensions.getArcWidth() / 2;
+                double rectangleWidth = dimensions.getWidth() - dimensions.getArcWidth();
+                double rectangleHeight = dimensions.getHeight() - dimensions.getArcHeight();
+                Point2D.Double point1 = new Point2D.Double(dimensions.getX() + radius, dimensions.getY());
+                Point2D.Double point2 = new Point2D.Double(point1.getX() + rectangleWidth, point1.getY());
+                Point2D.Double point3 = new Point2D.Double(point2.getX() + radius, point2.getY() + radius);
+                Point2D.Double point4 = new Point2D.Double(point3.getX(), point3.getY() + rectangleHeight);
+                Point2D.Double point5 = new Point2D.Double(point2.getX(), point4.getY() + radius);
+                Point2D.Double point6 = new Point2D.Double(point1.getX(), point5.getY());
+                Point2D.Double point7 = new Point2D.Double(dimensions.getX(), point4.getY());
+                Point2D.Double point8 = new Point2D.Double(dimensions.getX(), point3.getY());
+                Point2D.Double circleULCenter = new Point2D.Double(point1.getX(), point8.getY());
+                Point2D.Double circleURCenter = new Point2D.Double(point2.getX(), point3.getY());
+                Point2D.Double circleDLCenter = new Point2D.Double(point6.getX(), point7.getY());
+                Point2D.Double circleDRCenter = new Point2D.Double(point5.getX(), point4.getY());
+                for (var pair : List.of(
+                        // upper horizontal segment of the round rectangle
+                        Tuples.record(point1, point2),
+                        // right vertical segment
+                        Tuples.record(point3, point4),
+                        //lower horizontal segment
+                        Tuples.record(point5, point6),
+                        //left vertical segment
+                        Tuples.record(point7, point8))) {
+                    Point2D.Double point = segment.cutPoint(new Segment(pair.v0(), pair.v1()));
+                    if (point != null) {
+                        yield point;
+                    }
+                }
+                
+                // try to find the cut point in the upper left corner of the round
+                // rectangle
+                Point2D.Double[] points = segment.cutPoint(circleULCenter, radius);
+                if (points != null) {
+                    for (int i = 0; i < points.length; i++) {
+                        if ((points[i].getX() < circleULCenter.getX()) && (points[i].getY() < circleULCenter.getY())) {
+                            yield points[i];
+                        }
+                    }
+                }
+                // try to find the cut point in the upper right corner of the round
+                // rectangle
+                points = segment.cutPoint(circleURCenter, radius);
+                if (points != null) {
+                    for (int i = 0; i < points.length; i++) {
+                        if ((points[i].getX() > circleURCenter.getX()) && (points[i].getY() < circleURCenter.getY())) {
+                            yield points[i];
+                        }
+                    }
+                }
+                // try to find the cut point in the lower right corner of the round
+                // rectangle
+                points = segment.cutPoint(circleDRCenter, radius);
+                if (points != null) {
+                    for (int i = 0; i < points.length; i++) {
+                        if ((points[i].getX() > circleDRCenter.getX()) && (points[i].getY() > circleDRCenter.getY())) {
+                            yield points[i];
+                        }
+                    }
+                }
+                // try to find the cut point in the lower left corner of the round
+                // rectangle
+                points = segment.cutPoint(circleDLCenter, radius);
+                if (points != null) {
+                    for (int i = 0; i < points.length; i++) {
+                        if ((points[i].getX() < circleDLCenter.getX()) && (points[i].getY() > circleDLCenter.getY())) {
+                            yield points[i];
+                        }
+                    }
+                }
+                yield null;
+            }
+            case DECISION -> {
+                Rectangle2D.Double shape = (Rectangle2D.Double) this.getShape(g);
+                Point2D.Double[] points = new Point2D.Double[]{
+                        new Point2D.Double(shape.getX(), shape.getY()),
+                        new Point2D.Double(shape.getX() + shape.getWidth(), shape.getY()),
+                        new Point2D.Double(shape.getX() + shape.getWidth(), shape.getY() + shape.getHeight()),
+                        new Point2D.Double(shape.getX(), shape.getY() + shape.getHeight())
+                };
+                
+                int length = points.length;
+                Point2D.Double result = null;
+                int index1 = 0;
+                int index2 = 1;
+                int iteration = 0;
+                
+                while ((result == null) && (iteration < length)) {
+                    result = segment.cutPoint(new Segment(points[index1], points[index2]));
+                    index1 = (index1 + 1) % length;
+                    index2 = (index2 + 1) % length;
+                    iteration++;
+                }
+                yield result;
+            }
+            case UTILITY -> {
+                Point2D.Double[] points = this.getUtilityNodePoints(g);
+                int length = points.length;
+                Point2D.Double result = null;
+                int index1 = 0;
+                int index2 = 1;
+                int iteration = 0;
+                
+                while ((result == null) && (iteration < length)) {
+                    result = segment.cutPoint(new Segment(points[index1], points[index2]));
+                    index1 = (index1 + 1) % length;
+                    index2 = (index2 + 1) % length;
+                    iteration++;
+                    
+                }
+                yield result;
+            }
+            case SV_SUM -> null;
+            case SV_PRODUCT -> null;
+        };
     }
     
     /**
@@ -380,7 +783,7 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      * @return the visualNetwork.
      */
     public VisualNetwork getVisualNetwork() {
-        return visualNetwork;
+        return this.visualNetwork;
     }
     
     /**
@@ -388,8 +791,29 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      *
      * @param numCases the number of evidence cases in memory
      */
-    public void update(int numCases) {
-        innerBox.update(numCases);
+    public void updateNumCases(int numCases) {
+        switch (node.getNodeType()) {
+            case CHANCE -> {
+                innerBox = switch (node.getVariable().getVariableType()) {
+                    case FINITE_STATES -> new FSVariableBox(this);
+                    case DISCRETIZED -> new DiscretizedVariableBox(this);
+                    case NUMERIC -> new NumericVariableBox(this);
+                    case EVENT -> null;
+                };
+            }
+            case DECISION -> {
+            }
+            case UTILITY -> {
+            }
+            case EVENT -> {
+            }
+            case SV_SUM -> {
+            }
+            case SV_PRODUCT -> {
+            }
+        }
+        
+        this.innerBox.updateNumCases(numCases);
     }
     
     /**
@@ -397,22 +821,35 @@ public abstract sealed class VisualNode extends VisualElement implements ClassLo
      *
      * @return The contour stroke
      */
-    protected Stroke getContourStroke() {
+    private Stroke getContourStroke() {
         Stroke s;
-        if (node.isInput()) {
-            s = (isSelected()) ? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE;
+        if (this.node.isInput()) {
+            s = (this.isSelected()) ? VisualElement.WIDE_DASHED_STROKE : VisualElement.NORMAL_DASHED_STROKE;
         } else {
-            s = (isSelected()) ? WIDE_STROKE : NORMAL_STROKE;
+            s = (this.isSelected()) ? VisualElement.WIDE_STROKE : VisualElement.NORMAL_STROKE;
         }
         return s;
     }
     
     @Override public Point2D.Double getCenter() {
-        return getTemporalPosition();
+        return this.getTemporalPosition();
     }
     
     @Override public String toString() {
-        return node.getName() + " - " + getPosition();
+        return this.node.getName() + " - " + this.getPosition();
     }
     
+    private static final BasicStroke CHANCE_NODE_STROKE_OBSERVED_WIDE = new BasicStroke(6.0f);
+    private static final BasicStroke CHANCE_NODE_STROKE_OBSERVED_NORMAL = new BasicStroke(3.0f);
+    /**
+     * Width of a the arc of the rounded rectangle.
+     */
+    static final double CHANCE_NODE_ARC_WIDTH = 20;
+    /**
+     * Height of a the arc of the rounded rectangle.
+     */
+    static final double CHANCE_NODE_ARC_HEIGHT = 20;
+    static final BasicStroke EVENT_NODE_STROKE_OBSERVED_WIDE = new BasicStroke(6.0f);
+    static final BasicStroke EVENT_NODE_STROKE_OBSERVED_NORMAL = new BasicStroke(3.0f);
+    static final double UTILITY_NODE_EXPANDED_WIDTH_MARGIN = 4;
 }

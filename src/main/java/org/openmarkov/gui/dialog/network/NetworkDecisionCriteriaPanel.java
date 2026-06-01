@@ -29,9 +29,8 @@ public class NetworkDecisionCriteriaPanel extends JPanel {
 	
 	private ProbNet probNet;	
 	private final Window parent;
-	private boolean initialized = false;
-	
-	/**
+    
+    /**
 	 * Constructor.
 	 * If not a network of only chance nodes, the panel is initialized
 	 *
@@ -51,9 +50,12 @@ public class NetworkDecisionCriteriaPanel extends JPanel {
 	 * Initialises the decision criteria table
 	 */
 	private void initialize() {
-		initialized = true;
 		add(getDecisionCriteriaTablePanel());
 		setFieldFromProperties(probNet);		
+	}
+	
+	private void reset(){
+		removeAll();
 	}
 	
 	
@@ -97,16 +99,21 @@ public class NetworkDecisionCriteriaPanel extends JPanel {
 	
 	/**
 	 * Initialises the probNet decision criteria table if it was not,
-	 * for networks sets or changes in the definition panel to a 
+	 * for networks sets or changes in the definition panel to a
 	 * not only chance nodes probNet
-	 * 
+	 *
 	 * @param probNet the prob net
-	 */	
-	public void update(ProbNet probNet) {
+	 *
+	 * @return
+	 */
+	public boolean update(ProbNet probNet) {
 		this.probNet = probNet;
-		if(!probNet.onlyChanceNodes() && !initialized) {			
+        this.reset();
+		boolean isUsable = !probNet.onlyChanceNodes();
+		if(isUsable) {
 			initialize();
 		}
+		return isUsable;
 	}
 
 }

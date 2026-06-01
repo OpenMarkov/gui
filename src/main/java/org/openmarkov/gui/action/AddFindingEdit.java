@@ -40,7 +40,7 @@ public class AddFindingEdit extends PNEdit {
             evidenceCase.addFinding(finding);
             visualNode.setPreResolutionFinding(true);
         } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-            throw new DoEditException.CannotDoEditException(e);
+            throw new DoEditException.CannotDoEditException(e, this);
         }
     }
     

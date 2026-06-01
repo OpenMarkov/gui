@@ -53,7 +53,7 @@ public class DistinctLinksRelatedEditsTest {
         try {
             ilegalAdd.executeEdit();
             fail();
-        } catch (ConstraintViolatedException e) {
+        } catch (DoEditException e) {
             // The constraint should have faild
         }
         
@@ -63,7 +63,7 @@ public class DistinctLinksRelatedEditsTest {
         try {
             ilegalAdd.executeEdit();
             fail();
-        } catch (ConstraintViolatedException e) {
+        } catch (DoEditException e) {
             // The constraint should have failed
         }
         
@@ -78,7 +78,7 @@ public class DistinctLinksRelatedEditsTest {
         try {
             ilegalLinkEdit.executeEdit();
             fail();
-        } catch (ConstraintViolatedException e) {
+        } catch (DoEditException e) {
             // The constraint should have failed
         }
         

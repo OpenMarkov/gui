@@ -652,7 +652,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                         case DECISION -> {
                             switch (workingMode) {
                                 case EDITION -> {
-                                    if (((VisualDecisionNode) visualNode).isHasPolicy()) {
+                                    if (!visualNode.getNode().getPotentials().isEmpty()) {
                                         canEditPolicy = true;
                                         canRemovePolicy = true;
                                     } else {
@@ -660,8 +660,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                                     }
                                 }
                                 case INFERENCE -> {
-                                    if (!((VisualDecisionNode) visualNode)
-                                            .isHasPolicy()) { // ...asaez...if network compiled...currently
+                                    if (visualNode.getNode().getPotentials().isEmpty()) { // ...asaez...if network compiled...currently
                                         // not needed
                                         // ...because if not compiled, those options
                                         // are not shown.
@@ -694,7 +693,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                             || (
                             workingMode == NetworkEditorPanel.WorkingMode.INFERENCE && visualNode.isPostResolutionFinding()
                     );
-                    canAddFinding &= !(visualNode instanceof VisualUtilityNode);
+                    canAddFinding &= visualNode.getNode().getNodeType()!=NodeType.UTILITY;
                     boolean addOrChange =
                             (workingMode == NetworkEditorPanel.WorkingMode.EDITION && !visualNode.isPreResolutionFinding())
                                     || (

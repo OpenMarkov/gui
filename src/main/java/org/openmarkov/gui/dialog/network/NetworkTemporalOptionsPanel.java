@@ -33,10 +33,9 @@ public class NetworkTemporalOptionsPanel extends JPanel {
 	private JTextField unitScale;
 	private Unit probNetUnit;
 	private double probNetScale;
-	private boolean initialized = false;
-	
-	
-	/**
+    
+    
+    /**
 	 * Constructor. If the probNet is not constraint to non-temporary
 	 * variables only, the panel is activated
 	 *
@@ -54,8 +53,6 @@ public class NetworkTemporalOptionsPanel extends JPanel {
 	 * Initialises temporal units and its scales 
 	 */
 	private void initialize() {
-		initialized = true;
-		
 		add(getUnitScale());
 		add(getTemporalUnits());
 		
@@ -72,6 +69,10 @@ public class NetworkTemporalOptionsPanel extends JPanel {
 		temporalUnits.setSelectedItem(
 				stringDatabase.getString("NetworkTemporalOptionsPanel.TemporalOptions.Unit." + probNetUnit.toString()));
 		unitScale.setText(String.valueOf(probNetScale));					
+	}
+	
+	private void reset(){
+		removeAll();
 	}
 	
 	private Component getTemporalUnits() {
@@ -97,13 +98,18 @@ public class NetworkTemporalOptionsPanel extends JPanel {
 	 * Initialises, if not already to, temporal options for probNets
 	 * sets or changes in the definition panel to networks not restricted to
 	 * non-temporal variables only.
-	 *  
+	 *
 	 * @param probNet the prob net
-	 */	
-	public void update(ProbNet probNet) {
+	 *
+	 * @return
+	 */
+	public boolean update(ProbNet probNet) {
 		this.probNet = probNet;
-        if (!probNet.hasConstraintOfClass(OnlyAtemporalVariables.class) && !initialized) {
+		reset();
+		boolean isUsable = !probNet.hasConstraintOfClass(OnlyAtemporalVariables.class);
+		if (isUsable) {
 			initialize();
-		}	
+		}
+		return isUsable;
 	}
 }

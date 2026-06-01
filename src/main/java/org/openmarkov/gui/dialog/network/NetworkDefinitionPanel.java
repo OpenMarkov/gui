@@ -22,8 +22,6 @@ import org.openmarkov.java.classUtils.ClassUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 
 /**
@@ -305,12 +303,11 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
         https://bitbucket.org/cisiad/org.openmarkov.issues/issue/169/opening-the-network-properties-dialog
         The ChangeNetworkTypeEdit should only be invoked if the network type has actually changed
          */
-        ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit(probNet, selectedNetworkType);
         try {
-            changeNetworkType.executeEdit();
-            parent.update(probNet);
+            new ChangeNetworkTypeEdit(probNet, selectedNetworkType).executeEdit();
+            parent.update();
             //parent.getNetworkAdvancedPanel().update(probNet); SUSTITUIDA POR 342
-        } catch (ConstraintViolatedException | DoEditException.CannotDoEditException e) {
+        } catch (DoEditException.CannotDoEditException e) {
             // TODO maintain comboBox with the current probNet
             // TODO temporal change in exception management
             throw e;

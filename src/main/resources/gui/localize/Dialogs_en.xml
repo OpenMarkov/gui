@@ -402,6 +402,7 @@
             <EditPolicyTitle value="Edit policy"/>
             <Goal>
                 <Probability value="Probability"/>
+                <Utility value="Utility"/>
                 <Policy value="Policy"/>
             </Goal>
             <Action>

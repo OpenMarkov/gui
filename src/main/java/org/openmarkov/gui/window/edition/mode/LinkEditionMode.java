@@ -10,6 +10,7 @@ import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
@@ -29,7 +30,7 @@ import java.awt.event.MouseEvent;
         if (!(SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1 && GUIUtils.noMouseModifiers(e))) {
             return;
         }
-        visualNetwork.startLinkCreation(cursorPosition, g);
+        visualNetwork.startLinkCreation(cursorPosition, g, VisualNetwork.LinkCreationSourceDirection.PARENT, false);
     }
     
     @Override public void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException {
@@ -43,6 +44,11 @@ import java.awt.event.MouseEvent;
     @Override public void mouseMoved(MouseEvent e, Point2D.Double cursorPosition, double diffX, double diffY,
                                      Graphics2D g) {
         visualNetwork.updateLinkCreation(cursorPosition, g);
+        networkEditorPanel.repaint();
+    }
+    
+    @Override public void tryCancelCurrentAction(MouseEvent e, Point2D.Double position, Graphics2D g) {
+        visualNetwork.cancelLinkCreation();
         networkEditorPanel.repaint();
     }
     

@@ -259,46 +259,15 @@ public final class VisualState extends VisualElement {
         }
     }
     
-    /**
-     * Returns a fictitious rectangular shape around the state. This shape has a
-     * height equivalent to the sum of the height of all the bars of the state
-     * (a narrow margin is added) and its width includes the foreground of the name
-     * and the numerical value (a margin is also added).
-     *
-     * @param g graphics object where paint the node.
-     *
-     * @return shape of the State.
-     */
-    @Override public Shape getCenteredShape(Graphics2D g) {
-        double x = this.visualNode.getUpperLeftCornerX(g) + InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT - 1;
-        double w = InnerBox.BOX_WIDTH - (InnerBox.STATES_INDENT * 2) + 1;
-        double y;
-        double h;
-        if (this.visualNode.getVisualNetwork().isPropagationActive()) {
-            y = this.visualNode.getUpperLeftCornerY(g) + this.visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
-                    InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
-            ) + ((this.stateValues.size() - 1) * InnerBox.BAR_HEIGHT * (getStatePosition() - 1)) - InnerBox.BAR_HEIGHT - 4;
-            h = (InnerBox.BAR_HEIGHT * this.stateValues.size()) + 4;
-            return new Rectangle2D.Double(x, y, w, h);
-        }
-        y = this.visualNode.getUpperLeftCornerY(g) + this.visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + (
-                InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
-        ) - InnerBox.BAR_HEIGHT - 4;
-        h = InnerBox.BAR_HEIGHT + 4;
-        return new Rectangle2D.Double(x, y, w, h);
-    }
-    
     @Override public Shape getShape(Graphics2D g) {
-        double x = this.visualNode.getUpperLeftCornerX(g);
+        double x = this.visualNode.getTemporalCoordinateX();
         double w = InnerBox.BOX_WIDTH - (InnerBox.STATES_INDENT * 2) + 1;
-        double y;
+        double y = this.visualNode.getTemporalCoordinateY();
         double h;
         if (this.visualNode.getVisualNetwork().isPropagationActive()) {
-            y = this.visualNode.getUpperLeftCornerY(g);
             h = (InnerBox.BAR_HEIGHT * this.stateValues.size()) + 4;
             return new Rectangle2D.Double(x, y, w, h);
         }
-        y = this.visualNode.getUpperLeftCornerY(g);
         h = InnerBox.BAR_HEIGHT + 4;
         return new Rectangle2D.Double(x, y, w, h);
     }

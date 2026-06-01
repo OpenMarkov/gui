@@ -45,15 +45,6 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	 * constructor without construction parameters
 	 */
 	public NetworkOtherPropertiesPanel() {
-		this(true);
-	}
-
-	/**
-	 * This method initialises this instance.
-	 *
-	 * @param newNetwork is true if the network is first created
-	 */
-	public NetworkOtherPropertiesPanel(final boolean newNetwork) {
 		this.setName("NetworkOtherPropertiesPanel");
 		initialize();
 	}

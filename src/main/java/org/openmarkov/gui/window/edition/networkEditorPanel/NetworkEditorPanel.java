@@ -51,8 +51,6 @@ import javax.swing.ToolTipManager;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.io.Serial;
@@ -205,9 +203,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
                 this.visualNetwork.getAllNodes().get(i).paint(graphics2D);
             }
         }
-        if (this.visualNetwork.getNewLink() != null) {
-            this.visualNetwork.getNewLink().paint(graphics2D);
-        }
+        this.visualNetwork.getNewLinksArrows().forEach(arrow -> arrow.paint(graphics2D));
         if (this.visualNetwork.getSelection() != null) {
             this.visualNetwork.getSelection().paint(graphics2D);
         }
@@ -274,6 +270,14 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         if (probNet == null || probNet.getNodes().isEmpty()) return;
         var positions = new StressLayout().compute(probNet);
         if (positions.isEmpty()) return;
+        var minX = positions.values().stream().mapToDouble(Point2D.Double::getX).min().getAsDouble();
+        var minY = positions.values().stream().mapToDouble(Point2D.Double::getY).min().getAsDouble();
+        if(minX<0){
+            positions.values().forEach(position -> position.setX(position.getX()-minX));
+        }
+        if(minY<0){
+            positions.values().forEach(position -> position.setY(position.getY()-minY));
+        }
         try {
             new AutoArrangeEdit(probNet, positions).executeEdit();
         } catch (DoEditException e) {
@@ -355,7 +359,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         boolean userAcceptedChanges = NetworkEditorPanel.requestNodePropertiesToUser2(GUIUtils.getOwner(this), this, selectedNode, newNode);
         if (userAcceptedChanges) {
             this.adjustPanelDimension();
-            selectedNode.update(this.evidenceManager.getPostResolutionEvidence().size());
+            selectedNode.updateNumCases(this.evidenceManager.getPostResolutionEvidence().size());
             this.repaint();
             this.evidenceManager.removeNodeEvidenceInAllCases(selectedNode.getNode());
         }
@@ -447,8 +451,8 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * This method imposes a policy in a decision node.
      */
     public void imposePolicyInNode() {
-        VisualDecisionNode visualNode = (VisualDecisionNode) this.visualNetwork.getLastSelectedNode();
-        NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
+        VisualNode visualNode =  this.visualNetwork.getLastSelectedNode();
+        NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode.getNode());
         this.visualNetwork.setSelectedAllNodes(false);
         this.repaint();
     }
@@ -457,8 +461,8 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
      * This method edits an imposed policy of a decision node.
      */
     public void editNodePolicy() {
-        VisualDecisionNode visualNode = (VisualDecisionNode) this.visualNetwork.getLastSelectedNode();
-        NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode);
+        VisualNode visualNode =  this.visualNetwork.getLastSelectedNode();
+        NetworkEditorPanel.requestImposePolicyValues(GUIUtils.getOwner(this), visualNode.getNode());
         this.visualNetwork.setSelectedAllNodes(false);
         this.repaint();
     }
@@ -466,11 +470,11 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
     /**
      * This method removes an imposed policy from a decision node.
      */
-    public void removePolicyFromNode() throws DoEditException {
+    public void removePolicyFromNode() {
         VisualNode visualNode = this.visualNetwork.getLastSelectedNode();
         try {
             new RemovePolicyEdit(visualNode.getNode()).executeEdit();
-        } catch (ConstraintViolatedException e) {
+        } catch (DoEditException e) {
             throw new UnreachableException(e);
         }
         //setNetworkChangedWithOutEdit(true);
@@ -478,8 +482,8 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         this.repaint();
     }
     
-    private static void requestImposePolicyValues(Window owner, VisualDecisionNode visualNode) {
-        PotentialEditDialog imposePolicyDialog = new ImposePolicyDialog(owner, false, visualNode);
+    private static void requestImposePolicyValues(Window owner, Node node) {
+        PotentialEditDialog imposePolicyDialog = new ImposePolicyDialog(owner, false, node);
         imposePolicyDialog.requestValues();
     }
     

@@ -64,7 +64,7 @@ public class OnlyDirectedLinksRelatedEditsTest {
             iEdit = new AddLinkEdit(probNetDirected, va, vc, false);
             iEdit.executeEdit();
             fail();
-        } catch (ConstraintViolatedException cve) {
+        } catch (DoEditException cve) {
             // It should have thrown an exception.
         }
     }

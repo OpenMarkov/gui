@@ -334,7 +334,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
     private JToggleButton getLinkCreationButton() {
         if (linkCreationButton == null) {
             linkCreationButton = new JToggleButton();
-            linkCreationButton.setIcon(IconBind.LINK_ENABLED.icon());
+            linkCreationButton.setIcon(IconBind.LINK_PARENT_ENABLED.icon());
             linkCreationButton.setActionCommand(ActionCommands.LINK_CREATION.getCommandName());
             linkCreationButton.setFocusable(false);
             linkCreationButton.setName("LinkCreationMode");

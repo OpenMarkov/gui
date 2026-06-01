@@ -143,6 +143,6 @@ public abstract sealed class InnerBox extends VisualElement permits FSVariableBo
 	 *
 	 * @param numCases Number of evidence cases in memory.
 	 */
-	public abstract void update(int numCases);
+	public abstract void updateNumCases(int numCases);
 
 }

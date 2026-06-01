@@ -76,7 +76,7 @@ public non-sealed class FSVariableBox extends InnerBox {
 	 *
 	 * @param numCases Number of evidence cases in memory.
 	 */
-	@Override public void update(int numCases) {
+	@Override public void updateNumCases(int numCases) {
 		visualStates.clear();
 		createVisualStates(numCases);
 	}
@@ -114,19 +114,6 @@ public non-sealed class FSVariableBox extends InnerBox {
 	 */
 	@Override public int getNumStates() {
 		return visualStates.size();
-	}
-
-	/**
-	 * Returns the shape of the innerBox.
-	 *
-	 * @param g graphics object.
-	 * @return shape of the innerBox.
-	 */
-	@Override public Shape getCenteredShape(Graphics2D g) {
-		double innerNodeHeight = getInnerBoxHeight(g);
-		return new Rectangle2D.Double(visualNode.getUpperLeftCornerX(g) + INTERNAL_MARGIN,
-				visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + INTERNAL_MARGIN, BOX_WIDTH,
-				innerNodeHeight);
 	}
 	
 	@Override public Shape getShape(Graphics2D g) {

@@ -27,9 +27,8 @@ public class NetworkAgentsPanel extends JPanel {
 	
 	private NetworkAgentsTablePanel newtworkAgentsTablePanel;
 	private ProbNet probNet;
-	private boolean initialized = false;
-	
-	/**
+    
+    /**
 	 * Constructor. If the probNet has agents, the panel is activated
 	 * 
 	 * @param probNet the prob net
@@ -46,9 +45,12 @@ public class NetworkAgentsPanel extends JPanel {
 	 * Gets the panel table and sets its properties  
 	 */
 	private void initialize() {
-		initialized = true;
 		add(getNetworkAgentsTablePanel());
 		setFieldFromProperties(probNet);		
+	}
+	
+	private void reset() {
+		removeAll();
 	}
 
 	/**
@@ -89,14 +91,19 @@ public class NetworkAgentsPanel extends JPanel {
 	/**
 	 * Updates the probNet agents table and sets it when the network
 	 * is set or changed in the definition panel to a probNet with agents.
-	 *  
+	 *
 	 * @param probNet the prob net
-	 */		
-	public void update(ProbNet probNet) {
+	 *
+	 * @return
+	 */
+	public boolean update(ProbNet probNet) {
 		this.probNet = probNet;
-		if((probNet.getAgents() != null) && !initialized) {			
+		this.reset();
+		boolean isUsable = probNet.getAgents() != null;
+		if(isUsable) {
 			initialize();
-		}	
+		}
+		return isUsable;
 	}
 
 }

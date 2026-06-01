@@ -11,7 +11,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.gui.componentBuilder.JMenuItemBuilder;
-import org.openmarkov.gui.graphic.VisualDecisionNode;
+import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.gui.validator.AbsorbParentsValidator;
 import org.openmarkov.gui.validator.AbsorbNodeValidator;
@@ -154,7 +154,8 @@ public class NodeContextualMenu extends ContextualMenu {
         
         addSeparator();
         if (networkEditorPanel.getEditionMode() instanceof SelectionEditionMode selectionEditionMode) {
-            add(getCreateLinkMenuItem(selectionEditionMode));
+            add(getCreateLinkParentMenuItem(selectionEditionMode));
+            add(getCreateLinkChildMenuItem(selectionEditionMode));
             addSeparator();
         }
         if (workingMode == NetworkEditorPanel.WorkingMode.EDITION) {
@@ -188,9 +189,9 @@ public class NodeContextualMenu extends ContextualMenu {
             addSeparator();
         }
         
-        if (selectedNode instanceof VisualDecisionNode visualDecisionNode) {
+        if (nodeType==NodeType.DECISION) {
             if (workingMode == NetworkEditorPanel.WorkingMode.EDITION) {
-                add(getImposePolicyMenuItem(visualDecisionNode));
+                add(getImposePolicyMenuItem(this.selectedNode.getNode()));
                 add(getRemovePolicyMenuItem());
                 addSeparator();
             } else if (workingMode == NetworkEditorPanel.WorkingMode.INFERENCE
@@ -235,16 +236,30 @@ public class NodeContextualMenu extends ContextualMenu {
         return this.alignmentMenuItem;
     }
     
-    private JMenuItem getCreateLinkMenuItem(SelectionEditionMode selectionEditionMode) {
+    private JMenuItem getCreateLinkParentMenuItem(SelectionEditionMode selectionEditionMode) {
         var isWorkingMode = networkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION;
-        return new JMenuItemBuilder("Create link")
-                .withIcon(IconBind.LINK_ENABLED.icon())
+        return new JMenuItemBuilder("Create link (parent)")
+                .withIcon(IconBind.LINK_PARENT_ENABLED.icon())
                 .withName("NodeContextualMenuCreateLink")
                 .withActionCommand(ActionCommands.LINK_CREATION)
                 .enabled(isWorkingMode)
                 .onClick(e -> {
                     selectionEditionMode.startLinkCreation(
-                            new Point2D.Double(this.getRelativeShownLocationX(), this.getRelativeShownLocationY()));
+                            new Point2D.Double(this.getRelativeShownLocationX(), this.getRelativeShownLocationY()), VisualNetwork.LinkCreationSourceDirection.PARENT);
+                })
+                .build();
+    }
+    
+    private JMenuItem getCreateLinkChildMenuItem(SelectionEditionMode selectionEditionMode) {
+        var isWorkingMode = networkEditorPanel.getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION;
+        return new JMenuItemBuilder("Create link (child)")
+                .withIcon(IconBind.LINK_CHILD_ENABLED.icon())
+                .withName("NodeContextualMenuCreateLink")
+                .withActionCommand(ActionCommands.LINK_CREATION)
+                .enabled(isWorkingMode)
+                .onClick(e -> {
+                    selectionEditionMode.startLinkCreation(
+                            new Point2D.Double(this.getRelativeShownLocationX(), this.getRelativeShownLocationY()), VisualNetwork.LinkCreationSourceDirection.CHILD);
                 })
                 .build();
     }
@@ -390,10 +405,9 @@ public class NodeContextualMenu extends ContextualMenu {
      *
      * @return a new 'ImposePolicy' menu item.
      */
-    private JMenuItem getImposePolicyMenuItem(VisualDecisionNode visualDecisionNode) {
-        
+    private JMenuItem getImposePolicyMenuItem(Node node) {
         if (imposePolicyMenuItem == null) {
-            if (visualDecisionNode.isHasPolicy()) {
+            if (!node.getPotentials().isEmpty()) {
                 imposePolicyMenuItem = new LocalizedMenuItem(MenuItemNames.DECISION_EDIT_POLICY_MENUITEM,
                                                              ActionCommands.DECISION_EDIT_POLICY.getCommandName());
             } else {
@@ -541,9 +555,9 @@ public class NodeContextualMenu extends ContextualMenu {
             case ActionCommands.NODE_PROPERTIES -> propertiesMenuItem;
             case ActionCommands.EDIT_POTENTIAL -> relationMenuItem;
             case ActionCommands.DECISION_EDIT_POLICY ->
-                    selectedNode instanceof VisualDecisionNode vs ? vs.isHasPolicy() ? imposePolicyMenuItem : null : null;
+                    selectedNode.getNode().getNodeType()==NodeType.DECISION ? !selectedNode.getNode().getPotentials().isEmpty() ? imposePolicyMenuItem : null : null;
             case ActionCommands.DECISION_IMPOSE_POLICY ->
-                    selectedNode instanceof VisualDecisionNode vs ? !vs.isHasPolicy() ? imposePolicyMenuItem : null : null;
+                    selectedNode.getNode().getNodeType()==NodeType.DECISION ? selectedNode.getNode().getPotentials().isEmpty() ? imposePolicyMenuItem : null : null;
             case ActionCommands.DECISION_REMOVE_POLICY -> removePolicyMenuItem;
             case ActionCommands.EVENT_EDIT_TIME_TO_EVENT -> editTimeToEventMenuItem;
             case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY -> showExpectedUtilityMenuItem;

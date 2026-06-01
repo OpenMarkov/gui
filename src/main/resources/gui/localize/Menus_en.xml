@@ -38,7 +38,7 @@
         <SelectAll value="Select all">
             <Mnemonic value="a"/>
         </SelectAll>
-        <AutoArrange value="Auto-arrange">
+        <AutoArrange value="Auto-arrange network">
             <Mnemonic value="r"/>
         </AutoArrange>
         <ViewNodePotential value="View probability ..."/>

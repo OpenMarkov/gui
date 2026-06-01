@@ -137,14 +137,6 @@ public abstract sealed class VisualElement permits InnerBox, VisualArrow, Visual
 	 * @param g graphic object where the shape can be painted.
 	 * @return shape of the node.
 	 */
-	public abstract Shape getCenteredShape(Graphics2D g);
-	
-	/**
-	 * Returns the shape of the node.
-	 *
-	 * @param g graphic object where the shape can be painted.
-	 * @return shape of the node.
-	 */
 	public abstract Shape getShape(Graphics2D g);
 
 	/**

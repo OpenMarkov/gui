@@ -110,6 +110,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
             this.networkEditorPanel.repaint();
             return;
         }
+        this.networkEditorPanel.getEditionMode().tryCancelCurrentAction(e, this.cursorPosition, g);
+        
         if (this.networkEditorPanel.getNetworkEditorPanel()
                                    .getWorkingMode() == NetworkEditorPanel.WorkingMode.EDITION) {
             // If we are in Edition Mode a double click must open
@@ -184,7 +186,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         try {
             this.networkEditorPanel.getEvidenceManager().toggleFinding(visualNode, visualState);
         } catch (IncompatibleEvidenceException | NotEvaluableNetworkException | NonProjectablePotentialException |
-                 NotEnoughMemoryException | DoEditException | CannotNormalizePotentialException ex) {
+                 NotEnoughMemoryException | DoEditException | CannotNormalizePotentialException |
+                 ConstraintViolatedException ex) {
             throw new UnreachableException(ex);
         }
         

@@ -54,7 +54,7 @@ public class NoMultipleLinksRelatedEditsTest {
         try {
             ilegalAdd.executeEdit();
             fail();
-        } catch (ConstraintViolatedException e) {
+        } catch (DoEditException e) {
             // the ilegal edit should have thrown the exception
         }
         
@@ -72,7 +72,7 @@ public class NoMultipleLinksRelatedEditsTest {
         try {
             ilegalInvertLinkEdit.executeEdit();
             fail();
-        } catch (ConstraintViolatedException | DoEditException.CannotInvertLink e) {
+        } catch (DoEditException e) {
             // the ilegal edit should have thrown the exception
         }
     }

@@ -171,7 +171,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic {
         createCheckBox(MenuItemNames.EDIT_MODE_CHANCE_MENUITEM, ActionCommands.CHANCE_CREATION, IconBind.CHANCE_ENABLED, groupEditOptions);
         createCheckBox(MenuItemNames.EDIT_MODE_DECISION_MENUITEM, ActionCommands.DECISION_CREATION, IconBind.DECISION_ENABLED, groupEditOptions);
         createCheckBox(MenuItemNames.EDIT_MODE_UTILITY_MENUITEM, ActionCommands.UTILITY_CREATION, IconBind.UTILITY_ENABLED, groupEditOptions);
-        createCheckBox(MenuItemNames.EDIT_MODE_LINK_MENUITEM, ActionCommands.LINK_CREATION, IconBind.LINK_ENABLED, groupEditOptions);
+        createCheckBox(MenuItemNames.EDIT_MODE_LINK_MENUITEM, ActionCommands.LINK_CREATION, IconBind.LINK_PARENT_ENABLED, groupEditOptions);
         createItem(MenuItemNames.EDIT_NODEPROPERTIES_MENUITEM, ActionCommands.NODE_PROPERTIES);
         createItem(MenuItemNames.EDIT_NODERELATION_MENUITEM, ActionCommands.EDIT_POTENTIAL);
         createItem(MenuItemNames.EDIT_LINKPROPERTIES_MENUITEM, ActionCommands.LINK_PROPERTIES);

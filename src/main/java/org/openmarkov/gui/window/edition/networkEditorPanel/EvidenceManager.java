@@ -15,7 +15,6 @@ import org.openmarkov.gui.exception.PreResolutionNodeInInferenceException;
 import org.openmarkov.gui.graphic.*;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
-import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEPropagation;
 import org.openmarkov.java.initialization.Lazy;
 
@@ -141,7 +140,7 @@ public class EvidenceManager {
                     if (visualNode.isPreResolutionFinding() && this.preResolutionEvidence.getFinding(variable) != null) {
                         try {
                             new RemoveFindingEdit(visualNode, this.preResolutionEvidence, variable).executeEdit();
-                        } catch (ConstraintViolatedException e) {
+                        } catch (DoEditException e) {
                             throw new UnreachableException(e);
                         }
                     }
@@ -172,7 +171,7 @@ public class EvidenceManager {
                 this.doPropagation(this.postResolutionEvidence.get(this.currentCase), this.currentCase);
             }
         } catch (NotEvaluableNetworkException | NonProjectablePotentialException | NotEnoughMemoryException |
-                 IncompatibleEvidenceException | CannotNormalizePotentialException e) {
+                 IncompatibleEvidenceException | CannotNormalizePotentialException | ConstraintViolatedException e) {
             this.networkEditorPanel.setPropagationActive(false);
             throw new UnreachableException(e);
         } finally {
@@ -352,7 +351,7 @@ public class EvidenceManager {
      */
     private void updateVisualStateAndEvidence(InnerBox innerBox, VisualState visualState) {
         if (visualState.getNumberOfValues() != this.postResolutionEvidence.size()) {
-            innerBox.update(this.postResolutionEvidence.size());
+            innerBox.updateNumCases(this.postResolutionEvidence.size());
             for (int i = 0; i < this.postResolutionEvidence.size(); i++) {
                 this.evidenceCasesCompilationState.set(i, false);
             }
@@ -453,7 +452,7 @@ public class EvidenceManager {
      * @param state      the visual state in which the finding is going to be
      *                   set.
      */
-    void toggleFinding(VisualNode visualNode, VisualState state) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, CannotNormalizePotentialException {
+    void toggleFinding(VisualNode visualNode, VisualState state) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, CannotNormalizePotentialException, ConstraintViolatedException {
         this.setNewFinding(visualNode, null, new Finding(visualNode.getNode()
                                                                    .getVariable(), state.getStateIndex()), true);
     }
@@ -466,7 +465,7 @@ public class EvidenceManager {
      * @param finding    a finding.
      * @param toggle     a boolean value.
      */
-    public void setNewFinding(VisualNode visualNode, Finding previousFinding, Finding finding, boolean toggle) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, CannotNormalizePotentialException {
+    public void setNewFinding(VisualNode visualNode, Finding previousFinding, Finding finding, boolean toggle) throws IncompatibleEvidenceException, DoEditException, NotEvaluableNetworkException, NonProjectablePotentialException, NotEnoughMemoryException, CannotNormalizePotentialException, ConstraintViolatedException {
         Variable variable = visualNode.getNode().getVariable();
         
         boolean isInferenceMode = this.networkEditorPanel.getNetworkEditorPanel().getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE;
@@ -505,7 +504,7 @@ public class EvidenceManager {
                 this.doPropagation(evidenceCase, this.currentCase);
             }
         } catch (NonProjectablePotentialException | NotEnoughMemoryException | NotEvaluableNetworkException |
-                 IncompatibleEvidenceException | CannotNormalizePotentialException e) {
+                 IncompatibleEvidenceException | CannotNormalizePotentialException | ConstraintViolatedException e) {
             evidenceCase.removeFinding(variable);
             if (alreadyHasFinding) {
                 try {

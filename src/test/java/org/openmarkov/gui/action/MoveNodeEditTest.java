@@ -13,8 +13,6 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.testTags.TestSpeed;
-import org.openmarkov.gui.graphic.VisualChanceNode;
-import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,9 +65,9 @@ public class MoveNodeEditTest {
 		node2 = probNet.addNode(variableB, NodeType.DECISION);
 		node2.setCoordinateX(57.0);
 		node2.setCoordinateY(49.0);
-
-		VisualChanceNode visualNodeA = new VisualChanceNode(node1, null);
-		VisualDecisionNode visualNodeB = new VisualDecisionNode(node2, null);
+		
+		VisualNode visualNodeA = new VisualNode(node1, null);
+		VisualNode visualNodeB = new VisualNode(node2, null);
 		visualNodeA.setTemporalPosition(new Point2D.Double(21, 160));
 		visualNodeB.setTemporalPosition(new Point2D.Double(101, 99));
 

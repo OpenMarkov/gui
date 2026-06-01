@@ -7,10 +7,12 @@
 package org.openmarkov.gui.window.edition.mode;
 
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.action.MoveNodeEdit;
+import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
@@ -56,17 +58,37 @@ public class SelectionEditionMode extends EditionMode {
     
     @Override public void mouseMoved(MouseEvent e, Point2D.Double position, double diffX, double diffY,
                                      Graphics2D g) {
+        this.lastMousePos = position;
         if (this.selectionState == SelectionState.SELECTING) {
             this.visualNetwork.updateSelectionRectangle(diffX, diffY);
         } else if (this.selectionState == SelectionState.CREATING_LINK) {
-            visualNetwork.updateLinkCreation(position, g);
-            networkEditorPanel.repaint();
+            this.visualNetwork.updateLinkCreation(position, g);
+            this.networkEditorPanel.repaint();
         } else if (this.selectionState == SelectionState.MOVING ||
                 (this.selectionState == SelectionState.NOTHING && SwingUtilities.isLeftMouseButton(e) && !this.visualNetwork.getSelectedNodes()
                                                                                                                             .isEmpty())) {
             this.setSelectionState(SelectionState.MOVING);
             this.visualNetwork.moveSelectedElements(diffX, diffY);
         }
+        this.networkEditorPanel.repaint();
+    }
+    
+    @Override public void tryCancelCurrentAction(MouseEvent e, Point2D.Double position, Graphics2D g) {
+        this.currentlyHoldingMouse = false;
+        switch (this.selectionState) {
+            case SelectionState.NOTHING -> {
+            }
+            case SelectionState.MOVING -> {
+                try {
+                    this.tryFinishNodesMovements();
+                } catch (DoEditException ex) {
+                    throw new UnreachableException(ex);
+                }
+            }
+            case SelectionState.SELECTING -> this.visualNetwork.finishSelectionRectangle(position);
+            case CREATING_LINK -> this.visualNetwork.cancelLinkCreation();
+        }
+        this.setSelectionState(SelectionState.NOTHING);
         this.networkEditorPanel.repaint();
     }
     
@@ -77,20 +99,28 @@ public class SelectionEditionMode extends EditionMode {
             case SelectionState.NOTHING -> {
             }
             case SelectionState.MOVING -> this.tryFinishNodesMovements();
-            case SelectionState.SELECTING -> {
-                this.visualNetwork.finishSelectionRectangle(position);
-            }
+            case SelectionState.SELECTING -> this.visualNetwork.finishSelectionRectangle(position);
             case CREATING_LINK -> {
-                visualNetwork.finishLinkCreation(position, g);
+                this.visualNetwork.finishLinkCreation(position, g);
+                if (this.currentlyHeldKeys.contains(KeyEvent.VK_SHIFT)) {
+                    this.visualNetwork.startLinkCreation(position, g, VisualNetwork.LinkCreationSourceDirection.PARENT, true);
+                    this.networkEditorPanel.repaint();
+                    return;
+                }
             }
         }
         this.setSelectionState(SelectionState.NOTHING);
         this.networkEditorPanel.repaint();
     }
     
-    public void startLinkCreation(Point2D.Double cursorPosition) {
-        visualNetwork.startLinkCreation(cursorPosition, (Graphics2D) networkEditorPanel.getGraphics());
+    public boolean startLinkCreation(Point2D.Double cursorPosition, VisualNetwork.LinkCreationSourceDirection sourceDirection) {
+        if (this.visualNetwork.getSelectedNodes().isEmpty()) {
+            return false;
+        }
+        this.linkCreationStartedWithKey = false;
+        this.visualNetwork.startLinkCreation(cursorPosition, (Graphics2D) this.networkEditorPanel.getGraphics(), sourceDirection, false);
         this.setSelectionState(SelectionState.CREATING_LINK);
+        return true;
     }
     
     private void tryFinishNodesMovements() throws DoEditException {
@@ -115,7 +145,7 @@ public class SelectionEditionMode extends EditionMode {
     }
     
     @Override public void keyTyped(KeyEvent e) {
-    
+        
     }
     
     
@@ -125,45 +155,79 @@ public class SelectionEditionMode extends EditionMode {
             return;
         }
         switch (this.selectionState) {
-            case NOTHING, MOVING -> {
-                int diffX = 0, diffY = 0;
-                for (var key : this.currentlyHeldKeys) {
-                    switch (key) {
-                        case KeyEvent.VK_UP -> diffY -= SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
-                        case KeyEvent.VK_RIGHT -> diffX += SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
-                        case KeyEvent.VK_DOWN -> diffY += SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
-                        case KeyEvent.VK_LEFT -> diffX -= SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
+            case MOVING -> applyKeyArrowsOnNodes();
+            case NOTHING -> {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT ->
+                            applyKeyArrowsOnNodes();
+                    case KeyEvent.VK_SHIFT -> {
+                        if (this.startLinkCreation(this.lastMousePos, VisualNetwork.LinkCreationSourceDirection.PARENT)) {
+                            this.linkCreationStartedWithKey = true;
+                        }
                     }
                 }
-                if (diffX == 0 && diffY == 0) {
-                    return;
-                }
-                this.setSelectionState(SelectionState.MOVING);
-                this.visualNetwork.moveSelectedElements(diffX, diffY);
             }
             case SELECTING -> {
             }
             case CREATING_LINK -> {
-                if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    this.visualNetwork.cancelLinkCreation();
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_ESCAPE -> this.visualNetwork.cancelLinkCreation();
+                    case KeyEvent.VK_ALT -> {
+                        this.visualNetwork.toggleLinkCreationSource(this.lastMousePos);
+                        e.consume();
+                    }
                 }
             }
         }
-        
-
         this.networkEditorPanel.repaint();
     }
     
     @Override public void keyReleased(KeyEvent e) {
-        boolean wasHoldingAnArrow = this.isHoldingAnArrow();
-        this.currentlyHeldKeys.remove(e.getKeyCode());
-        if (wasHoldingAnArrow && !this.isHoldingAnArrow()) {
-            try {
-                this.tryFinishNodesMovements();
-            } catch (DoEditException ex) {
-                throw new UnrecoverableException(ex);
+        switch (this.selectionState) {
+            case NOTHING -> {
+            }
+            case MOVING -> {
+                boolean wasHoldingAnArrow = this.isHoldingAnArrow();
+                this.currentlyHeldKeys.remove(e.getKeyCode());
+                if (wasHoldingAnArrow && !this.isHoldingAnArrow()) {
+                    try {
+                        this.tryFinishNodesMovements();
+                    } catch (DoEditException ex) {
+                        throw new UnrecoverableException(ex);
+                    }
+                }
+            }
+            case SELECTING -> {
+            }
+            case CREATING_LINK -> {
+                switch (e.getKeyCode()){
+                    case KeyEvent.VK_SHIFT -> {
+                        if (this.linkCreationStartedWithKey) {
+                            this.visualNetwork.cancelLinkCreation();
+                            this.linkCreationStartedWithKey=false;
+                            this.setSelectionState(SelectionState.NOTHING);
+                        }
+                    }
+                }
             }
         }
+    }
+    
+    private void applyKeyArrowsOnNodes() {
+        int diffX = 0, diffY = 0;
+        for (var key : this.currentlyHeldKeys) {
+            switch (key) {
+                case KeyEvent.VK_UP -> diffY -= SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
+                case KeyEvent.VK_RIGHT -> diffX += SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
+                case KeyEvent.VK_DOWN -> diffY += SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
+                case KeyEvent.VK_LEFT -> diffX -= SelectionEditionMode.NODE_SPEED_ON_ARROW_PRESS;
+            }
+        }
+        if (diffX == 0 && diffY == 0) {
+            return;
+        }
+        this.setSelectionState(SelectionState.MOVING);
+        this.visualNetwork.moveSelectedElements(diffX, diffY);
     }
     
     public boolean isMovingNodes() {
@@ -177,4 +241,6 @@ public class SelectionEditionMode extends EditionMode {
                 || this.currentlyHeldKeys.contains(KeyEvent.VK_LEFT);
     }
     
+    private Point2D.Double lastMousePos;
+    private boolean linkCreationStartedWithKey;
 }

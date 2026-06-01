@@ -11,7 +11,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.action.ImposePolicyEdit;
-import org.openmarkov.gui.graphic.VisualDecisionNode;
 
 import java.util.ArrayList;
 
@@ -21,25 +20,22 @@ import java.util.ArrayList;
  */
 public class ImposePolicyPanel extends PotentialEditPanel {
     
-    private final @NotNull VisualDecisionNode visualNode;
-    
-    public ImposePolicyPanel(VisualDecisionNode visualNode, boolean readOnly, boolean potentialInitializesOnEditHistory) {
-        this.visualNode = visualNode;
-        super(visualNode.getNode(), readOnly, potentialInitializesOnEditHistory);
+    public ImposePolicyPanel(Node node, boolean readOnly, boolean potentialInitializesOnEditHistory) {
+        super(node, readOnly, potentialInitializesOnEditHistory);
     }
     
     @Override protected void setPotentialInNode(@NotNull Potential newPotential) {
-        this.visualNode.setPolicy(newPotential);
+        this.getNode().setPotential(newPotential);
     }
     
     @Override protected void initializePotential() {
-        if (!visualNode.isHasPolicy()) {
-            Node node = visualNode.getNode();
+        if (getNode().getPotentials().isEmpty()) {
+            Node node = getNode();
             node.setPolicyType(PolicyType.OPTIMAL);
             var variables = new ArrayList<>(node.getParents().stream().map(Node::getVariable).toList());
             variables.addFirst(node.getVariable());
             try {
-                new ImposePolicyEdit(visualNode, new TablePotential(variables, PotentialRole.POLICY)).executeEdit();
+                new ImposePolicyEdit(node, new TablePotential(variables, PotentialRole.POLICY)).executeEdit();
             } catch (DoEditException e) {
                 throw new UnrecoverableException(e);
             }
@@ -48,14 +44,14 @@ public class ImposePolicyPanel extends PotentialEditPanel {
     
     @Override
     protected @NotNull PNEdit generateSetPotentialEdit(@Nullable Potential originalPotential, @Nullable Potential newPotential) {
-        return new ImposePolicyEdit(this.visualNode, originalPotential, newPotential);
+        return new ImposePolicyEdit(this.getNode(), originalPotential, newPotential);
     }
     
     @Override protected void removePotentialOnClose(@Nullable Potential originalPotential) {
         if (originalPotential != null) {
-            this.visualNode.setPolicy(originalPotential);
+            this.getNode().setPotential(originalPotential);
         } else {
-            this.visualNode.removePolicy();
+            this.getNode().clearPotentials();
         }
     }
     

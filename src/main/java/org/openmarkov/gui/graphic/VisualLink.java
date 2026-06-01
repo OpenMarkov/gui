@@ -15,9 +15,7 @@ import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Point2D;
-import org.openmarkov.core.model.network.constraint.OnlySelfLoopsWithEventAndChanceNodes;
 import org.openmarkov.gui.configuration.GUIColors;
 
 import java.awt.*;
@@ -102,28 +100,6 @@ public non-sealed class VisualLink extends VisualArrow implements ClassLocalizab
         
         return this.link;
         
-    }
-    
-    /**
-     * Returns the shape of the arrow so that it can be selected with the mouse.
-     *
-     * @return shape of the arrow.
-     */
-    @Override public Shape getCenteredShape(Graphics2D g) {
-        Segment line = new Segment(
-                new Point2D.Double(this.source.getTemporalPosition().getX(), this.source.getTemporalPosition().getY()),
-                new Point2D.Double(this.destination.getTemporalPosition().getX(),
-                                   this.destination.getTemporalPosition().getY()));
-        this.setStartPoint(this.source.getCutPoint(line, g));
-        this.setEndPoint(this.destination.getCutPoint(line, g));
-        // 29/12/2019 When having a loop in event nodes source = destination and startPoint and endPoint are the center of the arc
-        //02/02/2020 loops also in Cnance nodes so I have put an abstract method in VisualNode and overriden it in ChanceVisualNode and EventVisualNode
-        if (this.source == this.destination) {
-            this.setStartPoint(this.source.getSelfLoopPosition(g));
-            this.setEndPoint(this.source.getSelfLoopPosition(g));
-        }
-        //
-        return super.getCenteredShape(g);
     }
     
     @Override public Shape getShape(Graphics2D g) {
