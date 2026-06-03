@@ -57,6 +57,15 @@ public class UncertainValuesDialog extends OkCancelDialog {
     private static final int DISTRIBUTION_COLUMN_INDEX = 1;
     private static final int PARAMETERS_COLUMN_INDEX = 2;
     private static final int NAME_COLUMN_INDEX = 3;
+    /** Name of the Complement distribution, as declared in its {@code @ProbDensFunctionType}. */
+    private static final String COMPLEMENT_DISTRIBUTION_NAME =
+            ComplementFunction.class.getAnnotation(ProbDensFunctionType.class).name();
+    /** English help shown when hovering a Complement row, explaining its {@code nu} parameter. */
+    private static final String NU_HELP_TOOLTIP =
+            "<html><b>nu</b> &mdash; weight of this Complement entry.<br>"
+            + "The probability mass left unused by the other entries in this column is shared among<br>"
+            + "the Complement entries in proportion to their nu values, so the column still adds up to 1.<br>"
+            + "If there is a single Complement entry, nu is not needed: it takes all the remaining mass.</html>";
     private static final long serialVersionUID = 1L;
     protected final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     // Components related to the distributions box
@@ -433,12 +442,28 @@ public class UncertainValuesDialog extends OkCancelDialog {
             initialDataIPosInitialData[NAME_COLUMN_INDEX] = uncertainValue.getName();
         }
         distributionTableModel = new DistributionTableModel(initialData, columnNames);
-        distributionTable = new JTable(distributionTableModel);
+        distributionTable = new JTable(distributionTableModel) {
+            private static final long serialVersionUID = 1L;
+            @Override public String getToolTipText(MouseEvent event) {
+                Point point = event.getPoint();
+                int row = rowAtPoint(point);
+                int col = columnAtPoint(point);
+                if (row >= 0 && (col == DISTRIBUTION_COLUMN_INDEX || col == PARAMETERS_COLUMN_INDEX)) {
+                    Object distribution = getModel().getValueAt(row, DISTRIBUTION_COLUMN_INDEX);
+                    if (distribution != null && COMPLEMENT_DISTRIBUTION_NAME.equals(distribution.toString())) {
+                        return NU_HELP_TOOLTIP;
+                    }
+                }
+                return super.getToolTipText(event);
+            }
+        };
         // Model for the column "Distribution"
         TableColumnModel columnModel = distributionTable.getColumnModel();
         TableColumn column = columnModel.getColumn(DISTRIBUTION_COLUMN_INDEX);
         column.setCellEditor(new DefaultCellEditor(distributionTypesCombo));
         columnModel.getColumn(0).setCellEditor(null);
+        // Register the table so the per-cell getToolTipText override (the nu help) is shown on hover.
+        ToolTipManager.sharedInstance().registerComponent(distributionTable);
     }
     
     private static String getString(double[] parameters) {
@@ -494,8 +519,22 @@ public class UncertainValuesDialog extends OkCancelDialog {
         if (currentEditor != null) {
             currentEditor.stopCellEditing();
         }
-        List<UncertainValue> uncertainValues = readDataFromTable();
-        verifyLocalConstraintsUncertainty(uncertainValues);
+        List<UncertainValue> uncertainValues;
+        try {
+            uncertainValues = readDataFromTable();
+            verifyLocalConstraintsUncertainty(uncertainValues);
+        } catch (IllegalArgumentException ex) {
+            // Covers NumberFormatException (missing/non-numeric parameter) and InvalidArgumentException
+            // (e.g. a Complement nu <= 0). Show a message and keep the dialog open instead of letting
+            // an uncaught exception reach the event-dispatch thread.
+            JOptionPane.showMessageDialog(this,
+                    "Please enter a valid value for every distribution parameter.\n"
+                    + "For the Complement distribution, nu must be a number greater than 0\n"
+                    + "(it is only optional when there is a single Complement entry).",
+                    "Invalid distribution parameter",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         if (isChanceVariable) {
             verifyGlobalConstraintUncertainty(uncertainValues);
         }
@@ -653,15 +692,28 @@ public class UncertainValuesDialog extends OkCancelDialog {
     private List<UncertainValue> readDataFromTable() {
         Vector<?> data = distributionTableModel.getDataVector();
         int numRows = data.size();
+        // A single Complement entry absorbs all the leftover probability mass, so its nu is irrelevant;
+        // count the Complement rows to know whether nu may be defaulted.
+        long complementCount = 0;
+        for (int i = 0; i < numRows; i++) {
+            Vector<?> row = (Vector<?>) data.get(i);
+            if (COMPLEMENT_DISTRIBUTION_NAME.equals(row.get(DISTRIBUTION_COLUMN_INDEX).toString())) {
+                complementCount++;
+            }
+        }
+        boolean singleComplement = complementCount == 1;
         List<UncertainValue> uncertainValues = new ArrayList<UncertainValue>();
         ProbDensFunctionManager distributionManager = ProbDensFunctionManager.getUniqueInstance();
         for (int i = 0; i < numRows; i++) {
             Vector<?> row = (Vector<?>) data.get(i);
             String distributionType = row.get(DISTRIBUTION_COLUMN_INDEX).toString();
-            String[] parameters = row.get(PARAMETERS_COLUMN_INDEX).toString().split(" ");
-            double[] parameterArray = new double[parameters.length];
-            for (int j = 0; j < parameters.length; ++j) {
-                parameterArray[j] = Double.parseDouble(parameters[j]);
+            double[] parameterArray;
+            if (COMPLEMENT_DISTRIBUTION_NAME.equals(distributionType) && singleComplement) {
+                // Lone complement: nu is not needed (it takes all the remaining mass). Use 1 so the
+                // normalisation in ComplementFamily is well-defined regardless of what the user typed.
+                parameterArray = new double[] { 1.0 };
+            } else {
+                parameterArray = parseParameters(row.get(PARAMETERS_COLUMN_INDEX).toString());
             }
             String name = (String) row.get(NAME_COLUMN_INDEX);
             ProbDensFunction probDensFunction = distributionManager.newInstance(distributionType, parameterArray);
@@ -669,6 +721,24 @@ public class UncertainValuesDialog extends OkCancelDialog {
             uncertainValues.add(uncertainValue);
         }
         return uncertainValues;
+    }
+
+    /**
+     * Parses the space-separated parameters of a distribution cell. Throws {@link NumberFormatException}
+     * (a subclass of {@link IllegalArgumentException}, handled by {@link #doOkClickBeforeHide()}) when a
+     * value is missing or not a number, so the user gets a message instead of an uncaught exception.
+     */
+    private static double[] parseParameters(String cell) {
+        String trimmed = cell.trim();
+        if (trimmed.isEmpty()) {
+            throw new NumberFormatException("missing parameter value");
+        }
+        String[] parameters = trimmed.split(" ");
+        double[] parameterArray = new double[parameters.length];
+        for (int j = 0; j < parameters.length; ++j) {
+            parameterArray[j] = Double.parseDouble(parameters[j].trim());
+        }
+        return parameterArray;
     }
     
     private void quitIconsOfButtons() {

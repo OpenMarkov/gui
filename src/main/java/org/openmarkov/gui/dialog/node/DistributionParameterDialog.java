@@ -23,7 +23,14 @@ import java.util.List;
  * density function used in model uncertainty specifications.
  */
 @SuppressWarnings("serial") public class DistributionParameterDialog extends OkCancelDialog {
-    
+
+    /** English help shown when hovering the {@code nu} label of the Complement distribution. */
+    private static final String NU_HELP_TOOLTIP =
+            "<html><b>nu</b> &mdash; weight of this Complement entry.<br>"
+            + "The probability mass left unused by the other entries in the column is shared among<br>"
+            + "the Complement entries in proportion to their nu values, so the column still adds up to 1.<br>"
+            + "With a single Complement entry, nu can be left empty: it takes all the remaining mass.</html>";
+
     private double[] parameters;
     private final List<TextField> parameterTextFields;
 	public DistributionParameterDialog(Window owner, String distributionType, double[] parameters) {
@@ -43,6 +50,10 @@ import java.util.List;
 
 		for (int i = 0; i < parameterNames.length; ++i) {
 			JLabel parameterLabel = new JLabel(parameterNames[i]);
+			if ("nu".equals(parameterNames[i])) {
+				// AWT TextField has no tooltip; show the nu help on its (Swing) label instead.
+				parameterLabel.setToolTipText(NU_HELP_TOOLTIP);
+			}
 			TextField parameterTextField = new TextField(5);
 			if (parameters != null) {
 				parameterTextField.setText(String.valueOf(parameters[i]));
@@ -75,9 +86,24 @@ import java.util.List;
 			parameters = new double[parameterTextFields.size()];
 		}
 		for (int i = 0; i < parameterTextFields.size(); ++i) {
-			TextField parameterTextField = parameterTextFields.get(i);
-			double parameterValue = Double.parseDouble(parameterTextField.getText());
-			parameters[i] = parameterValue;
+			String text = parameterTextFields.get(i).getText().trim();
+			if (text.isEmpty()) {
+				// Leave the parameter unspecified (0). The caller (UncertainValuesDialog) validates the
+				// family as a whole and, for a single Complement entry, supplies the nu it needs.
+				parameters[i] = 0;
+				continue;
+			}
+			try {
+				parameters[i] = Double.parseDouble(text);
+			} catch (NumberFormatException ex) {
+				// Show a message and keep the dialog open instead of letting the exception reach the
+				// event-dispatch thread as an uncaught error.
+				JOptionPane.showMessageDialog(this,
+						"Please enter a valid number for every parameter.",
+						"Invalid parameter",
+						JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
 		}
 		return true;
 	}
