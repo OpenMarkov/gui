@@ -307,7 +307,8 @@ public class InferenceOptionsDialog extends OkCancelDialog {
         int x = (screenSize.width - this.getWidth()) / 2;
         int y = (screenSize.height - this.getHeight()) / 2;
         this.setLocation(x, y);
-        this.setVisible(true);
+        if (isTemporal || isMonteCarloSimulation || isMulticriteria)
+            this.setVisible(true);
 
         
     }
