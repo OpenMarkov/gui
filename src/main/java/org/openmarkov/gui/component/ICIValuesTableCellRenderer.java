@@ -10,7 +10,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.gui.configuration.GUIColors;
 
-import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.Color;
 import java.util.List;
 
@@ -25,8 +25,8 @@ import java.util.List;
     private final int[] numColumnsParents;
     private final int[] acummulativeColumns;
     
-    public ICIValuesTableCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns, ICIPotential iciPotential) {
-        super(firstEditableRow, uncertaintyInColumns);
+    public ICIValuesTableCellRenderer(ICIValuesTable iciValuesTable, int firstEditableRow, boolean[] uncertaintyInColumns, ICIPotential iciPotential) {
+        super(iciValuesTable, firstEditableRow, uncertaintyInColumns);
         this.variables = iciPotential.getVariables();
         this.numColumnsParents = new int[variables.size()];
         for (int i = 1; i < variables.size(); ++i) {
@@ -41,7 +41,7 @@ import java.util.List;
     }
     
     @Override
-    protected SetColor setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+    protected SetColor getCellColors(TableModel model, Object value, boolean isSelected, boolean hasFocus, int row,
                                      int column) {
         Color background = null;
         Color foreground = null;

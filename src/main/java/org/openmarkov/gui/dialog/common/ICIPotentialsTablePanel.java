@@ -400,14 +400,15 @@ public class ICIPotentialsTablePanel
             editableColumns[i - 1] = false;// Uncertainty values false for
             // canonical models
         }
-        
-        iciValuesTable.setDefaultRenderer(Double.class,
-                                          new ICIValuesTableCellRenderer(getFirstEditableRow(), editableColumns,
-                                                                         getThisICIPotential(node.getPotentials())));
-        iciValuesTable.setDefaultRenderer(String.class,
-                                          new ICIValuesTableCellRenderer(getFirstEditableRow(), editableColumns,
-                                                                         getThisICIPotential(node.getPotentials())));
-        
+        iciValuesTable.onTables(omjTable -> {
+            omjTable.setDefaultRenderer(Double.class,
+                                              new ICIValuesTableCellRenderer(iciValuesTable, getFirstEditableRow(), editableColumns,
+                                                                             getThisICIPotential(node.getPotentials())));
+            omjTable.setDefaultRenderer(String.class,
+                                              new ICIValuesTableCellRenderer(iciValuesTable, getFirstEditableRow(), editableColumns,
+                                                                             getThisICIPotential(node.getPotentials())));
+            
+        });
     }
     
     @Override public void close() {
@@ -492,4 +493,8 @@ public class ICIPotentialsTablePanel
         getICIValuesTable().setModifiable(!readOnly);
     }
     
+    @Override protected void setFirstEditableRow(int firstEditableRow) {
+        super.setFirstEditableRow(firstEditableRow);
+        this.iciValuesTable.setFirstEditableRow(firstEditableRow);
+    }
 }

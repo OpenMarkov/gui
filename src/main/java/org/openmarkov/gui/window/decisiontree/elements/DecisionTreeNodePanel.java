@@ -6,7 +6,7 @@
  */
 package org.openmarkov.gui.window.decisiontree.elements;
 
-import org.openmarkov.core.exception.UnreachableCodeException;
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.model.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -41,11 +41,13 @@ public non-sealed class DecisionTreeNodePanel extends DecisionTreeElementPanel {
     }
     
     @Override public JComponent makeSummary() {
-        var visualNode = switch (treeNode.getNodeType()) {
-            case CHANCE, EVENT, DECISION, UTILITY -> new VisualNode(new Node(null, new Variable(treeNode.getVariable()
-                                                                              .getName()), treeNode.getNodeType()), null);
-            default -> throw new UnreachableCodeException("Only kinds of node enabled in Decision Tree are Chance, Decision, Utility and Event");
-        };
+        return visualNodePanel(this.treeNode.getNodeType(), this.treeNode.getVariable().getName());
+    }
+    
+    public static @NotNull JPanel visualNodePanel(NodeType nodeType, String nodeName) {
+        var visualNode = new VisualNode(new Node(null,
+                                                 new Variable(nodeName),
+                                                 nodeType), null);
         JPanel panel = new JPanel() {
             @Override public void paint(Graphics g) {
                 visualNode.paint((Graphics2D) g);
@@ -54,7 +56,6 @@ public non-sealed class DecisionTreeNodePanel extends DecisionTreeElementPanel {
         Shape nodeDimensions = visualNode.getShape((Graphics2D) panel.getGraphics());
         double width = nodeDimensions.getBounds2D().getWidth();
         double height = nodeDimensions.getBounds2D().getHeight();
-        //TODO: Fix missalignments
         visualNode.setTemporalPosition(new org.openmarkov.core.model.network.Point2D.Double(2, 0));
         panel.setSize(new Dimension((int) width + 2 + 2, (int) height + 2));
         panel.setMinimumSize(new Dimension((int) width + 2 + 2, (int) height + 2));
@@ -68,7 +69,7 @@ public non-sealed class DecisionTreeNodePanel extends DecisionTreeElementPanel {
      * @return The {@link DecisionTreeNode} linked to this panel.
      */
     public DecisionTreeNode getTreeNode() {
-        return treeNode;
+        return this.treeNode;
     }
     
     
@@ -78,8 +79,8 @@ public non-sealed class DecisionTreeNodePanel extends DecisionTreeElementPanel {
      */
     @Override
     public void update(boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        if (treeNode.getNodeType() == NodeType.UTILITY) {
-            descriptionLabel.setText(DecisionTreeUtilityFormatters.format(treeNode.getUtility(), df, false));
+        if (this.treeNode.getNodeType() == NodeType.UTILITY) {
+            this.descriptionLabel.setText(DecisionTreeUtilityFormatters.format(this.treeNode.getUtility(), this.df, false));
         }
     }
     
@@ -89,6 +90,6 @@ public non-sealed class DecisionTreeNodePanel extends DecisionTreeElementPanel {
      * @return The {@link NodeType} of the associated tree node.
      */
     public NodeType getNodeType() {
-        return treeNode.getNodeType();
+        return this.treeNode.getNodeType();
     }
 }

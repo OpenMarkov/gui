@@ -34,7 +34,7 @@ import java.util.List;
     
     public GLMPanel() {
         super(new String[]{"Covariate", "Coefficient"}, new Object[0][2], true, true, true);
-        getValuesTable().setDefaultRenderer(String.class, new CoefficientTableCellRenderer());
+        getValuesTable().onTables(omjTable -> omjTable.setDefaultRenderer(String.class, new CoefficientTableCellRenderer()));
         listeners = new ArrayList<>();
         valuesTable.addMouseListener(new CovariatesTableMouseListener());
         initialize();
@@ -43,13 +43,13 @@ import java.util.List;
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() {
+    @Override protected void actionPerformedAddValue(ActionEvent e) {
         ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, potential.getVariables(), null);
         expressionDialog.setVisible(true);
         if (expressionDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
             int selectedRow = valuesTable.getSelectedRow();
             int rowCount = valuesTable.getRowCount();
-            tableModel.addRow(new Object[]{expressionDialog.getExpression(), 0.0});
+            tableModel.addRow(new Object[]{new VariableExpression(potential.getVariables(), expressionDialog.getExpression()), 0.0});
             tableModel.moveRow(rowCount, rowCount, selectedRow + 1);
             valuesTable.setRowSelectionInterval(selectedRow + 1, selectedRow + 1);
         }
@@ -60,24 +60,24 @@ import java.util.List;
      * Invoked when the button 'remove' is pressed.
      */
     @Override
-    protected void actionPerformedRemoveValue() throws DoEditException {
-        super.actionPerformedRemoveValue();
+    protected void actionPerformedRemoveValue(ActionEvent e) throws DoEditException {
+        super.actionPerformedRemoveValue(e);
         notifyActionListeners(new ActionEvent(this, 2, "Remove"));
     }
     
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() throws DoEditException {
-        super.actionPerformedUpValue();
+    @Override protected void actionPerformedUpValue(ActionEvent e) throws DoEditException {
+        super.actionPerformedUpValue(e);
         notifyActionListeners(new ActionEvent(this, 3, "Up"));
     }
     
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() throws DoEditException {
-        super.actionPerformedDownValue();
+    @Override protected void actionPerformedDownValue(ActionEvent e) throws DoEditException {
+        super.actionPerformedDownValue(e);
         notifyActionListeners(new ActionEvent(this, 4, "Down"));
     }
     
@@ -156,7 +156,7 @@ import java.util.List;
     
     private class CovariatesTableMouseListener extends MouseAdapter {
         @Override public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() == 2 && valuesTable.getSelectedColumn() == 0) {
+            if (e.getClickCount() == 2 && valuesTable.getSelectedColumn(e.getSource()) == 0) {
                 int selectedRow = valuesTable.getSelectedRow();
                 VariableExpression covariate = (VariableExpression) tableModel.getValueAt(selectedRow, 0);
                 boolean isMandatory = false;
@@ -176,5 +176,4 @@ import java.util.List;
             }
         }
     }
-    
 }

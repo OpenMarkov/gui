@@ -203,79 +203,78 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         tcr.setHorizontalAlignment(SwingConstants.CENTER);
         DefaultTableCellRenderer statesRender = new DefaultTableCellRenderer();
         statesRender.setHorizontalAlignment(SwingConstants.LEFT);
-        int maxColumn = valuesTable.getColumnModel().getColumnCount();
         
-        for (int i = 1; i < maxColumn; i++) {
-            TableColumn aColumn = valuesTable.getColumnModel().getColumn(i);
+        for (int i = 1; i < valuesTable.getColumnCount(); i++) {
+            TableColumn aColumn = valuesTable.getColumn(i);
             aColumn.setCellRenderer(tcr);
-            valuesTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
+            valuesTable.getHeaderColumn(i).setCellRenderer(tcr);
         }
         
         // set special columns for each variable type
         if (node.getVariable().getVariableType() == VariableType.NUMERIC) {
             
             //In Numeric cases we must hide the two first columns
-            valuesTable.getTableHeader().getColumnModel().getColumn(0).setPreferredWidth(0);
-            valuesTable.getTableHeader().getColumnModel().getColumn(0).setMinWidth(0);
-            valuesTable.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(0);
+            valuesTable.getHeaderColumn(0).setPreferredWidth(0);
+            valuesTable.getHeaderColumn(0).setMinWidth(0);
+            valuesTable.getHeaderColumn(0).setMaxWidth(0);
             
-            valuesTable.getTableHeader().getColumnModel().getColumn(1).setPreferredWidth(0);
-            valuesTable.getTableHeader().getColumnModel().getColumn(1).setMinWidth(0);
-            valuesTable.getTableHeader().getColumnModel().getColumn(1).setMaxWidth(0);
+            valuesTable.getHeaderColumn(1).setPreferredWidth(0);
+            valuesTable.getHeaderColumn(1).setMinWidth(0);
+            valuesTable.getHeaderColumn(1).setMaxWidth(0);
             
         } else if (node.getVariable().getVariableType() == VariableType.FINITE_STATES) {
             //In Finite States we set all the width of the table
-            TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
+            TableColumn aColumn = valuesTable.getColumn(1);
             aColumn.setCellRenderer(statesRender);
-            valuesTable.getColumnModel().getColumn(1).setPreferredWidth(STATES_TABLE_WIDTH);
-            valuesTable.getColumnModel().getColumn(1).setMaxWidth(STATES_TABLE_WIDTH);
-            valuesTable.getColumnModel().getColumn(1).setMinWidth(STATES_TABLE_WIDTH);
+            valuesTable.getColumn(1).setPreferredWidth(STATES_TABLE_WIDTH);
+            valuesTable.getColumn(1).setMaxWidth(STATES_TABLE_WIDTH);
+            valuesTable.getColumn(1).setMinWidth(STATES_TABLE_WIDTH);
             // The rest of the columns will be hided
-            for (int i = 2; i < maxColumn; i++) {
-                TableColumn columni = valuesTable.getColumnModel().getColumn(i);
+            for (int i = 2; i < valuesTable.getColumnCount(); i++) {
+                TableColumn columni = valuesTable.getColumn(i);
                 columni.setCellRenderer(tcr);
                 columni.setPreferredWidth(0);
                 columni.setMaxWidth(0);
                 columni.setMinWidth(0);
-                valuesTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
+                valuesTable.getColumn(i).setCellRenderer(tcr);
             }
         } else if (node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
-            TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
+            TableColumn aColumn = valuesTable.getColumn(1);
             aColumn.setCellRenderer(statesRender);
             
             //If the variable type is discrete, we hide the first column and fix the width of the state name column
-            valuesTable.getColumnModel().getColumn(0).setPreferredWidth(0);
-            valuesTable.getColumnModel().getColumn(0).setMaxWidth(0);
-            valuesTable.getColumnModel().getColumn(0).setMinWidth(0);
+            valuesTable.getColumn(0).setPreferredWidth(0);
+            valuesTable.getColumn(0).setMaxWidth(0);
+            valuesTable.getColumn(0).setMinWidth(0);
             
-            valuesTable.getColumnModel().getColumn(1).setPreferredWidth(DISCRETIZED_STATES_WIDTH);
-            valuesTable.getColumnModel().getColumn(1).setMaxWidth(DISCRETIZED_STATES_WIDTH);
-            valuesTable.getColumnModel().getColumn(1).setMinWidth(DISCRETIZED_STATES_WIDTH);
+            valuesTable.getColumn(1).setPreferredWidth(DISCRETIZED_STATES_WIDTH);
+            valuesTable.getColumn(1).setMaxWidth(DISCRETIZED_STATES_WIDTH);
+            valuesTable.getColumn(1).setMinWidth(DISCRETIZED_STATES_WIDTH);
         }
         // set Columns = Up and Low limits
         if (node.getVariable().getVariableType() == VariableType.NUMERIC
                 || node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
             lowerSymbolComboBox = getLowerSymbolComboBox();
             upperSymbolComboBox = getUpperSymbolComboBox();
-            TableColumn lowLimitSymbolColumn = valuesTable.getColumnModel().getColumn(LOWER_BOUND_SYMBOL_COLUMN_INDEX);
+            TableColumn lowLimitSymbolColumn = valuesTable.getColumn(LOWER_BOUND_SYMBOL_COLUMN_INDEX);
             lowLimitSymbolColumn.setCellEditor(new DefaultCellEditor(lowerSymbolComboBox));
             lowLimitSymbolColumn.setCellRenderer(new DiscretizeComboBoxRenderer(intervalLowerSymbols));
             lowLimitSymbolColumn.setMinWidth(LIMITS_WIDTH);
             lowLimitSymbolColumn.setPreferredWidth(LIMITS_WIDTH);
             lowLimitSymbolColumn.setMaxWidth(LIMITS_WIDTH);
-            TableColumn upperLimitSymbolColumn = valuesTable.getColumnModel()
-                                                            .getColumn(UPPER_BOUND_SYMBOL_COLUMN_INDEX);
+            TableColumn upperLimitSymbolColumn = valuesTable.getColumn(UPPER_BOUND_SYMBOL_COLUMN_INDEX);
             upperLimitSymbolColumn.setCellEditor(new DefaultCellEditor(upperSymbolComboBox));
             upperLimitSymbolColumn.setCellRenderer(new DiscretizeComboBoxRenderer(intervalUpperSymbols));
             upperLimitSymbolColumn.setMinWidth(LIMITS_WIDTH);
             upperLimitSymbolColumn.setPreferredWidth(40);
             upperLimitSymbolColumn.setMaxWidth(LIMITS_WIDTH);
             // set Column = valuesSeparator = ","
-            TableColumn valuesSeparatorColumn = valuesTable.getColumnModel().getColumn(VALUES_SEPARATOR_COLUMN_INDEX);
+            TableColumn valuesSeparatorColumn = valuesTable.getColumn(VALUES_SEPARATOR_COLUMN_INDEX);
             valuesSeparatorColumn.setMinWidth(SEPARATOR_WIDTH);
             valuesSeparatorColumn.setPreferredWidth(SEPARATOR_WIDTH);
             valuesSeparatorColumn.setMaxWidth(SEPARATOR_WIDTH);
         }
+        
     }
     
     private JComboBox<String> getLowerSymbolComboBox() {
@@ -328,11 +327,11 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      * This method is used to change the interval's type in a discretize Table
      * To closed from opened To opened from closed
      */
-    private void changeLimitIntervalDiscretize(int row, int column) throws DoEditException, WrongIntervalException.InfinityInIntervalNotAllowed, WrongIntervalException.LimitsValuesAreWrong {
+    private void changeLimitIntervalDiscretize(int row, int column, Object source) throws DoEditException, WrongIntervalException.InfinityInIntervalNotAllowed, WrongIntervalException.LimitsValuesAreWrong {
         if (column != LOWER_BOUND_SYMBOL_COLUMN_INDEX && column != UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
             return;
         }
-        String value = (String) valuesTable.getValueAt(row, column);
+        String value = (String) valuesTable.getValueAt(row, column, source);
         boolean lower = column == LOWER_BOUND_SYMBOL_COLUMN_INDEX;
         IntervalSide editingLimit = lower ? IntervalSide.LOWER : IntervalSide.UPPER;
         IntervalSide oppositeLimit = switch (editingLimit) {
@@ -345,30 +344,30 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         };
         
         if (value.equals(editingLimit.openIntervalSymbol)) {
-            if (valuesTable.getValueAt(row, editingLimit.valueColumnIndex) == DiscretizeTablePanel.INFINITY
-                    || valuesTable.getValueAt(row, editingLimit.valueColumnIndex) == DiscretizeTablePanel.NEGATIVE_INFINITY) {
+            if (valuesTable.getValueAt(row, editingLimit.valueColumnIndex, source) == DiscretizeTablePanel.INFINITY
+                    || valuesTable.getValueAt(row, editingLimit.valueColumnIndex, source) == DiscretizeTablePanel.NEGATIVE_INFINITY) {
                 throw new WrongIntervalException.InfinityInIntervalNotAllowed();
             }
             if (isNotFirstOrLastSideOfIntervals
-                    && valuesTable.getValueAt(row + editingLimit.relativeNextIntervalColumn, editingLimit.symbolColumnIndex)
+                    && valuesTable.getValueAt(row + editingLimit.relativeNextIntervalColumn, editingLimit.symbolColumnIndex, source)
                     == editingLimit.closedIntervalSymbol
-                    && valuesTable.getValueAt(row + editingLimit.relativeNextIntervalColumn, LOWER_BOUND_VALUE_COLUMN_INDEX)
-                    == valuesTable.getValueAt(row + editingLimit.relativeNextIntervalColumn, UPPER_BOUND_VALUE_COLUMN_INDEX)) {
+                    && valuesTable.getValueAt(row + editingLimit.relativeNextIntervalColumn, LOWER_BOUND_VALUE_COLUMN_INDEX, source)
+                    == valuesTable.getValueAt(row + editingLimit.relativeNextIntervalColumn, UPPER_BOUND_VALUE_COLUMN_INDEX, source)) {
                 throw new WrongIntervalException.LimitsValuesAreWrong();
             }
-            valuesTable.setValueAt(editingLimit.closedIntervalSymbol, row, column);
+            valuesTable.setValueAt(editingLimit.closedIntervalSymbol, row, column, source);
             if (isNotFirstOrLastSideOfIntervals) {
-                valuesTable.setValueAt(oppositeLimit.openIntervalSymbol, row + editingLimit.relativeNextIntervalColumn, editingLimit.symbolColumnIndex);
+                valuesTable.setValueAt(oppositeLimit.openIntervalSymbol, row + editingLimit.relativeNextIntervalColumn, editingLimit.symbolColumnIndex, source);
             }
         } else if (value.equals(editingLimit.closedIntervalSymbol)) {
-            if (valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX) == valuesTable
-                    .getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX)
-                    && valuesTable.getValueAt(row, oppositeLimit.symbolColumnIndex) == oppositeLimit.closedIntervalSymbol) {
+            if (valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX, source) == valuesTable
+                    .getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX, source)
+                    && valuesTable.getValueAt(row, oppositeLimit.symbolColumnIndex, source) == oppositeLimit.closedIntervalSymbol) {
                 throw new WrongIntervalException.LimitsValuesAreWrong();
             }
-            valuesTable.setValueAt(editingLimit.openIntervalSymbol, row, column);
+            valuesTable.setValueAt(editingLimit.openIntervalSymbol, row, column, source);
             if (isNotFirstOrLastSideOfIntervals) {
-                valuesTable.setValueAt(oppositeLimit.closedIntervalSymbol, row + editingLimit.relativeNextIntervalColumn, oppositeLimit.symbolColumnIndex);
+                valuesTable.setValueAt(oppositeLimit.closedIntervalSymbol, row + editingLimit.relativeNextIntervalColumn, oppositeLimit.symbolColumnIndex, source);
             }
         } else {
             //There is nothing to do if the value doesn't match an interval start, that is (, [, ), or ].
@@ -378,45 +377,6 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                 new NodePartitionedIntervalEdit(node, StateAction.MODIFY_DELIMITER_INTERVAL, row, lower);
         nodePartitionedIntervalEdit.executeEdit();
         propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL, row, lower);
-    }
-    
-    /**
-     * method to control and change the values and symbols when user changes the
-     * values and limits in the table, depending upon the type of monotony
-     */
-    protected void checkIntervalDiscretize(String currentState, int row, int column, boolean upMonotony) {
-        // double aux, aux2;
-        if (upMonotony) { // monotony UP
-            if (row != valuesTable.getRowCount() - 1 && column == UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
-                if (currentState.equals(")")) {
-                    valuesTable.setValueAt("[", row + 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                } else {
-                    valuesTable.setValueAt("(", row + 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                }
-            }
-            if (row != 0 && column == LOWER_BOUND_SYMBOL_COLUMN_INDEX) {
-                if (currentState.equals("(")) {
-                    valuesTable.setValueAt("]", row - 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
-                } else {
-                    valuesTable.setValueAt(")", row - 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
-                }
-            }
-        } else { // Down monotony
-            if (row != 0 && column == UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
-                if (currentState.equals(")")) {
-                    valuesTable.setValueAt("[", row - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                } else {
-                    valuesTable.setValueAt("(", row - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                }
-            }
-            if (row != valuesTable.getRowCount() - 1 && column == LOWER_BOUND_SYMBOL_COLUMN_INDEX) {
-                if (currentState.equals("(")) {
-                    valuesTable.setValueAt("]", row + 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
-                } else {
-                    valuesTable.setValueAt(")", row + 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
-                }
-            }
-        }
     }
     
     /**
@@ -785,9 +745,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         super.actionPerformed(e);
         try {
             if (e.getSource().equals(this.positiveInfinityButton)) {
-                actionPerformedPositiveInfinityValue();
+                actionPerformedPositiveInfinityValue(e);
             } else if (e.getSource().equals(this.negativeInfinityButton)) {
-                actionPerformedNegativeInfinityValue();
+                actionPerformedNegativeInfinityValue(e);
             }
         } catch (DoEditException ex) {
             throw new UnrecoverableException(ex);
@@ -801,7 +761,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() throws DoEditException {
+    @Override protected void actionPerformedAddValue(ActionEvent e) throws DoEditException {
         /*
         //The newStateName was requested in a dialog, now it takes a default value.
         String newStateName = (String) JOptionPane
@@ -842,13 +802,13 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         } else {
             getTableModel().insertRow(newIndex, new Object[]{getKeyString(newIndex), newStateName});
         }
-        valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+        valuesTable.setRowSelectionInterval(newIndex, newIndex);
         valuesTable.requestFocus();
-        valuesTable.editCellAt(newIndex, 1);
+        valuesTable.editCellAt(newIndex, 1, e.getSource());
         if(variable.getVariableType() != VariableType.DISCRETIZED) {
-            valuesTable.setValueAt(newStateName, newIndex, 1);
+            valuesTable.setValueAt(newStateName, newIndex, 1, e.getSource());
         }
-        var stateNameField = (JTextField) valuesTable.getEditorComponent();
+        var stateNameField = (JTextField) valuesTable.getEditorComponent(e.getSource());
         stateNameField.requestFocus();
         stateNameField.selectAll();
         stateNameField.setText(newStateName);
@@ -858,15 +818,16 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws DoEditException {
+    @Override protected void actionPerformedRemoveValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
-        removeState(selectedRow);
+        removeState(selectedRow, e);
     }
     
     /**
      * @param selectedRow the selected row
+     * @param e
      */
-    protected void removeState(int selectedRow) throws DoEditException {
+    protected void removeState(int selectedRow, ActionEvent e) throws DoEditException {
         int rowCount;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.REMOVE, selectedRow, "");
         ProbNet probNet = node.getProbNet();
@@ -881,7 +842,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         rowCount = valuesTable.getRowCount();
         if (rowCount > 0) {
             if (selectedRow < rowCount) {
-                valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
+                valuesTable.setRowSelectionInterval(selectedRow, selectedRow);
                 // update key column
                 int auxSelectedRow = selectedRow;
                 while (auxSelectedRow < rowCount) {
@@ -889,19 +850,19 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                     auxSelectedRow++;
                 }
             } else {
-                valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+                valuesTable.setRowSelectionInterval(selectedRow - 1, selectedRow - 1);
             }
             // after eliminating row check the lower limit, only if the variable type is discretized of numeric
             if (node.getVariable().getVariableType() == VariableType.DISCRETIZED
                     || node.getVariable().getVariableType() == VariableType.NUMERIC) {
                 if (selectedRow > 0 && selectedRow < rowCount) {
                     Object lowerBoundSymbol = valuesTable
-                            .getValueAt(selectedRow - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
+                            .getValueAt(selectedRow - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX, e.getSource());
                     Object nextRowUpperBoundSymbol = (lowerBoundSymbol.equals("[")) ? ")" : "]";
-                    valuesTable.setValueAt(nextRowUpperBoundSymbol, selectedRow, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
+                    valuesTable.setValueAt(nextRowUpperBoundSymbol, selectedRow, UPPER_BOUND_SYMBOL_COLUMN_INDEX, e.getSource());
                     Object nextRowLowerBound = valuesTable
-                            .getValueAt(selectedRow - 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
-                    valuesTable.setValueAt(nextRowLowerBound, selectedRow, UPPER_BOUND_VALUE_COLUMN_INDEX);
+                            .getValueAt(selectedRow - 1, LOWER_BOUND_VALUE_COLUMN_INDEX, e.getSource());
+                    valuesTable.setValueAt(nextRowLowerBound, selectedRow, UPPER_BOUND_VALUE_COLUMN_INDEX, e.getSource());
                 }
             }
         }
@@ -913,7 +874,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() throws DoEditException {
+    @Override protected void actionPerformedUpValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
@@ -926,17 +887,16 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         //
         stopCellEditing();
         cancelCellEditing();
-        swap = valuesTable.getValueAt(selectedRow, 1);
-        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
-        valuesTable.setValueAt(swap, selectedRow - 1, 1);
-        valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-        
+        swap = valuesTable.getValueAt(selectedRow, 1, e.getSource());
+        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1, 1, e.getSource()), selectedRow, 1, e.getSource());
+        valuesTable.setValueAt(swap, selectedRow - 1, 1, e.getSource());
+        valuesTable.setRowSelectionInterval(selectedRow - 1, selectedRow - 1);
     }
     
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() throws DoEditException {
+    @Override protected void actionPerformedDownValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
@@ -949,19 +909,18 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         //
         stopCellEditing();
         cancelCellEditing();
-        swap = valuesTable.getValueAt(selectedRow, 1);
-        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
-        valuesTable.setValueAt(swap, selectedRow + 1, 1);
-        valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
-        
+        swap = valuesTable.getValueAt(selectedRow, 1, e.getSource());
+        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow + 1, 1, e.getSource()), selectedRow, 1, e.getSource());
+        valuesTable.setValueAt(swap, selectedRow + 1, 1, e.getSource());
+        valuesTable.setRowSelectionInterval(selectedRow + 1, selectedRow + 1);
     }
     
     /**
      * Invoked when the button 'InfinitePositive' is pressed.
      */
-    protected void actionPerformedPositiveInfinityValue() throws DoEditException {
+    protected void actionPerformedPositiveInfinityValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
-        int selectedColumn = valuesTable.getSelectedColumn();
+        int selectedColumn = valuesTable.getSelectedColumn(e.getSource());
         cancelCellEditing();
         double[] limits = node.getVariable().getPartitionedInterval().getLimits();
         boolean[] belongs = node.getVariable().getPartitionedInterval().getBelongsToLeftSide();
@@ -971,15 +930,15 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node, newPartitionedInterval);
         ProbNet probNet = node.getProbNet();
         partitionedIntervalEdit.executeEdit();
-        valuesTable.setValueAt(INFINITY, selectedRow, selectedColumn);
+        valuesTable.setValueAt(INFINITY, selectedRow, selectedColumn, e.getSource());
     }
     
     /**
      * Invoked when the button 'InfiniteNegative' is pressed.
      */
-    protected void actionPerformedNegativeInfinityValue() throws DoEditException {
+    protected void actionPerformedNegativeInfinityValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
-        int selectedColumn = valuesTable.getSelectedColumn();
+        int selectedColumn = valuesTable.getSelectedColumn(e.getSource());
         cancelCellEditing();
         double[] limits = node.getVariable().getPartitionedInterval().getLimits();
         boolean[] belongs = node.getVariable().getPartitionedInterval().getBelongsToLeftSide();
@@ -989,7 +948,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node, newPartitionedInterval);
         ProbNet probNet = node.getProbNet();
         partitionedIntervalEdit.executeEdit();
-        valuesTable.setValueAt(NEGATIVE_INFINITY, selectedRow, selectedColumn);
+        valuesTable.setValueAt(NEGATIVE_INFINITY, selectedRow, selectedColumn, e.getSource());
     }
     
     /**
@@ -1030,22 +989,22 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                     // If an error occurred or a constraint is broken
                     // we restore the old name of the edited state
                     String oldState = node.getVariable().getStateName(indexState);
-                    valuesTable.setValueAt(oldState, row, column);
+                    valuesTable.setValueAt(oldState, row, column, tableEvent.getSource());
                     throw new UnrecoverableException(e);
                 }
             }
         }
         if (value == INFINITY && column == UPPER_BOUND_VALUE_COLUMN_INDEX) {
-            valuesTable.setValueAt(INFINITY, row, column);
-            String upperBound = (String) valuesTable.getValueAt(row, column + 1);
+            valuesTable.setValueAt(INFINITY, row, column, tableEvent.getSource());
+            String upperBound = (String) valuesTable.getValueAt(row, column + 1, tableEvent.getSource());
             if (upperBound.equals("]")) {
-                valuesTable.setValueAt(")", row, column + 1);
+                valuesTable.setValueAt(")", row, column + 1, tableEvent.getSource());
             }
         } else if (value == NEGATIVE_INFINITY && column == LOWER_BOUND_VALUE_COLUMN_INDEX) {
-            valuesTable.setValueAt(NEGATIVE_INFINITY, row, column);
-            String lowerBound = (String) valuesTable.getValueAt(row, column - 1);
+            valuesTable.setValueAt(NEGATIVE_INFINITY, row, column, tableEvent.getSource());
+            String lowerBound = (String) valuesTable.getValueAt(row, column - 1, tableEvent.getSource());
             if (lowerBound.equals("[")) {
-                valuesTable.setValueAt("(", row, column - 1);
+                valuesTable.setValueAt("(", row, column - 1, tableEvent.getSource());
             }
         } else if (value instanceof Double) {
             Variable variable = node.getVariable();
@@ -1121,14 +1080,14 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     }
     
     @Override public void mouseClicked(MouseEvent e) {
-        int row = valuesTable.rowAtPoint(e.getPoint());
-        int column = valuesTable.columnAtPoint(e.getPoint());
+        int row = valuesTable.rowAtPoint(e.getPoint(), e.getSource());
+        int column = valuesTable.columnAtPoint(e.getPoint(), e.getSource());
         Variable variable = node.getVariable();
         if (variable.getVariableType() == VariableType.NUMERIC
                 || variable.getVariableType() == VariableType.DISCRETIZED) {
             if (column == LOWER_BOUND_SYMBOL_COLUMN_INDEX || column == UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
                 try {
-                    changeLimitIntervalDiscretize(row, column);
+                    changeLimitIntervalDiscretize(row, column, e.getSource());
                 } catch (WrongIntervalException.InfinityInIntervalNotAllowed |
                          WrongIntervalException.LimitsValuesAreWrong ex) {
                     throw new UnrecoverableException(ex);

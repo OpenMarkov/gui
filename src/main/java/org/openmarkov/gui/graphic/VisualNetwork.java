@@ -607,7 +607,7 @@ public class VisualNetwork implements PNEditListener {
                 Point2D.Double originalPosition = node.getTemporalPosition();
                 double newPosX = originalPosition.getX() + diffX;
                 double newPosY = originalPosition.getY() + diffY;
-                boolean isValidPlace = newPosX >= 0 && newPosY >= 0;
+                boolean isValidPlace = newPosX >= Math.min(originalPosition.getX(), 0) && newPosY >= Math.min(originalPosition.getY(), 0);
                 if (isValidPlace) {
                     node.setTemporalPosition(new Point2D.Double(newPosX, newPosY));
                     this.networkEditorPanel.repaint();
@@ -951,17 +951,18 @@ public class VisualNetwork implements PNEditListener {
     /**
      * Starts link creation
      *
+     * @param selectedNodes
      * @param cursorPosition the cursor position
      * @param g              the g
      */
-    public void startLinkCreation(Point2D.Double cursorPosition, Graphics2D g, LinkCreationSourceDirection linkSourceDirection, boolean preserveLinkSourceDirection) {
+    public void startLinkCreation(Point2D.Double cursorPosition, Graphics2D g, LinkCreationSourceDirection linkSourceDirection, boolean preserveLinkSourceDirection, List<VisualNode> selectedNodes) {
         if (!this.newLinks.isEmpty()) {
             return;
         }
         if(!preserveLinkSourceDirection){
             newLinksSourceDirection = linkSourceDirection;
         }
-        getSelectedNodes().stream().map(node -> {
+        selectedNodes.stream().map(node -> {
             Rectangle2D nodeBounds = node.getShape(g).getBounds2D();
             Point2D.Double nodePoint = new Point2D.Double(nodeBounds.getCenterX(), nodeBounds.getCenterY());
             return new NewLinkInfo(

@@ -69,62 +69,30 @@ public class AugmentedValuesTable extends ValuesTable implements PNEditListener 
     }
     
     /**
-     * Constructor for ValuesTable
-     * revised--&gt;not changed
-     */
-    public AugmentedValuesTable(ValuesTableModel tableModel, final boolean modifiable) {
-        super(tableModel, modifiable);
-        
-    }
-    
-    /**
      * Default display configuration for this table
      */
     @Override protected void defaultConfiguration() {
         super.defaultConfiguration();
         //CMI
         //CHANGED
-        setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        this.onTables(omjTable -> omjTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS));
         //CMF
     }
     
-    /**
-     * check the value to modify in the table and sets
-     */
-    @Override public void setValueAt(Object newValue, int row, int col) {
-        Object oldValue = getValueAt(row, col);
+
+    
+    @Override public void setValueAt(Object newValue, int row, int column, Object source) {
+        Object oldValue = getValueAt(row, column, source);
         if (oldValue.equals(newValue)) {
             return;
         }
         VariableExpression expression = (VariableExpression) newValue;
-        AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, expression, row, col);
+        AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit(node, expression, row, column);
         try {
             nodePotentialEdit.executeEdit();
         } catch (DoEditException e) {
             throw new UnrecoverableException(e);
         }
-    }
-    
-    /**
-     * Check if newValue is a String or a Double
-     *
-     * @param newValue - new value to validate
-     *
-     * @author carmenyago
-     */
-    @Override protected boolean castValue(Object newValue) {
-        return switch (newValue) {
-            case String newValueAsString -> {
-                try {
-                    Double.parseDouble(newValueAsString);
-                    yield true;
-                } catch (NumberFormatException ex) {
-                    yield false;
-                }
-            }
-            case Double d -> true;
-            default -> false;
-        };
     }
     
     /**

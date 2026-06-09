@@ -9,6 +9,7 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.gui.component.OMTableModel;
 import org.openmarkov.gui.exception.ThereIsNoNodeInDataException;
 import org.openmarkov.gui.loader.element.IconBind;
 import org.openmarkov.core.localize.StringDatabase;
@@ -50,7 +51,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     /**
      * Model table.
      */
-    protected DefaultTableModel tableModel = null;
+    protected OMTableModel tableModel = null;
     
     /**
      * Panel of buttons.
@@ -181,7 +182,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
         if (valuesTable == null) {
             valuesTable = new KeyTable(getTableModel(), modifiable, true, showHeader);
             valuesTable.setName("KeyTablePanel.valuesTable");
-            valuesTable.setListSelectionListener(this);
+            valuesTable.onTables(omjTable -> omjTable.setListSelectionListener(this));
         }
         return valuesTable;
     }
@@ -191,10 +192,9 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      *
      * @return a new tableModel.
      */
-    protected DefaultTableModel getTableModel() {
-        
+    protected OMTableModel getTableModel() {
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(data, columns);
+            tableModel = new OMTableModel(data, columns, true);
         }
         return tableModel;
     }
@@ -357,13 +357,13 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
                 return;
             }
             if (source.equals(addValueButton)) {
-                actionPerformedAddValue();
+                actionPerformedAddValue(e);
             } else if (source.equals(removeValueButton)) {
-                actionPerformedRemoveValue();
+                actionPerformedRemoveValue(e);
             } else if (source.equals(upValueButton)) {
-                actionPerformedUpValue();
+                actionPerformedUpValue(e);
             } else if (source.equals(downValueButton)) {
-                actionPerformedDownValue();
+                actionPerformedDownValue(e);
             }
         } catch (DoEditException | ThereIsNoNodeInDataException ex) {
             throw new UnrecoverableException(ex);
@@ -373,14 +373,14 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     /**
      * Invoked when the button 'add' is pressed.
      */
-    protected void actionPerformedAddValue() throws DoEditException, ThereIsNoNodeInDataException {
+    protected void actionPerformedAddValue(ActionEvent e) throws DoEditException, ThereIsNoNodeInDataException {
         System.out.println();
     }
     
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    protected void actionPerformedRemoveValue() throws DoEditException {
+    protected void actionPerformedRemoveValue(ActionEvent e) throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.removeRow(selectedRowIndex);
     }
@@ -388,7 +388,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     /**
      * Invoked when the button 'up' is pressed.
      */
-    protected void actionPerformedUpValue() throws DoEditException {
+    protected void actionPerformedUpValue(ActionEvent e) throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex - 1);
         valuesTable.setRowSelectionInterval(selectedRowIndex - 1, selectedRowIndex - 1);
@@ -397,7 +397,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     /**
      * Invoked when the button 'down' is pressed.
      */
-    protected void actionPerformedDownValue() throws DoEditException {
+    protected void actionPerformedDownValue(ActionEvent e) throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex + 1);
         valuesTable.setRowSelectionInterval(selectedRowIndex + 1, selectedRowIndex + 1);
@@ -438,12 +438,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      * be recorded.
      */
     public void cancelCellEditing() {
-        
-        TableCellEditor currentEditor = valuesTable.getCellEditor();
-        
-        if (currentEditor != null) {
-            currentEditor.cancelCellEditing();
-        }
+        valuesTable.cancelCellEditing();
     }
     
     /**

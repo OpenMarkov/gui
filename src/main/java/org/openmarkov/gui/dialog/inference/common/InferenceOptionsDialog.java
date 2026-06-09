@@ -409,7 +409,6 @@ public class InferenceOptionsDialog extends OkCancelDialog {
         
         JComboBox<String> comboBoxUse = null;
         JComboBox<String> comboBoxDiscountUnits = null;
-        ValuesTableCellRenderer renderer = new ValuesTableCellRenderer(1);
 
         MultiCriteriaTableModel model = new MultiCriteriaTableModel();
         
@@ -559,7 +558,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                 
             }
         }
-        
+
         // Creates table with the model
         table = new JTable(model) {
             /**
@@ -728,12 +727,15 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                 typeChanged();
             }
         };
+        
+        
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        ValuesTableCellRenderer renderer = new ValuesTableCellRenderer(table, 1, null);
         
         // Set the model and renderer of columns
         if (costEffectiveness.isSelected()) {
             table.getColumnModel().getColumn(CE_USE_COLUMN)
-                 .setCellRenderer(new MultiCriteriaComboBoxRenderer(MultiCriteriaComboBoxRenderer.USE_RENDERER));
+                 .setCellRenderer(new MultiCriteriaComboBoxRenderer(table, MultiCriteriaComboBoxRenderer.USE_RENDERER));
             table.getColumnModel().getColumn(CE_USE_COLUMN).setCellEditor(new DefaultCellEditor(comboBoxUse));
             table.getColumnModel().getColumn(CE_SCALE_COLUMN).setCellRenderer(renderer);
             
@@ -741,7 +743,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                 table.getColumnModel().getColumn(CE_DISCOUNT_COLUMN).setCellRenderer(renderer);
                 
                 table.getColumnModel().getColumn(CE_DISCOUNT_UNIT_COLUMN).setCellRenderer(
-                        new MultiCriteriaComboBoxRenderer(MultiCriteriaComboBoxRenderer.DISCOUNT_UNIT_RENDERER));
+                        new MultiCriteriaComboBoxRenderer(table, MultiCriteriaComboBoxRenderer.DISCOUNT_UNIT_RENDERER));
                 table.getColumnModel().getColumn(CE_DISCOUNT_UNIT_COLUMN)
                      .setCellEditor(new DefaultCellEditor(comboBoxDiscountUnits));
             }
@@ -753,7 +755,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                 table.getColumnModel().getColumn(UNICRITERIA_DISCOUNT_COLUMN).setCellRenderer(renderer);
                 
                 table.getColumnModel().getColumn(UNICRITERIA_DISCOUNT_UNIT_COLUMN).setCellRenderer(
-                        new MultiCriteriaComboBoxRenderer(MultiCriteriaComboBoxRenderer.DISCOUNT_UNIT_RENDERER));
+                        new MultiCriteriaComboBoxRenderer(table, MultiCriteriaComboBoxRenderer.DISCOUNT_UNIT_RENDERER));
                 table.getColumnModel().getColumn(UNICRITERIA_DISCOUNT_UNIT_COLUMN)
                      .setCellEditor(new DefaultCellEditor(comboBoxDiscountUnits));
             }

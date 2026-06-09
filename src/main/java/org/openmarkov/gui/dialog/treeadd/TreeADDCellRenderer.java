@@ -8,21 +8,20 @@
 package org.openmarkov.gui.dialog.treeadd;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.exception.NotSupportedOperationException;
-import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.gui.configuration.GUIColors;
+import org.openmarkov.gui.loader.element.ComponentIcon;
 import org.openmarkov.gui.loader.element.IconBind;
+import org.openmarkov.gui.window.decisiontree.elements.DecisionTreeNodePanel;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -39,10 +38,6 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
      * Container of leaf data: Potential description or value
      */
     private final JLabel rightLabel = new JLabel();
-    /**
-     * IconBind repository for every variable node
-     */
-    private final HashMap<Variable, Icon> iconsPool = new HashMap<Variable, Icon>();
     /**
      * Font used in icon foreground
      */
@@ -150,39 +145,27 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
      * @param potential Potential Node of the ADD/Tree
      */
     public Component getTreeCellRendererPotential(Potential potential) {
-
         if (potential instanceof TreeADDPotential treeADDPotential) {
-
             Variable topVariable = treeADDPotential.getRootVariable();
-            leftLabel.setIcon(getIcon(topVariable));
-
+            var node = probNet.getNode(topVariable);
+            leftLabel.setIcon(new ComponentIcon(DecisionTreeNodePanel.visualNodePanel(node.getNodeType(), topVariable.getName())));
         } else {
-
             String text = potential.treeADDString();
             if (text.contains("P(")){
                 text = text.replaceFirst("P", "<i>P</i>");
             }
             rightLabel.setText("<html>" + text + "</html>");
-
             Border normalBorder = BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.GRAY, 1),
                     BorderFactory.createEmptyBorder(2, 4, 2, 4)
             );
-
             Border leftSpacing = BorderFactory.createEmptyBorder(0, 6, 0, 0);
-
             if (potential.isUncertain()) {
-
                 rightLabel.setIcon(IconBind.UNCERTAINTY.icon());
-
                 rightLabel.setHorizontalTextPosition(SwingConstants.LEFT);
-
                 rightLabel.setHorizontalAlignment(SwingConstants.LEFT);
                 rightLabel.setVerticalAlignment(SwingConstants.TOP);
-
-
                 rightLabel.setIconTextGap(0);
-
                 rightLabel.setBorder(
                         BorderFactory.createCompoundBorder(
                                 leftSpacing,
@@ -192,12 +175,8 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
                                 )
                         )
                 );
-
                 rightLabel.setPreferredSize(null);
-
-
             } else {
-
                 rightLabel.setBorder(
                         BorderFactory.createCompoundBorder(
                                 leftSpacing,
@@ -206,45 +185,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
                 );
             }
         }
-
         return this;
-    }
-    
-    private Icon getIcon(Variable variable) {
-        Icon icon;
-        if (iconsPool.containsKey(variable)) {
-            icon = iconsPool.get(variable);
-        } else {
-            icon = createNodeIcon(variable);
-            iconsPool.put(variable, icon);
-        }
-        return icon;
-    }
-    
-    /**
-     * Create a new icon for a node of the ADD/Tree
-     *
-     * @return the node icon created
-     */
-    protected Icon createNodeIcon(Variable variable) {
-        Node node = probNet.getNode(variable);
-        if (node == null) {
-            node = probNet.getNode(variable.getName());
-        }
-        NodeType nodeType = null;
-        if (node != null) {
-            nodeType = node.getNodeType();
-        } else if (variable.getName().equals("OD")) {
-            nodeType = NodeType.DECISION;
-        }
-        return switch (nodeType) {
-            case CHANCE -> IconFactory.createChanceIcon(variable.getName(), textIconFont);
-            case DECISION -> IconFactory.createDecisionIcon(variable.getName(), textIconFont);
-            case UTILITY -> IconFactory.createUtilityIcon(variable.getName(), textIconFont);
-            case EVENT -> IconFactory.createEventIcon(variable.getName(), textIconFont);
-            case SV_SUM, SV_PRODUCT ->
-                    throw new UnreachableException(new NotSupportedOperationException(nodeType.toString() + " is not supported yet"));
-        };
     }
     
     /**

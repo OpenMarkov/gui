@@ -18,6 +18,7 @@ import org.openmarkov.gui.loader.element.IconBind;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -42,6 +43,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
      * to define the first editable row of the table
      */
     protected int firstEditableRow;
+    private final Object table;
     private final boolean[] uncertaintyInColumns;
     private JLabel jUncertaintyIcon;
     
@@ -52,13 +54,10 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
      * @param uncertaintyInColumns boolean array with the columns with (1)/without (0) mark. The
      *                             array only has to contain indexes for the editables columns
      */
-    public ValuesTableCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns) {
+    public ValuesTableCellRenderer(Object table, int firstEditableRow, boolean[] uncertaintyInColumns) {
+        this.table = table;
         this.uncertaintyInColumns = uncertaintyInColumns;
         this.firstEditableRow = firstEditableRow;
-    }
-    
-    public ValuesTableCellRenderer(int firstEditableRow) {
-        this(firstEditableRow, null);
     }
     
     public static class SetColor {
@@ -80,18 +79,28 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
      * first two column are in gray
      */
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-                                                   int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        TableModel model = switch (this.table){
+            case JTable jTable->jTable.getModel();
+            case ValuesTable valuesTable-> {
+                column=valuesTable.resolveMainColumnIndex(table, column);
+                this.firstEditableRow=valuesTable.getFirstEditableRow();
+                yield valuesTable.getModel();
+            }
+            case StickyColumnsTablePane stickyColumnsTablePane -> {
+                column=stickyColumnsTablePane.resolveMainColumnIndex(table, column);
+                yield stickyColumnsTablePane.getModel();
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + this.table);
+        };
         if (column == CRITERION_COLUMN) {
             setHorizontalAlignment(SwingConstants.LEFT);
         } else {
             setHorizontalAlignment(SwingConstants.CENTER);
         }
-        setMinimumSize(table, value, isSelected, hasFocus, row, column);
-        setCellFonts(table, value, isSelected, hasFocus, row, column);
-        setCellBorders(table, value, isSelected, hasFocus, row, column);
-        SetColor setColor = setCellColors(table, value, isSelected, hasFocus, row, column);
-        
+        setCellFonts(row, column);
+        setCellBorders(hasFocus, row, column);
+        SetColor setColor = getCellColors(model, value, isSelected, hasFocus, row, column);
         if (setColor.background != null) {
             this.setBackground(setColor.background);
         }
@@ -113,24 +122,16 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
         if (setColor.forceOverride && setColor.foreground != null) {
             this.setForeground(setColor.foreground);
         }
-        
         return component;
-    }
-    
-    private void setMinimumSize(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
     }
     
     /**
      * set cell fonts
      *
-     * @param table      - table where the cell is located
-     * @param value      - the value of the cell in edition
-     * @param isSelected - true if the cell is selected by the user
-     * @param hasFocus   - true if the cell has the focus by the user
      * @param row        - row of the cell
      * @param column     - column of the cell
      */
-    private void setCellFonts(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    private void setCellFonts(int row, int column) {
         Font sansboldFont = new Font("SansSerif", Font.BOLD, 30);
         Font sansFont = new Font("SansSerif", Font.PLAIN, 14);
         if ((column < ValuesTable.FIRST_EDITABLE_COLUMN) & (row < firstEditableRow)) {
@@ -154,14 +155,14 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     /**
      * set cell colors
      *
-     * @param table      - table where the cell is located
+     * @param model      - table where the cell is located
      * @param value      - the value of the cell in edition
      * @param isSelected - true if the cell is selected by the user
      * @param hasFocus   - true if the cell has the focus by the user
      * @param row        - row of the cell
      * @param column     - column of the cell
      */
-    protected SetColor setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    protected SetColor getCellColors(TableModel model, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         Color background = null;
         Color foreground = null;
         
@@ -184,8 +185,8 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
                 default:
                     break;
             }
-            var valuesOfRow = IntStream.range(0, table.getModel().getColumnCount())
-                                       .mapToObj(columnIndex -> table.getModel().getValueAt(row, columnIndex))
+            var valuesOfRow = IntStream.range(0, model.getColumnCount())
+                                       .mapToObj(columnIndex -> model.getValueAt(row, columnIndex))
                                        .distinct().toList();
             foreground = GUIColors.Tables.HEADER_FOREGROUND_COLORS.get(valuesOfRow.indexOf(value) % GUIColors.Tables.HEADER_FOREGROUND_COLORS.size())
                                                                   .getColor();
@@ -205,6 +206,13 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
         return new SetColor(foreground, background, false);
     }
     
+    enum ValueCellKind{
+        PARENT_VARIABLE_NAME,
+        PARENT_VARIABLE_STATE,
+        THIS_VARIABLE_STATE,
+        STATE_VALUE,
+    }
+    
     @FunctionalInterface
     public interface EditableCellColor{
         CellColor getEditableCellColor(boolean isSelected, int rowIndex, int columnIndex);
@@ -222,20 +230,17 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     /**
      * set cell borders
      *
-     * @param table      - table where the cell is located
-     * @param value      - the value of the cell in edition
-     * @param isSelected - true if the cell is selected by the user
      * @param hasFocus   - true if the cell has the focus by the user
      * @param row        - row of the cell
      * @param column     - column of the cell
      */
-    private void setCellBorders(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        setBorder(new LineBorder(GUIColors.Tables.ValuesTable.GRID_COLOR.getColor(), 5));
+    private void setCellBorders(boolean hasFocus, int row, int column) {
         if (hasFocus) {
             setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
             getUncertaintyIcon().setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
         } else {
-            getUncertaintyIcon().setBorder(noFocusBorder);
+            setBorder(null);
+            getUncertaintyIcon().setBorder(null);
         }
     }
     

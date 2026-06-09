@@ -142,14 +142,14 @@ public class PiecewiseExponentialTablePanel extends KeyTablePanel {
      * Invoked when the button 'add' is pressed.
      */
     @Override
-    protected void actionPerformedAddValue() {
+    protected void actionPerformedAddValue(ActionEvent e) {
         tableModel.addRow(new Object[]{0, 0, 0});
     }
 
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    protected void actionPerformedRemoveValue() {
+    protected void actionPerformedRemoveValue(ActionEvent e) {
         int selectedRowIndex = valuesTable.getSelectedRow();
         if (selectedRowIndex > -1) tableModel.removeRow(selectedRowIndex);
     }

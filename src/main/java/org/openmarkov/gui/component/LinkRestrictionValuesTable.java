@@ -47,27 +47,23 @@ public class LinkRestrictionValuesTable extends ValuesTable {
     private final Node node2;
 
     public LinkRestrictionValuesTable(Link<Node> link, ValuesTableModel tableModel, final boolean modifiable) {
-        super(tableModel, modifiable);
+        super(null, tableModel, modifiable);
         this.link = link;
         node2 = link.getTo();
     }
     
-    /**
-     * This method checks the value to modify in the table and sets the new
-     * value.
-     ***/
-    @Override public void setValueAt(Object newValue, int row, int col) {
+    @Override public void setValueAt(Object newValue, int row, int column, Object source) {
         if (newValue == null) return;
         Integer newNumericValue = (Integer) newValue;
         if (!newNumericValue.equals(INCOMPATIBILITY_VALUE) && !newNumericValue.equals(COMPATIBILITY_VALUE)) {
             newValue = INCOMPATIBILITY_VALUE;
         }
         LinkRestrictionPotentialValueEdit linkPotentialEdit =
-                new LinkRestrictionPotentialValueEdit(link, (Integer) newValue, row, col);
+                new LinkRestrictionPotentialValueEdit(link, (Integer) newValue, row, column);
         try {
             linkPotentialEdit.executeEdit();
-            super.getModel().setValueAt(newValue, row, col);
-            int variable1Index = col - 1;
+            super.setValueAt(newValue, row, column, source);
+            int variable1Index = column - 1;
             int variable2Index = node2.getVariable().getNumStates() - row;
             if ((Integer) newValue == 0) {
                 if (!node2.getPotentials().isEmpty() && node2.getPotentials().getFirst() instanceof TablePotential) {

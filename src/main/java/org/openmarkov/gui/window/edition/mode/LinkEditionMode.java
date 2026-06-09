@@ -6,7 +6,6 @@
  */
 package org.openmarkov.gui.window.edition.mode;
 
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
@@ -16,8 +15,10 @@ import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 @EditionState(name = "Edit.Mode.Link", icon = "link.png", cursor = "link.png") public class LinkEditionMode
         extends EditionMode {
@@ -30,7 +31,11 @@ import java.awt.event.MouseEvent;
         if (!(SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1 && GUIUtils.noMouseModifiers(e))) {
             return;
         }
-        visualNetwork.startLinkCreation(cursorPosition, g, VisualNetwork.LinkCreationSourceDirection.PARENT, false);
+        var node = visualNetwork.whatNodeInPosition(cursorPosition, g);
+        if(node == null) {
+            return;
+        }
+        visualNetwork.startLinkCreation(cursorPosition, g, VisualNetwork.LinkCreationSourceDirection.PARENT, false, List.of(node));
     }
     
     @Override public void mouseReleased(MouseEvent e, Point2D.Double position, Graphics2D g) throws DoEditException {
@@ -63,6 +68,14 @@ import java.awt.event.MouseEvent;
     }
     
     @Override public void keyReleased(KeyEvent e) {
+    
+    }
+    
+    @Override public void focusGained(FocusEvent e) {
+    
+    }
+    
+    @Override public void focusLost(FocusEvent e) {
     
     }
 }

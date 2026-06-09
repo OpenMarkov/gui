@@ -17,6 +17,7 @@ import org.openmarkov.gui.action.NetworkAgentEdit;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,12 +57,12 @@ import java.util.List;
                     throw new UnrecoverableException(e);
                 }
                 setData(dataTable);
-                valuesTable.getSelectionModel().setSelectionInterval(row, row);
+                valuesTable.setRowSelectionInterval(row, row);
             }
         }
     }
     
-    @Override protected void actionPerformedAddValue() throws DoEditException {
+    @Override protected void actionPerformedAddValue(ActionEvent e) throws DoEditException {
         
         String option = JOptionPane.showInputDialog(this, stringDatabase.getString("AddAgent.Text"),
                                                     stringDatabase.getString("AddAgent.Title"), JOptionPane.QUESTION_MESSAGE);
@@ -83,11 +84,11 @@ import java.util.List;
             List<StringWithProperties> agents = probNet.getAgents();
             setDataFromAdvancedProperties(agents);
             // getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
-            valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+            valuesTable.setRowSelectionInterval(newIndex, newIndex);
             
             dataTable = new Object[valuesTable.getRowCount()][1];
             for (int i = 0; i < valuesTable.getRowCount(); i++) {
-                dataTable[i][0] = valuesTable.getValueAt(i, 1);
+                dataTable[i][0] = valuesTable.getValueAt(i, 1, e.getSource());
             }
 			/*getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			//valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
@@ -95,26 +96,26 @@ import java.util.List;
         }
     }
     
-    @Override protected void actionPerformedRemoveValue() throws DoEditException {
+    @Override protected void actionPerformedRemoveValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
-        String agentName = (String) valuesTable.getValueAt(selectedRow, 1);
+        String agentName = (String) valuesTable.getValueAt(selectedRow, 1, e.getSource());
         NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, StateAction.REMOVE, agentName, null);
         networkAgentEdit.executeEdit();
         edits.add(networkAgentEdit);
         //StringsWithProperties agents = probNet.getAgents();
         List<StringWithProperties> agents = probNet.getAgents();
         setDataFromAdvancedProperties(agents);
-        valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
+        valuesTable.setRowSelectionInterval(selectedRow, selectedRow);
         //dataTable = new Object [agents.getNames().size()][1];
         if (agents != null) {
             dataTable = new Object[agents.size()][1];
             for (int i = 0; i < valuesTable.getRowCount(); i++) {
-                dataTable[i][0] = valuesTable.getValueAt(i, 1);
+                dataTable[i][0] = valuesTable.getValueAt(i, 1, e.getSource());
             }
         }
     }
     
-    @Override protected void actionPerformedUpValue() throws DoEditException {
+    @Override protected void actionPerformedUpValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
@@ -128,14 +129,14 @@ import java.util.List;
 			valuesTable.setValueAt(
 				valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
 			valuesTable.setValueAt(swap, selectedRow - 1, 1);*/
-        valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+        valuesTable.setRowSelectionInterval(selectedRow - 1, selectedRow - 1);
         for (int i = 0; i < valuesTable.getRowCount(); i++) {
-            dataTable[i][0] = valuesTable.getValueAt(i, 1);
+            dataTable[i][0] = valuesTable.getValueAt(i, 1, e.getSource());
         }
         
     }
     
-    @Override protected void actionPerformedDownValue() throws DoEditException {
+    @Override protected void actionPerformedDownValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];
@@ -148,9 +149,9 @@ import java.util.List;
 			valuesTable.setValueAt(
 				valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
 			valuesTable.setValueAt(swap, selectedRow + 1, 1);*/
-        valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
+        valuesTable.setRowSelectionInterval(selectedRow + 1, selectedRow + 1);
         for (int i = 0; i < valuesTable.getRowCount(); i++) {
-            dataTable[i][0] = valuesTable.getValueAt(i, 1);
+            dataTable[i][0] = valuesTable.getValueAt(i, 1, e.getSource());
         }
     }
     

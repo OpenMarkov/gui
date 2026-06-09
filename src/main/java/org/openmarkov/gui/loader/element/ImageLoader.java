@@ -34,10 +34,6 @@ public class ImageLoader {
     
     private static class OMImageIcon extends ImageIcon {
         
-        public OMImageIcon(URL resource) {
-            super(resource);
-        }
-        
         public OMImageIcon(Image image) {
             super(image);
         }
@@ -59,7 +55,7 @@ public class ImageLoader {
      * @throws MissingResourceException if the resource doesn't exist.
      */
     public static ImageIcon load(String imageName) throws MissingResourceException {
-        return createHiDPIIconFrom64(ImageLoader.class.getResource(imageName));
+        return ImageLoader.createImage(ImageLoader.class.getResource(imageName));
     }
     
     /**
@@ -72,12 +68,12 @@ public class ImageLoader {
      * @throws MissingResourceException if the resource doesn't exist.
      */
     public static ImageIcon load(URL location) throws MissingResourceException {
-        return createHiDPIIconFrom64(location);
+        return ImageLoader.createImage(location);
     }
     
     
     public static Icon of(Image image) {
-        return createHiDPIIconFrom64(image);
+        return createImage(image);
     }
     
     private static Graphics2D generateGraphicsWithIconHints(Graphics g) {
@@ -88,15 +84,15 @@ public class ImageLoader {
         return g2d;
     }
     
-    public static ImageIcon createHiDPIIconFrom64(URL url) {
+    public static ImageIcon createImage(URL url) {
         try {
-            return createHiDPIIconFrom64(ImageIO.read(url));
+            return createImage(ImageIO.read(url));
         } catch (IOException e) {
             throw new UnreachableException(e);
         }
     }
     
-    public static ImageIcon createHiDPIIconFrom64(Image source) {
+    public static ImageIcon createImage(Image source) {
         Double uiScale = LocalPreferences.UI_SCALE.get();
         var desiredScale = ImageLoader.SCALES[ImageLoader.SCALES.length - 1];
         for (var scale : ImageLoader.SCALES) {

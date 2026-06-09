@@ -13,6 +13,7 @@ import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
+import org.openmarkov.gui.component.OMTableModel;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -58,10 +59,8 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
      * Adjusts the column width. The checkbox column is thinner than the node's state column
      */
     public void adjustColumnSize() {
-        
-        getValuesTable().getColumnModel().getColumn(1).setMaxWidth(CHECKBOX_COLUMN_WIDTH);
-        getValuesTable().getColumnModel().getColumn(1).setPreferredWidth(STATENAME_COLUMN_WIDTH);
-        
+        getValuesTable().getColumn(1).setMaxWidth(CHECKBOX_COLUMN_WIDTH);
+        getValuesTable().getColumn(1).setPreferredWidth(STATENAME_COLUMN_WIDTH);
     }
     
     /**
@@ -69,10 +68,8 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
      *
      * @return a new tableModel.
      */
-    @Override protected DefaultTableModel getTableModel() {
-        
+    @Override protected OMTableModel getTableModel() {
         if (tableModel == null) {
-            
             tableModel = new SelectableTableModel(data, columns);
         }
         return tableModel;
@@ -100,12 +97,12 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
         }
     }
     
-    static class SelectableTableModel extends DefaultTableModel {
+    static class SelectableTableModel extends OMTableModel {
         
         private static final long serialVersionUID = 4478294244055128574L;
         
         public SelectableTableModel(Object[][] data, String[] columns) {
-            super(data, columns);
+            super(data, columns, true);
             
         }
         

@@ -9,21 +9,21 @@ package org.openmarkov.gui.component;
 
 import org.openmarkov.gui.configuration.GUIColors;
 
-import javax.swing.*;
+import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial") public class ValuesTableWithLinkRestrictionCellRenderer extends ValuesTableCellRenderer {
     
-    public ValuesTableWithLinkRestrictionCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns) {
-		super(firstEditableRow, uncertaintyInColumns);
+    public ValuesTableWithLinkRestrictionCellRenderer(ValuesTable valuesTable, int firstEditableRow, boolean[] uncertaintyInColumns) {
+		super(valuesTable, firstEditableRow, uncertaintyInColumns);
 	}
 	
 	@Override
-	protected SetColor setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+	protected SetColor getCellColors(TableModel model, Object value, boolean isSelected, boolean hasFocus, int row,
 	                                 int column) {
-		var colors = super.setCellColors(table, value, isSelected, hasFocus, row, column);
+		var colors = super.getCellColors(model, value, isSelected, hasFocus, row, column);
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0 && (row >= firstEditableRow)) {
 			try {
-				if (!table.isCellEditable(row, column)) {
+				if (!model.isCellEditable(row, column)) {
 					colors.background = GUIColors.Network.Link.LinkRestriction.INCOMPATIBILITY_BACKGROUND.getColor();
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {

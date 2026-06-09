@@ -7,15 +7,13 @@
 
 package org.openmarkov.gui.component;
 
-import javax.swing.table.DefaultTableModel;
-
 /**
  * ValuesTableModel defines the basic behavior of the Table Model
  *
  * @author jlgozalo
  * @version 1.0 7 Jul 2009
  */
-public class ValuesTableModel extends DefaultTableModel {
+public class ValuesTableModel extends OMTableModel {
 	/**
 	 * calculated serial ID
 	 */
@@ -28,19 +26,12 @@ public class ValuesTableModel extends DefaultTableModel {
 	 * first editable row. By default, all rows are editable (first 0)
 	 */
 	int firstEditableRow = 0;
-
-	/**
-	 * constructor
-	 */
-	public ValuesTableModel() {
-		super();
-	}
-
+	
 	/**
 	 * constructor
 	 */
 	public ValuesTableModel(Object[][] data, String[] columns, int firstEditableRow) {
-		super(data, columns);
+		super(data, columns, true);
 		this.firstEditableRow = firstEditableRow;
 		this.notEditablePositions = new Object[0][0];
 	}

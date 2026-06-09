@@ -7,19 +7,19 @@
 
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.gui.component.OMTableModel;
+import org.openmarkov.gui.component.StickyColumnsTablePane;
 import org.openmarkov.gui.configuration.GUIColors;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.Serial;
 import java.util.Arrays;
 
 /**
@@ -31,53 +31,33 @@ import java.util.Arrays;
  * @author jmendoza
  * @version 1.0 jmendoza
  */
-public class KeyTable extends JTable {
-    
+public class KeyTable extends StickyColumnsTablePane {
     /**
      * Width of the key column.
      */
-    protected static final int KEY_COLUMN_WIDTH = 60;
-    /**
-     * Width of the key column.
-     */
-    protected static final int ROW_HEIGHT = 20;
-    
-    
+    private static final int ROW_HEIGHT = 20;
     /**
      * Static field for serializable class.
      */
+    @Serial
     private static final long serialVersionUID = 5072153109141850112L;
     /**
      * Indicates if the object is already created.
      */
-    protected final boolean created;
+    private final boolean created;
     /**
      * This variable says if the table can be modified. False by default
      */
-    protected boolean modifiable;
-    /**
-     * This variable is used to set additionalProperties for the columns in the
-     * table
-     */
-    protected TableColumn column = null;
-    /**
-     * This variable is used to set additionalProperties for the header in the
-     * table
-     */
-    protected JTableHeader header = null;
-    /**
-     * Outer object that listens to the changes of the table selection.
-     */
-    private ListSelectionListener listener = null;
+    private boolean modifiable;
     /**
      * This variable says if the first column is hidden. Not Visible by default
      */
-    private boolean firstColumnHidden = true;
+    private boolean firstColumnHidden;
     /**
      * This variable is used to display or not the column header. Visible by
      * default
      */
-    private boolean showColumnHeader = true;
+    private boolean showColumnHeader;
     
     /**
      * Constructs a JTable that is initialized with dm as the data model, a
@@ -87,21 +67,9 @@ public class KeyTable extends JTable {
      * @param modifiable specifies if the cells (except the first column) are
      *                   modifiable.
      */
-    public KeyTable(TableModel dm, boolean modifiable, boolean firstColumnHidden) {
-        this(dm, modifiable, firstColumnHidden, true);
-    }
-    
-    /**
-     * Constructs a JTable that is initialized with dm as the data model, a
-     * default column model, and a default selection model.
-     *
-     * @param dm         the data model for the table.
-     * @param modifiable specifies if the cells (except the first column) are
-     *                   modifiable.
-     */
-    public KeyTable(TableModel dm, boolean modifiable, boolean firstColumnHidden, boolean showColumnHeader) {
-        super(dm);
-        created = true;
+    public KeyTable(OMTableModel dm, boolean modifiable, boolean firstColumnHidden, boolean showColumnHeader) {
+        super(dm, 1);
+        this.created = true;
         this.modifiable = modifiable;
         this.firstColumnHidden = firstColumnHidden;
         this.showColumnHeader = showColumnHeader;
@@ -114,17 +82,7 @@ public class KeyTable extends JTable {
                 KeyTable.this.onFocusLost(e);
             }
         });
-        defaultConfiguration();
-    }
-    
-    /**
-     * Sets a new list selection listener.
-     *
-     * @param newListener new list selection listener.
-     */
-    public void setListSelectionListener(ListSelectionListener newListener) {
-        
-        listener = newListener;
+        this.setModel(dm);
     }
     
     // ESCA-JAVA0126:
@@ -137,59 +95,32 @@ public class KeyTable extends JTable {
      *
      * @throws IllegalArgumentException if newModel is null.
      */
-    @Override public void setModel(TableModel newDataModel) throws IllegalArgumentException {
-        
+    @Override public final void setModel(OMTableModel newDataModel) throws IllegalArgumentException {
         super.setModel(newDataModel);
-        if (created) {
-            defaultConfiguration();
+        if(!this.created){
+            return;
         }
-    }
-    
-    /**
-     * @return the modifiable
-     */
-    public boolean isModifiable() {
-        
-        return modifiable;
+        this.defaultConfiguration();
     }
     
     /**
      * @param modifiable the modifiable to set
      */
-    public void setModifiable(boolean modifiable) {
-        
+    public final void setModifiable(boolean modifiable) {
         this.modifiable = modifiable;
-    }
-    
-    /**
-     * @return the firstColumnHidden
-     */
-    public boolean isFirstColumnHidden() {
-        
-        return firstColumnHidden;
     }
     
     /**
      * @param firstColumnHidden the firstColumnHidden to set
      */
-    public void setFirstColumnHidden(boolean firstColumnHidden) {
-        
+    protected final void setFirstColumnHidden(boolean firstColumnHidden) {
         this.firstColumnHidden = firstColumnHidden;
-    }
-    
-    /**
-     * @return the showColumnHeader
-     */
-    public boolean isShowColumnHeader() {
-        
-        return showColumnHeader;
     }
     
     /**
      * @param showColumnHeader the showColumnHeader to set
      */
-    public void setShowColumnHeader(boolean showColumnHeader) {
-        
+    protected final void setShowColumnHeader(boolean showColumnHeader) {
         this.showColumnHeader = showColumnHeader;
     }
     
@@ -197,86 +128,94 @@ public class KeyTable extends JTable {
      * This method configures the table to a default state.
      */
     protected void defaultConfiguration() {
-        
-        TableCellEditor editorCell;
-        
-        setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        setBackground(GUIColors.Tables.KeyTable.BACKGROUND_COLOR.getColor());// Component color
-        setSelectionBackground(GUIColors.Tables.KeyTable.SELECTION_BACKGROUND_COLOR.getColor());// Color for cell
-        // renderers
-        setSelectionForeground(GUIColors.Tables.KeyTable.SELECTION_FOREGROUND_COLOR.getColor());
-        setRowHeight(ROW_HEIGHT);
-        setShowGrid(true);
-        setGridColor(GUIColors.Tables.KeyTable.GRID_COLOR.getColor());
-        setShowVerticalLines(false);
-        DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
-        tcr.setHorizontalAlignment(SwingConstants.CENTER);
-        getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        if (getColumnClass(0) != null) {
-            if (modifiable) {
-                editorCell = getDefaultEditor(getColumnClass(0));
-                if (editorCell instanceof DefaultCellEditor) {
-                    ((DefaultCellEditor) editorCell).setClickCountToStart(2);
+        this.setBackground(GUIColors.Tables.KeyTable.BACKGROUND_COLOR.getColor());// Component color
+
+        this.onTables(omjTable -> {
+            omjTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+            omjTable.setSelectionBackground(GUIColors.Tables.KeyTable.SELECTION_BACKGROUND_COLOR.getColor());// Color for cell
+            // renderers
+            omjTable.setSelectionForeground(GUIColors.Tables.KeyTable.SELECTION_FOREGROUND_COLOR.getColor());
+            omjTable.setRowHeight(KeyTable.ROW_HEIGHT);
+            omjTable.setShowGrid(true);
+            omjTable.setGridColor(GUIColors.Tables.KeyTable.GRID_COLOR.getColor());
+            omjTable.setShowVerticalLines(false);
+            omjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            omjTable.canGenerateEditorWhen((_, _)-> this.modifiable);
+        });
+        this.onTables(omjTable -> {
+            if (omjTable.getColumnClass(0) != null) {
+                if (this.modifiable) {
+                    TableCellEditor editorCell = omjTable.getDefaultEditor(omjTable.getColumnClass(0));
+                    if (editorCell instanceof DefaultCellEditor) {
+                        ((DefaultCellEditor) editorCell).setClickCountToStart(2);
+                    }
                 }
-            }
-            header = getTableHeader();
-            header.setReorderingAllowed(false);
-            header.setResizingAllowed(false);
-            header.setVisible(this.showColumnHeader);
-            if (this.showColumnHeader) {
-                header.setVisible(true);
-            } else {
-                header.setPreferredSize(new Dimension(20, 0));
-            }
-            column = getColumnModel().getColumn(0);
-            if (firstColumnHidden && (column != null)) {
-                column.setMaxWidth(0);
-                column.setMinWidth(0);
-                column.setWidth(0);
-                // Fixing issue 221
-                // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/221/button-delete-in-node-properties-parents
-                // Without the following line, the column actually showed three dot
-                column.setPreferredWidth(0);
-            }
-        }
-    }
-    
-    /**
-     * Returns an appropriate editor for the cell specified by row and column.
-     * If the column is 0, returns null, else returns the default editor.
-     *
-     * @param row    the row of the cell to edit, where 0 is the first row.
-     * @param column the column of the cell to edit, where 0 is the first column.
-     *
-     * @return the editor for this cell.
-     */
-    @Override public TableCellEditor getCellEditor(int row, int column) {
-        
-        return (!modifiable || (column == 0)) ? null : super.getCellEditor(row, column);
-    }
-    
-    @Override public Component prepareEditor(TableCellEditor editor, int row, int column) {
-        Component component = super.prepareEditor(editor, row, column);
-        component.addFocusListener(new FocusListener() {
-            @Override public void focusGained(FocusEvent e) {
-            
-            }
-            
-            @Override public void focusLost(FocusEvent e) {
-                KeyTable.this.onFocusLost(e);
+                /**
+                 * This variable is used to set additionalProperties for the header in the
+                 * table
+                 */
+                JTableHeader header = omjTable.getTableHeader();
+                header.setReorderingAllowed(false);
+                header.setResizingAllowed(false);
+                header.setVisible(this.showColumnHeader);
+                if (!this.showColumnHeader) {
+                    header.setPreferredSize(new Dimension(20, 0));
+                }
+
             }
         });
-        return component;
+        
+        /**
+         * This variable is used to set additionalProperties for the columns in the
+         * table
+         */
+        TableColumn column = this.getColumn(0);
+        if (this.firstColumnHidden && column != null) {
+            column.setMinWidth(0);
+            column.setMaxWidth(0);
+            column.setWidth(0);
+            column.setPreferredWidth(0);
+            column.setResizable(false);
+            // Fixing issue 221
+            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/221/button-delete-in-node-properties-parents
+            // Without the following line, the column actually showed three dot
+            column.setHeaderRenderer(new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value,
+                                                               boolean isSelected, boolean hasFocus, int row, int column) {
+                    // Return an empty renderer component
+                    Component c = super.getTableCellRendererComponent(table, "", false, false, row, column);
+                    c.setPreferredSize(new java.awt.Dimension(0, 0));
+                    c.setSize(0, 0);
+                    return c;
+                }
+            });
+            this.removeStickyTableFromView();
+            this.getHeaderColumn(0).setMinWidth(0);
+            this.getHeaderColumn(0).setMaxWidth(0);
+            this.getHeaderColumn(0).setWidth(0);
+            this.getHeaderColumn(0).setPreferredWidth(0);
+            this.getHeaderColumn(0).setResizable(false);
+        }
     }
     
     /**
      * Stops the editing in any cell of the table, recording the new value.
      */
     public void stopCellEditing() {
-        TableCellEditor currentEditor = this.getCellEditor();
-        if (currentEditor != null) {
-            currentEditor.stopCellEditing();
-        }
+        this.onTables(omjTable -> {
+            if (omjTable.getCellEditor() instanceof TableCellEditor currentEditor) {
+                currentEditor.stopCellEditing();
+            }
+        });
+    }
+    
+    public void cancelCellEditing(){
+        this.onTables(omjTable -> {
+            if (omjTable.getCellEditor() instanceof TableCellEditor currentEditor) {
+                currentEditor.cancelCellEditing();
+            }
+        });
     }
     
     private void onFocusLost(FocusEvent e) {
@@ -289,28 +228,12 @@ public class KeyTable extends JTable {
                 componentToFocus == this
                         || Arrays.stream(components).anyMatch(subComponent -> subComponent == componentToFocus);
         if (!isFocusingASubComponent) {
-            stopCellEditing();
+            this.stopCellEditing();
         }
     }
     
-    /**
-     * Invoked when the row selection changes.
-     *
-     * @param e selection event information.
-     */
-    @Override public void valueChanged(ListSelectionEvent e) {
-        
-        super.valueChanged(e);
-        if (listener != null) {
-            listener.valueChanged(e);
-        }
-    }
     
-    @Override public void setValueAt(Object newValue, int row, int col) {
-        Object oldValue = getValueAt(row, col);
-        if (!newValue.equals(oldValue)) {
-            super.getModel().setValueAt(newValue, row, col);
-        }
+    public int getRowCount() {
+        return this.getModel().getRowCount();
     }
-    
 }

@@ -109,7 +109,7 @@ public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
         
         // If the ScrollPane is not created, initialise it and set the Viewport.
         // Then add the element to the Layout.
-        add(getValuesTableScrollPane(), BorderLayout.CENTER);
+        add(getValuesTable(), BorderLayout.CENTER);
         
         repaint();
     }
@@ -357,16 +357,16 @@ public class UnivariateDistrPotentialPanel extends TablePotentialPanel {
     @Override protected void doubleClickEvent(MouseEvent e) {
         
         List<Variable> parameterVariables = getPotential().getParameterVariables();
-        int row = valuesTable.rowAtPoint(e.getPoint());
-        int column = valuesTable.columnAtPoint(e.getPoint());
-        VariableExpression function = (VariableExpression) valuesTable.getValueAt(row, column);
+        int row = valuesTable.rowAtPoint(e.getPoint(), e.getSource());
+        int column = valuesTable.columnAtPoint(e.getPoint(), e.getSource());
+        VariableExpression function = (VariableExpression) valuesTable.getValueAt(row, column, e.getSource());
         ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables, function.asStringExpression());
         expressionDialog.setVisible(true);
         if (expressionDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
             function = new VariableExpression(parameterVariables, expressionDialog.getExpression());
             //int row = valuesTable.rowAtPoint(e.getPoint());
             //int column = valuesTable.columnAtPoint(e.getPoint());
-            valuesTable.setValueAt(function, row, column);
+            valuesTable.setValueAt(function, row, column, e.getSource());
         }
     }
     

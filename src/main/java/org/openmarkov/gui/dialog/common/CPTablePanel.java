@@ -12,8 +12,6 @@ import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.component.ValuesTable;
 
-import javax.swing.*;
-
 /**
  * This class extends from {@code TablePotentialPanel}, is a panel used by
  * {@code ICIOptionListenerAssistant} to show the complete parameters
@@ -46,21 +44,7 @@ import javax.swing.*;
 		}
 		return valuesTable;
 	}
-
-	/**
-	 * This method initializes valuesTableScrollPane.
-	 *
-	 * @return a new values table scroll pane.
-	 */
-	@Override public JScrollPane getValuesTableScrollPane() {
-		if (valuesTableScrollPane == null) {
-			valuesTableScrollPane = new JScrollPane();
-			valuesTableScrollPane.setName("CPTablePanel.valuesTableScrollPane");
-			valuesTableScrollPane.setViewportView(getValuesTable());
-		}
-		return valuesTableScrollPane;
-	}
-
+	
 	@Override public void close() {
 		getValuesTable().close();
 	}

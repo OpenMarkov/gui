@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.component;
 
-import javax.swing.table.DefaultTableModel;
-
 /**
  * TableWithEventsModel defines the basic behavior of the Table Model for EventTablePotential
  * * Transition class to be merged with the new structure of tables
@@ -16,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
  * @version 1.0 - 24/03/2019
  * @version 2.0 - 29/08/2023 - cmyago; refactored to TableWithEventsModel (from EventValuesTableModel)
  */
-public class TableWithEventsModel extends DefaultTableModel {
+public class TableWithEventsModel extends ValuesTableModel {
 	/**
 	 * calculated serial ID
 	 */
@@ -29,19 +27,12 @@ public class TableWithEventsModel extends DefaultTableModel {
 	 * first editable row. By default, all rows are editable (first 0)
 	 */
 	int firstEditableRow = 0;
-
-	/**
-	 * constructor
-	 */
-	public TableWithEventsModel() {
-		super();
-	}
-
+	
 	/**
 	 * constructor
 	 */
 	public TableWithEventsModel(Object[][] data, String[] columns, int firstEditableRow) {
-		super(data, columns);
+		super(data, columns, firstEditableRow);
 		this.firstEditableRow = firstEditableRow;
 		this.notEditablePositions = new Object[0][0];
 	}

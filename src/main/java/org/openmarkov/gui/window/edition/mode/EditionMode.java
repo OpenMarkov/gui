@@ -15,6 +15,7 @@ import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import java.awt.*;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 
@@ -25,7 +26,7 @@ import java.awt.event.MouseEvent;
  * @author ibermejo
  */
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({NetworkEditorPanel.class, ProbNet.class}))
-public abstract class EditionMode implements KeyListener {
+public abstract class EditionMode implements KeyListener, FocusListener {
 
 	protected final NetworkEditorPanel networkEditorPanel;
 	protected final VisualNetwork visualNetwork;

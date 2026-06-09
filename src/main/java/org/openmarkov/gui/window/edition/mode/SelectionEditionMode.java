@@ -6,23 +6,28 @@
  */
 package org.openmarkov.gui.window.edition.mode;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.action.MoveNodeEdit;
+import org.openmarkov.gui.configuration.KeyTracker;
 import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @EditionState(name = "Edit.Mode.Selection", icon = "selection.png")
 public class SelectionEditionMode extends EditionMode {
@@ -103,7 +108,7 @@ public class SelectionEditionMode extends EditionMode {
             case CREATING_LINK -> {
                 this.visualNetwork.finishLinkCreation(position, g);
                 if (this.currentlyHeldKeys.contains(KeyEvent.VK_SHIFT)) {
-                    this.visualNetwork.startLinkCreation(position, g, VisualNetwork.LinkCreationSourceDirection.PARENT, true);
+                    this.visualNetwork.startLinkCreation(position, g, VisualNetwork.LinkCreationSourceDirection.PARENT, true, this.visualNetwork.getSelectedNodes());
                     this.networkEditorPanel.repaint();
                     return;
                 }
@@ -118,7 +123,7 @@ public class SelectionEditionMode extends EditionMode {
             return false;
         }
         this.linkCreationStartedWithKey = false;
-        this.visualNetwork.startLinkCreation(cursorPosition, (Graphics2D) this.networkEditorPanel.getGraphics(), sourceDirection, false);
+        this.visualNetwork.startLinkCreation(cursorPosition, (Graphics2D) this.networkEditorPanel.getGraphics(), sourceDirection, false, this.visualNetwork.getSelectedNodes());
         this.setSelectionState(SelectionState.CREATING_LINK);
         return true;
     }
@@ -150,19 +155,28 @@ public class SelectionEditionMode extends EditionMode {
     
     
     @Override public void keyPressed(KeyEvent e) {
-        this.currentlyHeldKeys.add(e.getKeyCode());
+        int keyCode = e.getKeyCode();
+        onPresses(e, keyCode);
+    }
+    
+    private void onPresses(@Nullable KeyEvent e, int keyCode) {
+        this.currentlyHeldKeys.add(keyCode);
+        KeyTracker.isHeld(keyCode);
+        
         if (this.visualNetwork.getSelectedNodes().isEmpty()) {
             return;
         }
         switch (this.selectionState) {
             case MOVING -> applyKeyArrowsOnNodes();
             case NOTHING -> {
-                switch (e.getKeyCode()) {
+                switch (keyCode) {
                     case KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT ->
                             applyKeyArrowsOnNodes();
-                    case KeyEvent.VK_SHIFT -> {
-                        if (this.startLinkCreation(this.lastMousePos, VisualNetwork.LinkCreationSourceDirection.PARENT)) {
-                            this.linkCreationStartedWithKey = true;
+                    case KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL -> {
+                        if(this.currentlyHeldKeys.contains(KeyEvent.VK_SHIFT) && this.currentlyHeldKeys.contains(KeyEvent.VK_CONTROL)) {
+                            if (this.startLinkCreation(this.lastMousePos, VisualNetwork.LinkCreationSourceDirection.PARENT)) {
+                                this.linkCreationStartedWithKey = true;
+                            }
                         }
                     }
                 }
@@ -170,11 +184,16 @@ public class SelectionEditionMode extends EditionMode {
             case SELECTING -> {
             }
             case CREATING_LINK -> {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_ESCAPE -> this.visualNetwork.cancelLinkCreation();
+                switch (keyCode) {
+                    case KeyEvent.VK_ESCAPE -> {
+                        this.visualNetwork.cancelLinkCreation();
+                        this.setSelectionState(SelectionState.NOTHING);
+                    }
                     case KeyEvent.VK_ALT -> {
                         this.visualNetwork.toggleLinkCreationSource(this.lastMousePos);
-                        e.consume();
+                        if(e!=null){
+                            e.consume();
+                        }
                     }
                 }
             }
@@ -183,12 +202,16 @@ public class SelectionEditionMode extends EditionMode {
     }
     
     @Override public void keyReleased(KeyEvent e) {
+        onReleases(e.getKeyCode());
+    }
+    
+    private void onReleases(int keyCode) {
         switch (this.selectionState) {
             case NOTHING -> {
             }
             case MOVING -> {
                 boolean wasHoldingAnArrow = this.isHoldingAnArrow();
-                this.currentlyHeldKeys.remove(e.getKeyCode());
+                this.currentlyHeldKeys.remove(keyCode);
                 if (wasHoldingAnArrow && !this.isHoldingAnArrow()) {
                     try {
                         this.tryFinishNodesMovements();
@@ -200,8 +223,8 @@ public class SelectionEditionMode extends EditionMode {
             case SELECTING -> {
             }
             case CREATING_LINK -> {
-                switch (e.getKeyCode()){
-                    case KeyEvent.VK_SHIFT -> {
+                switch (keyCode){
+                    case KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL -> {
                         if (this.linkCreationStartedWithKey) {
                             this.visualNetwork.cancelLinkCreation();
                             this.linkCreationStartedWithKey=false;
@@ -243,4 +266,17 @@ public class SelectionEditionMode extends EditionMode {
     
     private Point2D.Double lastMousePos;
     private boolean linkCreationStartedWithKey;
+    
+    @Override public void focusGained(FocusEvent e) {
+        var currentlyHeldKeys = KeyTracker.getHeldKeys().boxed()
+                             .collect(Collectors.toCollection(LinkedHashSet::new));
+        var removedKeys = this.currentlyHeldKeys.stream().filter(key->!currentlyHeldKeys.contains(key)).toList();
+        var newlyPressedKeys = currentlyHeldKeys.stream().filter(key->!this.currentlyHeldKeys.contains(key)).toList();
+        removedKeys.forEach(this::onReleases);
+        newlyPressedKeys.forEach(key->this.onPresses(null, key));
+    }
+    
+    @Override public void focusLost(FocusEvent e) {
+    
+    }
 }

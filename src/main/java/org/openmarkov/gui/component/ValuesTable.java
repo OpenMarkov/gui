@@ -26,19 +26,14 @@ import org.openmarkov.gui.exception.MismatchedValueException;
 
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.io.Serial;
-import java.util.EventObject;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -62,6 +57,7 @@ import java.util.ListIterator;
  * - eliminates the deterministic values
  */
 public class ValuesTable extends KeyTable implements PNEditListener {
+    
     /**
      * first editable Column
      */
@@ -72,61 +68,31 @@ public class ValuesTable extends KeyTable implements PNEditListener {
     @Serial
     private static final long serialVersionUID = 1L;
     /**
-     * number of decimals positions to be used for calculations and display
-     */
-    protected static int decimalPositions = 2;                                  // by
-    /**
      * table model
      */
-    protected ValuesTableModel tableModel;
+    private ValuesTableModel tableModel;
     /**
      * Boolean array with the rows and columns of the tableModel.
      * Each cell of the array is true if the data has been modified
      * boolean data model (to know if a value has been changed)
      */
-    protected boolean[][] dataModified = null;
+    private boolean[][] dataModified = null;
     /**
      * Table Row Sorter/Filter
      */
-    protected TableRowSorter<ValuesTableModel> tableRowSorter = null;
+    private TableRowSorter<ValuesTableModel> tableRowSorter = null;
     /**
      * type of node for this variable
      */
     protected NodeType nodeType = null;
     // default;
     /**
-     * last editable row. By default, it is zero until runtime initialisation
+     * last editable row. By default, it is -1 until runtime initialisation
      */
-    protected int lastEditableRow = 0;
-    /**
-     * define if the table is using General or Canonical Potentials
-     * <ul>
-     * <li>if index = 0 then Using General Potential</li>
-     * <li>if index = 1,2,3 then Using Canonical Potential (family OR)</li>
-     * <li>if index = 4,5,6 then Using Canonical Potential (famili AND)</li>
-     * </ul>
-     */
-    protected final int indexPotential = 0;                                  // General
-    /**
-     * define if the table shows all parameters or only independent parameters
-     */
-    protected boolean showingAllParameters = false;
+    protected int lastEditableRow = -1;
     // Potential
     // by
     // default
-    /**
-     * define if the table shows probabilities values or state name
-     */
-    
-    protected final boolean showingProbabilitiesValues = false;
-    /**
-     * define if the table shows TPC values or canonical values
-     */
-    protected final boolean showingTPCvalues = false;
-    /**
-     * define if the table shows Optimal Decision
-     */
-    protected boolean showingOptimal = false;
     /**
      * String database
      */
@@ -139,12 +105,12 @@ public class ValuesTable extends KeyTable implements PNEditListener {
     /**
      * True if the class of potential is ExactDistrPotential
      */
-    protected boolean isExactDistrPotential = false;
+    private boolean isExactDistrPotential = false;
     /**
      * if getExactDistrPotential tablePotential=potential.getTablePotential, if !getExactDistrPotential tablePotential= (tablePotential)potential
      */
     protected TablePotential tablePotential = null;
-    protected ProbNet probNet;
+    private ProbNet probNet;
     /**
      * Define the last column of the table that was modified
      */
@@ -155,9 +121,6 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      */
     
     protected List<Integer> priorityList = new LinkedList<>();
-    protected final boolean isSelectAllForMouseEvent = true;
-    protected final boolean isSelectAllForActionEvent = true;
-    protected final boolean isSelectAllForKeyEvent = true;
     /**
      * first editable row. By default, it is zero until runtime initialisation
      */
@@ -172,41 +135,85 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      * @param modifiable - true if the table can be edited and modified
      */
     public ValuesTable(Node node, ValuesTableModel tableModel, final boolean modifiable) {
-        super(tableModel, modifiable, true, true);
-        node.getProbNet().getPNESupport().addListener(this);
+        super(tableModel, modifiable, false, true);
         this.tableModel = tableModel;
-        this.node = node;
-        this.probNet = node.getProbNet();
-        this.potential = node.getPotentials().getFirst();
-        //Adding the initialisation of getExactDistrPotential
-        
-        this.isExactDistrPotential = (node.getPotentials().getFirst() instanceof ExactDistrPotential);
-        if (potential instanceof ExactDistrPotential exactDistr) {
-            tablePotential = exactDistr.getTablePotential();
-        } else if (potential instanceof TablePotential table) {
-            tablePotential = table;
+        if (node != null) {
+            node.getProbNet().getPNESupport().addListener(this);
+            this.node = node;
+            this.probNet = node.getProbNet();
+            this.potential = node.getPotentials().getFirst();
+            //Adding the initialisation of getExactDistrPotential
+            
+            this.isExactDistrPotential = (node.getPotentials().getFirst() instanceof ExactDistrPotential);
+            if (this.potential instanceof ExactDistrPotential exactDistr) {
+                this.tablePotential = exactDistr.getTablePotential();
+            } else if (this.potential instanceof TablePotential table) {
+                this.tablePotential = table;
+            }
         }
         //
         if (modifiable) {
             int numRowsModel = tableModel.getRowCount();
             int numColumsModel = tableModel.getColumnCount();
             this.dataModified = new boolean[numRowsModel][numColumsModel];
-            initializeDataModified(false);
+            this.initializeDataModified(false);
+        }
+        this.canGenerateEditorWhen((row, column)-> row >= getFirstEditableRow() && (row <= getLastEditableRow() || getLastEditableRow() == -1) && column >= FIRST_EDITABLE_COLUMN);
+        
+    }
+    
+    @Override public void setValueAt(Object newValue, int row, int column, Object source) {
+        Object oldValue = this.getValueAt(row, column, source);
+        // The new value has to be transformed to double
+        newValue = ValuesTable.resolveNewDouble(newValue, oldValue);
+        if (oldValue == newValue || oldValue.equals(newValue)) {
+            return;
+        }
+        // When is tablePotential, the value cannot be negative
+        if (((Double) newValue) < 0 && !this.isExactDistrPotential) {
+            throw new UnrecoverableException(new MismatchedValueException("a positive number", newValue));
+        }
+        //if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION)
+        if (!this.isExactDistrPotential) {
+            if (this.lastCol != column) {
+                this.priorityList.clear();
+                this.lastCol = column;
+            }
+            
+        }
+        
+        // Chance, decision and utility
+        
+        try {
+            new TablePotentialValueEdit(this.node, (Double) newValue, row, column, this.priorityList,
+                                        this.getTableModel().getNotEditablePositions())
+                    .executeEdit();
+        } catch (DoEditException e) {
+            throw new UnrecoverableException(e);
+        } catch (ThereIsNoPotentialsInNodeException e) {
+            throw new UnreachableException(e);
+        }
+        
+        // UNCLEAR Should it be here?
+        // Sets the value in case of ExactDistrPotential
+        if (this.isExactDistrPotential) {
+            super.setValueAt(newValue, row, column, source);
         }
     }
     
-    /**
-     * Constructor for ValuesTable
-     */
-    public ValuesTable(ValuesTableModel tableModel, final boolean modifiable) {
-        super(tableModel, modifiable, true, true);
-        this.tableModel = tableModel;
-        if (modifiable) {
-            int numRowsModel = tableModel.getRowCount();
-            int numColumsModel = tableModel.getColumnCount();
-            this.dataModified = new boolean[numRowsModel][numColumsModel];
-            initializeDataModified(false);
-        }
+    static Object resolveNewDouble(Object newValue, Object oldValue) {
+        return switch (newValue) {
+            case String newValueString when newValueString.isBlank() -> oldValue;
+            case String newValueString -> {
+                try {
+                    yield Double.parseDouble(newValueString);
+                } catch (NumberFormatException ex) {
+                    throw new UnrecoverableException(new MismatchedValueException("a number", newValue));
+                }
+            }
+            case Double newValueDouble -> newValueDouble;
+            case null, default -> throw new UnrecoverableException(new MismatchedValueException("a number", newValue));
+        };
     }
     
     /**
@@ -219,10 +226,10 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for (int columnPosition = 0; columnPosition < howManyColumns; columnPosition++) {
             String columnId = "";
-            int firstLetterPosition = columnPosition % 26;
-            int secondLetterPosition = columnPosition / 26 - 1;
-            if (columnPosition >= (26 * 27)) {
-            } else if (columnPosition >= 26) {
+            int firstLetterPosition = columnPosition % ALPHABET.length();
+            int secondLetterPosition = columnPosition / ALPHABET.length() - 1;
+            if (columnPosition >= (ALPHABET.length() * (ALPHABET.length() + 1))) {
+            } else if (columnPosition >= ALPHABET.length()) {
                 columnId = columnId + ALPHABET.charAt(secondLetterPosition) + ALPHABET
                         .charAt(firstLetterPosition);
             } else {
@@ -234,20 +241,6 @@ public class ValuesTable extends KeyTable implements PNEditListener {
     }
     
     /**
-     * @return the decimalPositions
-     */
-    protected static int getDecimalPositions() {
-        return decimalPositions;
-    }
-    
-    /**
-     * @param newDecimalPositions the decimalPositions to set
-     */
-    protected static void setDecimalPositions(int newDecimalPositions) {
-        decimalPositions = newDecimalPositions;
-    }
-    
-    /**
      * This method returns the dataModified variable. If dataModified doesn't exist it is created
      *
      * @return dataModified
@@ -255,13 +248,13 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      * @see #dataModified
      * revised--&gt; not changed
      */
-    public boolean[][] getDataModified() {
-        if (dataModified == null) {
-            int numRowsModel = tableModel.getRowCount();
-            int numColumsModel = tableModel.getColumnCount();
-            dataModified = new boolean[numRowsModel][numColumsModel];
+    private boolean[][] getDataModified() {
+        if (this.dataModified == null) {
+            int numRowsModel = this.tableModel.getRowCount();
+            int numColumsModel = this.tableModel.getColumnCount();
+            this.dataModified = new boolean[numRowsModel][numColumsModel];
         }
-        return dataModified;
+        return this.dataModified;
     }
     
     /**
@@ -273,13 +266,13 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      * revised--&gt; not changed
      */
     public void initializeDataModified(boolean isModified) {
-        if (tableModel != null) {
-            if (dataModified == null) {
-                getDataModified();
+        if (this.tableModel != null) {
+            if (this.dataModified == null) {
+                this.getDataModified();
             }
-            for (int i = 0; i < tableModel.getRowCount(); i++) {
-                for (int j = 0; j < tableModel.getColumnCount(); j++) {
-                    dataModified[i][j] = isModified;
+            for (int i = 0; i < this.tableModel.getRowCount(); i++) {
+                for (int j = 0; j < this.tableModel.getColumnCount(); j++) {
+                    this.dataModified[i][j] = isModified;
                 }
             }
         }
@@ -290,17 +283,22 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      */
     @Override protected void defaultConfiguration() {
         super.defaultConfiguration();
-        setFirstColumnHidden(false); // key prefix column is hidden
-        setShowColumnHeader(false); // no column header here
-        setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        setRowSelectionAllowed(true);
-        setColumnSelectionAllowed(true);
-        setGridColor(GUIColors.Tables.ValuesTable.GRID_COLOR.getColor());
-        setDefaultRenderer(Double.class, new ValuesTableCellRenderer(0));
-        setDefaultRenderer(String.class, new ValuesTableCellRenderer(0));
-        // next two lines is a cool trick to enhance table performance
-        ToolTipManager.sharedInstance().unregisterComponent(this);
-        ToolTipManager.sharedInstance().unregisterComponent(getTableHeader());
+        this.setFirstColumnHidden(false); // key prefix column is hidden
+        this.setShowColumnHeader(false); // no column header here
+        
+        this.onTables(omjTable -> {
+            omjTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            omjTable.setRowSelectionAllowed(true);
+            omjTable.setColumnSelectionAllowed(true);
+            omjTable.setGridColor(GUIColors.Tables.ValuesTable.GRID_COLOR.getColor());
+            omjTable.setDefaultRenderer(Double.class, new ValuesTableCellRenderer(this, firstEditableRow, null));
+            omjTable.setDefaultRenderer(String.class, new ValuesTableCellRenderer(this, firstEditableRow, null));
+            omjTable.setDefaultRenderer(Object.class, new ValuesTableCellRenderer(this, firstEditableRow, null));
+            // next two lines is a cool trick to enhance table performance
+            ToolTipManager.sharedInstance().unregisterComponent(omjTable);
+            ToolTipManager.sharedInstance().unregisterComponent(omjTable.getTableHeader());
+        });
+        
     }
     
     /**
@@ -308,8 +306,8 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      * revised-&gt; not changed
      */
     public void resetModel() {
-        tableModel = null;
-        dataModified = null;
+        this.tableModel = null;
+        this.dataModified = null;
     }
     
     /**
@@ -333,124 +331,23 @@ public class ValuesTable extends KeyTable implements PNEditListener {
     public void setModel(ValuesTableModel newDataModel) throws IllegalArgumentException {
         super.setModel(newDataModel);
         this.tableModel = newDataModel;
-        tableRowSorter = new TableRowSorter<>(((ValuesTableModel) getModel()));
+        this.tableRowSorter = new TableRowSorter<>(((ValuesTableModel) this.getModel()));
         // not display the last row where the cells has states and not values
         // and it is only required when displaying states values
     }
     
     /**
-     * @see javax.swing.JTable#changeSelection(int, int, boolean, boolean)
-     * revised--&gt;not changed
-     */
-    @Override public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
-        super.changeSelection(rowIndex, columnIndex, toggle, extend);
-        if (columnIndex < FIRST_EDITABLE_COLUMN) { // not selectable
-            super.changeSelection(rowIndex, columnIndex + 1, toggle, extend);
-        } else {
-            super.changeSelection(rowIndex, columnIndex, toggle, extend);
-        }
-    }
-    
-    /**
-     * Cancels the editing in any cell of the table, avoiding its new value is
-     * recorded.
-     * revised--&gt;not changed
-     */
-    public void cancelCellEditing() {
-        TableCellEditor actualEditor = getCellEditor();
-        if (actualEditor != null) {
-            actualEditor.cancelCellEditing();
-        }
-    }
-    
-    /**
-     * Stops the editing in any cell of the table, recording the new value.
-     * revised--&gt;not changed
-     */
-    public void stopCellEditing() {
-        TableCellEditor actualEditor = getCellEditor();
-        if (actualEditor != null) {
-            actualEditor.stopCellEditing();
-        }
-    }
-    
-    
-    /**
-     * check the value to modify in the table and sets
-     */
-    @Override public void setValueAt(Object newValue, int row, int col) {
-        
-        Object oldValue = getValueAt(row, col);
-        // The new value has to be transformed to double
-        if (!castValue(newValue)) {
-            newValue = oldValue;
-        }
-        
-        // Not clear if I have to use equals
-        if (oldValue.equals(newValue)) {
-            return;
-        }
-        // When is tablePotential, the value cannot be negative
-        if (((Double) newValue) < 0 && !isExactDistrPotential) {
-            throw new UnrecoverableException(new MismatchedValueException("a positive number", newValue));
-        }
-        //if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION)
-        if (!isExactDistrPotential) {
-            if (lastCol != col) {
-                priorityList.clear();
-                lastCol = col;
-            }
-            
-        }
-        
-        // Chance, decision and utility
-        
-        try {
-            TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(node, (Double) newValue, row, col,
-                                                                                    priorityList, getTableModel().getNotEditablePositions());
-            
-            nodePotentialEdit.executeEdit();
-        } catch (DoEditException e) {
-            throw new UnrecoverableException(e);
-        } catch (ThereIsNoPotentialsInNodeException e) {
-            throw new UnreachableException(e);
-        }
-        
-        // UNCLEAR Should it be here?
-        // Sets the value in case of ExactDistrPotential
-        if (isExactDistrPotential)
-            super.setValueAt(newValue, row, col);
-    }
-    
-    /**
-     * Check if newValue is a String or a Double
-     *
-     * @param newValue - new value to validate
-     */
-    protected boolean castValue(Object newValue) {
-        
-        if (newValue instanceof String)
-            try {
-                Double.parseDouble((String) newValue);
-                return true;
-            } catch (NumberFormatException ex) {
-                return false;
-            }
-        return newValue instanceof Double;
-    }
-    
-    /**
      * @return the variable
      */
-    public Variable getVariable() {
-        return node.getVariable();
+    private Variable getVariable() {
+        return this.node.getVariable();
     }
     
     /**
      * @return the nodeType
      */
     public NodeType getNodeType() {
-        return nodeType;
+        return this.nodeType;
     }
     
     /**
@@ -464,7 +361,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      * @return the lastEditableRow
      */
     public int getLastEditableRow() {
-        return lastEditableRow;
+        return this.lastEditableRow;
     }
     
     /**
@@ -478,7 +375,7 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      * @return the firstEditableRow
      */
     public int getFirstEditableRow() {
-        return firstEditableRow;
+        return this.firstEditableRow;
     }
     
     /**
@@ -486,20 +383,6 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      */
     public void setFirstEditableRow(int firstEditableRow) {
         this.firstEditableRow = firstEditableRow;
-    }
-    
-    /**
-     * @return the usingGeneralPotential
-     */
-    public boolean isUsingGeneralPotential() {
-        return (indexPotential == 0);
-    }
-    
-    /**
-     * @return the showingAllParameters
-     */
-    public boolean isShowingAllParameters() {
-        return showingAllParameters;
     }
     
     /**
@@ -518,129 +401,18 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      *                             revised--&gt;  minor changes
      */
     public void setShowingAllParameters(boolean showingAllParameters) {
-        this.showingAllParameters = showingAllParameters;
-        tableRowSorter = new TableRowSorter<>(((ValuesTableModel) getModel()));
+        this.tableRowSorter = new TableRowSorter<>(((ValuesTableModel) this.getModel()));
         if (showingAllParameters) {
-            // I suppose variable is != null and has a name
-            
-            //Bug #280
-            /*
-             * The commented code creates a RowFilter that filters the rows containing the name of the variable.
-             * Is it necessary in some case?
-             */
-            
-            /*
-             * RowFilter.regexFilter ("^" + name+ "$", 0) --&gt; Returns a RowFilter that returns anything beginning with the name of the variable why?
-             * RowFilter.notFilter --&gt; Returns a RowFilter that includes entries if the supplied filter does not include the entry. That is, returns
-             * the entries which does not contain the variable name
-             *
-             */
-            
-            //    	if (!isExactDistrPotential)
-            //        {
-            //            String name = getVariable ().getName ();
-            //            if (getVariable ().getTimeSlice () != Integer.MIN_VALUE)
-            //            {
-            //                //Inserts '\\' before '[' and ']'; name= namenode\\[number\\]
-            //            	name = getRegExp (name);
-            //            }
-            //            if (name.contains ("(") || name.contains (")"))
-            //            {
-            //            	//Inserts '\\' before '(' and ')';
-            //            	name = getRegExpParenthesis (name);
-            //            }
-            //            if (name.contains ("+"))
-            //            {
-            //                name = name.replace ("+", "\\+");
-            //            }
-            //            if (name.contains ("?"))
-            //            {
-            //                name = name.replace ("?", "\\?");
-            //            }
-            //
-            //            tableRowSorter.setRowFilter (RowFilter.notFilter (RowFilter.regexFilter ("^" + name+ "$", 0)));
-            //            this.setRowSorter (tableRowSorter);
-            //            this.setRowSorter (null);
-            //
-            //         }
-            //         else
-            //         {
-            //                this.setRowSorter (null);
-            //         }
-            this.setRowSorter(null);
+            this.onTables(omjTable -> omjTable.setRowSorter(null));
         } else {
-            int lastRow = getModel().getRowCount() - 1 - 1;
+            int lastRow = this.getModel().getRowCount() - 1 - 1;
             lastRow = (Math.max(lastRow, 0));
-            LinkedList<RowFilter<Object, Object>> list = new LinkedList<>();
-            list.add(RowFilter.notFilter(RowFilter.regexFilter((String) getModel().getValueAt(lastRow, 0), 0)));
-            list.add(RowFilter.notFilter(RowFilter.regexFilter(getVariable().getName(), 0)));
-            tableRowSorter.setRowFilter(RowFilter.andFilter(list));
-            this.setRowSorter(tableRowSorter);
+            Deque<RowFilter<Object, Object>> list = new LinkedList<>();
+            list.add(RowFilter.notFilter(RowFilter.regexFilter((String) this.getModel().getValueAt(lastRow, 0), 0)));
+            list.add(RowFilter.notFilter(RowFilter.regexFilter(this.getVariable().getName(), 0)));
+            this.tableRowSorter.setRowFilter(RowFilter.andFilter(list));
+            this.onTables(omjTable -> omjTable.setRowSorter(this.tableRowSorter));
         }
-    }
-    
-    /**
-     * Gets the regular expression for the temporal node
-     *
-     * @param name the name of the node
-     *
-     * @return the regular expression of the name of node. It returns namenode\\[number\\]
-     * <p>
-     * revised--&gt; not changed
-     */
-    protected static String getRegExp(String name) {
-        int cont1 = name.indexOf('[');
-        String s1 = name.substring(0, cont1);
-        int cont2 = name.indexOf(']');
-        String s2 = name.substring(cont1, cont2);
-        String s3 = name.substring(cont2);
-        return s1 + "\\" + s2 + "\\" + s3;
-    }
-    
-    /**
-     * Gets the regular expression for node names with parenthesis
-     *
-     * @param name the name of the node
-     *
-     * @return the regular expression of the name of node. This method returns
-     * the same name but substituting '(' and ')' by '\\(' and '\\)'
-     */
-    protected static String getRegExpParenthesis(String name) {
-        if (name.contains("(")) {
-            name = name.replace("(", "\\(");
-        }
-        if (name.contains(")")) {
-            name = name.replace(")", "\\)");
-        }
-        return name;
-    }
-    
-    /**
-     * @return the showingProbabilitiesValues
-     */
-    protected boolean isShowingProbabilitiesValues() {
-        return showingProbabilitiesValues;
-    }
-    
-    /**
-     * @return the showingTPCvalues
-     */
-    protected boolean isShowingTPCvalues() {
-        return showingTPCvalues;
-    }
-    
-    /**
-     * @return the showingOptimal
-     */
-    public boolean isShowingOptimal() {
-        return showingOptimal;
-    }
-    
-    /**
-     * @param showingOptimal the showingOptimal to set
-     */
-    public void setShowingOptimal(boolean showingOptimal) {
-        this.showingOptimal = showingOptimal;
     }
     
     /**
@@ -648,9 +420,9 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      */
     @Override public void afterEditExecutes(@UnknownNullability PNEdit edit) {
         if (edit instanceof TablePotentialValueEdit tpEdit) {
-            tablePotentialValueEditHappened(tpEdit);
+            this.tablePotentialValueEditHappened(tpEdit);
         } else if (edit instanceof UncertainValuesEdit uvEdit) {
-            uncertainValuesEditHappened(uvEdit);
+            this.uncertainValuesEditHappened(uvEdit);
         }
     }
     
@@ -663,12 +435,12 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         int row;
         int positionInValues;
         boolean isChance = edit.isChanceVariable();
-        List<Variable> varsPotential = tablePotential.getVariables();
+        List<Variable> varsPotential = this.tablePotential.getVariables();
         int numVarsPotential = varsPotential.size();
         int numParents = numVarsPotential - (isChance ? 1 : 0);
         int col = edit.getSelectedColumn();
         TableModel superModel = super.getModel();
-        double[] values = tablePotential.getValues();
+        double[] values = this.tablePotential.getValues();
         int basePosition = edit.getBasePosition();
         if (isChance) {
             int numStates = varsPotential.getFirst().getNumStates();
@@ -691,12 +463,12 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      *
      * @param edit - context for changing the
      */
-    public void tablePotentialValueEditHappened(TablePotentialValueEdit edit) {
+    private void tablePotentialValueEditHappened(TablePotentialValueEdit edit) {
         int position;
         TablePotential editPotential = edit.getPotential();
         if (!edit.getExactDistrPotential()) {
-            priorityList = edit.getPriorityList();
-            ListIterator<Integer> listIterator = priorityList.listIterator();
+            this.priorityList = edit.getPriorityList();
+            ListIterator<Integer> listIterator = this.priorityList.listIterator();
             double[] values = editPotential.getValues();
             while (listIterator.hasNext()) {
                 position = listIterator.next();
@@ -718,8 +490,8 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         if (edit instanceof TablePotentialValueEdit tpEdit) {
             TablePotential editPotential = tpEdit.getPotential();
             if (!tpEdit.getExactDistrPotential()) {
-                priorityList = tpEdit.getPriorityList();
-                for (Integer position : priorityList) {
+                this.priorityList = tpEdit.getPriorityList();
+                for (Integer position : this.priorityList) {
                     super.getModel().setValueAt(editPotential.getValues()[position], tpEdit.getRowPosition(position),
                                                 tpEdit.getColumnPosition());
                 }
@@ -731,52 +503,6 @@ public class ValuesTable extends KeyTable implements PNEditListener {
         }
     }
     
-    /**
-     * This method edits the cell at row, column.
-     * If isSelectAllForMouseEvent,isSelectAllForActionEvent, or isSelectAllForKeyEvent the entire cell is selected
-     * UNCLEAR isSelectAllForMouseEvent,isSelectAllForActionEvent, or isSelectAllForKeyEvent values never change
-     * Overrided to provide Select All editing functionality
-     *
-     * @param row    - the row of the edited cell
-     * @param column - the column of the edited cell
-     * @param e      - event to pass into shouldSelectCell;
-     */
-    @Override public boolean editCellAt(int row, int column, EventObject e) {
-        boolean result = super.editCellAt(row, column, e);
-        if (isSelectAllForMouseEvent || isSelectAllForActionEvent || isSelectAllForKeyEvent) {
-            selectAll(e);
-        }
-        return result;
-    }
-    
-    /**
-     * If the editor that is handling the editing session is not a JTextComponent, the method does nothing
-     * If the editor is a JTextComponent then:
-     * If e is and instance of KeyEvent, ActionEvent or MouseEvent, the method select all the foreground of the cell
-     *
-     * @param e event which provoked the edition and selection
-     */
-    private void selectAll(EventObject e) {
-        // Returns the component that is handling the editing session.
-        final Component editor = getEditorComponent();
-        if (!(editor instanceof JTextComponent))
-            return;
-        switch (e) {
-            case null -> ((JTextComponent) editor).selectAll();
-            // Typing in the cell was used to activate the editor
-            case KeyEvent keyEvent when isSelectAllForKeyEvent -> ((JTextComponent) editor).selectAll();
-            // F2 was used to activate the editor
-            case ActionEvent actionEvent when isSelectAllForActionEvent -> ((JTextComponent) editor).selectAll();
-            // A mouse click was used to activate the editor.
-            // Generally this is a double click and the second mouse click is
-            // passed to the editor which would remove the foreground selection unless
-            // we use the invokeLater()
-            case MouseEvent mouseEvent when isSelectAllForMouseEvent ->
-                    SwingUtilities.invokeLater(() -> ((JTextComponent) editor).selectAll());
-            default -> {
-            }
-        }
-    }
     
     /**
      * This method sets the variable probNet to the node probNet
@@ -795,59 +521,62 @@ public class ValuesTable extends KeyTable implements PNEditListener {
      * Closes this object and prepare it for disposal
      */
     public void close() {
-        probNet.getPNESupport().removeListener(this);
+        this.probNet.getPNESupport().removeListener(this);
     }
     
     /**
      * Adjusts columns width to its content
      */
     public void fitColumnsWidthToContent() {
-        JTableHeader header = getTableHeader();
-        
-        TableCellRenderer headerRenderer = null;
-        
-        if (header != null) {
-            headerRenderer = header.getDefaultRenderer();
-        }
-        
-        TableColumnModel columns = getColumnModel();
-        TableModel tableModel = getModel();
-        int margin = columns.getColumnMargin();
-        int rowCount = tableModel.getRowCount();
-        int columnCount = tableModel.getColumnCount();
-        
-        for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
-            TableColumn column = columns.getColumn(columnIndex);
-            column.setMinWidth(60);
-            int width = -1;
+        this.onTables(omjTable -> {
+            JTableHeader header = omjTable.getTableHeader();
             
-            TableCellRenderer tableCellRenderer = column.getHeaderRenderer();
+            TableCellRenderer headerRenderer = null;
             
-            if (tableCellRenderer == null) {
-                tableCellRenderer = headerRenderer;
+            if (header != null) {
+                headerRenderer = header.getDefaultRenderer();
             }
             
-            if (tableCellRenderer != null) {
-                Component component = tableCellRenderer
-                        .getTableCellRendererComponent(this, column.getHeaderValue(), false, false, -1, columnIndex);
+            TableColumnModel columns = omjTable.getColumnModel();
+            TableModel tableModel = omjTable.getModel();
+            int margin = columns.getColumnMargin();
+            int rowCount = tableModel.getRowCount();
+            int columnCount = tableModel.getColumnCount();
+            
+            for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
+                TableColumn column = columns.getColumn(columnIndex);
+                column.setMinWidth(60);
+                int width = -1;
                 
-                width = component.getPreferredSize().width;
-            }
-            
-            for (int rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
-                TableCellRenderer cellRenderer = getCellRenderer(rowIndex, columnIndex);
+                TableCellRenderer tableCellRenderer = column.getHeaderRenderer();
                 
-                Component c = cellRenderer
-                        .getTableCellRendererComponent(this, tableModel.getValueAt(rowIndex, columnIndex), false, false,
-                                                       rowIndex, columnIndex);
+                if (tableCellRenderer == null) {
+                    tableCellRenderer = headerRenderer;
+                }
                 
-                width = Math.max(width, c.getPreferredSize().width);
+                if (tableCellRenderer != null) {
+                    Component component = tableCellRenderer
+                            .getTableCellRendererComponent(omjTable, column.getHeaderValue(), false, false, -1, columnIndex);
+                    
+                    width = component.getPreferredSize().width;
+                }
+                
+                for (int rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
+                    TableCellRenderer cellRenderer = omjTable.getCellRenderer(rowIndex, columnIndex);
+                    
+                    Component c = cellRenderer
+                            .getTableCellRendererComponent(omjTable, tableModel.getValueAt(rowIndex, columnIndex), false, false,
+                                                           rowIndex, columnIndex);
+                    
+                    width = Math.max(width, c.getPreferredSize().width);
+                }
+                
+                if (width >= 0) {
+                    column.setMinWidth(width + margin);
+                }
             }
-            
-            if (width >= 0) {
-                column.setMinWidth(width + margin);
-            }
-        }
+        });
+        
     }
     
 }

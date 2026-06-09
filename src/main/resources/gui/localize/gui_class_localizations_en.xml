@@ -57,7 +57,7 @@
     <Localization class="org.openmarkov.gui.exception.LinkInversionRequiresChanceVariablesWithPotential"
                   value="Link inversion is only possible for Chance nodes that have a potential, which is not the case for {wrongNode}"/>
     <Localization class="org.openmarkov.gui.exception.MismatchedValueException"
-                  value="Wrong value found. it was expecting {expected}, but {foundAsString} was found instead."/>
+                  value="It was expecting {expected}, but {foundAsString} was found instead."/>
     <Localization class="org.openmarkov.gui.exception.NoNetOpenedException" value="There is no network opened."/>
     <Localization class="org.openmarkov.gui.exception.NoRowSelectedException"
                   value="There is no row selected, and at least one it is required."/>

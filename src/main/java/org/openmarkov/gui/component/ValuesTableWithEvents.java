@@ -33,7 +33,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -61,7 +60,7 @@ import java.util.ListIterator;
  * @version 2.0 - 29/08/2023 - cmyago; refactored to ValuesTableWithEvents (from EventValuesTable); impossible configurations commented
  *
  */
-public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
+public class ValuesTableWithEvents extends ValuesTable {
     /**
      * first editable Column
      */
@@ -162,7 +161,7 @@ public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
      * @param modifiable           - true if the table can be edited and modified
      */
     public ValuesTableWithEvents(Node node, TableWithEventsModel tableWithEventsModel, final boolean modifiable) {
-        super(tableWithEventsModel, modifiable, true, true);
+        super(node, tableWithEventsModel, true);
         node.getProbNet().getPNESupport().addListener(this);
         this.tableWithEventsModel = tableWithEventsModel;
         this.node = node;
@@ -197,7 +196,7 @@ public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
      * @param modifiable           - true if the table can be edited and modified
      */
     public ValuesTableWithEvents(Node node, TableWithEvents tableWithEvents, TableWithEventsModel tableWithEventsModel, final boolean modifiable) {
-        super(tableWithEventsModel, modifiable, true, true);
+        super(node, tableWithEventsModel, modifiable);
         node.getProbNet().getPNESupport().addListener(this);
         this.tableWithEventsModel = tableWithEventsModel;
         this.node = node;
@@ -227,7 +226,7 @@ public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
      * Constructor for ValuesTable
      */
     public ValuesTableWithEvents(TableWithEventsModel tableWithEventsModel, final boolean modifiable) {
-        super(tableWithEventsModel, modifiable, true, true);
+        super(null, tableWithEventsModel, modifiable);
         this.tableWithEventsModel = tableWithEventsModel;
         if (modifiable) {
             int numRowsModel = tableWithEventsModel.getRowCount();
@@ -320,15 +319,18 @@ public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
         super.defaultConfiguration();
         setFirstColumnHidden(false); // key prefix column is hidden
         setShowColumnHeader(false); // no column header here
-        setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        setRowSelectionAllowed(true);
-        setColumnSelectionAllowed(true);
-        setGridColor(Color.DARK_GRAY);
-        setDefaultRenderer(Double.class, new ValuesTableCellRenderer(0));
-        setDefaultRenderer(String.class, new ValuesTableCellRenderer(0));
-        // next two lines is a cool trick to enhance table performance
-        ToolTipManager.sharedInstance().unregisterComponent(this);
-        ToolTipManager.sharedInstance().unregisterComponent(getTableHeader());
+        onTables(omjTable -> {
+            omjTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            omjTable.setRowSelectionAllowed(true);
+            omjTable.setColumnSelectionAllowed(true);
+            omjTable.setGridColor(Color.DARK_GRAY);
+            omjTable.setDefaultRenderer(Double.class, new ValuesTableCellRenderer(this,firstEditableRow, null));
+            omjTable.setDefaultRenderer(String.class, new ValuesTableCellRenderer(this,firstEditableRow, null));
+            // next two lines is a cool trick to enhance table performance
+            ToolTipManager.sharedInstance().unregisterComponent(omjTable);
+            ToolTipManager.sharedInstance().unregisterComponent(omjTable.getTableHeader());
+        });
+
     }
     
     /**
@@ -366,53 +368,8 @@ public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
         // and it is only required when displaying states values
     }
     
-    /**
-     *
-     * @see JTable#changeSelection(int, int, boolean, boolean)
-     * revised-->not changed
-     */
-    @Override public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
-        super.changeSelection(rowIndex, columnIndex, toggle, extend);
-        if (columnIndex < FIRST_EDITABLE_COLUMN) { // not selectable
-            super.changeSelection(rowIndex, columnIndex + 1, toggle, extend);
-        } else {
-            super.changeSelection(rowIndex, columnIndex, toggle, extend);
-        }
-    }
-    
-    /**
-     * Cancels the editing in any cell of the table, avoiding its new value is
-     * recorded.
-     * revised-->not changed
-     */
-    public void cancelCellEditing() {
-        TableCellEditor actualEditor = getCellEditor();
-        if (actualEditor != null) {
-            actualEditor.cancelCellEditing();
-        }
-    }
-    
-    /**
-     * Stops the editing in any cell of the table, recording the new value.
-     * revised-->not changed
-     */
-    public void stopCellEditing() {
-        TableCellEditor actualEditor = getCellEditor();
-        if (actualEditor != null) {
-            actualEditor.stopCellEditing();
-        }
-    }
-    
-    /**
-     * check the value to modify in the table and sets
-     * carmenyago removed the dependency with the utility type, the use of deterministic tables
-     * and checked if the new can be value converted to a double. She also deleted the use of checkUtilityVariable
-     *
-     * @author cyago
-     * @version 1.1 18/05/2022 - Changed to be used with numeric variables; currently discretized variables not considered
-     */
-    public void setValueAt(Object newValue, int row, int col) {
-        Object oldValue = getValueAt(row, col);
+    @Override public void setValueAt(Object newValue, int row, int column, Object source) {
+        Object oldValue = getValueAt(row, column, source);
         // Not clear if I have to use equals
         if (oldValue.equals(newValue))
             return;
@@ -426,9 +383,9 @@ public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
                 JOptionPane.showMessageDialog(this.getParent(), "Introduced value cannot be negative");
             }
             //if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION)
-            if (lastCol != col) {
+            if (lastCol != column) {
                 priorityList.clear();
-                lastCol = col;
+                lastCol = column;
             }
         }
         
@@ -436,33 +393,12 @@ public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
         // Chance, decision and utility
         
         try {
-            new EventTablePotentialValueEdit(node, tableWithEvents, newValue, row, col, priorityList)
+            new EventTablePotentialValueEdit(node, tableWithEvents, newValue, row, column, priorityList)
                     .executeEdit();
         } catch (DoEditException e) {
             throw new UnrecoverableException(e);
         }
         
-    }
-    
-    /**
-     * Check if newValue is a String or a Double
-     *
-     * @param newValue - new value to validate
-     *
-     * @author carmenyago
-     */
-    protected boolean castValue(Object newValue) {
-        
-        if (newValue instanceof String)
-            try {
-                Double.parseDouble((String) newValue);
-                return true;
-            } catch (Exception ex) {
-                return false;
-            }
-        if (newValue instanceof Double)
-            return true;
-        return false;
     }
     
     /**
@@ -557,17 +493,19 @@ public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
     public void setShowingAllParameters(boolean showingAllParameters) {
         this.showingAllParameters = showingAllParameters;
         tableRowSorter = new TableRowSorter<TableWithEventsModel>(((TableWithEventsModel) getModel()));
-        if (showingAllParameters) {
-            this.setRowSorter(null);
-        } else {
-            int lastRow = getModel().getRowCount() - 1 - 1;
-            lastRow = (lastRow < 0 ? 0 : lastRow);
-            LinkedList<RowFilter<Object, Object>> list = new LinkedList<RowFilter<Object, Object>>();
-            list.add(RowFilter.notFilter(RowFilter.regexFilter((String) getModel().getValueAt(lastRow, 0), 0)));
-            list.add(RowFilter.notFilter(RowFilter.regexFilter(getVariable().getName(), 0)));
-            tableRowSorter.setRowFilter(RowFilter.andFilter(list));
-            this.setRowSorter(tableRowSorter);
-        }
+        onTables(omjTable -> {
+            if (showingAllParameters) {
+                omjTable.setRowSorter(null);
+            } else {
+                int lastRow = getModel().getRowCount() - 1 - 1;
+                lastRow = (lastRow < 0 ? 0 : lastRow);
+                LinkedList<RowFilter<Object, Object>> list = new LinkedList<RowFilter<Object, Object>>();
+                list.add(RowFilter.notFilter(RowFilter.regexFilter((String) getModel().getValueAt(lastRow, 0), 0)));
+                list.add(RowFilter.notFilter(RowFilter.regexFilter(getVariable().getName(), 0)));
+                tableRowSorter.setRowFilter(RowFilter.andFilter(list));
+                omjTable.setRowSorter(tableRowSorter);
+            }
+        });
     }
     
     /**
@@ -730,7 +668,7 @@ public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
      */
     private void selectAll(EventObject e) {
         // Returns the component that is handling the editing session.
-        final Component editor = getEditorComponent();
+        final Component editor = getEditorComponent(e.getSource());
         if (editor == null || !(editor instanceof JTextComponent))
             return;
         if (e == null) {
@@ -784,52 +722,54 @@ public class ValuesTableWithEvents extends KeyTable implements PNEditListener {
      * Adjusts columns width to its content
      */
     public void fitColumnsWidthToContent() {
-        JTableHeader header = getTableHeader();
-        
-        TableCellRenderer headerRenderer = null;
-        
-        if (header != null) {
-            headerRenderer = header.getDefaultRenderer();
-        }
-        
-        TableColumnModel columns = getColumnModel();
-        TableModel tableModel = getModel();
-        int margin = columns.getColumnMargin();
-        int rowCount = tableModel.getRowCount();
-        int columnCount = tableModel.getColumnCount();
-        
-        for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
-            TableColumn column = columns.getColumn(columnIndex);
-            column.setMinWidth(60);
-            int width = -1;
+        this.onTables(omjTable -> {
+            JTableHeader header = omjTable.getTableHeader();
             
-            TableCellRenderer tableCellRenderer = column.getHeaderRenderer();
+            TableCellRenderer headerRenderer = null;
             
-            if (tableCellRenderer == null) {
-                tableCellRenderer = headerRenderer;
+            if (header != null) {
+                headerRenderer = header.getDefaultRenderer();
             }
             
-            if (tableCellRenderer != null) {
-                Component component = tableCellRenderer
-                        .getTableCellRendererComponent(this, column.getHeaderValue(), false, false, -1, columnIndex);
+            TableColumnModel columns = omjTable.getColumnModel();
+            TableModel tableModel = omjTable.getModel();
+            int margin = columns.getColumnMargin();
+            int rowCount = tableModel.getRowCount();
+            int columnCount = tableModel.getColumnCount();
+            
+            for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
+                TableColumn column = columns.getColumn(columnIndex);
+                column.setMinWidth(60);
+                int width = -1;
                 
-                width = component.getPreferredSize().width;
-            }
-            
-            for (int rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
-                TableCellRenderer cellRenderer = getCellRenderer(rowIndex, columnIndex);
+                TableCellRenderer tableCellRenderer = column.getHeaderRenderer();
                 
-                Component c = cellRenderer
-                        .getTableCellRendererComponent(this, tableModel.getValueAt(rowIndex, columnIndex), false, false,
-                                                       rowIndex, columnIndex);
+                if (tableCellRenderer == null) {
+                    tableCellRenderer = headerRenderer;
+                }
                 
-                width = Math.max(width, c.getPreferredSize().width);
+                if (tableCellRenderer != null) {
+                    Component component = tableCellRenderer
+                            .getTableCellRendererComponent(omjTable, column.getHeaderValue(), false, false, -1, columnIndex);
+                    
+                    width = component.getPreferredSize().width;
+                }
+                
+                for (int rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
+                    TableCellRenderer cellRenderer = omjTable.getCellRenderer(rowIndex, columnIndex);
+                    
+                    Component c = cellRenderer
+                            .getTableCellRendererComponent(omjTable, tableModel.getValueAt(rowIndex, columnIndex), false, false,
+                                                           rowIndex, columnIndex);
+                    
+                    width = Math.max(width, c.getPreferredSize().width);
+                }
+                
+                if (width >= 0) {
+                    column.setMinWidth(width + margin);
+                }
             }
-            
-            if (width >= 0) {
-                column.setMinWidth(width + margin);
-            }
-        }
+        });
     }
 
 //	public ArrayList<Configuration> getImpossibleConfigurations() {

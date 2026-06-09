@@ -156,6 +156,7 @@ public final class NetworkEditorPanel extends EditorPanel implements PNEditListe
         this.addMouseListener(this.editorInputHandler);
         this.addMouseMotionListener(this.editorInputHandler);
         this.addKeyListener(this.editorInputHandler);
+        this.addFocusListener(this.editorInputHandler);
         this.setZoomToFitNetwork();
         this.editionModeManager = new EditionModeManager(this, this.visualNetwork.getProbNet());
         this.editionMode = this.editionModeManager.getDefaultEditionMode();

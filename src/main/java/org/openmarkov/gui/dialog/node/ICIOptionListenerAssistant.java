@@ -113,7 +113,7 @@ public class ICIOptionListenerAssistant implements ItemListener {
             potentials.add(tablePotential);
             iciNode.setPotentials(potentials);
             this.cpTablePanel = new CPTablePanel(iciNode);
-            JScrollPane cptValuesTablePanel = cpTablePanel.getValuesTableScrollPane();
+            var cptValuesTablePanel = cpTablePanel.getValuesTable();
             ICIPotentialsTablePanel iciPotentialTablePanel = (ICIPotentialsTablePanel) parentPanel;
             this.iciValuesTablePanel = iciPotentialTablePanel.getValuesTableScrollPane();
             for (Component component : parentPanel.getComponents()) {

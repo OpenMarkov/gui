@@ -19,6 +19,7 @@ import org.openmarkov.gui.exception.ThereIsNoNodeInDataException;
 import org.openmarkov.gui.util.GUIUtils;
 
 import javax.swing.event.ListSelectionEvent;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,7 +112,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() throws DoEditException, ThereIsNoNodeInDataException {
+    @Override protected void actionPerformedAddValue(ActionEvent e) throws DoEditException, ThereIsNoNodeInDataException {
         Object[][] newData;
         int newIndex = valuesTable.getRowCount();
         if (absentData == null) {
@@ -131,7 +132,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
                     
                 }
             }
-            valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+            valuesTable.setRowSelectionInterval(newIndex, newIndex);
             absentData = absentPrefixedData();
             setEnabledAddValue(absentData.length != 0);
         }
@@ -188,9 +189,9 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
      * Invoked when the button 'remove' is pressed.
      */
     @Override
-    protected void actionPerformedRemoveValue() throws DoEditException {
+    protected void actionPerformedRemoveValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
-        String name = (String) valuesTable.getValueAt(selectedRow, 1);
+        String name = (String) valuesTable.getValueAt(selectedRow, 1, e.getSource());
 		/*LinkEdit linkEdit;
 		linkEdit = new LinkEdit(node.getProbNet(), name,
 				node.getName(), true, 
@@ -224,7 +225,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() {
+    @Override protected void actionPerformedUpValue(ActionEvent e) {
     
     }
     
@@ -233,7 +234,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() {
+    @Override protected void actionPerformedDownValue(ActionEvent e) {
     
     }
     

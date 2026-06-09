@@ -30,8 +30,8 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
 	private static final long serialVersionUID = 7294499626818840525L;
 	private final int rendererType;
 
-	public MultiCriteriaComboBoxRenderer(int rendererType) {
-		super(1);
+	public MultiCriteriaComboBoxRenderer(JTable table, int rendererType) {
+		super(table, 1, null);
 		this.rendererType = rendererType;
 	}
 

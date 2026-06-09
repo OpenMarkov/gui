@@ -56,11 +56,14 @@ import java.util.ListIterator;
         return numOfParents - 1 + numOfStates + (numOfStates * (col - 1)) - index;
     }
     
-    /**
-     * check the value to modify in the table and sets
-     */
-    @Override public void setValueAt(Object newValue, int row, int col) {
-        Object oldValue = getValueAt(row, col);
+    @Override public void setValueAt(Object newValue, int row, int column, Object source) {
+        Object oldValue = this.getValueAt(row, column, source);
+        // The new value has to be transformed to double
+        newValue = ValuesTable.resolveNewDouble(newValue, oldValue);
+        if (oldValue==newValue || oldValue.equals(newValue)) {
+            return;
+        }
+        
         // TODO Verificar si la ubicación del siguiente código es adecuada
         if (((Double) newValue).isNaN() || ((Double) newValue) < 0) {
             newValue = oldValue;
@@ -70,12 +73,12 @@ import java.util.ListIterator;
             return;
         }
         if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION) {
-            if (lastCol != col) {
+            if (lastCol != column) {
                 priorityList.clear();
-                lastCol = col;
+                lastCol = column;
             }
             ICITablePotentialValueEdit nodePotentialEdit =
-                    new ICITablePotentialValueEdit(node, (Double) newValue, row, col, priorityList);
+                    new ICITablePotentialValueEdit(node, (Double) newValue, row, column, priorityList);
             
             ProbNet probNet1 = node.getProbNet();
             try {

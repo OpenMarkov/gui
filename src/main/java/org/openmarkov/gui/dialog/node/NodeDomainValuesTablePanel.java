@@ -293,7 +293,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             String value = (String) tableData[i][j];
                             // Infinity values
                             if (value != "\u221E" && value != "-" + "\u221E") {
-                                getDiscretizedStatesPanel().getValuesTable().setValueAt(value, i, j);
+                                getDiscretizedStatesPanel().getValuesTable().setValueAt(value, i, j, null);
                             }
                         }
                     }

@@ -41,7 +41,7 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
     /**
      * Font type Helvetica, bold, size 15.
      */
-    private static final Font FONT_HELVETICA = new Font("Helvetica", Font.BOLD, 15);
+    private static final Font TEXT_FONT = new Font("Helvetica", Font.BOLD, 15);
     
     /**
      * Default width of a node when it is contracted. It is the width that it
@@ -73,7 +73,7 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
     /**
      * Object used to measure foreground in a specific font.
      */
-    private static final FontMetrics FONT_METRICS = new JPanel().getFontMetrics(VisualNode.FONT_HELVETICA);
+    private static final FontMetrics FONT_METRICS = new JPanel().getFontMetrics(VisualNode.TEXT_FONT);
     
     /**
      * Visual Network to which this visual node is associated.
@@ -142,9 +142,7 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
             };
             case DECISION -> new FSVariableBox(this);
             case UTILITY -> new NumericVariableBox(this, "  EU");
-            case EVENT -> null;
-            case SV_SUM -> null;
-            case SV_PRODUCT -> null;
+            case EVENT, SV_PRODUCT, SV_SUM -> null;
         };
     }
     
@@ -191,8 +189,7 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
             case DECISION, UTILITY -> new Point2D.Double(this.getShape(g).getBounds2D().getMaxX(), this.getShape(g)
                                                                                                        .getBounds2D()
                                                                                                        .getMaxY());
-            case SV_SUM -> null;
-            case SV_PRODUCT -> null;
+            case SV_SUM, SV_PRODUCT -> null;
         };
     }
     
@@ -407,24 +404,41 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
                 polygon.closePath();
                 yield polygon;
             }
-            case SV_SUM -> null;
-            case SV_PRODUCT -> null;
+            case SV_SUM, SV_PRODUCT -> null;
         };
     }
     
     @Override public void paint(Graphics2D g) {
-        switch (this.node.getNodeType()) {
-            case CHANCE -> {
+        NodeType nodeType = this.node.getNodeType();
+        switch (nodeType) {
+            case CHANCE, EVENT -> {
                 String text = this.getNodeName();
                 double textHeight = VisualNode.getHeight(text, g);
                 Shape shape = this.getShape(g);
-                GUIColor fillColor = this.preResolutionFinding ? GUIColors.Network.ChanceNode.BACKGROUND_ON_PRE_RESOLUTION_FINDING
-                        : this.postResolutionFinding && this.visualNetwork.getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE ?
-                          GUIColors.Network.ChanceNode.BACKGROUND_ON_POST_RESOLUTION_FINDING
-                          : GUIColors.Network.ChanceNode.BACKGROUND;
+                GUIColor fillColor = switch (nodeType) {
+                    case CHANCE ->
+                            this.preResolutionFinding ? GUIColors.Network.ChanceNode.BACKGROUND_ON_PRE_RESOLUTION_FINDING
+                                    : this.postResolutionFinding && this.visualNetwork.getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE ?
+                                      GUIColors.Network.ChanceNode.BACKGROUND_ON_POST_RESOLUTION_FINDING
+                                      : GUIColors.Network.ChanceNode.BACKGROUND;
+                    case EVENT -> this.node.getPurpose()
+                                           .equals(PurposeType.TERMINAL_EVENT.getName()) ? GUIColors.Network.EventNode.BACKGROUND_TERMINAL
+                            : this.node.getPurpose().equals(PurposeType.INITIAL_EVENT.getName()) ?
+                              GUIColors.Network.EventNode.BACKGROUND_INITIAL
+                              : GUIColors.Network.EventNode.BACKGROUND;
+                    case DECISION, UTILITY, SV_PRODUCT, SV_SUM -> null;
+                };
                 g.setPaint(fillColor.getColor());
                 g.fill(shape);
-                g.setPaint(GUIColors.Network.ChanceNode.FOREGROUND.getColor());
+                g.setPaint((switch (nodeType) {
+                    case CHANCE -> GUIColors.Network.ChanceNode.FOREGROUND;
+                    case EVENT -> this.node.getPurpose().equals(PurposeType.TERMINAL_EVENT.getName()) ?
+                            GUIColors.Network.EventNode.FOREGROUND_TERMINAL :
+                            this.node.getPurpose().equals(PurposeType.INITIAL_EVENT.getName()) ?
+                            GUIColors.Network.EventNode.FOREGROUND_INITIAL :
+                            GUIColors.Network.EventNode.FOREGROUND;
+                    case DECISION, SV_PRODUCT, SV_SUM, UTILITY -> null;
+                }).getColor());
                 if (this.node.isAlwaysObserved()) {
                     g.setPaint(GUIColors.Network.ALWAYS_OBSERVED.getColor());
                 }
@@ -436,14 +450,17 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
                     g.setStroke((this.isSelected()) ? VisualElement.WIDE_STROKE : VisualElement.NORMAL_STROKE);
                 }
                 g.draw(shape);
-                g.setFont(VisualNode.FONT_HELVETICA);
-                g.setPaint(GUIColors.Network.ChanceNode.TEXT.getColor());
+                g.setFont(VisualNode.TEXT_FONT);
+                g.setPaint((switch (nodeType) {
+                    case CHANCE -> GUIColors.Network.ChanceNode.TEXT;
+                    case EVENT -> GUIColors.Network.EventNode.TEXT;
+                    case DECISION, SV_PRODUCT, SV_SUM, UTILITY -> null;
+                }).getColor());
                 if (this.isExpanded()) {
-                    text = VisualElement.adjustText(text, shape.getBounds2D()
-                                                               .getWidth(), 3, VisualNode.FONT_HELVETICA, g);
+                    text = VisualElement.adjustText(text, shape.getBounds2D().getWidth(),
+                                                    3, VisualNode.TEXT_FONT, g);
                 }
-                FontMetrics fontMetrics = new JPanel().getFontMetrics(VisualNode.FONT_HELVETICA);
-                double textPosX = shape.getBounds2D().getCenterX() - fontMetrics.stringWidth(text) / 2;
+                double textPosX = shape.getBounds2D().getCenterX() - FONT_METRICS.getStringBounds(text, g).getWidth() / 2;
                 double textPosY = shape.getBounds2D().getY() + (textHeight);
                 g.drawString(text, (float) textPosX, (float) textPosY);
                 if (this.isExpanded()) {
@@ -451,7 +468,7 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
                     innerBoxGraphics.translate(shape.getBounds2D().getX() + InnerBox.INTERNAL_MARGIN,
                                                shape.getBounds2D().getY()
                                                        + InnerBox.INTERNAL_MARGIN
-                                                       + fontMetrics.getHeight());
+                                                       + FONT_METRICS.getHeight());
                     this.innerBox.paint(innerBoxGraphics);
                 }
             }
@@ -474,14 +491,13 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
                 g.setPaint(GUIColors.Network.DecisionNode.FOREGROUND.getColor());
                 g.setStroke(this.getContourStroke());
                 g.draw(shape);
-                g.setFont(VisualNode.FONT_HELVETICA);
+                g.setFont(VisualNode.TEXT_FONT);
                 g.setPaint(GUIColors.Network.DecisionNode.TEXT.getColor());
                 if (this.isExpanded()) {
                     double rectangleWitdh = shape.getBounds2D().getWidth();
-                    text = VisualElement.adjustText(text, rectangleWitdh, 3, VisualNode.FONT_HELVETICA, g);
+                    text = VisualElement.adjustText(text, rectangleWitdh, 3, VisualNode.TEXT_FONT, g);
                 }
-                FontMetrics fontMetrics = new JPanel().getFontMetrics(VisualNode.FONT_HELVETICA);
-                double textPosX = shape.getBounds2D().getCenterX() - fontMetrics.stringWidth(text) / 2;
+                double textPosX = shape.getBounds2D().getCenterX() - FONT_METRICS.getStringBounds(text, g).getWidth() / 2;
                 double textPosY = shape.getBounds2D().getY() + (textHeight);
                 g.drawString(text, (float) textPosX, (float) textPosY);
                 if (this.isExpanded()) {
@@ -489,7 +505,7 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
                     innerBoxGraphics.translate(shape.getBounds2D().getX() + InnerBox.INTERNAL_MARGIN,
                                                shape.getBounds2D().getY()
                                                        + InnerBox.INTERNAL_MARGIN
-                                                       + fontMetrics.getHeight());
+                                                       + FONT_METRICS.getHeight());
                     this.innerBox.paint(innerBoxGraphics);
                 }
             }
@@ -510,16 +526,15 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
                 g.setStroke(this.getContourStroke());
                 
                 g.draw(shape);
-                g.setFont(FONT_HELVETICA);
+                g.setFont(TEXT_FONT);
                 g.setPaint(GUIColors.Network.UtilityNode.TEXT.getColor());
                 
                 if (this.isExpanded()) {
                     double interiorWitdh = points[2].getX() - points[1].getX();
-                    text = adjustText(text, interiorWitdh, 3, FONT_HELVETICA, g);
+                    text = adjustText(text, interiorWitdh, 3, TEXT_FONT, g);
                 }
                 
-                FontMetrics fontMetrics = new JPanel().getFontMetrics(FONT_HELVETICA);
-                double textPosX = shape.getBounds2D().getCenterX() - fontMetrics.stringWidth(text) / 2;
+                double textPosX = shape.getBounds2D().getCenterX() - FONT_METRICS.getStringBounds(text, g).getWidth() / 2;
                 double textPosY = shape.getBounds2D().getY() + (textHeight);
                 
                 g.drawString(text, (float) textPosX, (float) textPosY);
@@ -529,63 +544,11 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
                                                     .getX() + UTILITY_NODE_EXPANDED_WIDTH_MARGIN + InnerBox.INTERNAL_MARGIN,
                                                shape.getBounds2D().getY()
                                                        + InnerBox.INTERNAL_MARGIN
-                                                       + fontMetrics.getHeight());
+                                                       + FONT_METRICS.getHeight());
                     this.innerBox.paint(innerBoxGraphics);
                 }
             }
-            case EVENT -> {
-                String text = this.getNodeName();
-                double textHeight = VisualNode.getHeight(text, g);
-                Shape shape = this.getShape(g);
-                
-                // If it is Non Terminal Node
-                if (this.node.getPurpose().equals(PurposeType.TERMINAL_EVENT.getName())) {
-                    g.setPaint(GUIColors.Network.EventNode.BACKGROUND_TERMINAL.getColor());
-                } else if (this.node.getPurpose().equals(PurposeType.INITIAL_EVENT.getName())) {
-                    g.setPaint(GUIColors.Network.EventNode.BACKGROUND_INITIAL.getColor());
-                } else {
-                    g.setPaint(GUIColors.Network.EventNode.BACKGROUND.getColor());
-                }
-                
-                g.fill(shape);
-                g.setPaint(GUIColors.Network.EventNode.FOREGROUND.getColor());
-                
-                if (this.node.isAlwaysObserved()) {
-                    g.setPaint(GUIColors.Network.ALWAYS_OBSERVED.getColor());
-                    g.setStroke((this.isSelected()) ? VisualNode.EVENT_NODE_STROKE_OBSERVED_WIDE : VisualNode.EVENT_NODE_STROKE_OBSERVED_NORMAL);
-                } else if (this.node.isInput()) {
-                    g.setPaint(GUIColors.Network.EventNode.FOREGROUND.getColor());
-                    g.setStroke((this.isSelected()) ? VisualElement.WIDE_DASHED_STROKE : VisualElement.NORMAL_DASHED_STROKE);
-                } else {
-                    g.setPaint(GUIColors.Network.EventNode.FOREGROUND.getColor());
-                    g.setStroke((this.isSelected()) ? VisualElement.WIDE_STROKE : VisualElement.NORMAL_STROKE);
-                }
-                
-                g.draw(shape);
-                g.setFont(VisualNode.FONT_HELVETICA);
-                g.setPaint(GUIColors.Network.EventNode.TEXT.getColor());
-                
-                if (this.isExpanded()) {
-                    text = VisualElement.adjustText(text, shape.getBounds2D()
-                                                               .getWidth(), 3, VisualNode.FONT_HELVETICA, g);
-                }
-                FontMetrics fontMetrics = new JPanel().getFontMetrics(VisualNode.FONT_HELVETICA);
-                double textPosX = shape.getBounds2D().getCenterX() - fontMetrics.stringWidth(text) / 2;
-                double textPosY = shape.getBounds2D().getY() + (textHeight);
-                
-                g.drawString(text, (float) textPosX, (float) textPosY);
-                if (this.isExpanded()) {
-                    var innerBoxGraphics = (Graphics2D) g.create();
-                    innerBoxGraphics.translate(shape.getBounds2D().getX() + InnerBox.INTERNAL_MARGIN,
-                                               shape.getBounds2D().getY()
-                                                       + InnerBox.INTERNAL_MARGIN
-                                                       + fontMetrics.getHeight());
-                    this.innerBox.paint(innerBoxGraphics);
-                }
-            }
-            case SV_SUM -> {
-            }
-            case SV_PRODUCT -> {
+            case SV_SUM, SV_PRODUCT -> {
             }
         }
         ;
@@ -772,8 +735,7 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
                 }
                 yield result;
             }
-            case SV_SUM -> null;
-            case SV_PRODUCT -> null;
+            case SV_SUM, SV_PRODUCT -> null;
         };
     }
     
@@ -801,19 +763,12 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
                     case EVENT -> null;
                 };
             }
-            case DECISION -> {
-            }
-            case UTILITY -> {
-            }
-            case EVENT -> {
-            }
-            case SV_SUM -> {
-            }
-            case SV_PRODUCT -> {
+            case DECISION, SV_PRODUCT, SV_SUM, EVENT, UTILITY -> {
             }
         }
-        
-        this.innerBox.updateNumCases(numCases);
+        if (this.innerBox != null) {
+            this.innerBox.updateNumCases(numCases);
+        }
     }
     
     /**
@@ -849,7 +804,5 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
      * Height of a the arc of the rounded rectangle.
      */
     static final double CHANCE_NODE_ARC_HEIGHT = 20;
-    static final BasicStroke EVENT_NODE_STROKE_OBSERVED_WIDE = new BasicStroke(6.0f);
-    static final BasicStroke EVENT_NODE_STROKE_OBSERVED_NORMAL = new BasicStroke(3.0f);
     static final double UTILITY_NODE_EXPANDED_WIDTH_MARGIN = 4;
 }

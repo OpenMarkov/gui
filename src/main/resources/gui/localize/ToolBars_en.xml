@@ -9,9 +9,7 @@
                 <ToolTip value="Object selection"/>
             </Selection>
             <Event>
-                <ToolTip>
-                    <Label value="Insert event nodes"/>
-                </ToolTip>
+                <ToolTip value="Insert event nodes"/>
             </Event>
             <Decision>
                 <ToolTip value="Insert decision nodes"/>

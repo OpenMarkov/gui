@@ -14,10 +14,10 @@ import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.action.RevelationIntervalEdit;
 
 import javax.swing.event.TableModelEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 
 /******
@@ -75,20 +75,20 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() throws DoEditException {
+    @Override protected void actionPerformedAddValue(ActionEvent e) throws DoEditException {
         int rowCount = valuesTable.getRowCount();
         int newIndex = valuesTable.getRowCount();
         RevelationIntervalEdit revelationArcStateEdit =
                 new RevelationIntervalEdit(link, StateAction.ADD, newIndex, 0, false);
         revelationArcStateEdit.executeEdit();
         setPartitionedInterval();
-        valuesTable.getSelectionModel().setSelectionInterval(rowCount, rowCount);
+        valuesTable.setRowSelectionInterval(rowCount, rowCount);
     }
     
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws DoEditException {
+    @Override protected void actionPerformedRemoveValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         RevelationIntervalEdit revelationArcStateEdit =
                 new RevelationIntervalEdit(link, StateAction.REMOVE, selectedRow, 0, false);
@@ -144,13 +144,13 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
     }
     
     @Override public void mouseClicked(MouseEvent e) {
-        int row = valuesTable.rowAtPoint(e.getPoint());
-        int column = valuesTable.columnAtPoint(e.getPoint());
+        int row = valuesTable.rowAtPoint(e.getPoint(), e.getSource());
+        int column = valuesTable.columnAtPoint(e.getPoint(), e.getSource());
         if (row == -1 && column == -1) {
             return;
         }
         try {
-            changeIntervalDiscretize(row, column);
+            changeIntervalDiscretize(row, column,e);
         } catch (DoEditException ex) {
             throw new UnrecoverableException(ex);
         }
@@ -159,43 +159,43 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
     
     /****
      * Invoked when the interval delimiters are edited
-     *
-     * @param row the row
+     *  @param row the row
      * @param column the column
+     * @param e
      */
-    private void changeIntervalDiscretize(int row, int column) throws DoEditException {
+    private void changeIntervalDiscretize(int row, int column, MouseEvent e) throws DoEditException {
         switch (column) {
             case LOWER_BOUND_VALUE_COLUMN_INDEX, UPPER_BOUND_VALUE_COLUMN_INDEX -> {
-                double j = (Double) valuesTable.getValueAt(row, column);
+                double j = (Double) valuesTable.getValueAt(row, column, e.getSource());
                 System.out.println(j);
                 System.out.println("DiscretizeTablePanel.changeIntervalDiscretize");
                 System.out.println(">> check here the values of the interval with the other intervals");
             }
             case LOWER_BOUND_SYMBOL_COLUMN_INDEX, UPPER_BOUND_SYMBOL_COLUMN_INDEX -> {
                 boolean lower = column == LOWER_BOUND_SYMBOL_COLUMN_INDEX;
-                String aux = (String) valuesTable.getValueAt(row, column);
+                String aux = (String) valuesTable.getValueAt(row, column, e.getSource());
                 RevelationIntervalEdit relatedIntervalEdit = null;
                 switch (column) {
                     case LOWER_BOUND_SYMBOL_COLUMN_INDEX -> {
                         if (aux.equals("(")) {
-                            valuesTable.setValueAt("[", row, column);
+                            valuesTable.setValueAt("[", row, column, e.getSource());
                             
                             if (row > 0) {
-                                Double lowerLimit = (Double) valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX);
-                                Double upperLimit = (Double) valuesTable.getValueAt(row - 1, UPPER_BOUND_VALUE_COLUMN_INDEX);
+                                Double lowerLimit = (Double) valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX, e.getSource());
+                                Double upperLimit = (Double) valuesTable.getValueAt(row - 1, UPPER_BOUND_VALUE_COLUMN_INDEX, e.getSource());
                                 if (lowerLimit.equals(upperLimit))
-                                    valuesTable.setValueAt(")", row - 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
+                                    valuesTable.setValueAt(")", row - 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX, e.getSource());
                                 relatedIntervalEdit = new RevelationIntervalEdit(link, StateAction.MODIFY_DELIMITER_INTERVAL,
                                                                                  row - 1, 0, false);
                             }
                             // checkIntervalDiscretize("[", row, columna,upMonotony);
                         } else {
-                            valuesTable.setValueAt("(", row, column);
+                            valuesTable.setValueAt("(", row, column, e.getSource());
                             if (row > 0) {
-                                Double lowerLimit = (Double) valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX);
-                                Double upperLimit = (Double) valuesTable.getValueAt(row - 1, UPPER_BOUND_VALUE_COLUMN_INDEX);
+                                Double lowerLimit = (Double) valuesTable.getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX, e.getSource());
+                                Double upperLimit = (Double) valuesTable.getValueAt(row - 1, UPPER_BOUND_VALUE_COLUMN_INDEX, e.getSource());
                                 if (lowerLimit.equals(upperLimit))
-                                    valuesTable.setValueAt("]", row - 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
+                                    valuesTable.setValueAt("]", row - 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX, e.getSource());
                                 relatedIntervalEdit = new RevelationIntervalEdit(link, StateAction.MODIFY_DELIMITER_INTERVAL,
                                                                                  row - 1, 0, false);
                             }
@@ -204,23 +204,23 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
                     }
                     case UPPER_BOUND_SYMBOL_COLUMN_INDEX -> {
                         if (aux.equals(")")) {
-                            valuesTable.setValueAt("]", row, column);
+                            valuesTable.setValueAt("]", row, column, e.getSource());
                             if (row < valuesTable.getRowCount() - 1) {
-                                Double lowerLimit = (Double) valuesTable.getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX);
-                                Double upperLimit = (Double) valuesTable.getValueAt(row + 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
+                                Double lowerLimit = (Double) valuesTable.getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX, e.getSource());
+                                Double upperLimit = (Double) valuesTable.getValueAt(row + 1, LOWER_BOUND_VALUE_COLUMN_INDEX, e.getSource());
                                 if (lowerLimit.equals(upperLimit))
-                                    valuesTable.setValueAt("(", row + 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
+                                    valuesTable.setValueAt("(", row + 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX, e.getSource());
                                 relatedIntervalEdit = new RevelationIntervalEdit(link, StateAction.MODIFY_DELIMITER_INTERVAL,
                                                                                  row + 1, 0, true);
                             }
                             // checkIntervalDiscretize("]", row, columna,upMonotony);
                         } else {
-                            valuesTable.setValueAt(")", row, column);
+                            valuesTable.setValueAt(")", row, column, e.getSource());
                             if (row < valuesTable.getRowCount() - 1) {
-                                Double lowerLimit = (Double) valuesTable.getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX);
-                                Double upperLimit = (Double) valuesTable.getValueAt(row + 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
+                                Double lowerLimit = (Double) valuesTable.getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX, e.getSource());
+                                Double upperLimit = (Double) valuesTable.getValueAt(row + 1, LOWER_BOUND_VALUE_COLUMN_INDEX, e.getSource());
                                 if (lowerLimit.equals(upperLimit))
-                                    valuesTable.setValueAt("[", row + 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
+                                    valuesTable.setValueAt("[", row + 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX, e.getSource());
                                 relatedIntervalEdit = new RevelationIntervalEdit(link, StateAction.MODIFY_DELIMITER_INTERVAL,
                                                                                  row + 1, 0, true);
                             }

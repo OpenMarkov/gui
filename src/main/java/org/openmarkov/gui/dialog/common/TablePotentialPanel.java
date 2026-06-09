@@ -125,6 +125,11 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         super();
     }
     
+    @Override protected void setFirstEditableRow(int firstEditableRow) {
+        super.setFirstEditableRow(firstEditableRow);
+        this.valuesTable.setFirstEditableRow(firstEditableRow);
+    }
+    
     /**
      * Constructor used by CPTablePanel
      * This method creates, initialises, and displays a ValuesTable object for the first potential of the node
@@ -170,7 +175,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         
         // If the ScrollPane is not created, initialise it and set the Viewport.
         // Then add the element to the Layout.
-        add(getValuesTableScrollPane(), BorderLayout.CENTER);
+        add(getValuesTable(), BorderLayout.CENTER);
         add(new JButton(), BorderLayout.NORTH);
         
         repaint();
@@ -359,7 +364,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         
         // First editable row coincides with the number of parents
         firstEditableRow = tablePotentialsPanelOperations.calculateFirstEditableRow(node);
-        
+        setFirstEditableRow(firstEditableRow);
         // The baseIndexForCoordinates is the first editable row--&gt;What for--&gt;UNCLEAR
         // The property baseIndexForCoordinates is not Visible. baseIndexForCoordinates= row
         setBaseIndexForCoordinates(firstEditableRow);
@@ -670,7 +675,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                                                                  uncertDialog.isChanceVariable());
         uncertEdit.executeEdit();
         if (selectedColumn > 0) {
-            ((ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)).setMark(selectedColumn - 1);
+            valuesTable.onTables(omjTable -> {
+                ((ValuesTableCellRenderer) omjTable.getDefaultRenderer(Double.class)).setMark(selectedColumn - 1);
+            });
             getValuesTable().repaint();
             this.getTableModel().setNotEditablePositions(getNotEditablePositions());
         }
@@ -689,21 +696,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             valuesTable.setName("PotentialsTablePanel.valuesTable");
         }
         return valuesTable;
-    }
-    
-    /**
-     * This method initialises valuesTableScrollPane.
-     *
-     * @return a new values table scroll pane.
-     * revised--&gt;not changed
-     */
-    protected JScrollPane getValuesTableScrollPane() {
-        if (valuesTableScrollPane == null) {
-            valuesTableScrollPane = new JScrollPane();
-            valuesTableScrollPane.setName("TablePotentialPanel.valuesTableScrollPane");
-            valuesTableScrollPane.setViewportView(getValuesTable());
-        }
-        return valuesTableScrollPane;
     }
     
     /**
@@ -776,7 +768,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         if (selectedColumn <= 0) {
             return;
         }
-        ((ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)).unMark(selectedColumn - 1);
+        valuesTable.onTables(omjTable -> {
+            ((ValuesTableCellRenderer) omjTable.getDefaultRenderer(Double.class)).unMark(selectedColumn - 1);
+        });
         getValuesTable().repaint();
         this.getTableModel().setNotEditablePositions(getNotEditablePositions());
     }
@@ -817,7 +811,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             if (!(node.getFirstPotential() instanceof TablePotential tablePotential)) {
                 return;
             }
-            int selectedColumn = valuesTable.columnAtPoint(evt.getPoint());
+            int selectedColumn = valuesTable.columnAtPoint(evt.getPoint(), evt.getSource());
             EvidenceCase configuration = getConfiguration(selectedColumn);
             boolean hasUncertainty = tablePotential.hasUncertainty(configuration);
             if (hasUncertainty) {
@@ -864,9 +858,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         if (node.getNodeType() != NodeType.DECISION) {
             // Creates the TableCellRenderer distinguishing if the node has or not link restrictions
             if (!hasLinkRestriction) {
-                cellRenderer = new ValuesTableCellRenderer(firstEditableRow, uncertaintyInColumns);
+                cellRenderer = new ValuesTableCellRenderer(valuesTable, firstEditableRow, uncertaintyInColumns);
             } else {
-                cellRenderer = new ValuesTableWithLinkRestrictionCellRenderer(firstEditableRow, uncertaintyInColumns);
+                cellRenderer = new ValuesTableWithLinkRestrictionCellRenderer(valuesTable, firstEditableRow, uncertaintyInColumns);
             }
             
         } else { // node.getNodeType() == NodeType.DECISION)
@@ -878,21 +872,25 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                 // UNCLEAR--&gt; When ReadOnly is se?
                 // A node has policy if is a decision node with a non uniform potential
                 boolean imposingPolicyByUser = node.hasPolicy() && !isReadOnly();
-                cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow, uncertaintyInColumns
+                cellRenderer = new ValuesTableOptimalPolicyCellRenderer(valuesTable, firstEditableRow, uncertaintyInColumns
                 );
             } else {
                 boolean showingOptimalPolicy = node.getPotentials().getFirst().isAdditive() && isReadOnly();
                 if (!showingOptimalPolicy) {
-                    cellRenderer = new ValuesTableCellRenderer(firstEditableRow, uncertaintyInColumns);
+                    cellRenderer = new ValuesTableCellRenderer(valuesTable, firstEditableRow, uncertaintyInColumns);
                 } else {
                     // When showing the expected utility we want the color of the cells to be green
-                    cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow, uncertaintyInColumns
+                    cellRenderer = new ValuesTableOptimalPolicyCellRenderer(valuesTable, firstEditableRow, uncertaintyInColumns
                     );
                 }
             }
         }
-        valuesTable.setDefaultRenderer(Double.class, cellRenderer);
-        valuesTable.setDefaultRenderer(String.class, cellRenderer);
+        valuesTable.onTables(omjTable -> {
+            omjTable.setDefaultRenderer(Double.class, cellRenderer);
+            omjTable.setDefaultRenderer(String.class, cellRenderer);
+        });
+        
+
     }
     
     /**
@@ -903,12 +901,12 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     protected void setTableSpecificListeners() {
         valuesTable.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
-                int row = valuesTable.rowAtPoint(e.getPoint());
-                int col = valuesTable.columnAtPoint(e.getPoint());
+                int row = valuesTable.rowAtPoint(e.getPoint(), e.getSource());
+                int col = valuesTable.columnAtPoint(e.getPoint(), e.getSource());
                 selectedColumn = col;
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     valuesTable
-                            .editCellAt(valuesTable.rowAtPoint(e.getPoint()), valuesTable.columnAtPoint(e.getPoint()),
+                            .editCellAt(valuesTable.rowAtPoint(e.getPoint(), e.getSource()), valuesTable.columnAtPoint(e.getPoint(), e.getSource()),
                                         e);
                 }
                 if (SwingUtilities.isRightMouseButton(e)) {

@@ -141,12 +141,12 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 			@Override public void mouseClicked(java.awt.event.MouseEvent e) {
 
-				int row = valuesTable.rowAtPoint(e.getPoint());
-				int column = valuesTable.columnAtPoint(e.getPoint());
+				int row = valuesTable.rowAtPoint(e.getPoint(), e.getSource());
+				int column = valuesTable.columnAtPoint(e.getPoint(), e.getSource());
 				if ((row > 0) && (column > 0)) {
-					Integer value = (Integer) valuesTable.getValueAt(row, column);
+					Integer value = (Integer) valuesTable.getValueAt(row, column, e.getSource());
 					Integer newValue = (value.equals(1) ? 0 : 1);
-					valuesTable.setValueAt(newValue, row, column);
+					valuesTable.setValueAt(newValue, row, column, e.getSource());
 				}
 
 			}
@@ -307,9 +307,11 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	protected void setCellRenderers() {
 		int size = valuesTable.getColumnCount();
 		boolean[] aux = new boolean[size - 1];
-		valuesTable.setDefaultRenderer(Double.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux));
-		valuesTable.setDefaultRenderer(String.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux));
-		valuesTable.setDefaultRenderer(Integer.class, new LinkRestrictionCellRenderer(getFirstEditableRow(), aux));
+		valuesTable.onTables(omjTable -> {
+			omjTable.setDefaultRenderer(Double.class, new LinkRestrictionCellRenderer(valuesTable, getFirstEditableRow(), aux));
+			omjTable.setDefaultRenderer(String.class, new LinkRestrictionCellRenderer(valuesTable, getFirstEditableRow(), aux));
+			omjTable.setDefaultRenderer(Integer.class, new LinkRestrictionCellRenderer(valuesTable, getFirstEditableRow(), aux));
+		});
 	}
 
 	@Override public void setData(Node node) {
@@ -323,5 +325,9 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	private void setVariables(List<Variable> variables) {
 		this.variables = variables;
 	}
-
+	
+	@Override protected void setFirstEditableRow(int firstEditableRow) {
+		super.setFirstEditableRow(firstEditableRow);
+		this.valuesTable.setFirstEditableRow(firstEditableRow);
+	}
 }

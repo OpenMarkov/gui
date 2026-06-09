@@ -19,7 +19,6 @@ import org.openmarkov.gui.component.ValuesTableWithEvents;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TableWithEventsContextualMenu;
 
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
@@ -762,13 +761,13 @@ public class TableWithEventsPanel
 		//29/08/2023 There will be more action commands (PSA)
 		if (actionCommand.equals(ActionCommands.ADD_FUNCTION)){
 			try{
-				String functionString = valuesTableWithEvents.getValueAt(selectedRow,selectedColumn).toString();
+				String functionString = valuesTableWithEvents.getValueAt(selectedRow,selectedColumn,e.getSource()).toString();
 
 				ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null,functionParameters , functionString);
 				expressionDialog.setVisible(true);
 				if (expressionDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
 					functionString = expressionDialog.getExpression();
-					valuesTableWithEvents.setValueAt(functionString,selectedRow,selectedColumn);
+					valuesTableWithEvents.setValueAt(functionString,selectedRow,selectedColumn, e.getSource());
 
 				}
 
@@ -866,9 +865,8 @@ public class TableWithEventsPanel
 	 * @return the node contextual menu.
 	 * revised-->not changed
 	 */
-	protected TableWithEventsContextualMenu getTableWithEventsContextualMenu(int row, int column) {
-
-		if (valuesTableWithEvents.isCellEditable(row,column)){
+	protected TableWithEventsContextualMenu getTableWithEventsContextualMenu(int row, int column, MouseEvent e) {
+		if (valuesTableWithEvents.isCellEditable(row,column, e.getSource())){
 			tableWithEventsContextualMenu = new TableWithEventsContextualMenu(this);
 		}
 		return tableWithEventsContextualMenu;
@@ -905,8 +903,11 @@ public class TableWithEventsPanel
 		TableCellRenderer cellRenderer = null;
 		// Creates the TableCellRenderer distinguishing if the node has or not link restrictions
 		cellRenderer = new TableWithEventsCellRenderer(firstEditableRow);
-		valuesTableWithEvents.setDefaultRenderer(Double.class, cellRenderer);
-		valuesTableWithEvents.setDefaultRenderer(String.class, cellRenderer);
+		TableCellRenderer finalCellRenderer = cellRenderer;
+		valuesTableWithEvents.onTables(omjTable -> {
+			omjTable.setDefaultRenderer(Double.class, finalCellRenderer);
+			omjTable.setDefaultRenderer(String.class, finalCellRenderer);
+		});
 	}
 
 
@@ -919,8 +920,8 @@ public class TableWithEventsPanel
 	protected void setTableSpecificListeners() {
 		valuesTableWithEvents.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				int row = valuesTableWithEvents.rowAtPoint(e.getPoint());
-				int column = valuesTableWithEvents.columnAtPoint(e.getPoint());
+				int row = valuesTableWithEvents.rowAtPoint(e.getPoint(), e.getSource());
+				int column = valuesTableWithEvents.columnAtPoint(e.getPoint(), e.getSource());
 				selectedColumn = column;
 				selectedRow =row;
 				if (SwingUtilities.isLeftMouseButton(e)) {
@@ -930,7 +931,7 @@ public class TableWithEventsPanel
 				}
 				if (SwingUtilities.isRightMouseButton(e)) {
 
-                    int selectedColumn = valuesTableWithEvents.columnAtPoint(e.getPoint());
+                    int selectedColumn = valuesTableWithEvents.columnAtPoint(e.getPoint(), e.getSource());
 					if ((row > -1) && (column > 0) && !isReadOnly()) {
 //						if (getTableWithEventsContextualMenu() != null) {
 //							updateContextualMenuOptions();
@@ -938,7 +939,7 @@ public class TableWithEventsPanel
 //
 //                        }
 						if (hasFunctions)
-							getTableWithEventsContextualMenu(row, column).show(valuesTableWithEvents, e.getX(), e.getY());
+							getTableWithEventsContextualMenu(row, column, e).show(valuesTableWithEvents, e.getX(), e.getY());
 
 					}
 				}

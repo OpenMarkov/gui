@@ -19,6 +19,7 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
@@ -140,7 +141,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() throws DoEditException {
+    @Override protected void actionPerformedAddValue(ActionEvent e) throws DoEditException {
         // TODO warning esto afecta a la tabla de propiedades adicionales
         String option = JOptionPane.showInputDialog(this, stringDatabase.getString("AddState.Message"),
                                                     stringDatabase.getString("AddState.Title"), JOptionPane.QUESTION_MESSAGE);
@@ -158,14 +159,14 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
         //
         renameAction = false;
         tableModel.insertRow(0, new Object[]{getKeyString(newIndex), option});
-        valuesTable.getSelectionModel().setSelectionInterval(0, 0);
+        valuesTable.setRowSelectionInterval(0, 0);
         renameAction = false;
     }
     
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws DoEditException {
+    @Override protected void actionPerformedRemoveValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         int rowCount;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.REMOVE, selectedRow, "");
@@ -182,14 +183,14 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
         rowCount = valuesTable.getRowCount();
         if (rowCount > 0) {
             if (selectedRow < rowCount) {
-                valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
+                valuesTable.setRowSelectionInterval(selectedRow, selectedRow);
                 while (selectedRow < rowCount) {
                     renameAction = false;
                     tableModel.setValueAt(getKeyString(selectedRow), selectedRow, 0);
                     selectedRow++;
                 }
             } else {
-                valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+                valuesTable.setRowSelectionInterval(selectedRow - 1, selectedRow - 1);
             }
         }
         renameAction = false;
@@ -198,7 +199,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() throws DoEditException {
+    @Override protected void actionPerformedUpValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
@@ -210,19 +211,19 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
         propagateNodeStateEditRelatedVariables(StateAction.UP, selectedRow, "");
         //
         stopCellEditing();
-        swap = valuesTable.getValueAt(selectedRow, 1);
+        swap = valuesTable.getValueAt(selectedRow, 1, e.getSource());
         renameAction = false;
-        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
+        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1, 1, e.getSource()), selectedRow, 1, e.getSource());
         renameAction = false;
-        valuesTable.setValueAt(swap, selectedRow - 1, 1);
-        valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+        valuesTable.setValueAt(swap, selectedRow - 1, 1, e.getSource());
+        valuesTable.setRowSelectionInterval(selectedRow - 1, selectedRow - 1);
         renameAction = false;
     }
     
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() throws DoEditException {
+    @Override protected void actionPerformedDownValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap;
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
@@ -234,12 +235,12 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
         propagateNodeStateEditRelatedVariables(StateAction.DOWN, selectedRow, "");
         //
         stopCellEditing();
-        swap = valuesTable.getValueAt(selectedRow, 1);
+        swap = valuesTable.getValueAt(selectedRow, 1, e.getSource());
         renameAction = false;
-        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
+        valuesTable.setValueAt(valuesTable.getValueAt(selectedRow + 1, 1, e.getSource()), selectedRow, 1, e.getSource());
         renameAction = false;
-        valuesTable.setValueAt(swap, selectedRow + 1, 1);
-        valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
+        valuesTable.setValueAt(swap, selectedRow + 1, 1, e.getSource());
+        valuesTable.setRowSelectionInterval(selectedRow + 1, selectedRow + 1);
         renameAction = false;
     }
     

@@ -27,7 +27,7 @@ import java.util.Optional;
  * Handles all mouse and keyboard input for the {@link NetworkEditorPanel},
  * delegating to the current {@link EditionMode} and managing contextual menus.
  */
-class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListener {
+class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListener, FocusListener {
     
     private final NetworkEditorPanel networkEditorPanel;
     
@@ -353,5 +353,13 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         return Optional.ofNullable(this.contextualMenuFactory)
                        .map(menuFactory -> menuFactory.getContextualMenu(selectedElement, panel))
                        .orElse(null);
+    }
+    
+    @Override public void focusGained(FocusEvent e) {
+        this.networkEditorPanel.getEditionMode().focusGained(e);
+    }
+    
+    @Override public void focusLost(FocusEvent e) {
+        this.networkEditorPanel.getEditionMode().focusLost(e);
     }
 }

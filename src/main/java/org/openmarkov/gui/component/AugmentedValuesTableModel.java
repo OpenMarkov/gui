@@ -18,11 +18,7 @@ public class AugmentedValuesTableModel extends ValuesTableModel {
 	 * calculated serial ID
 	 */
 	private static final long serialVersionUID = 7010730473355625101L;
-
-	public AugmentedValuesTableModel() {
-		super();
-	}
-
+	
 	/**
 	 * constructor
 	 */

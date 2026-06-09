@@ -17,6 +17,7 @@ import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
+import org.openmarkov.gui.component.OMTableModel;
 import org.openmarkov.gui.dialog.common.KeyTablePanel;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +46,7 @@ import java.util.List;
 		getRemoveValueButton().setVisible(false);
 		this.node = node;
 		// dataTable = newData;
-		tableModel = new DefaultTableModel(data, columns);
+		tableModel = new OMTableModel(data, columns, true);
 		// valuesTable.setModel(tableModel);
 		valuesTable.setModifiable(false);
 		valuesTable.setModel(tableModel);
@@ -98,30 +100,32 @@ import java.util.List;
 		tcr.setHorizontalAlignment(SwingConstants.LEFT);
 		DefaultTableCellRenderer statesRender = new DefaultTableCellRenderer();
 		statesRender.setHorizontalAlignment(SwingConstants.LEFT);
-		int maxColumn = valuesTable.getColumnModel().getColumnCount();
-		for (int i = 1; i < maxColumn; i++) {
-			TableColumn aColumn = valuesTable.getColumnModel().getColumn(i);
-			aColumn.setCellRenderer(tcr);
-			valuesTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
-		}
+		valuesTable.onTables(omjTable -> {
+			int maxColumn = omjTable.getColumnModel().getColumnCount();
+			for (int i = 1; i < maxColumn; i++) {
+				TableColumn aColumn = omjTable.getColumnModel().getColumn(i);
+				aColumn.setCellRenderer(tcr);
+				omjTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
+			}
+		});
 	}
 
-	@Override protected void actionPerformedUpValue() {
+	@Override protected void actionPerformedUpValue(ActionEvent e) {
 		int selectedRow = valuesTable.getSelectedRow();
 		Object swap = data[selectedRow][0];
 		data[selectedRow][0] = data[selectedRow - 1][0];
 		data[selectedRow - 1][0] = swap;
 		setData(data);
-		valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+		valuesTable.setRowSelectionInterval(selectedRow - 1, selectedRow - 1);
 	}
 
-	@Override protected void actionPerformedDownValue() {
+	@Override protected void actionPerformedDownValue(ActionEvent e) {
 		int selectedRow = valuesTable.getSelectedRow();
 		Object swap = data[selectedRow][0];
 		data[selectedRow][0] = data[selectedRow + 1][0];
 		data[selectedRow + 1][0] = swap;
 		setData(data);
-		valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
+		valuesTable.setRowSelectionInterval(selectedRow + 1, selectedRow + 1);
 	}
 
 	public List<Variable> getVariables() {

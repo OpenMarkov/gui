@@ -79,7 +79,7 @@ public class PiecewiseExponentialPanel
 		//FIXME text hardcoded
 		initValueCheck = new JCheckBox("Use first interval");
 		initValueCheck.addActionListener(actionEvent -> {if (initValueCheck.isSelected())
-		functionPanel.setFunction( piecewiseExponentialTablePanel.valuesTable.getValueAt(0,1).toString());}
+		functionPanel.setFunction( piecewiseExponentialTablePanel.valuesTable.getValueAt(0,1, null).toString());}
 		);
 		ratesCheck = new JCheckBox("Use rates");
 		ratesCheck.setSelected(piecewiseExponentialPotential.isUseRates());
@@ -106,8 +106,8 @@ public class PiecewiseExponentialPanel
 		try {
 			TreeMap<Double,Double> treeMapTable = new TreeMap<>();
 			for (int i = 0; i < piecewiseExponentialTablePanel.valuesTable.getRowCount(); i++) {
-				treeMapTable.put(Double.parseDouble(piecewiseExponentialTablePanel.valuesTable.getValueAt(i,1).toString()),
-						Double.parseDouble(piecewiseExponentialTablePanel.valuesTable.getValueAt(i,2).toString()));
+				treeMapTable.put(Double.parseDouble(piecewiseExponentialTablePanel.valuesTable.getValueAt(i,1, null).toString()),
+						Double.parseDouble(piecewiseExponentialTablePanel.valuesTable.getValueAt(i,2, null).toString()));
 			}
 			newPotential.setPiecewiseTable(treeMapTable);
 			newPotential.setInitTimeFunction(new FunctionPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(),functionPanel.getFunction()));

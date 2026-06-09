@@ -233,8 +233,7 @@ public class DistributionTablePotentialPanel
 		this.revalidate();
 		this.repaint();
 	}
-
-
+	
 }
 
 

@@ -49,8 +49,8 @@ public class GUIColors {
         public static final GUIColor ALWAYS_OBSERVED = new GUIColor(new Color(128, 0, 0));
         
         public static final class ChanceNode {
-            public static final GUIColor BACKGROUND = new GUIColor(new Color(251, 249, 153));
-            public static final GUIColor FOREGROUND = new GUIColor(new Color(0, 0, 0));
+            public static final GUIColor BACKGROUND = new GUIColor(new Color(251, 231, 153));
+            public static final GUIColor FOREGROUND = new GUIColor(new Color(184, 153, 29));
             public static final GUIColor TEXT = new GUIColor(new Color(0, 0, 0));
             
             public static final GUIColor BACKGROUND_ON_PRE_RESOLUTION_FINDING = new GUIColor(new Color(128, 128, 128));
@@ -58,8 +58,8 @@ public class GUIColors {
         }
         
         public static final class DecisionNode {
-            public static final GUIColor BACKGROUND = new GUIColor(new Color(207, 227, 253));
-            public static final GUIColor FOREGROUND = new GUIColor(new Color(0, 0, 0));
+            public static final GUIColor BACKGROUND = new GUIColor(new Color(206, 223, 250));
+            public static final GUIColor FOREGROUND = new GUIColor(new Color(33, 91, 196));
             public static final GUIColor TEXT = new GUIColor(new Color(0, 0, 0));
             
             public static final GUIColor BACKGROUND_ON_POLICY = new GUIColor(new Color(112, 142, 184));
@@ -69,18 +69,20 @@ public class GUIColors {
         }
         
         public static final class UtilityNode {
-            public static final GUIColor BACKGROUND = new GUIColor(new Color(208, 230, 178));
+            public static final GUIColor BACKGROUND = new GUIColor(new Color(220, 240, 197));
             public static final GUIColor BACKGROUND_WITH_EVENT = new GUIColor(new Color(93, 155, 49));
-            public static final GUIColor FOREGROUND = new GUIColor(new Color(0, 0, 0));
+            public static final GUIColor FOREGROUND = new GUIColor(new Color(104, 171, 65));
             public static final GUIColor TEXT = new GUIColor(new Color(0, 0, 0));
         }
         
         public static final class EventNode {
-            public static final GUIColor BACKGROUND = new GUIColor(new Color(255, 200, 0));
+            public static final GUIColor BACKGROUND = new GUIColor(new Color(241, 146, 61));
             public static final GUIColor BACKGROUND_TERMINAL = new GUIColor(new Color(230, 126, 0));
             public static final GUIColor BACKGROUND_INITIAL = new GUIColor(new Color(255, 175, 175));
             
-            public static final GUIColor FOREGROUND = new GUIColor(new Color(0, 0, 0));
+            public static final GUIColor FOREGROUND = new GUIColor(new Color(217, 117, 28));
+            public static final GUIColor FOREGROUND_TERMINAL = new GUIColor(new Color(160, 95, 17));
+            public static final GUIColor FOREGROUND_INITIAL = new GUIColor(new Color(202, 31, 31));
             public static final GUIColor TEXT = new GUIColor(new Color(0, 0, 0));
         }
         

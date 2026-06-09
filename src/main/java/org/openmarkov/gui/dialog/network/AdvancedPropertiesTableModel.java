@@ -7,13 +7,15 @@
 
 package org.openmarkov.gui.dialog.network;
 
+import org.openmarkov.gui.component.OMTableModel;
+
 import javax.swing.table.DefaultTableModel;
 
 /**
  * Table model for the advanced (user-defined) properties of a network,
  * storing property name-value pairs.
  */
-@SuppressWarnings("serial") public class AdvancedPropertiesTableModel extends DefaultTableModel {
+@SuppressWarnings("serial") public class AdvancedPropertiesTableModel extends OMTableModel {
 
 	private static final int COLUMN_AGENT_NAME = 1;
 	//private static final int COLUMN_AGENT_ADITIONAL_PROPERTIES = 2;
@@ -25,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
 	 * @param columns - name of the colums of the table
 	 */
 	public AdvancedPropertiesTableModel(Object[][] data, String[] columns) {
-		super(data, columns);
+		super(data, columns, true);
 
 	}
 

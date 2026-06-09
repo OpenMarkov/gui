@@ -82,13 +82,15 @@ import java.util.List;
 		DefaultTableCellRenderer statesRender = new DefaultTableCellRenderer();
 		statesRender.setHorizontalAlignment(SwingConstants.LEFT);
 
-		int maxColumn = valuesTable.getColumnModel().getColumnCount();
-
-		for (int i = 1; i < maxColumn; i++) {
-			TableColumn aColumn = valuesTable.getColumnModel().getColumn(i);
-			aColumn.setCellRenderer(tcr);
-			valuesTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
-		}
+		this.valuesTable.onTables(omjTable -> {
+			int maxColumn = omjTable.getColumnModel().getColumnCount();
+			
+			for (int i = 1; i < maxColumn; i++) {
+				TableColumn aColumn = omjTable.getColumnModel().getColumn(i);
+				aColumn.setCellRenderer(tcr);
+				omjTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
+			}
+		});
 	}
 
 	/**

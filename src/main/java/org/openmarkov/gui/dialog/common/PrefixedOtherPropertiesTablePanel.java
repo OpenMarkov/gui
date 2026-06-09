@@ -7,13 +7,13 @@
 
 package org.openmarkov.gui.dialog.common;
 
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -24,6 +24,7 @@ import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.gui.action.OtherPropertyEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.component.OMTableModel;
 
 
 /**
@@ -186,7 +187,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     @Override public void setData(Object[][] noKeyData) {
         ///@Override public void setData(Object[][] newData) {
         data = fillDataKeys(noKeyData);
-        tableModel = new DefaultTableModel(data, columns);
+        tableModel = new OMTableModel(data, columns, true);
         valuesTable.setModel(tableModel);
         valuesTable.getModel().addTableModelListener(this);
         
@@ -244,7 +245,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     /**
      * Invoked when the button 'add' is pressed.
      */
-    @Override protected void actionPerformedAddValue() throws DoEditException {
+    @Override protected void actionPerformedAddValue(ActionEvent e) throws DoEditException {
         Set<String> existingKeys = IntStream.range(0, tableModel.getRowCount())
                                             .mapToObj(i -> tableModel.getValueAt(i, 1))
                                             .map(String.class::cast)
@@ -281,7 +282,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     /**
      * Invoked when the button 'remove' is pressed.
      */
-    @Override protected void actionPerformedRemoveValue() throws DoEditException {
+    @Override protected void actionPerformedRemoveValue(ActionEvent e) throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.removeRow(selectedRowIndex);
         //ProbNet probNet = null;
@@ -301,7 +302,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     /**
      * Invoked when the button 'up' is pressed.
      */
-    @Override protected void actionPerformedUpValue() throws DoEditException {
+    @Override protected void actionPerformedUpValue(ActionEvent e) throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex - 1);
         valuesTable.setRowSelectionInterval(selectedRowIndex - 1, selectedRowIndex - 1);
@@ -318,7 +319,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     /**
      * Invoked when the button 'down' is pressed.
      */
-    @Override protected void actionPerformedDownValue() throws DoEditException {
+    @Override protected void actionPerformedDownValue(ActionEvent e) throws DoEditException {
         int selectedRowIndex = valuesTable.getSelectedRow();
         tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex + 1);
         valuesTable.setRowSelectionInterval(selectedRowIndex + 1, selectedRowIndex + 1);
@@ -345,7 +346,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
     
     @Override public void tableChanged(TableModelEvent e) {
         int row = e.getLastRow();
-        if (e.getType() != TableModelEvent.UPDATE || getValuesTable().getCellEditor() == null) {
+        if (e.getType() != TableModelEvent.UPDATE || getValuesTable().getEditorComponent(e.getSource()) == null) {
             return;
         }
         String newName = ((DefaultTableModel) e.getSource()).getValueAt(row, 1).toString();
@@ -361,8 +362,8 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
             Map<String, String> additionalProperties = node != null ? node.getAdditionalProperties() : probNet.getAdditionalProperties();
             String oldName = new ArrayList<>(additionalProperties.keySet()).get(row);
             String oldValue = additionalProperties.get(oldName);
-            valuesTable.setValueAt(oldName, row, 1);
-            valuesTable.setValueAt(oldValue, row, 2);
+            valuesTable.setValueAt(oldName, row, 1, e.getSource());
+            valuesTable.setValueAt(oldValue, row, 2, e.getSource());
             throw new UnrecoverableException(e1);
         }
     }

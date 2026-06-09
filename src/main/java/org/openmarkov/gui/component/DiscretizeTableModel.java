@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
  * @author jlgozalo
  * @version 1.0
  */
-public class DiscretizeTableModel extends DefaultTableModel {
+public class DiscretizeTableModel extends OMTableModel {
 
 	/**
 	 * internal serial ID
@@ -40,7 +40,7 @@ public class DiscretizeTableModel extends DefaultTableModel {
 	 * @param columns - name of the colums of the table
 	 */
 	public DiscretizeTableModel(Object[][] data, String[] columns) {
-		super(data, columns);
+		super(data, columns, true);
 	}
 
 	/**

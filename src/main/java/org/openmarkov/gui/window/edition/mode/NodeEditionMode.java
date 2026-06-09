@@ -18,6 +18,7 @@ import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
@@ -110,5 +111,13 @@ public class NodeEditionMode extends EditionMode {
         
         networkEditorPanel.adjustPanelDimension();
         networkEditorPanel.repaint();
+    }
+    
+    @Override public void focusGained(FocusEvent e) {
+    
+    }
+    
+    @Override public void focusLost(FocusEvent e) {
+    
     }
 }

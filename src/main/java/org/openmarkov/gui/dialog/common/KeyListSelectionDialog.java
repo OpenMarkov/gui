@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.gui.component.OMTableModel;
 import org.openmarkov.gui.exception.NoRowSelectedException;
 
 import javax.swing.*;
@@ -52,7 +53,7 @@ public class KeyListSelectionDialog extends OkCancelDialog {
 	/**
 	 * Model table.
 	 */
-	private DefaultTableModel tableModel = null;
+	private OMTableModel tableModel = null;
 
 	/**
 	 * Constructor that calls the superclass constructor and saves the objects.
@@ -134,8 +135,8 @@ public class KeyListSelectionDialog extends OkCancelDialog {
 	 */
 	private KeyTable getValuesTable() {
 		if (valuesTable == null) {
-			valuesTable = new KeyTable(getTableModel(), false, true);
-			valuesTable.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			valuesTable = new KeyTable(getTableModel(), false, true, true);
+			valuesTable.onTables(omjTable -> omjTable.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION));
 		}
 		return valuesTable;
 	}
@@ -145,9 +146,9 @@ public class KeyListSelectionDialog extends OkCancelDialog {
 	 *
 	 * @return a new tableModel.
 	 */
-	private DefaultTableModel getTableModel() {
+	private OMTableModel getTableModel() {
 		if (tableModel == null) {
-			tableModel = new DefaultTableModel(data, columns);
+			tableModel = new OMTableModel(data, columns, true);
 		}
 		return tableModel;
 	}

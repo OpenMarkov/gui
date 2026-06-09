@@ -24,7 +24,6 @@ import org.openmarkov.gui.component.ValuesTable;
 import org.openmarkov.gui.component.ValuesTableModel;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -118,7 +117,7 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
         
         // If the ScrollPane is not created, initialise it and set the Viewport.
         // Then add the element to the Layout.
-        add(getValuesTableScrollPane(), BorderLayout.CENTER);
+        add(getValuesTable(), BorderLayout.CENTER);
         
         repaint();
     }
@@ -319,21 +318,6 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
         return valuesTable;
     }
     
-    /**
-     * This method initialises valuesTableScrollPane.
-     *
-     * @return a new values table scroll pane.
-     * revised--&gt;not changed
-     */
-    @Override protected JScrollPane getValuesTableScrollPane() {
-        if (valuesTableScrollPane == null) {
-            valuesTableScrollPane = new JScrollPane();
-            valuesTableScrollPane.setName("TablePotentialPanel.valuesTableScrollPane");
-            valuesTableScrollPane.setViewportView(getValuesTable());
-        }
-        return valuesTableScrollPane;
-    }
-
     //	/**
     //	 * Handles an action performed
     //	 * revised--&gt;not changed
@@ -370,7 +354,7 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
      * when the user do right click on the table.
      */
     @Override protected void setTableSpecificListeners() {
-        valuesTable.addMouseListener(new MouseClickedListener());
+        valuesTable.onTables(omjTable -> omjTable.addMouseListener(new MouseClickedListener()));
     }
     
     @Override
@@ -389,16 +373,16 @@ public class AugmentedProbTablePotentialPanel extends TablePotentialPanel {
         
         @Override public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 1) {
-                int row = valuesTable.rowAtPoint(e.getPoint());
-                int column = valuesTable.columnAtPoint(e.getPoint());
-                var expression = valuesTable.getValueAt(row, column).toString();
+                int row = valuesTable.rowAtPoint(e.getPoint(), e.getSource());
+                int column = valuesTable.columnAtPoint(e.getPoint(), e.getSource());
+                var expression = valuesTable.getValueAt(row, column, e.getSource()).toString();
                 AugmentedProbTablePotential potential = getPotential();
                 List<Variable> parameterVariables = potential.getParameterVariables();
                 ArithmeticExpressionDialog expressionDialog =
                         new ArithmeticExpressionDialog(null, parameterVariables, expression);
                 expressionDialog.setVisible(true);
                 if (expressionDialog.getSelectedOption() == OkCancelDialog.ChosenOption.Ok) {
-                    valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column);
+                    valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column, e.getSource());
                     //TODO: Continue here changing String expressions to VariableExpression expressions.
                     //valuesTable.setValueAt(new VariableExpression(parameterVariables, expressionDialog.getExpression()), row, column);
                 }

@@ -91,21 +91,21 @@ import java.util.List;
                 switch (column) {
                     case 1 -> {
                         dataTable[row][column - 1] = oldCriterionName;
-                        this.valuesTable.setValueAt(oldCriterionName, row, column - 1);
+                        this.valuesTable.setValueAt(oldCriterionName, row, column - 1, tableEvent.getSource());
                     }
                     case 2 -> {
                         dataTable[row][column - 1] = oldUnitName;
-                        this.valuesTable.setValueAt(oldUnitName, row, column - 1);
+                        this.valuesTable.setValueAt(oldUnitName, row, column - 1, tableEvent.getSource());
                     }
                 }
                 throw new UnrecoverableException(e);
             }
         }
         setData(dataTable);
-        valuesTable.getSelectionModel().setSelectionInterval(row, row);
+        valuesTable.setRowSelectionInterval(row, row);
     }
     
-    @Override protected void actionPerformedAddValue() throws DoEditException {
+    @Override protected void actionPerformedAddValue(ActionEvent e) throws DoEditException {
         String option = JOptionPane.showInputDialog(this, stringDatabase.getString("AddCriterion.Text"),
                                                     stringDatabase.getString("AddCriterion.Title"), JOptionPane.QUESTION_MESSAGE);
         if (option == null) {
@@ -130,12 +130,12 @@ import java.util.List;
         setDataFromCriteria(criteria);
         // getTableModel().insertRow(newIndex, new Object[]
         // {getKeyString(newIndex), option });
-        valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+        valuesTable.setRowSelectionInterval(newIndex, newIndex);
         
         dataTable = new Object[valuesTable.getRowCount()][2];
         for (int i = 0; i < valuesTable.getRowCount(); i++) {
-            dataTable[i][0] = valuesTable.getValueAt(i, 1);
-            dataTable[i][1] = valuesTable.getValueAt(i, 2);
+            dataTable[i][0] = valuesTable.getValueAt(i, 1, null);
+            dataTable[i][1] = valuesTable.getValueAt(i, 2, null);
         }
         /*
          * getTableModel().insertRow(newIndex, new Object[]
@@ -145,9 +145,9 @@ import java.util.List;
          */
     }
     
-    @Override protected void actionPerformedRemoveValue() throws DoEditException {
+    @Override protected void actionPerformedRemoveValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
-        String criteriaName = (String) valuesTable.getValueAt(selectedRow, 1);
+        String criteriaName = (String) valuesTable.getValueAt(selectedRow, 1, null);
         
         DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.REMOVE,
                                                                      probNet.getDecisionCriteria()
@@ -157,18 +157,18 @@ import java.util.List;
         // StringsWithProperties agents = probNet.getAgents();
         List<Criterion> criterias = probNet.getDecisionCriteria();
         setDataFromCriteria(criterias);
-        valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
+        valuesTable.setRowSelectionInterval(selectedRow, selectedRow);
         // dataTable = new Object [agents.getNames().size()][1];
         if (criterias != null) {
             dataTable = new Object[criterias.size()][2];
             for (int i = 0; i < valuesTable.getRowCount(); i++) {
-                dataTable[i][0] = valuesTable.getValueAt(i, 1);
-                dataTable[i][1] = valuesTable.getValueAt(i, 2);
+                dataTable[i][0] = valuesTable.getValueAt(i, 1, null);
+                dataTable[i][1] = valuesTable.getValueAt(i, 2, null);
             }
         }
     }
     
-    @Override protected void actionPerformedUpValue() throws DoEditException {
+    @Override protected void actionPerformedUpValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swapName = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
@@ -190,15 +190,15 @@ import java.util.List;
          * 1), selectedRow, 1); valuesTable.setValueAt(swap, selectedRow -
          * 1, 1);
          */
-        valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+        valuesTable.setRowSelectionInterval(selectedRow - 1, selectedRow - 1);
         for (int i = 0; i < valuesTable.getRowCount(); i++) {
-            dataTable[i][0] = valuesTable.getValueAt(i, 1);
-            dataTable[i][1] = valuesTable.getValueAt(i, 2);
+            dataTable[i][0] = valuesTable.getValueAt(i, 1, null);
+            dataTable[i][1] = valuesTable.getValueAt(i, 2, null);
         }
         
     }
     
-    @Override protected void actionPerformedDownValue() throws DoEditException {
+    @Override protected void actionPerformedDownValue(ActionEvent e) throws DoEditException {
         int selectedRow = valuesTable.getSelectedRow();
         Object swapName = dataTable[selectedRow][0];
         dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];
@@ -218,10 +218,10 @@ import java.util.List;
          * 1), selectedRow, 1); valuesTable.setValueAt(swap, selectedRow +
          * 1, 1);
          */
-        valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
+        valuesTable.setRowSelectionInterval(selectedRow + 1, selectedRow + 1);
         for (int i = 0; i < valuesTable.getRowCount(); i++) {
-            dataTable[i][0] = valuesTable.getValueAt(i, 1);
-            dataTable[i][1] = valuesTable.getValueAt(i, 2);
+            dataTable[i][0] = valuesTable.getValueAt(i, 1, null);
+            dataTable[i][1] = valuesTable.getValueAt(i, 2, null);
         }
     }
     
