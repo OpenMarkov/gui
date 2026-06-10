@@ -85,8 +85,15 @@ public class FunctionPotentialPanel extends PotentialPanel {
     
     @Override public void setData(Node node) {
         this.node = node;
-        VariableExpression initFunction = ((PiecewiseExponentialPotential) this.node.getPotentials().get(0)).getInitTimeFunction().getFunction();
-        this.potential = new FunctionPotential(node.getPotential().getVariables(), node.getPotential().getPotentialRole(),initFunction);
+        var firstPotential = this.node.getPotentials().getFirst();
+
+        if (firstPotential instanceof PiecewiseExponentialPotential piecewisePotential) {
+            VariableExpression initFunction = piecewisePotential.getInitTimeFunction().getFunction();
+            this.potential = new FunctionPotential(node.getPotential().getVariables(),node.getPotential().getPotentialRole(),initFunction);
+        } else if (firstPotential instanceof FunctionPotential functionPotential) {
+            this.potential = functionPotential;
+        }
+
         this.variables = potential.getVariables();
         this.parents = variables.subList(1, variables.size());
         this.function = potential.getFunction();
