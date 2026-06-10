@@ -79,8 +79,7 @@ import java.awt.GridLayout;
 
 	@Override public boolean saveChanges() throws DoEditException, BinomialPotentialWrongValueException.ThetaValueIsWrong, BinomialPotentialWrongValueException.NValuesIsWrong {
 		boolean result = super.saveChanges();
-		ProbNet probNet = node.getProbNet();
-		IndicatorPotential oldPotential = (IndicatorPotential) node.getPotentials().get(0);
+        IndicatorPotential oldPotential = (IndicatorPotential) node.getPotentials().get(0);
 		IndicatorPotential newPotential =  new IndicatorPotential(oldPotential);
 
 			newPotential.setTte(Double.parseDouble(tteTextField.getText()));

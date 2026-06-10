@@ -7,45 +7,15 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.action.base.CloseEditStackOptions;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.core.SetPotentialEdit;
-import org.openmarkov.core.action.core.SetPotentialVariablesEdit;
-import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.*;
-import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
-import org.openmarkov.core.model.network.potential.*;
-import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
-import org.openmarkov.core.model.network.potential.plugin.PotentialUtils;
-import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
-import org.openmarkov.gui.commonComponents.JComboBoxFunctionRender;
 import org.openmarkov.gui.dialog.common.*;
 import org.openmarkov.gui.exception.BinomialPotentialWrongValueException;
-import org.openmarkov.java.classUtils.ClassUtils;
 
-import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * Dialog box to edit all type of potentials ( TablePotential and TreeADDs ). If

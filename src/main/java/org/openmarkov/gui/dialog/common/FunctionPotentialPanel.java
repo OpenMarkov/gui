@@ -12,6 +12,7 @@ import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.FunctionPotential;
+import org.openmarkov.core.model.network.potential.PiecewiseExponentialPotential;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -84,7 +85,8 @@ public class FunctionPotentialPanel extends PotentialPanel {
     
     @Override public void setData(Node node) {
         this.node = node;
-        this.potential = (FunctionPotential) this.node.getPotentials().get(0);
+        VariableExpression initFunction = ((PiecewiseExponentialPotential) this.node.getPotentials().get(0)).getInitTimeFunction().getFunction();
+        this.potential = new FunctionPotential(node.getPotential().getVariables(), node.getPotential().getPotentialRole(),initFunction);
         this.variables = potential.getVariables();
         this.parents = variables.subList(1, variables.size());
         this.function = potential.getFunction();

@@ -3,7 +3,6 @@ package org.openmarkov.gui.action;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.core.PotentialChangeEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
@@ -16,9 +15,7 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 import java.util.Iterator;
 import java.util.List;
 
-//import org.openmarkov.core.model.network.Variable;
-//import org.openmarkov.core.model.network.eventTablePotential.Potential;
-//import org.openmarkov.core.model.network.eventTablePotential.PotentialRole;
+
 
 /**
  * <code>NodePotentialEdit</code> is a simple edit that allows to modify the
@@ -38,12 +35,6 @@ import java.util.List;
 	 * The row of the table where is the eventTablePotential
 	 */
 	private int row;
-
-	/**
-	 * The new value of the eventTablePotential
-	 */
-	private String newValue;
-
 
 	/**
 	 * The new value of the eventTablePotential
@@ -139,7 +130,7 @@ import java.util.List;
 			try{
 				this.newFunctionValue =(String) newValue;
 			}catch(Exception e){
-				this.newFunctionValue = ((Double) newValue).toString();
+				this.newFunctionValue = newValue.toString();
 			}
 			this.newFunctionTable = tableWithFunctions.getFunctionValues();
 		}
@@ -159,26 +150,15 @@ import java.util.List;
 	 * @throws <code>DoEditException</code> cyago only eliminated the different treatment for UTILITY role and introduced eventTablePotential
 	 */
 	@Override public void doEdit() throws DoEditException {
-		PotentialChangeEdit changePotentialEdit = null;
 		//18/05/2022 - Changed to be used with numeric variables
-//		if ((node.getNodeType() == NodeType.EVENT) || (node.getNodeType() == NodeType.UTILITY)){
 		VariableType variableType = node.getVariable().getVariableType();
 		if ((variableType == VariableType.EVENT) || (variableType == VariableType.NUMERIC)){
 			try {
 				newDoubleTable[getPotentialSelected()] = newDoubleValue;
 			} catch(Exception e){
-//				List<Node> parents =  node.getParents();
-//				parents.removeIf(node -> node.getVariable().getVariableType() != VariableType.NUMERIC);
-//				if (parents.isEmpty()){
-//					Evaluator evaluator = new Evaluator();
-//					try {
-//						newDoubleTable[getPotentialSelected()] = evaluator.getNumberResult( newFunctionValue);
-//					} catch (EvaluationException ex) {
-//						ex.printStackTrace();
-//					}
-//				} else {
+
 					newFunctionTable[getPotentialSelected()] = (String) newFunctionValue;
-//				}
+
 			}
 		}else {
 			if (priorityList.isEmpty()) {
@@ -192,22 +172,21 @@ import java.util.List;
 			}
 			Iterator<Integer> listIterator = priorityList.listIterator();
 			Double sum = 0.0;
-			Double rest = 0.0;
-			int position = 0;
+			Double rest;
+			int position;
 			int maxDecimals = 10;
 			double epsilon;
 			epsilon = Math.pow(10, -(maxDecimals + 2));
 			newDoubleTable[getPotentialSelected()] = Util.roundAndReduce(newDoubleValue, epsilon, maxDecimals);
 			while (listIterator.hasNext()) {
-				position = (Integer) listIterator.next();
+				position = listIterator.next();
 					sum = Util.roundAndReduce(sum + newDoubleTable[position], epsilon, maxDecimals);
 			}
 			rest = Math.abs(Util.roundAndReduce(1 - sum, epsilon, maxDecimals));
-			// rest = Math.abs( 1 - sum );
 			if (sum > 1.0) {
 				listIterator = priorityList.listIterator();
 				while (listIterator.hasNext() && rest != 0) {
-					position = (Integer) listIterator.next();
+					position = listIterator.next();
 						rest = Util.roundAndReduce(rest - newDoubleTable[position], epsilon, maxDecimals);
 						if (rest < 0) {// it is because the value of the table
 							// is bigger than the rest
@@ -223,7 +202,7 @@ import java.util.List;
 				boolean updated = false;
 				listIterator = priorityList.listIterator();
 				while (listIterator.hasNext() && !updated) {
-					position = (Integer) listIterator.next();
+					position = listIterator.next();
 						newDoubleTable[position] = Util.roundAndReduce(newDoubleTable[position] + rest, epsilon, maxDecimals);
 						updated = true;
 				}
@@ -286,11 +265,6 @@ import java.util.List;
 		return priorityList;
 	}
 
-	/*
-	 * private double roundingDouble(double number) { double positions =
-	 * Math.pow( 10, (double) decimalPositions ); return Math.round( number *
-	 * positions ) / positions; }
-	 */
 
 	/**
 	 * Gets the row position associated to value edited if priorityList exists
@@ -321,27 +295,6 @@ import java.util.List;
 	public int getColumnPosition() {
 		return col;
 	}
-//
-//	/***
-//	 * Checks if the position in the table of tablePotential corresponds to an editable cell if there is a priority list
-//	 * UNCLEAR--> Have I to change the behaviour; depends on doEdit()
-//	 * @param position
-//	 * @return true if the cell is editable
-//	 * revised-->not changed
-//	 */
-//	private boolean isEditablePosition(int position) {
-//		boolean editable = false;
-//		int row = getRowPosition(position);
-//		if (this.notEditablePostitions.length > row && this.notEditablePostitions[0].length > col) {
-//			if (this.notEditablePostitions[row][col] == null) {
-//				editable = true;
-//			}
-//		} else {
-//			editable = true;
-//		}
-//		return editable;
-//	}
-
 
     /**
      * Index of the value selected
