@@ -260,9 +260,9 @@ public final class VisualState extends VisualElement {
     }
     
     @Override public Shape getShape(Graphics2D g) {
-        double x = this.visualNode.getTemporalCoordinateX();
+        double x = 0;
         double w = InnerBox.BOX_WIDTH - (InnerBox.STATES_INDENT * 2) + 1;
-        double y = this.visualNode.getTemporalCoordinateY();
+        double y = 0;
         double h;
         if (this.visualNode.getVisualNetwork().isPropagationActive()) {
             h = (InnerBox.BAR_HEIGHT * this.stateValues.size()) + 4;
@@ -311,6 +311,8 @@ public final class VisualState extends VisualElement {
                     InnerBox.STATES_VERTICAL_SEPARATION * getStatePosition()
             ) - InnerBox.BAR_HEIGHT - 1;
         }
+        this.drawnBounds= VisualElement.boundsAddingXandY(VisualElement.boundsWithTranslate(getShape(g).getBounds2D(), g), 0, yFirstBar);
+        
         g.setColor(GUIColors.Inference.BOX_TEXT.getColor());
         g.setFont(STATES_FONT);
         this.stateName = adjustText(this.stateName, InnerBox.BAR_HORIZONTAL_POSITION, 2, STATES_FONT, g);

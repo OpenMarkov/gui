@@ -53,8 +53,8 @@ public class GUIColors {
             public static final GUIColor FOREGROUND = new GUIColor(new Color(184, 153, 29));
             public static final GUIColor TEXT = new GUIColor(new Color(0, 0, 0));
             
-            public static final GUIColor BACKGROUND_ON_PRE_RESOLUTION_FINDING = new GUIColor(new Color(128, 128, 128));
-            public static final GUIColor BACKGROUND_ON_POST_RESOLUTION_FINDING = new GUIColor(new Color(192, 192, 192));
+            public static final GUIColor BACKGROUND_ON_PRE_RESOLUTION_FINDING = new GUIColor(new Color(208, 185, 87));
+            public static final GUIColor BACKGROUND_ON_POST_RESOLUTION_FINDING = new GUIColor(new Color(233, 210, 122));
         }
         
         public static final class DecisionNode {
@@ -71,18 +71,18 @@ public class GUIColors {
         public static final class UtilityNode {
             public static final GUIColor BACKGROUND = new GUIColor(new Color(220, 240, 197));
             public static final GUIColor BACKGROUND_WITH_EVENT = new GUIColor(new Color(93, 155, 49));
-            public static final GUIColor FOREGROUND = new GUIColor(new Color(104, 171, 65));
+            public static final GUIColor FOREGROUND = new GUIColor(new Color(131, 210, 84));
             public static final GUIColor TEXT = new GUIColor(new Color(0, 0, 0));
         }
         
         public static final class EventNode {
-            public static final GUIColor BACKGROUND = new GUIColor(new Color(241, 146, 61));
+            public static final GUIColor BACKGROUND = new GUIColor(new Color(233, 170, 114));
             public static final GUIColor BACKGROUND_TERMINAL = new GUIColor(new Color(230, 126, 0));
-            public static final GUIColor BACKGROUND_INITIAL = new GUIColor(new Color(255, 175, 175));
+            public static final GUIColor BACKGROUND_INITIAL = new GUIColor(new Color(230, 126, 0));
             
-            public static final GUIColor FOREGROUND = new GUIColor(new Color(217, 117, 28));
+            public static final GUIColor FOREGROUND = new GUIColor(new Color(226, 130, 45));
             public static final GUIColor FOREGROUND_TERMINAL = new GUIColor(new Color(160, 95, 17));
-            public static final GUIColor FOREGROUND_INITIAL = new GUIColor(new Color(202, 31, 31));
+            public static final GUIColor FOREGROUND_INITIAL = new GUIColor(new Color(160, 95, 17));
             public static final GUIColor TEXT = new GUIColor(new Color(0, 0, 0));
         }
         
@@ -149,8 +149,8 @@ public class GUIColors {
     }
     
     public static final class CostEffectiveness {
-        public static final GUIColor SERIES_COLOR = new GUIColor(new Color(255, 0, 0));
-        public static final GUIColor BACKGROUND = new GUIColor(new Color(255, 255, 255));
+        public static final GUIColor WTP_SLOPE = new GUIColor(new Color(255, 0, 0));
+        public static final GUIColor BACKGROUND = new GUIColor(new Color(242, 242, 242));
     }
     
     public static final class DevelopmentTools {

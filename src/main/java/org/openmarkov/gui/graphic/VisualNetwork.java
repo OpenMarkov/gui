@@ -361,7 +361,7 @@ public class VisualNetwork implements PNEditListener {
         
         while ((nodeFound == null) && (index < length)) {
             VisualNode node = this.visualNodes.get(index++);
-            if (node.pointInsideShape(position, g)) {
+            if (node.pointIsInsideShape(position, g)) {
                 nodeFound = node;
             }
         }
@@ -386,9 +386,9 @@ public class VisualNetwork implements PNEditListener {
         int nodesLength = this.visualNodes.size();
         while ((innerBoxFound == null) && (index < nodesLength)) {
             VisualNode node = this.visualNodes.get(index++);
-            if (node.pointInsideShape(position, g)) {
+            if (node.pointIsInsideShape(position, g)) {
                 InnerBox innerBox = node.getInnerBox();
-                if (innerBox.pointInsideShape(position, g)) {
+                if (innerBox.pointIsInsideShape(position, g)) {
                     innerBoxFound = innerBox;
                 }
             }
@@ -405,26 +405,19 @@ public class VisualNetwork implements PNEditListener {
      * @return if there is a visual state in the position, returns it,
      * else, returns null.
      */
-    public VisualState whatStateInPosition(Point2D.Double position, Graphics2D g) {
-        
-        VisualState stateFound = null;
-        int index = 0;
-        int nodesLength = this.visualNodes.size();
-        while ((stateFound == null) && (index < nodesLength)) {
-            VisualNode node = this.visualNodes.get(index++);
-            if (node.pointInsideShape(position, g)) {
-                if (node.getInnerBox() instanceof FSVariableBox) {
-                    int numStates = node.getInnerBox().getNumStates();
-                    for (int i = 0; i < numStates; i++) {
-                        VisualState state = ((FSVariableBox) node.getInnerBox()).getVisualState(i);
-                        if (state.pointInsideShape(position, g)) {
-                            stateFound = state;
-                        }
+    public @Nullable VisualState whatStateInPosition(Point2D.Double position, Graphics2D g) {
+        for (VisualNode node : this.visualNodes) {
+            if (node.pointIsInsideShape(position, g) && node.getInnerBox() instanceof FSVariableBox fsVariableBox) {
+                int numStates = node.getInnerBox().getNumStates();
+                for (int i = 0; i < numStates; i++) {
+                    VisualState state = fsVariableBox.getVisualState(i);
+                    if (state.pointIsInsideShape(position, g)) {
+                        return state;
                     }
                 }
             }
         }
-        return stateFound;
+        return null;
     }
     
     /**
@@ -442,7 +435,7 @@ public class VisualNetwork implements PNEditListener {
         int length = this.visualLinks.size();
         while (index < length) {
             VisualLink link = this.visualLinks.get(index++);
-            if (link.pointInsideShape(position, g)) {
+            if (link.pointIsInsideShape(position, g)) {
                 return link;
             }
         }

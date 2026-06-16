@@ -44,25 +44,33 @@ public class AddFindingDialog extends OkCancelDialog {
     
     private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     
+    private final ProbNet probNet;
+    private final Variable variable;
+    
     private final Finding finding;
     
 
     private Finding newFinding;
     private Finding previousFinding;
     
+
     /**
      * Constructor. initializes the instance.
      *
-     * @param owner      window that owns the dialog.
-     * @param visualNode the node to which this dialog is associated.
-     * @param finding    the assigned finding
+     * @param owner              window that owns the dialog.
+     * @param probNet
+     * @param variable
+     * @param visualNode         the node to which this dialog is associated.
+     * @param finding            the assigned finding
      * @param networkEditorPanel
      */
-    public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding, NetworkEditorPanel networkEditorPanel) {
+    public AddFindingDialog(Window owner, ProbNet probNet, Variable variable, VisualNode visualNode, Finding finding, NetworkEditorPanel networkEditorPanel) {
         super(owner);
         this.visualNode = visualNode;
+        this.variable = variable;
         this.finding = finding;
         this.networkEditorPanel = networkEditorPanel;
+        this.probNet = probNet;
         initialize();
         setMinimumSize(new Dimension(260, getHeight()));
         int posX = owner.getX() + (owner.getWidth() - this.getWidth()) / 2;
@@ -74,15 +82,13 @@ public class AddFindingDialog extends OkCancelDialog {
     }
     
     public ChosenOption requestValues() {
-        
         setVisible(true);
-        
         return getSelectedOption();
     }
     
     protected void initialize() {
-        visualNode.getNode().getProbNet().getPNESupport().setWithUndo(true);
-        visualNode.getNode().getProbNet().getPNESupport().openNewSubEditHistory();
+        probNet.getPNESupport().setWithUndo(true);
+        probNet.getPNESupport().openNewSubEditHistory();
         setTitle(stringDatabase.getString("AddFindingDialog.Title"));
         configureComponentsPanel();
         
@@ -106,45 +112,43 @@ public class AddFindingDialog extends OkCancelDialog {
         principalPanel.setLayout(new BorderLayout());
         textPanel.setLayout(new GridLayout(3, 1));
         textPanel.add(new JLabel(""));
-        textPanel.add(new JLabel(visualNode.getNode().getName(), SwingConstants.CENTER));
+        textPanel.add(new JLabel(this.variable.getName(), SwingConstants.CENTER));
         textPanel.add(new JLabel(""));
         principalPanel.add(textPanel, BorderLayout.NORTH);
         
-        Variable variable = visualNode.getNode().getVariable();
-        
-        if (variable.getVariableType() == VariableType.FINITE_STATES) {
-            State[] states = variable.getStates();
+        if (this.variable.getVariableType() == VariableType.FINITE_STATES) {
+            State[] states = this.variable.getStates();
             radioButtonsPanel.setLayout(new GridLayout(states.length, 1));
             for (int i = states.length - 1; i >= 0; i--) {
                 String stateName = states[i].getName();
                 JRadioButton jRadioButton = new JRadioButton(stateName);
                 if (finding != null) {
                     jRadioButton.setSelected(finding.getState().equals(stateName));
-                    previousFinding = new Finding(variable, new State(stateName));
+                    previousFinding = new Finding(this.variable, new State(stateName));
                 }
                 radioButtonsPanel.add(jRadioButton);
                 jRadioButton.setActionCommand(stateName);
                 if (i == 0) {
                     jRadioButton.setSelected(true);
-                    previousFinding = new Finding(variable, new State(stateName));
+                    previousFinding = new Finding(this.variable, new State(stateName));
                 }
                 
                 buttonGroup.add(jRadioButton);
                 jRadioButton.addActionListener(evt -> newFinding =
-                        new Finding(variable, variable.getState((String) getSelectedState())));
+                        new Finding(this.variable, this.variable.getState((String) getSelectedState())));
             }
             principalPanel.add(radioButtonsPanel, BorderLayout.CENTER);
         } else {
-            PartitionedInterval variableDomain = variable.getPartitionedInterval();
+            PartitionedInterval variableDomain = this.variable.getPartitionedInterval();
             double minValue = (variableDomain.isLeftClosed()) ?
                     variableDomain.getMin() :
-                    variableDomain.getMin() + variable.getPrecision();
+                    variableDomain.getMin() + this.variable.getPrecision();
             double maxValue = (variableDomain.isRightClosed()) ?
                     variableDomain.getMax() :
-                    variableDomain.getMax() - variable.getPrecision();
+                    variableDomain.getMax() - this.variable.getPrecision();
             double defaultValue = (finding != null) ? finding.getNumericalValue() : minValue;
             SpinnerNumberModel model = new SpinnerNumberModel(defaultValue, minValue, maxValue,
-                                                              variable.getPrecision());
+                                                              this.variable.getPrecision());
             evidenceSpinner = new JSpinner(model);
             evidenceSpinner.setPreferredSize(new Dimension(100, 20));
             JLabel valueLabel = new JLabel("Numeric value:");
@@ -159,46 +163,30 @@ public class AddFindingDialog extends OkCancelDialog {
     }
     
     public Object getSelectedState() {
-        
-        VariableType variableType = visualNode.getNode().getVariable().getVariableType();
-        Object selectedState;
-        
-        if (variableType == VariableType.FINITE_STATES) {
-            selectedState = buttonGroup.getSelection().getActionCommand();
-        } else {
-            selectedState = evidenceSpinner.getValue();
+        if (variable.getVariableType() == VariableType.FINITE_STATES) {
+            return buttonGroup.getSelection().getActionCommand();
         }
-        
-        
-        return selectedState;
-    }
-    
-    public double getEvidenceValue() {
-        return Double.parseDouble(evidenceSpinner.getValue().toString());
+        return evidenceSpinner.getValue();
     }
     
     @Override
     protected boolean doOkClickBeforeHide() throws Exception {
-        Variable variable = visualNode.getNode().getVariable();
-        if (variable.getVariableType() == VariableType.FINITE_STATES) {
-            newFinding = new Finding(variable, variable.getState((String) getSelectedState()));
+        if (this.variable.getVariableType() == VariableType.FINITE_STATES) {
+            newFinding = new Finding(this.variable, this.variable.getState((String) getSelectedState()));
         } else {
-            newFinding = new Finding(variable, (Double) getSelectedState());
+            newFinding = new Finding(this.variable, (Double) getSelectedState());
         }
         if (!visualNode.isPreResolutionFinding()) {
             networkEditorPanel.getEvidenceManager().setNewFinding(visualNode, null, newFinding, false);
         } else {
             networkEditorPanel.getEvidenceManager().setNewFinding(visualNode, previousFinding, newFinding, false);
         }
-        
-        
-        visualNode.getNode().getProbNet().getPNESupport().closeSubEditHistory();
-        
+        probNet.getPNESupport().closeSubEditHistory();
         return super.doOkClickBeforeHide();
     }
     
     @Override protected void doCancelClickBeforeHide() {
-        visualNode.getNode().getProbNet().getPNESupport().cancelLastSubEditHistory();
+        probNet.getPNESupport().cancelLastSubEditHistory();
     }
     
 }

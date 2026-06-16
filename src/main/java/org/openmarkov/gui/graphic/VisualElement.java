@@ -11,6 +11,7 @@ import org.openmarkov.core.model.network.Point2D;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 /**
  * This is an abstract class where common elements are defined. This elements
@@ -100,9 +101,10 @@ public abstract sealed class VisualElement permits InnerBox, VisualArrow, Visual
 	 * @param g     graphic object where the shape can be painted.
 	 * @return true if the point is inside the shape; otherwise, false.
 	 */
-	public boolean pointInsideShape(Point2D.Double point, Graphics2D g) {
-		Shape shape = getShape(g);
-        return shape != null && shape.contains(new java.awt.geom.Point2D.Double(point.x, point.y));
+	public boolean pointIsInsideShape(Point2D.Double point, Graphics2D g) {
+		Shape shape = this.drawnBounds==null ? getShape(g):this.drawnBounds;
+		boolean res = shape != null && shape.contains(new java.awt.geom.Point2D.Double(point.x, point.y));
+		return res;
     }
 
 	/**
@@ -145,7 +147,7 @@ public abstract sealed class VisualElement permits InnerBox, VisualArrow, Visual
 	 * @param g graphics object where to paint the element.
 	 */
 	public abstract void paint(Graphics2D g);
-
+	
 	/**
 	 * Returns the point where the segment cuts with the border of the visual element.
 	 *
@@ -166,5 +168,20 @@ public abstract sealed class VisualElement permits InnerBox, VisualArrow, Visual
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	protected Rectangle2D drawnBounds;
+    
+    protected static Rectangle2D boundsWithTranslate(Rectangle2D bounds2D, Graphics2D g) {
+        return VisualElement.boundsAddingXandY(bounds2D, g.getTransform().getTranslateX(), g.getTransform().getTranslateY());
+    }
+	
+	protected static Rectangle2D boundsAddingXandY(Rectangle2D bounds2D, double plusX,  double plusY) {
+		return switch (bounds2D){
+			case Rectangle2D.Float floatRect ->
+					new Rectangle2D.Float((float) (floatRect.x+plusX), (float) (floatRect.y+plusY), floatRect.width, floatRect.height);
+			case Rectangle2D.Double doubleRect ->
+					new Rectangle2D.Double(doubleRect.x+plusX, doubleRect.y+plusY, doubleRect.width, doubleRect.height);
+			default -> new Rectangle2D.Double(bounds2D.getX()+plusX, bounds2D.getY()+plusY, bounds2D.getWidth(), bounds2D.getHeight());
+		};
+	}
 }

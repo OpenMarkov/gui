@@ -18,7 +18,6 @@ import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEPropagation;
 import org.openmarkov.java.initialization.Lazy;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -112,7 +111,9 @@ public class EvidenceManager {
         EvidenceCase currentEvidence = (this.networkEditorPanel.getNetworkEditorPanel().getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE) ?
                 this.getCurrentEvidenceCase() : this.preResolutionEvidence;
         Finding finding = currentEvidence.getFinding(node.getNode().getVariable());
-        this.requestAddFindingValues(GUIUtils.getOwner(this.networkEditorPanel), node, finding);
+        new AddFindingDialog(GUIUtils.getOwner(this.networkEditorPanel), node.getNode()
+                                                                             .getProbNet(), node.getNode()
+                                                                                                .getVariable(), node, finding, this.networkEditorPanel).requestValues();
         this.networkEditorPanel.repaint();
         this.networkEditorPanel.getVisualNetwork().setSelectedAllNodes(false);
         this.networkEditorPanel.getNetworkEditorPanel().getMainPanel()
@@ -121,10 +122,6 @@ public class EvidenceManager {
         this.networkEditorPanel.getNetworkEditorPanel().getMainPanel()
                                .getMainPanelMenuAssistant()
                                .updateOptionsFindingsDependent(this.networkEditorPanel.getNetworkEditorPanel());
-    }
-    
-    private void requestAddFindingValues(Window owner, VisualNode node, Finding finding) {
-        new AddFindingDialog(owner, node, finding, this.networkEditorPanel).requestValues();
     }
     
     /**

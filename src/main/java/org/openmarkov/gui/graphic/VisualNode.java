@@ -410,15 +410,16 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
     
     @Override public void paint(Graphics2D g) {
         NodeType nodeType = this.node.getNodeType();
+        Shape shape = this.getShape(g);
+        this.drawnBounds=VisualElement.boundsWithTranslate(shape.getBounds2D(), g);
         switch (nodeType) {
             case CHANCE, EVENT -> {
                 String text = this.getNodeName();
                 double textHeight = VisualNode.getHeight(text, g);
-                Shape shape = this.getShape(g);
                 GUIColor fillColor = switch (nodeType) {
                     case CHANCE ->
                             this.preResolutionFinding ? GUIColors.Network.ChanceNode.BACKGROUND_ON_PRE_RESOLUTION_FINDING
-                                    : this.postResolutionFinding && this.visualNetwork.getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE ?
+                                    : this.postResolutionFinding && this.visualNetwork.getWorkingMode()== NetworkEditorPanel.WorkingMode.INFERENCE ?
                                       GUIColors.Network.ChanceNode.BACKGROUND_ON_POST_RESOLUTION_FINDING
                                       : GUIColors.Network.ChanceNode.BACKGROUND;
                     case EVENT -> this.node.getPurpose()
@@ -475,7 +476,6 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
             case DECISION -> {
                 String text = this.getNodeName();
                 double textHeight = VisualNode.getHeight(text, g);
-                Shape shape = this.getShape(g);
                 if (this.preResolutionFinding) {
                     g.setPaint(GUIColors.Network.DecisionNode.BACKGROUND_ON_PRE_RESOLUTION_FINDING.getColor());
                 } else if (this.postResolutionFinding && (this.visualNetwork.getWorkingMode() == NetworkEditorPanel.WorkingMode.INFERENCE)) {
@@ -512,7 +512,6 @@ public final class VisualNode extends VisualElement implements ClassLocalizable 
             case UTILITY -> {
                 String text = this.getNodeName();
                 double textHeight = getHeight(text, g);
-                Shape shape = this.getShape(g);
                 Point2D.Double[] points = this.getUtilityNodePoints(g);
                 
                 boolean isChildOfEvent = this.node.getParents()

@@ -28,6 +28,7 @@ import org.openmarkov.gui.exception.NotEnoughMemoryException;
 import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
+import org.openmarkov.gui.toolplugin.ToolPlugin;
 import org.openmarkov.gui.util.GUIUtils;
 import org.openmarkov.gui.util.PropertyNames;
 import org.openmarkov.gui.window.edition.networkEditorPanel.NetworkEditorPanel;
@@ -39,6 +40,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import org.openmarkov.core.model.network.Point2D;
 
 import java.io.IOException;
@@ -61,27 +63,27 @@ import javax.swing.*;
  */
 public class MainPanelListenerAssistant extends WindowAdapter
         implements ActionListener, PropertyNames, ComponentListener {
-
+    
     private final MainPanel mainPanel;
     private final List<NetworkEditorPanel> networkPanels;
-
+    
     private final NetworkFileHandler fileHandler;
     private final InferenceHandler inferenceHandler;
     private final EditAndViewHandler editAndViewHandler;
-
+    
     public MainPanelListenerAssistant(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
         this.mainPanel.setName(mainPanel.getName());
         this.networkPanels = new ArrayList<>();
         StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
+        
         this.fileHandler = new NetworkFileHandler(mainPanel, networkPanels, stringDatabase);
         this.inferenceHandler = new InferenceHandler(mainPanel, fileHandler);
         this.editAndViewHandler = new EditAndViewHandler(mainPanel);
     }
-
+    
     // ── Event dispatch ────────────────────────────────────────────
-
+    
     @Override public void windowClosing(WindowEvent e) {
         try {
             fileHandler.closeApplication();
@@ -89,7 +91,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             throw new UnrecoverableException(ex);
         }
     }
-
+    
     @Override public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
         ActionCommands actionCommandConstant = ActionCommands.of(actionCommand);
@@ -110,7 +112,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.SAVE_EVIDENCE -> fileHandler.saveEvidence(getCurrentNetworkEditorPanel());
             case ActionCommands.NETWORK_PROPERTIES -> getCurrentNetworkEditorPanel().changeNetworkProperties();
             case ActionCommands.EXIT_APPLICATION -> GUIUtils.executeUIAction(() -> fileHandler.closeApplication());
-
+            
             // ── Edit ──────────────────────────────────────────
             case ActionCommands.CLIPBOARD_COPY -> {
                 getCurrentNetworkEditorPanel().exportToClipboard(false);
@@ -134,7 +136,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().changeNodeProperties());
             case ActionCommands.EDIT_POTENTIAL ->
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().changePotential());
-
+            
             // ── Inference / working mode ──────────────────────
             case ActionCommands.CHANGE_WORKING_MODE, ActionCommands.CHANGE_TO_INFERENCE_MODE,
                  ActionCommands.CHANGE_TO_EDITION_MODE -> {
@@ -154,7 +156,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     throw new UnrecoverableException(ex);
                 }
             }
-            case ActionCommands.MC_SIMULATE_NETWORK->monteCarloSimulation();
+            case ActionCommands.MC_SIMULATE_NETWORK -> monteCarloSimulation();
             case ActionCommands.SET_NEW_EXPANSION_THRESHOLD ->
                     inferenceHandler.setNewExpansionThreshold((Double) e.getSource());
             case ActionCommands.CREATE_NEW_EVIDENCE_CASE ->
@@ -172,19 +174,22 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.PROPAGATE_EVIDENCE ->
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant()));
             case ActionCommands.PROPAGATION_OPTIONS -> inferenceHandler.setPropagationOptions();
-            case ActionCommands.INFERENCE_OPTIONS -> inferenceHandler.setInferenceOptions(getCurrentNetworkEditorPanel());
+            case ActionCommands.INFERENCE_OPTIONS ->
+                    inferenceHandler.setInferenceOptions(getCurrentNetworkEditorPanel());
             case ActionCommands.EXPAND_NETWORK -> GUIUtils.executeUIAction(() ->
-                    inferenceHandler.expandNetwork(getCurrentNetworkEditorPanel().getProbNet(),
-                            getCurrentNetworkEditorPanel().getEditorPanel().getEvidenceManager().getPreResolutionEvidence()));
+                                                                                   inferenceHandler.expandNetwork(getCurrentNetworkEditorPanel().getProbNet(),
+                                                                                                                  getCurrentNetworkEditorPanel().getEditorPanel()
+                                                                                                                                                .getEvidenceManager()
+                                                                                                                                                .getPreResolutionEvidence()));
             case ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION, ActionCommands.TEMPORAL_EVOLUTION_ACTION ->
                     getCurrentNetworkEditorPanel().temporalEvolution();
-
+            
             // ── View ──────────────────────────────────────────
             case ActionCommands.BYTITLE_NODES -> editAndViewHandler.activateByTitle(true);
             case ActionCommands.BYNAME_NODES -> editAndViewHandler.activateByTitle(false);
             case ActionCommands.ZOOM_IN -> editAndViewHandler.incrementZoom(getCurrentPanel());
             case ActionCommands.ZOOM_OUT -> editAndViewHandler.decrementZoom(getCurrentPanel());
-
+            
             // ── Node expansion/contraction ────────────────────
             case ActionCommands.NODE_EXPANSION -> {
                 NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
@@ -217,14 +222,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().absorbNode());
             case ActionCommands.ABSORB_PARENTS ->
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().absorbParents());
-
+            
             // ── Link operations ───────────────────────────────
             case ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS -> GUIUtils.executeUIAction(() -> {
                 NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
                 Link<Node> link = networkPanel.getEditorPanel().getVisualNetwork().getLastSelectedLink().getLink();
                 new InvertLinkAndUpdatePotentialsEdit(networkPanel.getEditorPanel()
                                                                   .getVisualNetwork()
-                                                                  .getProbNet(), link.getFrom().getVariable(), link.getTo().getVariable())
+                                                                  .getProbNet(), link.getFrom()
+                                                                                     .getVariable(), link.getTo()
+                                                                                                         .getVariable())
                         .executeEdit();
             });
             case ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES -> {
@@ -241,14 +248,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 }
             }
             case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES -> GUIUtils.executeUIAction(() ->
-                    new RemoveLinkRestrictionEdit(getCurrentNetworkEditorPanel().getEditorPanel().getVisualNetwork()).executeEdit());
+                                                                                                        new RemoveLinkRestrictionEdit(getCurrentNetworkEditorPanel().getEditorPanel()
+                                                                                                                                                                    .getVisualNetwork()).executeEdit());
             case ActionCommands.LINK_REVELATIONARC_PROPERTIES -> {
                 NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
                 Link<Node> link = networkPanel.getEditorPanel().getVisualNetwork().getLastSelectedLink().getLink();
                 Window owner = GUIUtils.getOwner(networkPanel.getEditorPanel());
                 new RevelationArcEditDialog(owner, link).requestValues();
             }
-
+            
             // ── Decision operations ───────────────────────────
             case ActionCommands.DECISION_IMPOSE_POLICY ->
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().imposePolicyInNode());
@@ -256,7 +264,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().editNodePolicy());
             case ActionCommands.DECISION_REMOVE_POLICY ->
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().removePolicyFromNode());
-            case ActionCommands.EVENT_EDIT_TIME_TO_EVENT->GUIUtils.executeUIAction(() ->getCurrentNetworkEditorPanel().changePotential());
+            case ActionCommands.EVENT_EDIT_TIME_TO_EVENT ->
+                    GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().changePotential());
             case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY ->
                     GUIUtils.executeUIAction(() -> getCurrentNetworkEditorPanel().showExpectedUtilityOfNode());
             case ActionCommands.DECISION_SHOW_OPTIMAL_POLICY ->
@@ -265,7 +274,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     GUIUtils.executeUIAction(() -> inferenceHandler.showDecisionTree(getCurrentNetworkEditorPanel()));
             case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY ->
                     GUIUtils.executeUIAction(() -> inferenceHandler.showOptimalStrategy(getCurrentNetworkEditorPanel()));
-
+            
             // ── Misc ──────────────────────────────────────────
             case ActionCommands.NEXT_SLICE_NODE -> GUIUtils.executeUIAction(() -> {
                 NetworkEditorPanel networkPanel = getCurrentNetworkEditorPanel();
@@ -303,11 +312,17 @@ public class MainPanelListenerAssistant extends WindowAdapter
             case ActionCommands.HELP_CHANGE_LANGUAGE -> editAndViewHandler.showLanguageChangeDialog();
             case ActionCommands.HELP_SHORTCUTS -> editAndViewHandler.showShortcuts();
             case ActionCommands.HELP_ABOUT -> editAndViewHandler.showAbout();
-
+            case ActionCommands.SENSITIVITY_ANALYSIS -> {
+                GUIUtils.executeUIAction(() -> {
+                    ToolPlugin toolPlugin = (ToolPlugin) Class.forName("org.openmarkov.sensitivityanalysis.SensitivityAnalysisPlugin").getDeclaredConstructor().newInstance();
+                    toolPlugin.toMenuItem().doClick();
+                });
+            }
+            
             // ── Default / no-op cases ─────────────────────────
             case ActionCommands.CHANCE_CREATION, ActionCommands.UNCERTAINTY_REMOVE, ActionCommands.UNCERTAINTY_EDIT,
                  ActionCommands.UNCERTAINTY_ASSIGN, ActionCommands.TEMPORAL_OPTIONS,
-                 ActionCommands.SENSITIVITY_ANALYSIS, ActionCommands.SENSITIVITY_ANALYSIS_PROBABILISTIC,
+                 ActionCommands.SENSITIVITY_ANALYSIS_PROBABILISTIC,
                  ActionCommands.SENSITIVITY_ANALYSIS_DETERMINISTIC, ActionCommands.COST_EFFECTIVENESS_SENSITIVITY,
                  ActionCommands.LEARNING,
                  ActionCommands.VIEW_TOOLBARS, ActionCommands.LINK_PROPERTIES,
@@ -324,16 +339,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
                  ActionCommands.OPEN_LAST_7_FILE, ActionCommands.OPEN_LAST_8_FILE,
                  ActionCommands.OPEN_LAST_9_FILE,
                  ActionCommands.SET_IMPOSSIBLE_CONFIGURATION, ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION,
-                 ActionCommands.ADD_FUNCTION
-                    
-                    
-                    -> defaultActionOnCommand(e, actionCommand, actionCommandConstant);
+                 ActionCommands.ADD_FUNCTION -> defaultActionOnCommand(e, actionCommand, actionCommandConstant);
             case null -> defaultActionOnCommand(e, actionCommand, actionCommandConstant);
         }
     }
     
     // ── Default action fallback ───────────────────────────────────
-
+    
     private void defaultActionOnCommand(ActionEvent e, String actionCommand, ActionCommands actionCommandConstant) {
         if (actionCommand.startsWith(ActionCommands.EDITION_MODE_PREFIX.getCommandName())) {
             editAndViewHandler.activateEditionMode(actionCommand);
@@ -349,61 +361,62 @@ public class MainPanelListenerAssistant extends WindowAdapter
             GUIUtils.executeUIAction(() -> fileHandler.openNetwork(LastOpenFiles.getFilePathAt(recentFileIndex)));
         }
     }
-
+    
     // ── Public API (delegates) ────────────────────────────────────
-
+    
     public NetworkEditorPanel getCurrentNetworkEditorPanel() {
         return mainPanel.getMainPanelMenuAssistant().getCurrentNetworkEditorPanel();
     }
-
+    
     public EditorPanel getCurrentPanel() {
         return (EditorPanel) mainPanel.getNetworksTabPanel().getSelectedComponent();
     }
-
+    
     public void openNetwork(String fileName) throws ParserException, java.io.IOException, org.openmarkov.core.io.format.annotation.NoReaderForFileException, org.openmarkov.gui.exception.CorruptNetworkFile {
         fileHandler.openNetwork(fileName);
     }
-
+    
     public void openNetwork(ProbNet probNet) {
         fileHandler.openNetwork(probNet);
     }
-
+    
     public boolean saveNetwork(NetworkEditorPanel networkPanel) throws WriterException {
         return fileHandler.saveNetwork(networkPanel);
     }
-
+    
     public boolean saveNetworkAs(NetworkEditorPanel networkPanel) throws WriterException {
         return fileHandler.saveNetworkAs(networkPanel);
     }
-
+    
     public boolean networkCanBeClosed(NetworkEditorPanel networkPanel) throws WriterException {
         return fileHandler.networkCanBeClosed(networkPanel);
     }
-
+    
     public NetworkEditorPanel createNewFrame(ProbNet probNet) {
         return fileHandler.createNewFrame(probNet);
     }
-
+    
     public List<NetworkEditorPanel> getNetworkEditorPanels() {
         return networkPanels;
     }
-
+    
     public boolean closePanel(EditorPanel panel) {
         return panel.close();
     }
     
     
     // 21/08/2019 22/04/2021 DESInference
+    
     /**
      * This method performs N Monte Carlo simulations
      *
      */
-    protected void monteCarloSimulation(){
+    protected void monteCarloSimulation() {
         boolean performInference = true;
         mainPanel.selecMonteCarloButton(false);
         
         InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkEditorPanel().getProbNet(), SwingUtilities.getWindowAncestor(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
-        ProbNet probNet =getCurrentNetworkEditorPanel().getProbNet();
+        ProbNet probNet = getCurrentNetworkEditorPanel().getProbNet();
         // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
         if (dialog.getSelectedOption() == OkCancelDialog.ChosenOption.Cancel) {
             performInference = false;
@@ -412,7 +425,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         if (performInference) {
             
             
-            javax.swing.ProgressMonitor simulationProgressMonitor = new javax.swing.ProgressMonitor(SwingUtilities.getWindowAncestor(mainPanel), "Running simulation",null, 0, 0);
+            javax.swing.ProgressMonitor simulationProgressMonitor = new javax.swing.ProgressMonitor(SwingUtilities.getWindowAncestor(mainPanel), "Running simulation", null, 0, 0);
             
             new Thread(() -> {
                 try {
@@ -427,12 +440,17 @@ public class MainPanelListenerAssistant extends WindowAdapter
     
     
     // ── ComponentListener ─────────────────────────────────────────
-
+    
     @Override public void componentResized(ComponentEvent e) {
         mainPanel.adaptToolBarSize();
     }
-
-    @Override public void componentMoved(ComponentEvent e) {}
-    @Override public void componentShown(ComponentEvent e) {}
-    @Override public void componentHidden(ComponentEvent e) {}
+    
+    @Override public void componentMoved(ComponentEvent e) {
+    }
+    
+    @Override public void componentShown(ComponentEvent e) {
+    }
+    
+    @Override public void componentHidden(ComponentEvent e) {
+    }
 }

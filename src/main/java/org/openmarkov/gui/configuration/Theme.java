@@ -23,6 +23,7 @@ public enum Theme {
     public void setlookAndFeel() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         if (this == Theme.SYSTEM_LF) {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            return;
         }
         UIManager.setLookAndFeel(switch (this) {
             case DARK -> new FlatDarculaLaf();

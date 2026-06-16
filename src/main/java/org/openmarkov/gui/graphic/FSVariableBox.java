@@ -128,6 +128,7 @@ public non-sealed class FSVariableBox extends InnerBox {
 	 */
 	@Override public void paint(Graphics2D g) {
 		Shape shape = getShape(g);
+		this.drawnBounds=VisualElement.boundsWithTranslate(shape.getBounds2D(), g);
         g.setPaint(GUIColors.Inference.BOX_BACKGROUND.getColor());
 		g.fill(shape);
 		g.setStroke(NORMAL_STROKE);

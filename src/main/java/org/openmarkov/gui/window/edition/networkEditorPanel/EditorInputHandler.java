@@ -152,7 +152,8 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
             return;
         }
         
-        if (this.networkEditorPanel.getVisualNetwork().whatStateInPosition(this.cursorPosition, g) == null) {
+        VisualState visualState = this.networkEditorPanel.getVisualNetwork().whatStateInPosition(this.cursorPosition, g);
+        if (visualState == null) {
             if ((this.networkEditorPanel.getVisualNetwork().whatNodeInPosition(this.cursorPosition, g) != null) && (
                     this.networkEditorPanel.getVisualNetwork().whatInnerBoxInPosition(this.cursorPosition, g) == null
             )) {
@@ -181,8 +182,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         if (visualNode.isPreResolutionFinding()) {
             throw new UnrecoverableException(new PreResolutionNodeInInferenceException(visualNode));
         }
-        VisualState visualState = this.networkEditorPanel.getVisualNetwork()
-                                                         .whatStateInPosition(this.cursorPosition, g);
+        
         try {
             this.networkEditorPanel.getEvidenceManager().toggleFinding(visualNode, visualState);
         } catch (IncompatibleEvidenceException | NotEvaluableNetworkException | NonProjectablePotentialException |
@@ -266,7 +266,7 @@ class EditorInputHandler implements MouseListener, MouseMotionListener, KeyListe
         this.networkEditorPanel.getEditionMode().mouseMoved(e, point, diffX, diffY, g);
         if (this.visualNodeOfToolTip != this.networkEditorPanel.getVisualNetwork()
                                                                .whatNodeInPosition(this.cursorPosition, g)) {
-
+            
             this.networkEditorPanel.setToolTipText(null);
             //This forces to reset the tooltip "enter" timer when moving between visual elements.
             ToolTipManager.sharedInstance().mousePressed(new MouseEvent(
