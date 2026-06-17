@@ -149,8 +149,8 @@ public class GUIColors {
     }
     
     public static final class CostEffectiveness {
-        public static final GUIColor WTP_SLOPE = new GUIColor(new Color(255, 0, 0));
-        public static final GUIColor BACKGROUND = new GUIColor(new Color(242, 242, 242));
+        public static final GUIColor WTP_SLOPE = new GUIColor(new Color(0, 0, 0));
+        public static final GUIColor BACKGROUND = new GUIColor(new Color(255, 255, 255));
     }
     
     public static final class DevelopmentTools {
