@@ -79,7 +79,7 @@ public class VariableTypeEditTest {
         State[] states = numericNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) numericNode.getVariable().getPartitionedInterval()
                 .clone();
-        VariableTypeEdit edit = new VariableTypeEdit(numericNode, VariableType.DISCRETIZED);
+        VariableTypeEdit edit = new VariableTypeEdit(numericNode, VariableType.DISCRETIZED, true);
 
         probNet.getPNESupport().setWithUndo(true);
         edit.executeEdit();
@@ -119,7 +119,7 @@ public class VariableTypeEditTest {
         State[] states = numericNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) numericNode.getVariable().getPartitionedInterval()
                 .clone();
-        VariableTypeEdit edit = new VariableTypeEdit(numericNode, VariableType.FINITE_STATES);
+        VariableTypeEdit edit = new VariableTypeEdit(numericNode, VariableType.FINITE_STATES, true);
 
         probNet.getPNESupport().setWithUndo(true);
         edit.executeEdit();
@@ -158,7 +158,7 @@ public class VariableTypeEditTest {
         State[] defaultStates = finiteStatesNode.getProbNet().getDefaultStates();
         State[] states = finiteStatesNode.getVariable().getStates().clone();
 
-        VariableTypeEdit edit = new VariableTypeEdit(finiteStatesNode, VariableType.DISCRETIZED);
+        VariableTypeEdit edit = new VariableTypeEdit(finiteStatesNode, VariableType.DISCRETIZED, true);
 
         probNet.getPNESupport().setWithUndo(true);
         edit.executeEdit();
@@ -184,7 +184,7 @@ public class VariableTypeEditTest {
 
     @Test
     public void testFiniteStates2Numeric() throws DoEditException {
-        VariableTypeEdit edit = new VariableTypeEdit(finiteStatesNode, VariableType.NUMERIC);
+        VariableTypeEdit edit = new VariableTypeEdit(finiteStatesNode, VariableType.NUMERIC, true);
 
         probNet.getPNESupport().setWithUndo(true);
         edit.executeEdit();
@@ -204,7 +204,7 @@ public class VariableTypeEditTest {
         State[] states = discretizedNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
                 .getPartitionedInterval().clone();
-        VariableTypeEdit edit = new VariableTypeEdit(discretizedNode, VariableType.FINITE_STATES);
+        VariableTypeEdit edit = new VariableTypeEdit(discretizedNode, VariableType.FINITE_STATES, true);
 
         probNet.getPNESupport().setWithUndo(true);
         edit.executeEdit();
@@ -236,7 +236,7 @@ public class VariableTypeEditTest {
     public void testDiscretized2Numeric() throws DoEditException {
         PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
                 .getPartitionedInterval().clone();
-        VariableTypeEdit edit = new VariableTypeEdit(discretizedNode, VariableType.NUMERIC);
+        VariableTypeEdit edit = new VariableTypeEdit(discretizedNode, VariableType.NUMERIC, true);
         probNet.getPNESupport().setWithUndo(true);
         edit.executeEdit();
 

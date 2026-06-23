@@ -14,6 +14,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
+import org.openmarkov.gui.commonComponents.JComboBoxFunctionRender;
 import org.openmarkov.gui.component.DiscretizeTablePanel;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.localize.StringDatabase;
@@ -127,15 +128,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * TODO listener for actions -
      */
     private final NodeDomainValuesTablePanelListener listener;
-    private JComboBox<String> jComboBoxNodeVariableType;
+    private JComboBox<VariableType> jComboBoxNodeVariableType;
     private boolean uploadingData = false;
-    
-    /**
-     * constructor without construction parameters
-     */
-    public NodeDomainValuesTablePanel() {
-        this(true);// , new ElementObservable());
-    }
     
     /**
      * constructor without construction parameters
@@ -831,35 +825,24 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             jLabelNodeVariableType.setHorizontalAlignment(SwingConstants.LEFT);
             jLabelNodeVariableType.setHorizontalTextPosition(SwingConstants.LEFT);
             jLabelNodeVariableType.setText("a Label");
-            jLabelNodeVariableType
-                    .setText(stringDatabase.getString("NodeDomainValuesTablePanel." + "jLabelNodeVariableType.Text"));
-            jLabelNodeVariableType.setDisplayedMnemonic(
-                    stringDatabase.getString("NodeDomainValuesTablePanel.jLabelNodeVariableType.Mnemonic").charAt(0));
+            jLabelNodeVariableType.setText(stringDatabase.getString("NodeDomainValuesTablePanel." + "jLabelNodeVariableType.Text"));
+            jLabelNodeVariableType.setDisplayedMnemonic(stringDatabase.getString("NodeDomainValuesTablePanel.jLabelNodeVariableType.Mnemonic").charAt(0));
             // jLabelNodeVariableType.setLabelFor( getJPanelNodeType() );
         }
         return jLabelNodeVariableType;
     }
     
-    private JComboBox<String> getJComboBoxNodeVariableType() {
+    private JComboBox<VariableType> getJComboBoxNodeVariableType() {
         if (jComboBoxNodeVariableType == null) {
-            jComboBoxNodeVariableType = new JComboBox<>();
+            jComboBoxNodeVariableType = new JComboBox<VariableType>();
+            jComboBoxNodeVariableType.setRenderer(new JComboBoxFunctionRender<VariableType>(VariableType::toString));
             jComboBoxNodeVariableType.setName("jComboBoxNodeVariableType");
-            if (node.getNodeType() == NodeType.UTILITY) {
-                jComboBoxNodeVariableType.addItem(stringDatabase
-                                                          .getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Continuous"));
-            }else if(node.getNodeType()==NodeType.EVENT){
-                jComboBoxNodeVariableType.addItem(stringDatabase
-                                                          .getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Event"));
-            } else {
-                jComboBoxNodeVariableType.addItem(stringDatabase
-                                                          .getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Discrete"));
-                jComboBoxNodeVariableType.addItem(stringDatabase
-                                                          .getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Discretized"));
-                jComboBoxNodeVariableType.addItem(stringDatabase
-                                                          .getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Continuous"));
+            for (VariableType variableType : VariableType.of(node.getNodeType())) {
+                jComboBoxNodeVariableType.addItem(variableType);
             }
             // jComboBoxNodeVariableType.setSize(181, 80);
             // jComboBoxNodeVariableType.addItemListener(listener);
+            jComboBoxNodeVariableType.setSelectedItem(node.getVariable().getVariableType());
             jComboBoxNodeVariableType.addItemListener(this);
         }
         return jComboBoxNodeVariableType;
@@ -881,18 +864,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         }
         if (comboBox.getName().equals("jComboBoxNodeVariableType")) {
             if (itemSelected != null && itemEvent.getStateChange() == ItemEvent.SELECTED && !isUploadingData()) {
-                VariableType variableType;
-                if (itemSelected.equals(stringDatabase
-                                                .getString("NodeDomainValuesTablePanel." + "jComboBoxNodeVariableType.Items.Discrete"))) {
-                    variableType = VariableType.FINITE_STATES;
-                } else if (itemSelected.equals(stringDatabase
-                                                       .getString("NodeDomainValuesTablePanel." + "jComboBoxNodeVariableType.Items.Discretized"))) {
-                    variableType = VariableType.DISCRETIZED;
-                } else {
-                    variableType = VariableType.NUMERIC;
-                }
-                
-                VariableTypeEdit variableTypeEdit = new VariableTypeEdit(node, variableType);
+                VariableType variableType = (VariableType) jComboBoxNodeVariableType.getSelectedItem();
+                VariableTypeEdit variableTypeEdit = new VariableTypeEdit(node, variableType, true);
                 ProbNet nodeProbNet = node.getProbNet();
                 try {
                     variableTypeEdit.executeEdit();
@@ -905,7 +878,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 if (nodeRelatedNodes != null) {
                     if (!nodeRelatedNodes.isEmpty()) {
                         for (Node relatedNode : nodeRelatedNodes) {
-                            variableTypeEdit = new VariableTypeEdit(relatedNode, variableType);
+                            variableTypeEdit = new VariableTypeEdit(relatedNode, variableType, true);
                             ProbNet probNet = relatedNode.getProbNet();
                             try {
                                 variableTypeEdit.executeEdit();

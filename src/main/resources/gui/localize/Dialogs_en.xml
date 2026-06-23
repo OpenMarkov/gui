@@ -555,14 +555,6 @@
         <jRadioButtonMonotonyUp>
             <Text value="Increasing"/>
         </jRadioButtonMonotonyUp>
-        <jComboBoxNodeVariableType>
-            <Items>
-                <Continuous value="Numeric"/>
-                <Discrete value="Finite states"/>
-                <Discretized value="Discretized"/>
-                <Event value="Event"/>
-            </Items>
-        </jComboBoxNodeVariableType>
         <jLabelUnit>
             <Text value="Unit"/>
         </jLabelUnit>

@@ -74,7 +74,7 @@ public class NodePartitionedIntervalEditTest {
 
 		probNet.getPNESupport().setWithUndo(true);
 
-		VariableTypeEdit variableTypeEdit = new VariableTypeEdit(node1, VariableType.DISCRETIZED);
+		VariableTypeEdit variableTypeEdit = new VariableTypeEdit(node1, VariableType.DISCRETIZED, true);
         
         variableTypeEdit.executeEdit();
         
