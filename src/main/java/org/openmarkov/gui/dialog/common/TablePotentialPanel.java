@@ -154,6 +154,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             tablePotential = exactDistr.getTablePotential();
         } else if (potential instanceof TablePotential table) {
             tablePotential = table;
+            if(tablePotential.getTableSize() < 2){
+                tablePotential.setTableSize(2);
+            }
         }
         
         // The list of variables of potential

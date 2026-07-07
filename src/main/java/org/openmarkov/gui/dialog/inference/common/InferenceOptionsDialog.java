@@ -249,7 +249,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
             mainPanel.add(getMonteCarloOptionsPanel());
         }
         
-        if (isTemporal) {
+        if (isTemporal && !(probNet.getNetworkType() instanceof DESNetworkType)) {
             mainPanel.add(getTemporalPanel());
         }
         
@@ -1045,7 +1045,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
                 editMulticriteria.executeEdit();
             }
         }
-        if (isTemporal) {
+        if (isTemporal && !(probNet.getNetworkType() instanceof DESNetworkType)) {
             int numSlices;
             try {
                 numSlices = Integer.parseInt(numSlicesTextField.getText());

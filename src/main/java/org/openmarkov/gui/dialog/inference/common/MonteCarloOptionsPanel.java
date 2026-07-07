@@ -163,7 +163,6 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		numSeriesPanel.add(getJLabelNumSeries());
 		numSeriesPanel.add(getNumSeriesTextField());
 		JPanel numSimulationsPanel = new JPanel();
-		numSimulationsPanel.add(getPsaCheckBox());
 		numSimulationsPanel.add(getJLabelNumSimulations());
 		numSimulationsPanel.add(getNumSimulationsTextField());
 		JPanel firstLinePanel = new JPanel();
@@ -172,10 +171,7 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		firstLinePanel.add(numSeriesPanel,BorderLayout.EAST);
 		this.add(firstLinePanel);
 
-		JPanel psaPanel = new JPanel();
-		psaPanel.setBorder(new TitledBorder("Probabilistic Sensitivity Analysis (PSA)"));
-		psaPanel.add(getPsaCheckBox());
-		this.add(psaPanel);
+
 
 
 		this.add(Box.createRigidArea(new Dimension()));
@@ -198,7 +194,6 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		this.monteCarloOptions.setResultsToExcel(resultsPerSeriesCheckBox.isSelected());
 		this.monteCarloOptions.setTextualLog(textualLogCheckBox.isSelected());
 		//23/05/ PSA
-		this.monteCarloOptions.setPSA(psaCheckBox.isSelected());
 		this.monteCarloOptions.setMean(meanCheckBox.isSelected());
 		this.monteCarloOptions.setTrimmedMean(trimmedMeanCheckBox.isSelected());
 		this.monteCarloOptions.setMedian(medianCheckBox.isSelected());
