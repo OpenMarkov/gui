@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.dialog.inference.common;
 
-import org.openmarkov.core.action.core.MonteCarloOptionsEdit;
 import org.openmarkov.core.action.core.MulticriteriaEdit;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
@@ -1067,7 +1066,7 @@ public class InferenceOptionsDialog extends OkCancelDialog {
         }
         
         if (isMonteCarloSimulation) {
-            new MonteCarloOptionsEdit(probNet, monteCarloOptionsPanel.getMonteCarloOptions()).executeEdit();
+            probNet.getInferenceOptions().setMonteCarloOptions(monteCarloOptionsPanel.getMonteCarloOptions());
         }
         
         probNet.getPNESupport().closeSubEditHistory();

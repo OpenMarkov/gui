@@ -110,7 +110,6 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
         add(getDecisionTreeButton());
         add(getSensAnalysisButton());
         add(getCostEffectivenessButton());
-        add(getMonteCarloSimulationButton());
         add(Box.createHorizontalGlue());
     }
     
@@ -304,7 +303,6 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
             costEffectivenessButton.addActionListener(listener);
             costEffectivenessButton.addMouseMotionListener(this);
         }
-        //costEffectivenessButton.setEnabled(false);
         return costEffectivenessButton;
     }
     
@@ -314,19 +312,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
      *
      * @return a
      */
-    private JToggleButton getMonteCarloSimulationButton() {
-        if (monteCarloSimulationButton == null) {
-            monteCarloSimulationButton = new JToggleButton();
-            monteCarloSimulationButton.setIcon(IconBind.SIMULATION_ENABLED.icon());
-            monteCarloSimulationButton.setFocusable(false);
-            monteCarloSimulationButton.setActionCommand(ActionCommands.MC_SIMULATE_NETWORK.getCommandName());
-            monteCarloSimulationButton.setToolTipText(
-                    stringDatabase.getString(ActionCommands.MC_SIMULATE_NETWORK + STRING_TOOLTIP_SUFFIX));
-            monteCarloSimulationButton.addActionListener(listener);
-            monteCarloSimulationButton.addMouseMotionListener(this);
-        }
-        return monteCarloSimulationButton;
-    }
+
     
     /**
      * This method initialises costEffectivenessButton.
@@ -364,10 +350,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
      * Select/unselect MonteCarloButon
      * @param select - true if moteCarloButton will be selected0
      */
-    public void selectMonteCarloButton(boolean select) {
-        monteCarloSimulationButton.setSelected(false);
-    }
-    
+
     /**
      * Returns the component that corresponds to an action command.
      *
@@ -389,7 +372,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
             case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY -> showOptimalStrategyButton;
             case ActionCommands.CHANGE_TO_EDITION_MODE, ActionCommands.CHANGE_TO_INFERENCE_MODE,
                  ActionCommands.CHANGE_WORKING_MODE -> workingModeButton;
-            case ActionCommands.MC_SIMULATE_NETWORK -> monteCarloSimulationButton;
+            //case ActionCommands.MC_SIMULATE_NETWORK -> monteCarloSimulationButton;
             case null, default -> null;
         };
     }

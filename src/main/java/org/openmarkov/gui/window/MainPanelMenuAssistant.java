@@ -390,7 +390,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements PNEditListe
                 ) && currentProbNet.getDecisionCriteria() != null && currentProbNet.getDecisionCriteria().size() > 1;
                 setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, canPerformCE);
                 setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, canPerformCE);
-                setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, currentProbNet.getNetworkType() instanceof DESNetworkType);
+                setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, currentProbNet.getNetworkType() instanceof DESNetworkType);
+
             }
             case INFERENCE -> {
                 setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
